@@ -17,7 +17,11 @@ Desenvolvido para substituir com total autonomia infraestruturas de nuvem (AWS I
 * **Live JSON Preview & Formatação:** Visualização instantânea do JSON exato que será publicado no broker.
 
 ### 2. 🏛️ Layout Ergonômico Invertido & Fita da Bolsa de Valores (Stock Ticker)
-* **Barra Lateral (Navegação Primária Vertical):** Acesso instantâneo às 7 abas do sistema (`Ações Rápidas`, `Construtor Codax`, `Medidores & Placas`, `Árvore da Malha`, `Dicionário Oficial`, `Central de OTA`, `Console ao Vivo`), com badges numéricos, ícones Lucide, active indicators iluminados e mini-feed de retornos MQTT em tempo real.
+* **Barra Lateral (Navegação Primária Vertical):** Acesso instantâneo às 7 abas do sistema (`Ações Rápidas`, `Construtor Codax`, `Medidores & Placas`, `Árvore da Malha`, `Dicionário Oficial`, `Central de OTA`, `Console ao Vivo`), com badges numéricos, ícones Lucide e active indicators iluminados.
+* **📡 Feed de 'Últimos Retornos' Pro & Inspetor de Payloads:**
+  * **Cards Informativos Ricos:** Exibe horário exato, badge de status (`👑 ROOT`, `📶 PING`, `🌳 TOPOLOGIA`, `⚡ TELEMETRIA`, `🔄 RESTART`, `❌ ERRO`), identificação automática do Medidor cadastrado e prévia inteligente do retorno.
+  * **Modal Inspetor Rápido de Retorno:** Clique em qualquer card para inspecionar o payload JSON formatado com syntax highlight, copiar o JSON em 1 clique ou enviar um novo comando imediatamente para aquela mesma controladora sem sair da tela atual.
+  * **Ações Rápidas nos Cards:** Botão de mira (`Definir como Alvo`) e botão de cópia de payload direto no card.
 * **Barra Superior Horizontal (Bancada & Telemetria em Tempo Real):** Painel de operações centralizado com métricas ao vivo (`Medidores Salvos`, `Dispositivos na Malha`), seletor rápido de alvo broadcast (`ROOT`, `ANY`, `B-CAST`), comandos imediatos de emergência (`Ping Malha`, `Ler Topologia`, `mwifi_restart()`), IP com cópia para menuconfig e status do Broker 1883.
 * **📈 Fita da Bolsa de Valores ao Vivo (Stock Ticker Marquee):** Faixa contínua no estilo mercado financeiro/B3 posicionada logo abaixo da barra superior. Exibe cotações de telemetria em loop infinito suave (com pausa ao passar o mouse):
   * `👑 ROOT L1: ONLINE ▲ -62 dBm`

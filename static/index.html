@@ -414,18 +414,27 @@
           </button>
         </nav>
 
-        <!-- Mini Feed ao Vivo de Retornos MQTT (Últimos retornos) -->
-        <div class="pt-2 border-t border-slate-800/80 space-y-1.5">
+        <!-- Feed ao Vivo de Retornos MQTT (Últimos retornos) -->
+        <div class="pt-2 border-t border-slate-800/80 space-y-2">
           <div class="flex items-center justify-between px-1">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Últimos Retornos</span>
-            <button onclick="switchTab('logs')" class="text-[10px] text-indigo-400 hover:underline flex items-center space-x-1">
-              <span>Console</span>
-              <i data-lucide="arrow-right" class="w-3 h-3"></i>
-            </button>
+            <div class="flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-300">Últimos Retornos</span>
+              <span id="sidebar-returns-count" class="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.2 rounded font-mono font-bold">0</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="clearSidebarReturns()" title="Limpar histórico recente da barra" class="text-[10px] text-slate-500 hover:text-rose-400 transition">
+                <i data-lucide="trash-2" class="w-3 h-3"></i>
+              </button>
+              <button onclick="switchTab('logs')" class="text-[10px] text-indigo-400 hover:underline flex items-center space-x-0.5">
+                <span>Console</span>
+                <i data-lucide="arrow-right" class="w-3 h-3"></i>
+              </button>
+            </div>
           </div>
-          <div id="sidebar-mini-feed" class="space-y-1.5 max-h-36 overflow-y-auto">
-            <div class="bg-slate-950/60 border border-slate-800/80 p-2 rounded-xl text-[10px] text-slate-500 italic text-center">
-              Aguardando mensagens MQTT...
+          <div id="sidebar-mini-feed" class="space-y-2 max-h-60 overflow-y-auto pr-0.5">
+            <div class="bg-slate-950/60 border border-slate-800/80 p-3 rounded-xl text-[10px] text-slate-500 italic text-center">
+              Aguardando respostas e telemetria das controladoras...
             </div>
           </div>
         </div>
@@ -1270,9 +1279,91 @@
     </div>
   </div>
 
+  <!-- ================= MODAL DE INSPEÇÃO RÁPIDA DE RETORNO MQTT ================= -->
+  <div id="modal-return-inspector" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden select-none">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Header do Modal -->
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/70">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <i data-lucide="radio" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <h3 class="font-extrabold text-sm text-slate-100">Inspeção de Retorno MQTT</h3>
+              <span id="inspect-category-badge" class="text-[10px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded font-mono font-bold">RETORNO</span>
+            </div>
+            <p id="inspect-timestamp" class="text-xs text-slate-400 font-mono mt-0.5">Recebido às --:--:--</p>
+          </div>
+        </div>
+        <button onclick="closeReturnInspectorModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Conteúdo do Modal (Scrollável) -->
+      <div class="p-5 space-y-4 overflow-y-auto text-xs">
+        
+        <!-- Bloco de Origem / Dispositivo Identificado -->
+        <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Origem / Placa de Resposta:</span>
+            <span id="inspect-device-role" class="text-[10px] px-2 py-0.5 rounded font-mono bg-slate-800 text-slate-300">NODE</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div>
+              <div id="inspect-device-name" class="font-bold text-sm text-slate-200">Placa Não Cadastrada</div>
+              <div id="inspect-device-mac" class="font-mono text-indigo-400 text-xs font-semibold mt-0.5">--:--:--:--:--:--</div>
+            </div>
+            <div id="inspect-device-actions"></div>
+          </div>
+        </div>
+
+        <!-- Tópico MQTT -->
+        <div class="space-y-1">
+          <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Tópico MQTT:</span>
+          <div class="flex items-center space-x-2">
+            <code id="inspect-topic" class="flex-1 bg-slate-950 border border-slate-800 p-2.5 rounded-lg mono text-xs text-indigo-300 truncate select-all">retorno/shopba/mesh</code>
+            <button onclick="copyInspectTopic()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-2.5 rounded-lg transition" title="Copiar Tópico">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Payload Completo Formatado -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Payload Completo da Resposta:</span>
+            <button onclick="copyInspectPayload()" class="text-indigo-400 hover:text-indigo-300 font-semibold flex items-center space-x-1">
+              <i data-lucide="copy" class="w-3 h-3"></i>
+              <span>Copiar Payload Formatado</span>
+            </button>
+          </div>
+          <pre id="inspect-payload" class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl mono text-xs text-emerald-400 overflow-x-auto max-h-72 whitespace-pre-wrap leading-relaxed select-all">{}</pre>
+        </div>
+
+      </div>
+
+      <!-- Rodapé do Modal com Ações Rápidas -->
+      <div class="p-4 border-t border-slate-800 bg-slate-950/80 flex items-center justify-between gap-3">
+        <button onclick="useInspectDeviceInBuilder()" id="inspect-btn-builder" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-4 py-2 rounded-xl transition flex items-center space-x-1.5 shadow-sm">
+          <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+          <span>Enviar Comando para este Nó</span>
+        </button>
+        <button onclick="closeReturnInspectorModal()" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl transition font-semibold">
+          Fechar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ================= SCRIPTS JAVASCRIPT ================= -->
   <script>
     let allMessages = [];
+    let recentReturns = [];
+    let currentInspectedReturn = null;
     let currentCategory = 'all';
     let currentEnv = 'PROD';
     let hostIP = '127.0.0.1';
@@ -1323,7 +1414,8 @@
           renderLogs();
           if (data.status) updateStatusUI(data.status);
           if (data.recent_messages && data.recent_messages.length > 0) {
-            data.recent_messages.slice(-4).forEach(m => updateSidebarMiniFeed(m));
+            recentReturns = data.recent_messages.slice(-20).reverse();
+            renderSidebarReturns();
             pushTickerAlert(data.recent_messages[data.recent_messages.length - 1]);
           }
         } else if (data.type === 'mqtt_message') {
@@ -1355,40 +1447,301 @@
       };
     }
 
+    // ================= SISTEMA PRO DE 'ÚLTIMOS RETORNOS' =================
+    function extractMacFromMessage(msg) {
+      if (!msg) return null;
+      if (msg.topic) {
+        const parts = msg.topic.split('/');
+        const last = parts[parts.length - 1].replace(/[^a-fA-F0-9]/g, '').toLowerCase();
+        if (last.length === 12 && last !== 'ffffffffffff' && last !== 'ff0000010000') return last;
+      }
+      if (msg.payload && typeof msg.payload === 'object' && msg.payload !== null) {
+        const m = msg.payload.mac_addr || msg.payload.mac || msg.payload.addr || msg.payload.self_mac || msg.payload.id;
+        if (typeof m === 'string') {
+          const clean = m.replace(/[^a-fA-F0-9]/g, '').toLowerCase();
+          if (clean.length === 12) return clean;
+        }
+      }
+      return null;
+    }
+
+    function getReturnBadgeInfo(msg) {
+      const raw = (msg.raw || '').toLowerCase();
+      const cat = (msg.category || '').toLowerCase();
+
+      if (raw.includes("i'm groot") || raw.includes("groot")) {
+        return { label: '👑 ROOT (GROOT)', color: 'bg-emerald-950/90 text-emerald-300 border-emerald-500/40' };
+      }
+      if (raw.includes("mwifi_restart")) {
+        return { label: '🔄 RESTART', color: 'bg-amber-950/90 text-amber-300 border-amber-500/40' };
+      }
+      if (cat === 'topologia' || raw.includes("topology") || (msg.payload && msg.payload.nodes)) {
+        return { label: '🌳 TOPOLOGIA', color: 'bg-purple-950/90 text-purple-300 border-purple-500/40' };
+      }
+      if (raw.includes("ping") || (msg.payload && (msg.payload.layer !== undefined || msg.payload.router_rssi !== undefined || msg.payload.parent_rssi !== undefined))) {
+        return { label: '📶 PING', color: 'bg-indigo-950/90 text-indigo-300 border-indigo-500/40' };
+      }
+      if (cat === 'telemetria' || raw.includes("telemetry") || raw.includes("totalizador")) {
+        return { label: '⚡ TELEMETRIA', color: 'bg-cyan-950/90 text-cyan-300 border-cyan-500/40' };
+      }
+      if (cat === 'erro' || raw.includes("error") || raw.includes("fail") || raw.includes("falha")) {
+        return { label: '❌ ERRO', color: 'bg-rose-950/90 text-rose-300 border-rose-500/40' };
+      }
+      if (cat === 'conexao' || raw.includes("connect") || raw.includes("boot") || raw.includes("lwt")) {
+        return { label: '🔌 CONEXÃO', color: 'bg-blue-950/90 text-blue-300 border-blue-500/40' };
+      }
+      if (cat === 'retorno') {
+        return { label: '✓ RESPOSTA', color: 'bg-emerald-950/90 text-emerald-300 border-emerald-500/40' };
+      }
+      return { label: (msg.category || 'MSG').toUpperCase(), color: 'bg-slate-800 text-slate-300 border-slate-700' };
+    }
+
+    function formatReturnSummary(msg) {
+      if (typeof msg.payload === 'object' && msg.payload !== null) {
+        if (msg.payload.response !== undefined) return String(msg.payload.response);
+        if (msg.payload.layer !== undefined) {
+          const rssi = msg.payload.router_rssi || msg.payload.parent_rssi;
+          return `Camada L${msg.payload.layer}${rssi !== undefined ? ` • RSSI: ${rssi} dBm` : ''}`;
+        }
+        if (msg.payload.free_heap !== undefined) {
+          return `Heap Livre: ${(msg.payload.free_heap / 1024).toFixed(1)} KB`;
+        }
+        if (msg.payload.meter_serial_number !== undefined) {
+          return `Serial: ${msg.payload.meter_serial_number}`;
+        }
+        if (msg.payload.method && msg.payload.function) {
+          return `${msg.payload.method} ➔ ${msg.payload.function}${msg.payload.value !== undefined ? ` (${JSON.stringify(msg.payload.value)})` : ''}`;
+        }
+        try {
+          const s = JSON.stringify(msg.payload);
+          return s.length > 60 ? s.slice(0, 58) + '...' : s;
+        } catch {}
+      }
+      const raw = String(msg.raw || '');
+      return raw.length > 60 ? raw.slice(0, 58) + '...' : raw;
+    }
+
     function updateSidebarMiniFeed(msg) {
+      recentReturns.unshift(msg);
+      if (recentReturns.length > 30) recentReturns.pop();
+
+      const countBadge = document.getElementById('sidebar-returns-count');
+      if (countBadge) countBadge.innerText = recentReturns.length;
+
+      renderSidebarReturns();
+    }
+
+    function clearSidebarReturns() {
+      recentReturns = [];
+      const countBadge = document.getElementById('sidebar-returns-count');
+      if (countBadge) countBadge.innerText = '0';
+      const container = document.getElementById('sidebar-mini-feed');
+      if (container) {
+        container.innerHTML = `
+          <div class="bg-slate-950/60 border border-slate-800/80 p-3 rounded-xl text-[10px] text-slate-500 italic text-center">
+            Histórico limpo. Aguardando respostas das controladoras...
+          </div>
+        `;
+      }
+    }
+
+    function renderSidebarReturns() {
       const container = document.getElementById('sidebar-mini-feed');
       if (!container) return;
 
-      if (container.querySelector('.italic')) {
-        container.innerHTML = '';
+      if (recentReturns.length === 0) {
+        container.innerHTML = `
+          <div class="bg-slate-950/60 border border-slate-800/80 p-3 rounded-xl text-[10px] text-slate-500 italic text-center">
+            Aguardando respostas e telemetria das controladoras...
+          </div>
+        `;
+        return;
       }
 
-      let badgeColor = 'text-slate-400 bg-slate-800';
-      if (msg.category === 'retorno') badgeColor = 'text-emerald-300 bg-emerald-950/80 border border-emerald-500/30';
-      else if (msg.category === 'telemetria') badgeColor = 'text-cyan-300 bg-cyan-950/80 border border-cyan-500/30';
-      else if (msg.category === 'topologia') badgeColor = 'text-purple-300 bg-purple-950/80 border border-purple-500/30';
-      else if (msg.category === 'erro') badgeColor = 'text-rose-300 bg-rose-950/80 border border-rose-500/30';
+      container.innerHTML = '';
 
-      let snippet = msg.raw;
-      if (typeof msg.payload === 'object') {
-        try { snippet = JSON.stringify(msg.payload); } catch {}
+      recentReturns.slice(0, 6).forEach((msg, idx) => {
+        const mac = extractMacFromMessage(msg);
+        const cleanMac = mac ? mac.toLowerCase().replace(/:/g, '') : null;
+        const dev = cleanMac ? devicesList.find(d => d.mac.toLowerCase() === cleanMac) : null;
+        const badge = getReturnBadgeInfo(msg);
+        const summary = formatReturnSummary(msg);
+        const timeStr = msg.timestamp.split(' ')[1] || msg.timestamp;
+
+        const isGroot = (msg.raw || '').toLowerCase().includes("groot");
+
+        const card = document.createElement('div');
+        card.className = 'group bg-slate-950/90 hover:bg-slate-850 border border-slate-800/90 hover:border-indigo-500/50 p-2.5 rounded-xl text-left cursor-pointer transition space-y-1.5 shadow-sm relative overflow-hidden';
+        
+        // Highlight lateral bar
+        const accentColor = badge.label.includes('GROOT') || badge.label.includes('RESPOSTA') ? 'bg-emerald-500' : (badge.label.includes('ERRO') ? 'bg-rose-500' : 'bg-indigo-500');
+
+        card.innerHTML = `
+          <div class="absolute left-0 top-0 bottom-0 w-1 ${accentColor}"></div>
+          
+          <div class="flex items-center justify-between text-[10px] pl-1.5">
+            <span class="font-mono text-slate-400 font-semibold">${timeStr}</span>
+            <span class="text-[9px] font-bold px-1.5 py-0.2 rounded border ${badge.color}">${badge.label}</span>
+          </div>
+
+          <div class="pl-1.5 flex items-center justify-between gap-1">
+            <div class="truncate">
+              ${dev ? `
+                <span class="font-bold text-xs text-slate-200 block truncate">${escapeHtml(dev.name)}</span>
+                <span class="font-mono text-[10px] text-indigo-400 block">${formatMac(dev.mac)}</span>
+              ` : (cleanMac ? `
+                <span class="font-mono text-xs font-bold text-indigo-300 block">${formatMac(cleanMac)}</span>
+                <span class="text-[9px] text-amber-400/80 block">⚠️ Placa não cadastrada</span>
+              ` : `
+                <span class="font-mono text-[11px] text-slate-400 block truncate">${escapeHtml(msg.topic)}</span>
+              `)}
+            </div>
+            ${dev && dev.role === 'ROOT' ? `<span class="text-[9px] bg-purple-950 text-purple-300 border border-purple-500/30 px-1 py-0.2 rounded font-mono font-bold shrink-0">ROOT</span>` : ''}
+          </div>
+
+          <div class="pl-1.5 text-[11px] font-mono ${isGroot ? 'text-emerald-400 font-bold bg-emerald-950/30 p-1.5 rounded border border-emerald-500/20' : 'text-slate-300'} line-clamp-2 leading-relaxed" title="${escapeHtml(msg.raw)}">
+            ${escapeHtml(summary)}
+          </div>
+
+          <div class="pl-1.5 pt-1 border-t border-slate-900/90 flex items-center justify-between text-[10px]">
+            <span class="text-indigo-400 group-hover:text-indigo-300 font-semibold flex items-center space-x-1">
+              <i data-lucide="maximize-2" class="w-3 h-3"></i>
+              <span>Ver Detalhes</span>
+            </span>
+            <div class="flex items-center space-x-1.5" onclick="event.stopPropagation()">
+              ${cleanMac ? `
+                <button onclick="setTarget('${cleanMac}')" title="Definir como Alvo" class="text-slate-400 hover:text-cyan-300 p-0.5 rounded hover:bg-slate-800 transition">
+                  <i data-lucide="target" class="w-3 h-3"></i>
+                </button>
+              ` : ''}
+              <button onclick="copyRawSnippet(${idx})" title="Copiar resposta" class="text-slate-400 hover:text-white p-0.5 rounded hover:bg-slate-800 transition">
+                <i data-lucide="copy" class="w-3 h-3"></i>
+              </button>
+            </div>
+          </div>
+        `;
+
+        card.onclick = () => openReturnInspectorModal(idx);
+        container.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    function copyRawSnippet(idx) {
+      const msg = recentReturns[idx];
+      if (!msg) return;
+      let text = msg.raw;
+      if (typeof msg.payload === 'object' && msg.payload !== null) {
+        try { text = JSON.stringify(msg.payload, null, 2); } catch {}
       }
-      if (snippet.length > 55) snippet = snippet.slice(0, 52) + '...';
+      navigator.clipboard.writeText(text);
+      alert('Resposta copiada para a área de transferência!');
+    }
 
-      const card = document.createElement('div');
-      card.className = 'bg-slate-950/90 hover:bg-slate-800/80 border border-slate-800/80 p-2 rounded-xl text-left cursor-pointer transition space-y-1';
-      card.onclick = () => switchTab('logs');
-      card.innerHTML = `
-        <div class="flex items-center justify-between text-[10px]">
-          <span class="font-mono text-slate-500">${msg.timestamp.split(' ')[1] || msg.timestamp}</span>
-          <span class="text-[9px] font-bold px-1.5 py-0.2 rounded ${badgeColor}">${msg.category.toUpperCase()}</span>
-        </div>
-        <div class="text-[11px] mono text-slate-300 truncate" title="${escapeHtml(snippet)}">${escapeHtml(snippet)}</div>
-      `;
+    // ================= MODAL INSPETOR DE RETORNO =================
+    function openReturnInspectorModal(index) {
+      const msg = recentReturns[index];
+      if (!msg) return;
+      currentInspectedReturn = msg;
 
-      container.insertBefore(card, container.firstChild);
-      while (container.children.length > 4) {
-        container.removeChild(container.lastChild);
+      const mac = extractMacFromMessage(msg);
+      const cleanMac = mac ? mac.toLowerCase().replace(/:/g, '') : null;
+      const dev = cleanMac ? devicesList.find(d => d.mac.toLowerCase() === cleanMac) : null;
+      const badge = getReturnBadgeInfo(msg);
+
+      const catBadge = document.getElementById('inspect-category-badge');
+      if (catBadge) {
+        catBadge.className = `text-[10px] px-2 py-0.5 rounded font-mono font-bold border ${badge.color}`;
+        catBadge.innerText = badge.label;
+      }
+
+      const timeEl = document.getElementById('inspect-timestamp');
+      if (timeEl) timeEl.innerText = `Recebido às ${msg.timestamp}`;
+
+      const topEl = document.getElementById('inspect-topic');
+      if (topEl) topEl.innerText = msg.topic;
+
+      const nameEl = document.getElementById('inspect-device-name');
+      const macEl = document.getElementById('inspect-device-mac');
+      const roleEl = document.getElementById('inspect-device-role');
+      const actEl = document.getElementById('inspect-device-actions');
+
+      if (dev) {
+        if (nameEl) nameEl.innerText = dev.name;
+        if (macEl) macEl.innerText = formatMac(dev.mac);
+        if (roleEl) {
+          roleEl.innerText = dev.role;
+          roleEl.className = dev.role === 'ROOT' ? 'text-[10px] px-2 py-0.5 rounded font-mono bg-purple-950 text-purple-300 border border-purple-500/40 font-bold' : 'text-[10px] px-2 py-0.5 rounded font-mono bg-blue-950 text-blue-300 border border-blue-500/40 font-bold';
+        }
+        if (actEl) actEl.innerHTML = `<span class="text-emerald-400 font-semibold text-[11px]">✓ Cadastrado</span>`;
+      } else if (cleanMac) {
+        if (nameEl) nameEl.innerText = 'Dispositivo Não Cadastrado';
+        if (macEl) macEl.innerText = formatMac(cleanMac);
+        if (roleEl) {
+          roleEl.innerText = 'DESCONHECIDO';
+          roleEl.className = 'text-[10px] px-2 py-0.5 rounded font-mono bg-slate-800 text-slate-400';
+        }
+        if (actEl) {
+          actEl.innerHTML = `
+            <button onclick="closeReturnInspectorModal(); openDeviceModal('${cleanMac}', 'Placa ${cleanMac.slice(-4).toUpperCase()}')" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-[11px] px-2.5 py-1 rounded-lg transition flex items-center space-x-1 shadow-sm">
+              <i data-lucide="plus" class="w-3 h-3"></i>
+              <span>Cadastrar Medidor</span>
+            </button>
+          `;
+        }
+      } else {
+        if (nameEl) nameEl.innerText = 'Mensagem de Tópico Global';
+        if (macEl) macEl.innerText = 'Broadcast / Sem MAC específico';
+        if (roleEl) {
+          roleEl.innerText = 'SISTEMA';
+          roleEl.className = 'text-[10px] px-2 py-0.5 rounded font-mono bg-slate-800 text-slate-400';
+        }
+        if (actEl) actEl.innerHTML = '';
+      }
+
+      let formatted = msg.raw;
+      if (typeof msg.payload === 'object' && msg.payload !== null) {
+        formatted = JSON.stringify(msg.payload, null, 2);
+      }
+      const payEl = document.getElementById('inspect-payload');
+      if (payEl) payEl.innerText = formatted;
+
+      const modal = document.getElementById('modal-return-inspector');
+      if (modal) modal.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeReturnInspectorModal() {
+      const modal = document.getElementById('modal-return-inspector');
+      if (modal) modal.classList.add('hidden');
+      currentInspectedReturn = null;
+    }
+
+    function copyInspectPayload() {
+      if (!currentInspectedReturn) return;
+      let text = currentInspectedReturn.raw;
+      if (typeof currentInspectedReturn.payload === 'object' && currentInspectedReturn.payload !== null) {
+        text = JSON.stringify(currentInspectedReturn.payload, null, 2);
+      }
+      navigator.clipboard.writeText(text);
+      alert('Payload formatado copiado com sucesso!');
+    }
+
+    function copyInspectTopic() {
+      if (!currentInspectedReturn) return;
+      navigator.clipboard.writeText(currentInspectedReturn.topic);
+      alert(`Tópico copiado: ${currentInspectedReturn.topic}`);
+    }
+
+    function useInspectDeviceInBuilder() {
+      if (!currentInspectedReturn) return;
+      const mac = extractMacFromMessage(currentInspectedReturn);
+      closeReturnInspectorModal();
+      if (mac) {
+        useDeviceInBuilder(mac);
+      } else {
+        switchTab('builder');
       }
     }
 
@@ -3199,6 +3552,21 @@
         if (!recPop.contains(e.target) && (!btnToggleRec || !btnToggleRec.contains(e.target))) {
           closeRecipientsDropdown();
         }
+      }
+
+      const returnModal = document.getElementById('modal-return-inspector');
+      if (returnModal && !returnModal.classList.contains('hidden') && e.target === returnModal) {
+        closeReturnInspectorModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeReturnInspectorModal();
+        closeDeviceModal();
+        closeOtaModal();
+        closeFunctionDropdown();
+        closeRecipientsDropdown();
       }
     });
   </script>
