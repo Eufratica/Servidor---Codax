@@ -1,0 +1,26 @@
+{
+  "4417934f49a4": {
+    "mac": "4417934f49a4",
+    "name": "ROOT Laboratório (Principal)",
+    "meter_serial": "MED-LAB-01",
+    "meter_type": "ABNT NBR 14522",
+    "role": "ROOT",
+    "notes": "Controladora principal conectada ao Wi-Fi"
+  },
+  "44179358768c": {
+    "mac": "44179358768c",
+    "name": "Medidor Bancada 01 (Nó L2)",
+    "meter_serial": "MED-01-BANCADA",
+    "meter_type": "Modbus RTU",
+    "role": "NODE",
+    "notes": "Medidor na bancada de testes 1"
+  },
+  "441793516dcc": {
+    "mac": "441793516dcc",
+    "name": "Medidor Bancada 02 (Nó L3)",
+    "meter_serial": "MED-02-BANCADA",
+    "meter_type": "Pulso",
+    "role": "NODE",
+    "notes": "Medidor secundário com sensor de pulsos"
+  }
+}

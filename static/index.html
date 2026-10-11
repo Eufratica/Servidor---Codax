@@ -1,0 +1,2568 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codax Mesh IoT & OTA Hub</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Barra de rolagem lateral (Scrollbar) visível, moderna e destacada */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #6366f1 #090d16;
+    }
+    ::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090d16;
+      border-left: 1px solid #1e293b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 6px;
+      border: 2px solid #090d16;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6366f1;
+    }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    
+    /* Conexões visuais da árvore */
+    .tree-connector-down {
+      width: 2px;
+      height: 28px;
+      background: #6366f1;
+      margin: 0 auto;
+    }
+    .tree-branch-container {
+      display: flex;
+      justify-content: center;
+      position: relative;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 h-screen flex flex-col antialiased overflow-hidden">
+
+  <!-- ================= BARRA HORIZONTAL SUPERIOR (TOPBAR COM NAVEGAÇÃO COMPLETA) ================= -->
+  <header class="bg-slate-900 border-b border-slate-800 h-16 flex items-center justify-between px-4 sm:px-6 shrink-0 z-40 select-none shadow-sm gap-2">
+    
+    <!-- Logo & Título -->
+    <div class="flex items-center space-x-3 shrink-0">
+      <div class="bg-indigo-600 p-2.5 rounded-xl text-white shadow-lg shadow-indigo-600/30 flex items-center justify-center">
+        <i data-lucide="radio" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <span class="font-extrabold text-base sm:text-lg tracking-wide text-white">CODAX HUB</span>
+          <span class="text-[10px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">2.5 PRO</span>
+        </div>
+        <p class="text-[11px] text-slate-400 hidden xl:block">Plataforma On-Premise ESP-MESH & Gestão de Firmware</p>
+      </div>
+    </div>
+
+    <!-- Barra de Navegação Horizontal das Abas -->
+    <nav class="hidden md:flex items-center space-x-1 bg-slate-950/70 p-1 rounded-xl border border-slate-800/90 overflow-x-auto shrink-0">
+      <button onclick="switchTab('quick')" id="top-nav-btn-quick" class="top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition bg-indigo-600 text-white flex items-center space-x-1.5 shadow-sm">
+        <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+        <span>Ações</span>
+      </button>
+      <button onclick="switchTab('builder')" id="top-nav-btn-builder" class="top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+        <i data-lucide="sliders" class="w-3.5 h-3.5 text-indigo-400"></i>
+        <span>Construtor</span>
+      </button>
+      <button onclick="switchTab('devices')" id="top-nav-btn-devices" class="top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+        <i data-lucide="gauge" class="w-3.5 h-3.5 text-cyan-400"></i>
+        <span>Medidores</span>
+      </button>
+      <button onclick="switchTab('tree')" id="top-nav-btn-tree" class="top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+        <i data-lucide="network" class="w-3.5 h-3.5 text-emerald-400"></i>
+        <span>Árvore Malha</span>
+      </button>
+      <button onclick="switchTab('dictionary')" id="top-nav-btn-dictionary" class="top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+        <i data-lucide="book-open" class="w-3.5 h-3.5 text-amber-400"></i>
+        <span>Dicionário</span>
+      </button>
+      <button onclick="switchTab('ota')" id="top-nav-btn-ota" class="top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+        <i data-lucide="upload-cloud" class="w-3.5 h-3.5 text-purple-400"></i>
+        <span>OTA</span>
+      </button>
+      <button onclick="switchTab('logs')" id="top-nav-btn-logs" class="top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+        <i data-lucide="terminal" class="w-3.5 h-3.5 text-rose-400"></i>
+        <span>Console</span>
+      </button>
+    </nav>
+
+    <!-- Controles da Direita & Indicadores Rápidos -->
+    <div class="flex items-center space-x-2.5 shrink-0">
+      
+      <!-- IP Host -->
+      <div class="hidden 2xl:flex items-center space-x-2 bg-slate-950/80 border border-slate-800 px-3 py-1.5 rounded-lg text-xs">
+        <i data-lucide="network" class="w-3.5 h-3.5 text-slate-400"></i>
+        <span class="text-slate-400">IP:</span>
+        <span id="top-ip" class="font-mono text-emerald-400 font-bold">127.0.0.1</span>
+        <button onclick="copyHostIP()" title="Copiar IP para menuconfig" class="text-slate-400 hover:text-white transition">
+          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <!-- Broker MQTT Status -->
+      <div class="hidden sm:flex items-center space-x-2 bg-slate-950/80 border border-slate-800 px-3 py-1.5 rounded-lg text-xs">
+        <span id="top-dot-broker" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span id="top-label-broker" class="font-semibold text-emerald-400">1883 Ativo</span>
+      </div>
+
+      <!-- Alternador DEV / PROD -->
+      <button onclick="toggleEnv()" id="top-btn-env" class="flex items-center space-x-1.5 bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/60 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition">
+        <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+        <span id="top-label-env">PROD</span>
+      </button>
+
+      <!-- Botão Solicitar Topologia -->
+      <button onclick="sendQuickCommand('query', 'topology')" class="hidden sm:flex items-center space-x-1.5 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm">
+        <i data-lucide="git-merge" class="w-3.5 h-3.5"></i>
+        <span>Ler Malha</span>
+      </button>
+
+    </div>
+
+  </header>
+
+  <!-- ================= CONTAINER PRINCIPAL (SIDEBAR + CONTEÚDO) ================= -->
+  <div class="flex-1 flex overflow-hidden min-h-0">
+    
+    <!-- ================= BARRA LATERAL (SIDEBAR) ================= -->
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 select-none z-30 overflow-y-auto min-h-0">
+      
+      <!-- Menu de Navegação -->
+      <div class="p-4 flex flex-col space-y-4 overflow-y-auto">
+        
+        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500 px-2">Menu Principal</div>
+
+        <nav class="space-y-1">
+          
+          <button onclick="switchTab('quick')" id="nav-btn-quick" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition bg-indigo-600 text-white shadow-sm shadow-indigo-600/30">
+            <i data-lucide="zap" class="w-4 h-4"></i>
+            <span>Ações Rápidas</span>
+          </button>
+
+          <button onclick="switchTab('builder')" id="nav-btn-builder" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
+            <i data-lucide="sliders" class="w-4 h-4 text-indigo-400"></i>
+            <span class="text-indigo-300 font-semibold">Construtor Codax</span>
+          </button>
+
+          <button onclick="switchTab('devices')" id="nav-btn-devices" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
+            <div class="flex items-center space-x-3">
+              <i data-lucide="gauge" class="w-4 h-4 text-cyan-400"></i>
+              <span class="text-cyan-300 font-semibold">Medidores & Placas</span>
+            </div>
+            <span id="badge-devices-count" class="bg-slate-800 text-cyan-300 text-[10px] px-2 py-0.5 rounded-full font-mono">0</span>
+          </button>
+
+          <button onclick="switchTab('tree')" id="nav-btn-tree" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
+            <i data-lucide="network" class="w-4 h-4 text-emerald-400"></i>
+            <span class="text-emerald-300 font-semibold">Árvore da Malha</span>
+          </button>
+
+          <button onclick="switchTab('dictionary')" id="nav-btn-dictionary" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
+            <i data-lucide="book-open" class="w-4 h-4 text-amber-400"></i>
+            <span class="text-amber-300 font-semibold">Dicionário de Comandos</span>
+          </button>
+
+          <button onclick="switchTab('ota')" id="nav-btn-ota" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
+            <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+            <span>Central de OTA</span>
+          </button>
+
+          <button onclick="switchTab('logs')" id="nav-btn-logs" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
+            <div class="flex items-center space-x-3">
+              <i data-lucide="terminal" class="w-4 h-4"></i>
+              <span>Console ao Vivo</span>
+            </div>
+            <span id="badge-logs-count" class="bg-slate-800 text-slate-300 text-[10px] px-2 py-0.5 rounded-full font-mono">0</span>
+          </button>
+
+        </nav>
+
+        <!-- Seletor Rápido de Alvo na Barra Lateral -->
+        <div class="bg-slate-950/70 border border-slate-800/80 rounded-xl p-3.5 space-y-2.5 mt-2">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
+            <i data-lucide="target" class="w-3.5 h-3.5 text-indigo-400"></i>
+            <span>Alvo Padrão</span>
+          </div>
+          <input type="text" id="global-target" list="target-suggestions" value="root" placeholder="MAC ou alias..." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 mono focus:outline-none focus:border-indigo-500">
+          <datalist id="target-suggestions">
+            <option value="root">ROOT (ff:00:00:01:00:00)</option>
+            <option value="any">ANY (ff:ff:ff:ff:ff:ff)</option>
+            <option value="broadcast">BROADCAST (ff:ff:ff:ff:ff:fe)</option>
+          </datalist>
+          <div class="grid grid-cols-3 gap-1 pt-0.5">
+            <button onclick="setTarget('root')" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-bold py-1 rounded text-slate-300 transition text-center">ROOT</button>
+            <button onclick="setTarget('any')" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-bold py-1 rounded text-slate-300 transition text-center">ANY</button>
+            <button onclick="setTarget('broadcast')" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-bold py-1 rounded text-slate-300 transition text-center">B-CAST</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Rodapé da Sidebar -->
+      <div class="p-3.5 border-t border-slate-800 text-[11px] text-slate-500 flex items-center justify-between">
+        <span>Codax Hub v2.5</span>
+        <span class="mono text-emerald-400">Pronto</span>
+      </div>
+
+    </aside>
+
+    <!-- ================= CONTEÚDO PRINCIPAL (COM SCROLLBAR NA LATERAL DIREITA) ================= -->
+    <main id="main-scroll-view" class="flex-1 flex flex-col h-full overflow-y-auto min-h-0 bg-slate-950 relative">
+
+      <!-- Subheader da Página Atual (Fixado no topo durante a rolagem) -->
+      <div class="h-12 border-b border-slate-800/80 bg-slate-900/90 backdrop-blur px-6 flex items-center justify-between shrink-0 sticky top-0 z-20 shadow-sm">
+        <h1 id="page-title" class="font-bold text-sm text-slate-100 flex items-center space-x-2">
+          <i data-lucide="zap" class="w-4 h-4 text-indigo-400"></i>
+          <span>Ações Rápidas de Bancada</span>
+        </h1>
+        <div id="page-context-pill" class="text-xs text-slate-400">
+          Envio direto para as controladoras conectadas
+        </div>
+      </div>
+
+      <!-- Conteúdo da Página -->
+      <div class="p-6 max-w-7xl w-full mx-auto space-y-6">
+
+        <!-- ================= ABA 1: AÇÕES RÁPIDAS ================= -->
+        <section id="view-quick" class="tab-content space-y-6">
+          
+          <div>
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center space-x-2">
+              <i data-lucide="activity" class="w-3.5 h-3.5 text-indigo-400"></i>
+              <span>Diagnóstico & Reconhecimento</span>
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              
+              <button onclick="sendQuickCommand('query', 'ping')" class="btn-card bg-slate-900 border border-slate-800 hover:border-indigo-500/60 hover:bg-slate-800/80 p-4 rounded-xl text-left transition group shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-indigo-400 mono">QUERY</span>
+                  <i data-lucide="signal" class="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition"></i>
+                </div>
+                <div class="font-bold text-slate-200 text-sm">Ping Malha</div>
+                <p class="text-xs text-slate-400 mt-1">Retorna MAC, layer, parent RSSI e dados de link</p>
+              </button>
+
+              <button onclick="sendQuickCommand('query', 'info')" class="btn-card bg-slate-900 border border-slate-800 hover:border-indigo-500/60 hover:bg-slate-800/80 p-4 rounded-xl text-left transition group shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-indigo-400 mono">QUERY</span>
+                  <i data-lucide="info" class="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition"></i>
+                </div>
+                <div class="font-bold text-slate-200 text-sm">Info Completa</div>
+                <p class="text-xs text-slate-400 mt-1">IP, GW, Heap, canal, mesh id, SSID e parent MAC</p>
+              </button>
+
+              <button onclick="sendQuickCommand('query', 'root')" class="btn-card bg-slate-900 border border-slate-800 hover:border-indigo-500/60 hover:bg-slate-800/80 p-4 rounded-xl text-left transition group shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-indigo-400 mono">QUERY</span>
+                  <i data-lucide="crown" class="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition"></i>
+                </div>
+                <div class="font-bold text-slate-200 text-sm">Quem é ROOT?</div>
+                <p class="text-xs text-slate-400 mt-1">Apenas as ROOTs respondem com "I'm GROOT"</p>
+              </button>
+
+              <button onclick="sendQuickCommand('query', 'topology')" class="btn-card bg-slate-900 border border-slate-800 hover:border-indigo-500/60 hover:bg-slate-800/80 p-4 rounded-xl text-left transition group shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-indigo-400 mono">QUERY</span>
+                  <i data-lucide="git-merge" class="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition"></i>
+                </div>
+                <div class="font-bold text-slate-200 text-sm">Consultar Topologia</div>
+                <p class="text-xs text-slate-400 mt-1">Gera a árvore completa de nós e camadas</p>
+              </button>
+
+              <button onclick="sendQuickCommand('query', 'memory')" class="btn-card bg-slate-900 border border-slate-800 hover:border-indigo-500/60 hover:bg-slate-800/80 p-4 rounded-xl text-left transition group shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-indigo-400 mono">QUERY</span>
+                  <i data-lucide="cpu" class="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition"></i>
+                </div>
+                <div class="font-bold text-slate-200 text-sm">Memória / Heap</div>
+                <p class="text-xs text-slate-400 mt-1">Heap livre atual e menor heap registrado</p>
+              </button>
+
+              <button onclick="sendQuickCommand('query', 'partition')" class="btn-card bg-slate-900 border border-slate-800 hover:border-indigo-500/60 hover:bg-slate-800/80 p-4 rounded-xl text-left transition group shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-indigo-400 mono">QUERY</span>
+                  <i data-lucide="hard-drive" class="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition"></i>
+                </div>
+                <div class="font-bold text-slate-200 text-sm">Partição / Versão</div>
+                <p class="text-xs text-slate-400 mt-1">Versão ativa, partição secundária e IDF</p>
+              </button>
+
+              <button onclick="sendQuickCommand('query', 'telemetry')" class="btn-card bg-slate-900 border border-slate-800 hover:border-indigo-500/60 hover:bg-slate-800/80 p-4 rounded-xl text-left transition group shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-indigo-400 mono">QUERY</span>
+                  <i data-lucide="gauge" class="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition"></i>
+                </div>
+                <div class="font-bold text-slate-200 text-sm">Telemetria Atual</div>
+                <p class="text-xs text-slate-400 mt-1">Lê valores instantâneos dos totalizadores</p>
+              </button>
+
+              <button onclick="sendQuickCommand('query', 'eth_status')" class="btn-card bg-slate-900 border border-slate-800 hover:border-indigo-500/60 hover:bg-slate-800/80 p-4 rounded-xl text-left transition group shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-indigo-400 mono">QUERY</span>
+                  <i data-lucide="cable" class="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition"></i>
+                </div>
+                <div class="font-bold text-slate-200 text-sm">Status Ethernet</div>
+                <p class="text-xs text-slate-400 mt-1">DHCP habilitado ou IP Estático/GW/Mask</p>
+              </button>
+
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center space-x-2">
+              <i data-lucide="settings-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+              <span>Operações de Controle & Configuração</span>
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+
+              <button onclick="sendQuickCommand('setting', 'active_telemetry', 'start')" class="btn-card bg-slate-900 border border-slate-800 hover:border-emerald-500/60 hover:bg-slate-800/80 p-4 rounded-xl text-left transition group shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-emerald-400 mono">SETTING</span>
+                  <i data-lucide="play" class="w-4 h-4 text-emerald-400 transition"></i>
+                </div>
+                <div class="font-bold text-slate-200 text-sm">Iniciar Telemetria</div>
+                <p class="text-xs text-slate-400 mt-1">Ativa envio contínuo para o broker</p>
+              </button>
+
+              <button onclick="sendQuickCommand('setting', 'active_telemetry', 'stop')" class="btn-card bg-slate-900 border border-slate-800 hover:border-amber-500/60 hover:bg-slate-800/80 p-4 rounded-xl text-left transition group shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-amber-400 mono">SETTING</span>
+                  <i data-lucide="pause" class="w-4 h-4 text-amber-400 transition"></i>
+                </div>
+                <div class="font-bold text-slate-200 text-sm">Pausar Telemetria</div>
+                <p class="text-xs text-slate-400 mt-1">Interrompe a publicação periódica</p>
+              </button>
+
+              <button onclick="sendQuickCommand('query', 'restart')" class="btn-card bg-slate-900 border border-slate-800 hover:border-rose-500/60 hover:bg-slate-800/80 p-4 rounded-xl text-left transition group shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-rose-400 mono">QUERY</span>
+                  <i data-lucide="rotate-ccw" class="w-4 h-4 text-rose-400 transition"></i>
+                </div>
+                <div class="font-bold text-slate-200 text-sm">Soft Reset (10s)</div>
+                <p class="text-xs text-slate-400 mt-1">Avisa e reinicia a controladora em 10s</p>
+              </button>
+
+              <button onclick="sendQuickCommand('query', 'mwifi_restart')" class="btn-card bg-slate-900 border border-slate-800 hover:border-amber-500/60 hover:bg-slate-800/80 p-4 rounded-xl text-left transition group shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-amber-400 mono">QUERY</span>
+                  <i data-lucide="refresh-cw" class="w-4 h-4 text-amber-400 transition"></i>
+                </div>
+                <div class="font-bold text-slate-200 text-sm">mwifi_restart</div>
+                <p class="text-xs text-slate-400 mt-1">Reinicia a pilha mesh para desatar deadlocks</p>
+              </button>
+
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ================= ABA 2: CONSTRUTOR CODAX (COM SUB-ABAS) ================= -->
+        <section id="view-builder" class="tab-content hidden space-y-6">
+          
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+            
+            <!-- Barra de Sub-Abas do Construtor -->
+            <div class="bg-slate-950/60 border-b border-slate-800 px-6 py-2.5 flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <button onclick="switchBuilderSubTab('official')" id="btn-subtab-official" class="builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1.5">
+                  <i data-lucide="file-code" class="w-3.5 h-3.5"></i>
+                  <span>1. Template Oficial Codax</span>
+                </button>
+                <button onclick="switchBuilderSubTab('raw-pub')" id="btn-subtab-raw-pub" class="builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+                  <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                  <span>2. Publicador MQTT Livre</span>
+                </button>
+                <button onclick="switchBuilderSubTab('sub-feed')" id="btn-subtab-sub-feed" class="builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+                  <i data-lucide="radio" class="w-3.5 h-3.5"></i>
+                  <span>3. Assinante & Feed de Retornos</span>
+                </button>
+              </div>
+              <div class="text-[11px] text-slate-400 hidden sm:block">
+                Validação automática e proteção contra crash de MAC duplicado
+              </div>
+            </div>
+
+            <!-- SUB-ABA 1: TEMPLATE OFICIAL COM AUTOCOMPLETE & LIVE PREVIEW -->
+            <div id="builder-subview-official" class="p-6">
+              
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Formulário do Construtor (Esquerda, 7 cols) -->
+                <div class="lg:col-span-7 space-y-4">
+                  
+                  <!-- Method Selector -->
+                  <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">1. Selecione o Method</label>
+                    <div class="grid grid-cols-3 gap-2">
+                      <button type="button" onclick="selectMethod('query')" id="btn-method-query" class="method-btn py-2.5 rounded-xl border border-indigo-500 bg-indigo-600/20 text-indigo-300 text-xs font-bold transition text-center shadow-sm">
+                        QUERY (Consulta)
+                      </button>
+                      <button type="button" onclick="selectMethod('change')" id="btn-method-change" class="method-btn py-2.5 rounded-xl border border-slate-700 bg-slate-950 text-slate-400 text-xs font-bold transition text-center">
+                        CHANGE (Alteração)
+                      </button>
+                      <button type="button" onclick="selectMethod('setting')" id="btn-method-setting" class="method-btn py-2.5 rounded-xl border border-slate-700 bg-slate-950 text-slate-400 text-xs font-bold transition text-center">
+                        SETTING (Configuração)
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Function Autocomplete -->
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">2. Function (com Busca Instantânea)</label>
+                      <span id="function-count-badge" class="text-[11px] text-indigo-400 font-semibold">32 funções disponíveis</span>
+                    </div>
+                    <div class="relative">
+                      <input type="text" id="builder-function-input" oninput="onFunctionInputFilter()" placeholder="Digite para buscar function (ex: back_trace, ping, meter...)" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-3 pl-10 text-sm text-slate-100 mono focus:outline-none focus:border-indigo-500">
+                      <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5"></i>
+                      
+                      <!-- Dropdown de autocomplete -->
+                      <div id="function-autocomplete-dropdown" class="absolute z-20 left-0 right-0 mt-1 max-h-56 overflow-y-auto bg-slate-900 border border-slate-700 rounded-xl shadow-2xl hidden space-y-1 p-1">
+                      </div>
+                    </div>
+                    <p id="builder-doc" class="text-xs text-slate-400 mt-1.5 italic min-h-[1.25rem]"></p>
+                  </div>
+
+                  <!-- Seleção Inteligente de Medidores & MACs -->
+                  <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                      <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-1.5">
+                        <i data-lucide="target" class="w-3.5 h-3.5 text-indigo-400"></i>
+                        <span>3. Destinatários (Clique nos Medidores para Selecionar)</span>
+                      </label>
+                      <div class="flex items-center space-x-1">
+                        <button type="button" onclick="clearBuilderAddrs()" class="text-[10px] bg-slate-800 hover:bg-rose-950/60 hover:text-rose-300 text-slate-400 px-2 py-0.5 rounded transition">Limpar</button>
+                        <button type="button" onclick="selectAllRegisteredDevices()" class="text-[10px] bg-indigo-950 hover:bg-indigo-900 text-indigo-300 border border-indigo-700/50 px-2 py-0.5 rounded transition">Todos Cadastrados</button>
+                      </div>
+                    </div>
+
+                    <!-- Chips de Seleção Rápida de Medidores -->
+                    <div id="builder-device-chips" class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1.5 bg-slate-950/80 rounded-xl border border-slate-800/80">
+                      <!-- Preenchido dinamicamente por renderBuilderChips() -->
+                    </div>
+
+                    <div class="flex items-center space-x-2 pt-1">
+                      <!-- Dropdown rápido para adicionar medidor cadastrado ou descoberto -->
+                      <select id="builder-add-device-select" onchange="onSelectDeviceDropdown(this)" class="bg-slate-950 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 max-w-xs shrink-0">
+                        <option value="">+ Selecionar Medidor...</option>
+                      </select>
+
+                      <!-- Campo de texto (para visualização dos MACs selecionados ou customizados) -->
+                      <input type="text" id="builder-addrs" oninput="updateLivePreview()" list="target-suggestions" value="root" placeholder="MACs selecionados..." class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100 mono focus:outline-none focus:border-indigo-500">
+                    </div>
+                  </div>
+
+                  <!-- Value Editor -->
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">4. Parâmetro "value" (Opcional)</label>
+                      <div class="space-x-2">
+                        <button type="button" onclick="formatBuilderJSON()" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold">Formatar JSON</button>
+                        <button type="button" onclick="clearBuilderValue()" class="text-xs text-slate-500 hover:text-slate-300">Limpar</button>
+                      </div>
+                    </div>
+                    <textarea id="builder-value" oninput="updateLivePreview()" rows="4" placeholder="Deixe vazio se a função não requerer value..." class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-3 text-sm text-slate-200 mono focus:outline-none focus:border-indigo-500"></textarea>
+                  </div>
+
+                  <!-- Opção for_mesh -->
+                  <div class="flex items-center justify-between pt-1">
+                    <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                      <input type="checkbox" id="builder-formesh" onchange="updateLivePreview()" class="rounded bg-slate-950 border-slate-700 text-indigo-600 focus:ring-0">
+                      <span>Expor <code class="mono text-indigo-400">for_mesh: true</code> (Propagar para a malha inteira)</span>
+                    </label>
+                  </div>
+
+                </div>
+
+                <!-- Live JSON Preview (Direita, 5 cols) -->
+                <div class="lg:col-span-5 flex flex-col justify-between bg-slate-950 border border-slate-800 rounded-2xl p-5">
+                  <div>
+                    <div class="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
+                      <span class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
+                        <i data-lucide="code" class="w-3.5 h-3.5 text-indigo-400"></i>
+                        <span>JSON Preview em Tempo Real</span>
+                      </span>
+                      <button onclick="copyPayloadPreview()" class="text-[11px] text-slate-400 hover:text-white flex items-center space-x-1">
+                        <i data-lucide="copy" class="w-3 h-3"></i>
+                        <span>Copiar</span>
+                      </button>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mb-2">Este é o payload exato que será serializado e publicado:</p>
+                    <pre id="live-json-preview" class="text-xs text-emerald-400 bg-slate-900/90 border border-slate-800/80 p-3.5 rounded-xl mono overflow-x-auto whitespace-pre-wrap max-h-72"></pre>
+                  </div>
+
+                  <div class="pt-4 border-t border-slate-800 mt-4 space-y-2">
+                    <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+                      <span>Tópico de Disparo:</span>
+                      <code id="builder-target-topic" class="mono text-indigo-400 font-bold">config/shopba/mesh</code>
+                    </div>
+                    <button onclick="handleSendOfficialCommand()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm py-3 rounded-xl flex items-center justify-center space-x-2 transition shadow-lg shadow-indigo-600/25">
+                      <i data-lucide="send" class="w-4 h-4"></i>
+                      <span>Disparar Comando no Broker</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- SUB-ABA 2: PUBLICADOR MQTT LIVRE -->
+            <div id="builder-subview-raw-pub" class="p-6 hidden">
+              <form onsubmit="handleCustomPublish(event)" class="space-y-4 max-w-3xl">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div class="md:col-span-3">
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Tópico MQTT</label>
+                    <input type="text" id="pub-topic" value="config/shopba/mesh" placeholder="Ex: config/shopba/mesh" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-3 text-sm text-slate-100 mono focus:outline-none focus:border-indigo-500">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">QoS</label>
+                    <select id="pub-qos" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-3 text-sm text-slate-200">
+                      <option value="0">0 - At most once</option>
+                      <option value="1" selected>1 - At least once</option>
+                      <option value="2">2 - Exactly once</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">Payload</label>
+                    <button type="button" onclick="formatPubJSON()" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold">Formatar JSON</button>
+                  </div>
+                  <textarea id="pub-payload" rows="6" placeholder='{"addr":["4417934f49a4"], "data":{"method":"query", "function":"ping"}}' class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-3 text-sm text-slate-200 mono focus:outline-none focus:border-indigo-500"></textarea>
+                </div>
+                <div class="flex items-center justify-between pt-2">
+                  <label class="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                    <input type="checkbox" id="pub-retain" class="rounded bg-slate-950 border-slate-700 text-indigo-600">
+                    <span>Mensagem Retida (Retain)</span>
+                  </label>
+                  <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm px-6 py-2.5 rounded-xl flex items-center space-x-2 transition shadow-lg shadow-indigo-600/25">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                    <span>Publicar no Broker</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- SUB-ABA 3: ASSINANTE & FEED DE RETORNOS -->
+            <div id="builder-subview-sub-feed" class="p-6 hidden">
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-slate-950 border border-slate-800 rounded-xl p-5 space-y-4">
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Inscrições MQTT Ativas</h4>
+                  <form onsubmit="handleSubscribe(event)" class="space-y-2">
+                    <input type="text" id="sub-topic-input" placeholder="Ex: retorno/shopba/mesh/#" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-slate-200 mono">
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-2 rounded-lg transition">Adicionar Inscrição</button>
+                  </form>
+                  <div id="sub-list" class="space-y-1.5 pt-2 border-t border-slate-800"></div>
+                </div>
+
+                <div class="lg:col-span-2 bg-slate-950 border border-slate-800 rounded-xl p-5 flex flex-col h-[480px]">
+                  <div class="flex items-center justify-between mb-3 shrink-0">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Feed ao Vivo de Respostas</span>
+                    <button onclick="clearSubMessages()" class="text-xs text-slate-500 hover:text-white">Limpar</button>
+                  </div>
+                  <div id="sub-messages-feed" class="flex-1 overflow-y-auto space-y-2 mono text-xs">
+                    <p class="text-slate-500 italic">Aguardando retornos da malha...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ================= ABA: CADASTRO DE MEDIDORES & DISPOSITIVOS ================= -->
+        <section id="view-devices" class="tab-content hidden space-y-6">
+          
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-6">
+            
+            <!-- Cabeçalho do Cadastro -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+              <div>
+                <h3 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+                  <i data-lucide="gauge" class="w-5 h-5 text-cyan-400"></i>
+                  <span>Cadastro de Medidores & Placas Codax</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">
+                  Atribua apelidos, números de série e protocolos aos MACs da sua bancada. Elimine a necessidade de copiar e colar endereços.
+                </p>
+              </div>
+
+              <div class="flex items-center space-x-2.5 flex-wrap">
+                <button onclick="openDeviceModal()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl flex items-center space-x-2 transition shadow-lg shadow-cyan-600/25">
+                  <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                  <span>+ Cadastrar Medidor</span>
+                </button>
+                <button onclick="loadDevices(); loadDiscovered();" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold px-3 py-2.5 rounded-xl flex items-center space-x-1.5 transition border border-slate-700">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                  <span>Atualizar</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Resumo e Métricas dos Medidores -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="bg-slate-950/80 border border-slate-800/80 p-3.5 rounded-xl flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <div class="p-2 rounded-lg bg-cyan-950/60 text-cyan-400 border border-cyan-500/30">
+                    <i data-lucide="cpu" class="w-4 h-4"></i>
+                  </div>
+                  <div>
+                    <span class="text-[11px] text-slate-400 font-medium">Medidores Cadastrados</span>
+                    <div id="metric-registered-count" class="text-lg font-extrabold text-white">0</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950/80 border border-slate-800/80 p-3.5 rounded-xl flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <div class="p-2 rounded-lg bg-emerald-950/60 text-emerald-400 border border-emerald-500/30">
+                    <i data-lucide="activity" class="w-4 h-4"></i>
+                  </div>
+                  <div>
+                    <span class="text-[11px] text-slate-400 font-medium">Placas Online</span>
+                    <div id="metric-online-count" class="text-lg font-extrabold text-emerald-400">0</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950/80 border border-slate-800/80 p-3.5 rounded-xl flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <div class="p-2 rounded-lg bg-indigo-950/60 text-indigo-400 border border-indigo-500/30">
+                    <i data-lucide="radio" class="w-4 h-4"></i>
+                  </div>
+                  <div>
+                    <span class="text-[11px] text-slate-400 font-medium">Auto-Descobertos (MQTT)</span>
+                    <div id="metric-discovered-count" class="text-lg font-extrabold text-indigo-400">0</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Grade de Medidores Cadastrados -->
+            <div>
+              <div class="flex items-center justify-between mb-3">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-1.5">
+                  <i data-lucide="bookmark" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>Medidores Salvos na Plataforma</span>
+                </h4>
+                <span class="text-[11px] text-slate-500">Clique em qualquer medidor para enviá-lo ao Construtor</span>
+              </div>
+              <div id="devices-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <p class="text-xs text-slate-500 italic col-span-full">Carregando medidores cadastrados...</p>
+              </div>
+            </div>
+
+            <!-- Seção de Placas Descobertas Automaticamente na Rede -->
+            <div class="pt-4 border-t border-slate-800">
+              <div class="flex items-center justify-between mb-3">
+                <div>
+                  <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-1.5">
+                    <i data-lucide="radar" class="w-3.5 h-3.5 text-amber-400"></i>
+                    <span>Placas Detectadas na Malha MQTT (Auto-Discovery)</span>
+                  </h4>
+                  <p class="text-[11px] text-slate-500 mt-0.5">Dispositivos que emitiram mensagens na rede recentemente. Cadastre com 1 clique.</p>
+                </div>
+              </div>
+              <div id="discovered-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <p class="text-xs text-slate-500 italic col-span-full">Nenhuma nova placa detectada ainda. Aguardando tráfego MQTT...</p>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ================= ABA 3: ÁRVORE DA MALHA (TOPOLOGIA VISUAL) ================= -->
+        <section id="view-tree" class="tab-content hidden space-y-6">
+          
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
+            
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
+              <div>
+                <h3 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+                  <i data-lucide="network" class="w-5 h-5 text-emerald-400"></i>
+                  <span>Hierarquia Visual da Malha Mesh (Camadas 1, 2 e 3)</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">Acompanhe a árvore de conexões em tempo real: Root, nós filhos e intensidade de sinal RSSI.</p>
+              </div>
+
+              <div class="flex items-center space-x-2">
+                <button onclick="generateMockTree()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl flex items-center space-x-1.5 transition border border-slate-700">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+                  <span>Simular Malha Exemplo</span>
+                </button>
+                <button onclick="sendQuickCommand('query', 'topology')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition shadow-sm">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                  <span>Solicitar via MQTT</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Contêiner do Diagrama em Árvore -->
+            <div id="visual-tree-container" class="min-h-[440px] p-6 bg-slate-950/70 border border-slate-800/80 rounded-2xl flex flex-col items-center justify-center overflow-x-auto">
+              <div class="text-center space-y-3">
+                <i data-lucide="git-branch" class="w-12 h-12 text-slate-600 mx-auto"></i>
+                <p class="text-sm font-semibold text-slate-300">Nenhum mapa de topologia ativo no momento</p>
+                <p class="text-xs text-slate-500 max-w-md">Envie uma query de topologia para a malha ou clique em "Simular Malha Exemplo" para visualizar a árvore interativa agora mesmo.</p>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ================= ABA 4: DICIONÁRIO DE COMANDOS (EXAUSTIVO) ================= -->
+        <section id="view-dictionary" class="tab-content hidden space-y-6">
+          
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-6">
+            
+            <!-- Cabeçalho & Barra de Pesquisa do Dicionário -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+              <div>
+                <h3 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+                  <i data-lucide="book-open" class="w-5 h-5 text-amber-400"></i>
+                  <span>Dicionário Oficial de Comandos & Tópicos Codax</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">Documentação completa de cada comando (query, change, setting) e tópicos MQTT.</p>
+              </div>
+
+              <!-- Filtros do Dicionário -->
+              <div class="flex items-center space-x-2 flex-wrap gap-y-2">
+                <button onclick="setDictFilter('all')" id="dict-filter-all" class="dict-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white">Todos (68)</button>
+                <button onclick="setDictFilter('rules')" id="dict-filter-rules" class="dict-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-amber-300 hover:text-white flex items-center space-x-1">
+                  <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
+                  <span>Regras & Arquitetura</span>
+                </button>
+                <button onclick="setDictFilter('query')" id="dict-filter-query" class="dict-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:text-white">Query (32)</button>
+                <button onclick="setDictFilter('change')" id="dict-filter-change" class="dict-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:text-white">Change (14)</button>
+                <button onclick="setDictFilter('setting')" id="dict-filter-setting" class="dict-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:text-white">Setting (16)</button>
+                <button onclick="setDictFilter('topics')" id="dict-filter-topics" class="dict-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:text-white">Tópicos MQTT (6)</button>
+              </div>
+            </div>
+
+            <!-- Campo de Busca em Tempo Real -->
+            <div class="relative">
+              <input type="text" id="dict-search-input" oninput="renderDictionary()" placeholder="Pesquisar por nome de comando, tópico ou descrição (ex: back_trace, telemetria, partition, restart)..." class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-3 pl-10 text-xs text-slate-100 mono focus:outline-none focus:border-indigo-500">
+              <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3.5 top-3"></i>
+            </div>
+
+            <!-- Contêiner dos Cards de Documentação -->
+            <div id="dict-cards-container" class="space-y-4">
+              <p class="text-xs text-slate-500 italic">Carregando catálogo de comandos...</p>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ================= ABA 5: CENTRAL DE OTA ================= -->
+        <section id="view-ota" class="tab-content hidden space-y-6">
+          
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
+            <h3 class="text-base font-bold text-slate-100 mb-1 flex items-center space-x-2">
+              <i data-lucide="upload-cloud" class="w-5 h-5 text-indigo-400"></i>
+              <span>Upload de Novo Firmware (.bin)</span>
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">Envie o arquivo binário compilado pelo ESP-IDF para servi-lo via HTTP local.</p>
+
+            <div class="border-2 border-dashed border-slate-700/80 hover:border-indigo-500 rounded-2xl p-6 text-center transition cursor-pointer bg-slate-950/40" onclick="document.getElementById('ota-file-input').click()">
+              <input type="file" id="ota-file-input" accept=".bin" class="hidden" onchange="handleFileUpload(event)">
+              <i data-lucide="file-up" class="w-10 h-10 text-indigo-400 mx-auto mb-2"></i>
+              <p class="text-sm font-semibold text-slate-200">Clique para selecionar o arquivo .bin</p>
+              <p class="text-xs text-slate-500 mt-1">Ou arraste e solte o binário aqui</p>
+            </div>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-sm font-bold text-slate-100 flex items-center space-x-2">
+                <i data-lucide="folder" class="w-4 h-4 text-amber-400"></i>
+                <span>Firmwares Prontos no Servidor Local</span>
+              </h3>
+              <button onclick="loadFirmwares()" class="text-xs text-slate-400 hover:text-white flex items-center space-x-1">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                <span>Atualizar</span>
+              </button>
+            </div>
+
+            <div id="firmware-list" class="space-y-3">
+              <p class="text-xs text-slate-500 italic">Carregando lista de arquivos...</p>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ================= ABA 6: CONSOLE DE MENSAGENS AO VIVO ================= -->
+        <section id="view-logs" class="tab-content hidden space-y-4">
+          
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+            
+            <div class="flex items-center space-x-1.5 flex-wrap">
+              <button onclick="setLogCategory('all')" id="btn-cat-all" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-medium">Todos</button>
+              <button onclick="setLogCategory('retorno')" id="btn-cat-retorno" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">✅ Retorno</button>
+              <button onclick="setLogCategory('telemetria')" id="btn-cat-telemetria" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">📊 Telemetria</button>
+              <button onclick="setLogCategory('topologia')" id="btn-cat-topologia" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">🌳 Topologia</button>
+              <button onclick="setLogCategory('conexao')" id="btn-cat-conexao" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">📡 Conexão</button>
+              <button onclick="setLogCategory('erro')" id="btn-cat-erro" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">❌ Erros</button>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <input type="text" id="log-search" oninput="renderLogs()" placeholder="Filtrar por MAC ou texto..." class="bg-slate-950 border border-slate-700/80 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500 w-48">
+              <button onclick="clearConsole()" class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-slate-300 transition font-semibold" title="Limpar mensagens">Limpar</button>
+              <label class="flex items-center space-x-1.5 text-slate-400 cursor-pointer">
+                <input type="checkbox" id="autoscroll-toggle" checked class="rounded bg-slate-950 border-slate-700 text-indigo-600">
+                <span>Auto-scroll</span>
+              </label>
+            </div>
+
+          </div>
+
+          <div id="console-output" class="bg-slate-950 border border-slate-800 rounded-2xl p-5 h-[calc(100vh-220px)] overflow-y-auto space-y-2 mono text-xs">
+            <p class="text-slate-500 italic">Aguardando mensagens do Broker MQTT...</p>
+          </div>
+
+        </section>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ================= MODAL DE CONFIRMAÇÃO DE OTA ================= -->
+  <div id="modal-ota" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+      <div class="flex items-center space-x-3 mb-4">
+        <div class="bg-indigo-600/20 text-indigo-400 p-2.5 rounded-xl border border-indigo-500/30">
+          <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-slate-100">Iniciar Upgrade OTA</h3>
+          <p class="text-xs text-slate-400">Disparo do comando <code class="mono text-indigo-400">update_firmware</code></p>
+        </div>
+      </div>
+
+      <form onsubmit="handleStartOta(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Arquivo Selecionado</label>
+          <input type="text" id="ota-selected-filename" readonly class="w-full bg-slate-950 border border-slate-700/80 rounded-lg p-2.5 text-slate-300 mono">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Endereço Alvo para Upgrade</label>
+          <input type="text" id="ota-target-mac" value="any" placeholder="any ou MAC da controladora" class="w-full bg-slate-950 border border-slate-700/80 rounded-lg p-2.5 text-slate-200 mono">
+          <p class="text-[11px] text-slate-500 mt-1">Dica: use "any" para atualizar todas as controladoras da malha.</p>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Modo de Bloqueio (block)</label>
+          <select id="ota-block-mode" class="w-full bg-slate-950 border border-slate-700/80 rounded-lg p-2.5 text-slate-200">
+            <option value="1">1: Interromper no primeiro erro (Seguro)</option>
+            <option value="0">0: Continuar apesar de falhas</option>
+          </select>
+        </div>
+
+        <div class="pt-4 flex justify-end space-x-2">
+          <button type="button" onclick="closeOtaModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl transition">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/20 transition">Confirmar e Disparar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL DE CADASTRO DE MEDIDOR / DISPOSITIVO ================= -->
+  <div id="device-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-5">
+      
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 bg-cyan-600/20 text-cyan-400 rounded-xl border border-cyan-500/30">
+            <i data-lucide="gauge" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 id="device-modal-title" class="font-bold text-slate-100 text-sm">Cadastrar Novo Medidor / Placa</h3>
+            <p class="text-[11px] text-slate-400">Vincule um nome amigável e dados do medidor ao MAC</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeDeviceModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSaveDevice(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Endereço MAC (12 dígitos hexadecimais) *</label>
+          <input type="text" id="dev-modal-mac" required placeholder="Ex: 4417934f49a4 ou 44:17:93:4F:49:A4" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-2.5 text-slate-100 mono focus:outline-none focus:border-cyan-500">
+          <p class="text-[11px] text-slate-500 mt-1">Normalizado automaticamente (com ou sem dois pontos).</p>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Nome Amigável / Apelido *</label>
+          <input type="text" id="dev-modal-name" required placeholder="Ex: Bancada 01 - Medidor Trifásico, ROOT Lab..." class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-2.5 text-slate-100 focus:outline-none focus:border-cyan-500">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Nº Série do Medidor (Opcional)</label>
+            <input type="text" id="dev-modal-serial" placeholder="Ex: 0012345678, MED-01" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-2.5 text-slate-200 mono focus:outline-none focus:border-cyan-500">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Papel na Malha Mesh</label>
+            <select id="dev-modal-role" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500">
+              <option value="NODE">NODE (Nó Filho / Segunda Camada)</option>
+              <option value="ROOT">ROOT (Controladora Principal com Wi-Fi)</option>
+              <option value="IDLE">IDLE (Dispositivo Livre / Standby)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Protocolo / Interface de Medição</label>
+          <select id="dev-modal-type" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500">
+            <option value="ABNT NBR 14522">ABNT NBR 14522 (Óptica / Serial)</option>
+            <option value="Modbus RTU">Modbus RTU (RS485)</option>
+            <option value="Modbus UDP">Modbus UDP (Ethernet / WiFi)</option>
+            <option value="Pulso">Medidor de Pulsos (Totalizador)</option>
+            <option value="DS18B20">Sensor de Temperatura One-Wire</option>
+            <option value="Outro / Genérico">Outro / Genérico</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Observações / Localização</label>
+          <input type="text" id="dev-modal-notes" placeholder="Ex: Quadro geral de distribuição, Bancada 2..." class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500">
+        </div>
+
+        <div class="pt-3 flex justify-end space-x-2 border-t border-slate-800">
+          <button type="button" onclick="closeDeviceModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl transition">Cancelar</button>
+          <button type="submit" class="px-5 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-cyan-600/25 transition">Salvar Medidor</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= SCRIPTS JAVASCRIPT ================= -->
+  <script>
+    let allMessages = [];
+    let currentCategory = 'all';
+    let currentEnv = 'PROD';
+    let hostIP = '127.0.0.1';
+    let webPort = 8000;
+    let ws = null;
+    let subscribedTopics = ["#"];
+
+    // Catálogos e Medidores
+    let commandsDocs = [];
+    let topicsDocs = [];
+    let specRules = null;
+    let devicesList = [];
+    let discoveredList = [];
+    let currentDictFilter = 'all';
+    let currentSelectedMethod = 'query';
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      lucide.createIcons();
+      initWebSocket();
+      fetchStatus();
+      loadFirmwares();
+      loadSubscriptions();
+      await loadSpecRules();
+      await loadCommandsDocs();
+      await loadTopicsDocs();
+      await loadDevices();
+      await loadDiscovered();
+      selectMethod('query');
+      updateLivePreview();
+    });
+
+    // ================= WEBSOCKET =================
+    function initWebSocket() {
+      const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${proto}//${window.location.host}/ws`;
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        document.getElementById('top-dot-broker').className = 'w-2.5 h-2.5 rounded-full bg-emerald-400';
+        document.getElementById('top-label-broker').className = 'font-semibold text-emerald-400';
+        document.getElementById('top-label-broker').innerText = '1883 Ativo';
+      };
+
+      ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'init') {
+          allMessages = data.recent_messages || [];
+          renderLogs();
+          if (data.status) updateStatusUI(data.status);
+        } else if (data.type === 'mqtt_message') {
+          allMessages.push(data.message);
+          if (allMessages.length > 300) allMessages.shift();
+          appendLogLine(data.message);
+          appendSubFeedLine(data.message);
+          document.getElementById('badge-logs-count').innerText = allMessages.length;
+
+          if (data.message.category === 'topologia') {
+            renderVisualTree(data.message.payload);
+          }
+        }
+      };
+
+      ws.onclose = () => {
+        document.getElementById('top-dot-broker').className = 'w-2.5 h-2.5 rounded-full bg-rose-400 animate-pulse';
+        document.getElementById('top-label-broker').className = 'font-semibold text-rose-400';
+        document.getElementById('top-label-broker').innerText = 'Desconectado';
+        setTimeout(initWebSocket, 3000);
+      };
+    }
+
+    // ================= STATUS & ENV =================
+    async function fetchStatus() {
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+        updateStatusUI(data);
+      } catch (e) {
+        console.error("Falha ao buscar status:", e);
+      }
+    }
+
+    function updateStatusUI(data) {
+      hostIP = data.local_ip || hostIP;
+      webPort = data.web_port || webPort;
+      currentEnv = data.current_env || currentEnv;
+      const activeTopic = data.active_topic || (currentEnv === 'PROD' ? 'config/shopba/mesh' : 'dev/config/shopba/mesh');
+
+      document.getElementById('top-ip').innerText = hostIP;
+      document.getElementById('top-topic-badge').innerText = activeTopic;
+      document.getElementById('builder-target-topic').innerText = activeTopic;
+      document.getElementById('top-label-env').innerText = currentEnv;
+
+      const btnEnv = document.getElementById('top-btn-env');
+      if (currentEnv === 'PROD') {
+        btnEnv.className = 'flex items-center space-x-1.5 bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/60 px-3 py-1.5 rounded-lg text-xs font-semibold transition';
+      } else {
+        btnEnv.className = 'flex items-center space-x-1.5 bg-amber-950/60 border border-amber-500/40 text-amber-300 hover:bg-amber-900/60 px-3 py-1.5 rounded-lg text-xs font-semibold transition';
+      }
+    }
+
+    async function toggleEnv() {
+      const res = await fetch('/api/env/toggle', { method: 'POST' });
+      const data = await res.json();
+      currentEnv = data.current_env;
+      updateStatusUI(data);
+      updateLivePreview();
+    }
+
+    function copyHostIP() {
+      navigator.clipboard.writeText(hostIP);
+      alert(`IP ${hostIP} copiado! Configure este IP no menuconfig do ESP-IDF.`);
+    }
+
+    // ================= NAVEGAÇÃO PRINCIPAL =================
+    const TAB_INFO = {
+      quick: { title: 'Ações Rápidas de Bancada', icon: 'zap', desc: 'Envio direto com 1 clique para as placas' },
+      builder: { title: 'Construtor de Comandos Codax', icon: 'sliders', desc: 'Comandos com autocomplete, live preview e envio' },
+      devices: { title: 'Cadastro de Medidores & Dispositivos', icon: 'gauge', desc: 'Gerencie apelidos, números de série e alvos da bancada' },
+      tree: { title: 'Árvore de Topologia Mesh', icon: 'network', desc: 'Visualização hierárquica por camadas e intensidade de sinal' },
+      dictionary: { title: 'Dicionário Oficial de Comandos & Tópicos', icon: 'book-open', desc: 'Explicações detalhadas de cada função e tópico MQTT' },
+      ota: { title: 'Central de Atualização OTA (HTTP)', icon: 'upload-cloud', desc: 'Envie .bin e dispare mupgrade na malha' },
+      logs: { title: 'Console ao Vivo (WebSockets)', icon: 'terminal', desc: 'Transmissão em tempo real do tráfego MQTT' },
+    };
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.className = 'nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60';
+        if (!btn.querySelector('span:nth-child(2)')) {
+          btn.className = 'nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60';
+        }
+      });
+      document.querySelectorAll('.top-nav-btn').forEach(btn => {
+        btn.className = 'top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5';
+      });
+
+      document.getElementById(`view-${tabId}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`nav-btn-${tabId}`);
+      if (activeBtn) {
+        if (tabId === 'logs' || tabId === 'devices') {
+          activeBtn.className = 'nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition bg-indigo-600 text-white shadow-sm shadow-indigo-600/30';
+        } else {
+          activeBtn.className = 'nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition bg-indigo-600 text-white shadow-sm shadow-indigo-600/30';
+        }
+      }
+
+      const topActive = document.getElementById(`top-nav-btn-${tabId}`);
+      if (topActive) {
+        topActive.className = 'top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition bg-indigo-600 text-white flex items-center space-x-1.5 shadow-sm';
+      }
+
+      const info = TAB_INFO[tabId];
+      if (info) {
+        document.getElementById('page-title').innerHTML = `
+          <i data-lucide="${info.icon}" class="w-4 h-4 text-indigo-400"></i>
+          <span>${info.title}</span>
+        `;
+        document.getElementById('page-context-pill').innerText = info.desc;
+      }
+
+      const mainScroll = document.getElementById('main-scroll-view');
+      if (mainScroll) mainScroll.scrollTop = 0;
+
+      if (tabId === 'dictionary') {
+        renderDictionary();
+      } else if (tabId === 'devices') {
+        loadDevices();
+        loadDiscovered();
+      }
+      lucide.createIcons();
+    }
+
+    function setTarget(alias) {
+      document.getElementById('global-target').value = alias;
+      document.getElementById('builder-addrs').value = alias;
+      updateLivePreview();
+    }
+
+    // ================= SUB-ABAS DO CONSTRUTOR CODAX =================
+    function switchBuilderSubTab(subId) {
+      document.getElementById('builder-subview-official').classList.add('hidden');
+      document.getElementById('builder-subview-raw-pub').classList.add('hidden');
+      document.getElementById('builder-subview-sub-feed').classList.add('hidden');
+
+      document.querySelectorAll('.builder-subtab-btn').forEach(b => {
+        b.className = 'builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5';
+      });
+
+      document.getElementById(`builder-subview-${subId}`).classList.remove('hidden');
+      document.getElementById(`btn-subtab-${subId}`).className = 'builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1.5';
+      lucide.createIcons();
+    }
+
+    // ================= CONSTRUTOR OFICIAL: AUTOCOMPLETE & LIVE PREVIEW =================
+    async function loadCommandsDocs() {
+      try {
+        const res = await fetch('/api/commands/docs');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            commandsDocs = data;
+            updateDictFilterBadges();
+            renderDictionary();
+            // Atualizar badge do construtor se já selecionado
+            const funcsForMethod = commandsDocs.filter(c => c.method === currentSelectedMethod);
+            const badge = document.getElementById('function-count-badge');
+            if (badge) badge.innerText = `${funcsForMethod.length} funções disponíveis`;
+          }
+        }
+      } catch (e) {
+        console.error("Erro ao carregar comandos:", e);
+      }
+    }
+
+    function selectMethod(method) {
+      currentSelectedMethod = method;
+      document.querySelectorAll('.method-btn').forEach(b => {
+        b.className = 'method-btn py-2.5 rounded-xl border border-slate-700 bg-slate-950 text-slate-400 text-xs font-bold transition text-center';
+      });
+      document.getElementById(`btn-method-${method}`).className = 'method-btn py-2.5 rounded-xl border border-indigo-500 bg-indigo-600/20 text-indigo-300 text-xs font-bold transition text-center shadow-sm';
+
+      const funcsForMethod = commandsDocs.filter(c => c.method === method);
+      document.getElementById('function-count-badge').innerText = `${funcsForMethod.length} funções disponíveis`;
+
+      // Seleciona a primeira por padrão
+      if (funcsForMethod.length > 0) {
+        selectFunction(funcsForMethod[0]);
+      }
+    }
+
+    function onFunctionInputFilter() {
+      const query = document.getElementById('builder-function-input').value.toLowerCase().trim();
+      const dropdown = document.getElementById('function-autocomplete-dropdown');
+      dropdown.innerHTML = '';
+
+      const matched = commandsDocs.filter(c => c.method === currentSelectedMethod && (c.function.toLowerCase().includes(query) || c.summary.toLowerCase().includes(query)));
+
+      if (matched.length === 0) {
+        dropdown.classList.add('hidden');
+        return;
+      }
+
+      matched.forEach(c => {
+        const opt = document.createElement('div');
+        opt.className = 'p-2.5 hover:bg-slate-800 rounded-lg cursor-pointer flex flex-col transition';
+        opt.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="mono text-xs font-bold text-indigo-300">${c.function}</span>
+            <span class="text-[10px] text-slate-500">${c.value_type}</span>
+          </div>
+          <span class="text-[11px] text-slate-400 truncate mt-0.5">${c.summary}</span>
+        `;
+        opt.onclick = () => {
+          selectFunction(c);
+          dropdown.classList.add('hidden');
+        };
+        dropdown.appendChild(opt);
+      });
+      dropdown.classList.remove('hidden');
+      updateLivePreview();
+    }
+
+    function selectFunction(cmdObj) {
+      document.getElementById('builder-function-input').value = cmdObj.function;
+      document.getElementById('builder-doc').innerText = `${cmdObj.summary} — ${cmdObj.description}`;
+
+      const valArea = document.getElementById('builder-value');
+      const ex = cmdObj.example.data.value;
+      if (ex !== undefined && ex !== null) {
+        valArea.value = typeof ex === 'object' ? JSON.stringify(ex, null, 2) : ex;
+      } else {
+        valArea.value = '';
+      }
+
+      document.getElementById('function-autocomplete-dropdown').classList.add('hidden');
+      updateLivePreview();
+    }
+
+    function setBuilderMac(alias) {
+      document.getElementById('builder-addrs').value = alias;
+      updateLivePreview();
+    }
+
+    function clearBuilderValue() {
+      document.getElementById('builder-value').value = '';
+      updateLivePreview();
+    }
+
+    function formatBuilderJSON() {
+      const area = document.getElementById('builder-value');
+      try {
+        const parsed = JSON.parse(area.value);
+        area.value = JSON.stringify(parsed, null, 2);
+      } catch {
+        alert('Conteúdo atual não é um JSON válido para formatar.');
+      }
+      updateLivePreview();
+    }
+
+    function updateLivePreview() {
+      const rawAddrs = document.getElementById('builder-addrs').value.trim() || 'root';
+      const func = document.getElementById('builder-function-input').value.trim() || 'ping';
+      const rawVal = document.getElementById('builder-value').value.trim();
+      const forMesh = document.getElementById('builder-formesh').checked;
+
+      let val = null;
+      if (rawVal) {
+        try { val = JSON.parse(rawVal); } catch { val = rawVal; }
+      }
+
+      // Resolver apelidos para pré-visualização e deduplicar
+      const seen = new Set();
+      const addrs = [];
+      rawAddrs.split(',').forEach(s => {
+        const m = s.trim().toLowerCase();
+        if (!m) return;
+        let resolved = m;
+        if (m === 'root') resolved = 'ff0000010000';
+        else if (m === 'any') resolved = 'ffffffffffff';
+        else if (m === 'broadcast') resolved = 'fffffffffe';
+        else {
+          const dev = devicesList.find(d => d.name.toLowerCase() === m || d.mac.toLowerCase() === m);
+          if (dev) resolved = dev.mac.toLowerCase();
+          else resolved = m.replace(/:/g, '');
+        }
+        if (resolved && !seen.has(resolved)) {
+          seen.add(resolved);
+          addrs.push(resolved);
+        }
+      });
+
+      const payload = {
+        addr: addrs,
+        data: {
+          method: currentSelectedMethod,
+          function: func
+        }
+      };
+
+      if (forMesh) payload.for_mesh = true;
+      if (val !== null && val !== undefined && val !== '') payload.data.value = val;
+
+      document.getElementById('live-json-preview').innerText = JSON.stringify(payload, null, 2);
+    }
+
+    function copyPayloadPreview() {
+      const text = document.getElementById('live-json-preview').innerText;
+      navigator.clipboard.writeText(text);
+      alert('Payload JSON copiado para a área de transferência!');
+    }
+
+    async function handleSendOfficialCommand() {
+      const rawAddrs = document.getElementById('builder-addrs').value.trim() || 'root';
+      const func = document.getElementById('builder-function-input').value.trim();
+      const rawVal = document.getElementById('builder-value').value.trim();
+      const forMesh = document.getElementById('builder-formesh').checked;
+
+      if (!func) {
+        alert('Por favor, informe a function.');
+        return;
+      }
+
+      let val = null;
+      if (rawVal) {
+        try { val = JSON.parse(rawVal); } catch { val = rawVal; }
+      }
+
+      const addrs = rawAddrs.split(',').map(s => s.trim()).filter(Boolean);
+
+      try {
+        const res = await fetch('/api/command/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            addr: addrs,
+            method: currentSelectedMethod,
+            function: func,
+            value: val,
+            for_mesh: forMesh,
+            env: currentEnv
+          })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          switchTab('logs');
+        } else {
+          alert('Erro ao enviar: ' + (data.detail || 'Verifique os dados'));
+        }
+      } catch (e) {
+        alert('Erro: ' + e);
+      }
+    }
+
+    // ================= DICIONÁRIO COMPLETO DE COMANDOS & ESPECIFICAÇÃO OFICIAL =================
+    async function loadSpecRules() {
+      try {
+        const res = await fetch('/api/spec/rules');
+        if (res.ok) {
+          specRules = await res.json();
+          updateDictFilterBadges();
+          if (currentDictFilter === 'rules') renderDictionary();
+        }
+      } catch (e) {
+        console.error("Erro ao carregar regras da especificação:", e);
+      }
+    }
+
+    async function loadTopicsDocs() {
+      try {
+        const res = await fetch('/api/topics/docs');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            topicsDocs = data;
+            updateDictFilterBadges();
+            renderDictionary();
+          }
+        }
+      } catch (e) {
+        console.error("Erro ao carregar docs de tópicos:", e);
+      }
+    }
+
+    function updateDictFilterBadges() {
+      const qCount = commandsDocs.filter(c => c.method === 'query').length;
+      const cCount = commandsDocs.filter(c => c.method === 'change').length;
+      const sCount = commandsDocs.filter(c => c.method === 'setting').length;
+      const tCount = topicsDocs.length;
+      const totalCount = commandsDocs.length + tCount;
+
+      const btnAll = document.getElementById('dict-filter-all');
+      if (btnAll) btnAll.innerText = `Todos (${totalCount})`;
+      const btnQ = document.getElementById('dict-filter-query');
+      if (btnQ && qCount > 0) btnQ.innerText = `Query (${qCount})`;
+      const btnC = document.getElementById('dict-filter-change');
+      if (btnC && cCount > 0) btnC.innerText = `Change (${cCount})`;
+      const btnS = document.getElementById('dict-filter-setting');
+      if (btnS && sCount > 0) btnS.innerText = `Setting (${sCount})`;
+      const btnT = document.getElementById('dict-filter-topics');
+      if (btnT && tCount > 0) btnT.innerText = `Tópicos MQTT (${tCount})`;
+    }
+
+    function setDictFilter(filter) {
+      currentDictFilter = filter;
+      document.querySelectorAll('.dict-filter-btn').forEach(b => {
+        b.className = 'dict-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 hover:text-white flex items-center space-x-1';
+      });
+      const active = document.getElementById(`dict-filter-${filter}`);
+      if (active) {
+        active.className = 'dict-filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-indigo-600 text-white flex items-center space-x-1 shadow-sm';
+      }
+      renderDictionary();
+    }
+
+    function renderRulesSection(container) {
+      if (!specRules) return;
+
+      const rulesCard = document.createElement('div');
+      rulesCard.className = 'space-y-5';
+
+      // 1. Senha da Malha & Alerta Crítico
+      rulesCard.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          <!-- Senha MESH -->
+          <div class="bg-gradient-to-br from-indigo-950/70 to-slate-900 border border-indigo-500/40 rounded-2xl p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-indigo-400">Credencial Global da Malha</span>
+              <span class="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded font-mono">ESP-MESH WPA2</span>
+            </div>
+            <div>
+              <div class="text-[11px] text-slate-400">Senha Padrão Mesh (Hardcoded / Menuconfig):</div>
+              <div class="flex items-center space-x-2 mt-1">
+                <code class="mono text-base font-extrabold text-emerald-400 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800 select-all">${specRules.mesh_password}</code>
+                <button onclick="navigator.clipboard.writeText('${specRules.mesh_password}'); alert('Senha copiada!');" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition" title="Copiar Senha">
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+            <p class="text-xs text-slate-400 leading-relaxed">Utilizada internamente para autenticação ponto a ponto entre todos os nós e roteadores na malha ESP32.</p>
+          </div>
+
+          <!-- Alerta de Prevenção de Crash -->
+          <div class="bg-gradient-to-br from-rose-950/60 to-slate-900 border border-rose-500/40 rounded-2xl p-5 shadow-sm space-y-2">
+            <div class="flex items-center space-x-2 text-rose-400">
+              <i data-lucide="alert-triangle" class="w-5 h-5 shrink-0"></i>
+              <span class="font-bold text-xs uppercase tracking-wider">Aviso Crítico de Segurança (Crash Prevention)</span>
+            </div>
+            <p class="text-xs text-rose-200 leading-relaxed">
+              <strong>NUNCA envie endereços MAC duplicados</strong> para mensagens MQTT ou parâmetros de <code>mupgrade</code>! Enviar MAC repetido na lista <code>addr</code> pode crashar instantaneamente o microcontrolador ESP32 da controladora!
+            </p>
+            <div class="text-[11px] text-rose-300/80 bg-rose-950/40 p-2 rounded-lg border border-rose-900/50">
+              🛡️ O Codax Hub possui filtro de deduplicação automática ativo em todos os disparos.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Definições de Papéis & Endereços Especiais -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          <!-- Definições da Malha -->
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center space-x-2">
+              <i data-lucide="network" class="w-4 h-4"></i>
+              <span>Definições dos Papéis da Malha</span>
+            </h4>
+            <div class="space-y-2.5">
+              ${specRules.definitions.map(d => `
+                <div class="bg-slate-900/80 border border-slate-800 p-3 rounded-xl">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="font-bold text-xs mono text-slate-100">${d.term}</span>
+                    <span class="text-[10px] bg-slate-800 text-indigo-300 px-2 py-0.5 rounded">${d.badge}</span>
+                  </div>
+                  <p class="text-xs text-slate-400 leading-relaxed">${d.description}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Endereços Especiais de Broadcast -->
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-3">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center space-x-2">
+              <i data-lucide="radio" class="w-4 h-4"></i>
+              <span>Endereços Especiais de Destino (MACs)</span>
+            </h4>
+            <div class="space-y-2.5">
+              ${specRules.special_addresses.map(s => `
+                <div class="bg-slate-900/80 border border-slate-800 p-3 rounded-xl flex flex-col space-y-1">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-xs text-slate-200">${s.name}</span>
+                    <button onclick="setTarget('${s.clean_mac}'); switchTab('builder');" class="text-[10px] bg-indigo-600/30 hover:bg-indigo-600 text-indigo-300 hover:text-white px-2 py-0.5 rounded transition">Usar Alvo ⚡</button>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <code class="mono text-xs font-bold text-amber-400">${s.mac}</code>
+                    <span class="text-slate-600">/</span>
+                    <code class="mono text-[11px] text-slate-400">${s.clean_mac}</code>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-0.5">${s.description}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Template Oficial & Ressalvas do Protocolo -->
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-900 pb-3">
+            <div>
+              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center space-x-2">
+                <i data-lucide="file-code" class="w-4 h-4 text-emerald-400"></i>
+                <span>Template Oficial de Payload Codax</span>
+              </h4>
+              <p class="text-xs text-slate-400 mt-0.5">Estrutura enviada ao tópico de comando <code>config/shopba/mesh</code></p>
+            </div>
+            <button onclick="loadExamplePayload(specRules.template)" class="bg-indigo-600/30 hover:bg-indigo-600 text-indigo-300 hover:text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition flex items-center space-x-1.5">
+              <i data-lucide="arrow-right-circle" class="w-3.5 h-3.5"></i>
+              <span>Carregar Template no Construtor</span>
+            </button>
+          </div>
+
+          <pre class="text-xs text-emerald-400 bg-slate-900/90 border border-slate-800 p-3.5 rounded-xl mono overflow-x-auto whitespace-pre-wrap">${escapeHtml(JSON.stringify(specRules.template, null, 2))}</pre>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            ${specRules.cautions.map(c => `
+              <div class="bg-slate-900/60 border border-slate-800/80 p-3 rounded-xl space-y-1">
+                <div class="text-[11px] font-bold text-indigo-300 flex items-center space-x-1.5">
+                  <i data-lucide="info" class="w-3.5 h-3.5 text-indigo-400"></i>
+                  <span>${c.title}</span>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">${c.text}</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      container.appendChild(rulesCard);
+    }
+
+    function renderDictionary() {
+      const container = document.getElementById('dict-cards-container');
+      container.innerHTML = '';
+      const query = document.getElementById('dict-search-input').value.toLowerCase().trim();
+
+      // 1. Filtro 'rules' -> Exibe exclusivamente as regras e arquitetura
+      if (currentDictFilter === 'rules') {
+        renderRulesSection(container);
+        lucide.createIcons();
+        return;
+      }
+
+      // 2. Filtro 'topics' -> Exibe os tópicos MQTT
+      if (currentDictFilter === 'topics') {
+        renderTopicsCards(container, query);
+        lucide.createIcons();
+        return;
+      }
+
+      // 3. Filtro 'all' -> Banner de regras no topo, depois comandos e tópicos
+      if (currentDictFilter === 'all' && !query) {
+        const topRulesBanner = document.createElement('div');
+        topRulesBanner.className = 'bg-gradient-to-r from-indigo-950/80 via-slate-900 to-slate-900 border border-indigo-500/40 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm';
+        topRulesBanner.innerHTML = `
+          <div class="flex items-center space-x-3">
+            <div class="bg-indigo-600/30 p-2.5 rounded-xl text-indigo-400 border border-indigo-500/30 shrink-0">
+              <i data-lucide="shield-check" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="flex items-center space-x-2">
+                <h4 class="font-bold text-xs text-slate-100 uppercase tracking-wide">Arquitetura Codax Mesh & Regras</h4>
+                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono font-bold">Mesh Pass: QNfW7kyR1bAM</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">Definições de ROOT, NODE, Broadcasts e regras contra crash do ESP32.</p>
+            </div>
+          </div>
+          <button onclick="setDictFilter('rules')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center space-x-1.5 shrink-0 shadow-sm">
+            <span>Ver Especificação Completa</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </button>
+        `;
+        container.appendChild(topRulesBanner);
+      }
+
+      // Renderizar comandos
+      const matched = commandsDocs.filter(c => {
+        if (currentDictFilter !== 'all' && c.method !== currentDictFilter) return false;
+        if (query) {
+          const str = (c.method + ' ' + c.function + ' ' + c.summary + ' ' + c.description + ' ' + (c.tips || '')).toLowerCase();
+          return str.includes(query);
+        }
+        return true;
+      });
+
+      if (matched.length === 0 && currentDictFilter !== 'all') {
+        container.innerHTML = '<p class="text-xs text-slate-500 italic p-4 text-center">Nenhum comando encontrado com os filtros atuais.</p>';
+        return;
+      }
+
+      matched.forEach(cmd => {
+        const card = document.createElement('div');
+        card.className = 'bg-slate-950 border border-slate-800/80 rounded-2xl p-5 space-y-3.5 hover:border-slate-700 transition shadow-sm';
+
+        let badgeColor = 'bg-indigo-600/20 text-indigo-400 border-indigo-500/30';
+        if (cmd.method === 'change') badgeColor = 'bg-amber-600/20 text-amber-400 border-amber-500/30';
+        if (cmd.method === 'setting') badgeColor = 'bg-emerald-600/20 text-emerald-400 border-emerald-500/30';
+
+        // Suporte para múltiplos exemplos (como raw_debug)
+        let examplesMarkup = '';
+        if (Array.isArray(cmd.examples) && cmd.examples.length > 0) {
+          examplesMarkup = `
+            <div class="space-y-2 pt-2 border-t border-slate-900">
+              <span class="text-[11px] uppercase font-bold text-slate-400">Exemplos Práticos Disponíveis (${cmd.examples.length}):</span>
+              <div class="grid grid-cols-1 gap-2.5">
+                ${cmd.examples.map((ex, idx) => `
+                  <div class="bg-slate-900/90 border border-slate-800/90 p-3 rounded-xl space-y-2">
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-bold text-amber-300">${ex.label}</span>
+                      <button onclick="loadExamplePayload(${escapeHtml(JSON.stringify(ex.payload))})" class="bg-indigo-600/30 hover:bg-indigo-600 text-indigo-300 hover:text-white text-[11px] font-semibold px-2.5 py-1 rounded-lg transition flex items-center space-x-1">
+                        <i data-lucide="arrow-right-circle" class="w-3.5 h-3.5"></i>
+                        <span>Carregar este Exemplo</span>
+                      </button>
+                    </div>
+                    <pre class="text-xs text-emerald-400 bg-slate-950 p-2.5 rounded-lg mono overflow-x-auto whitespace-pre-wrap border border-slate-900">${escapeHtml(JSON.stringify(ex.payload, null, 2))}</pre>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        } else {
+          examplesMarkup = `
+            <div class="pt-1">
+              <div class="flex items-center justify-between text-[11px] text-slate-500 mb-1">
+                <span>Tipo do parâmetro 'value': <strong class="text-slate-300">${cmd.value_type}</strong></span>
+              </div>
+              <pre class="text-xs text-emerald-400 bg-slate-900/90 border border-slate-800/80 p-3 rounded-xl mono overflow-x-auto whitespace-pre-wrap">${escapeHtml(JSON.stringify(cmd.example, null, 2))}</pre>
+            </div>
+          `;
+        }
+
+        card.innerHTML = `
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-900 pb-3">
+            <div class="flex items-center space-x-2.5">
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${badgeColor} mono">${cmd.method}</span>
+              <span class="font-extrabold text-base text-slate-100 mono">${cmd.function}</span>
+            </div>
+            <button onclick="loadCommandIntoBuilder('${cmd.method}', '${cmd.function}')" class="bg-indigo-600/30 hover:bg-indigo-600 text-indigo-300 hover:text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition flex items-center space-x-1.5">
+              <i data-lucide="arrow-right-circle" class="w-3.5 h-3.5"></i>
+              <span>Carregar no Construtor</span>
+            </button>
+          </div>
+          <p class="text-xs text-slate-200 font-semibold">${cmd.summary}</p>
+          <div class="text-xs text-slate-300 leading-relaxed whitespace-pre-line">${cmd.description}</div>
+          ${cmd.tips ? `<div class="text-[11px] text-amber-300 bg-amber-950/30 border border-amber-800/40 p-2.5 rounded-xl">💡 <strong>Dica/Atenção:</strong> ${cmd.tips}</div>` : ''}
+          ${examplesMarkup}
+        `;
+        container.appendChild(card);
+      });
+
+      // Se estiver em 'all' e houver busca, renderizar tópicos correspondentes no final
+      if (currentDictFilter === 'all') {
+        renderTopicsCards(container, query, true);
+      }
+
+      lucide.createIcons();
+    }
+
+    function renderTopicsCards(container, query = '', isAppended = false) {
+      const matchedTopics = topicsDocs.filter(t => !query || (t.topic + ' ' + t.description + ' ' + t.category).toLowerCase().includes(query));
+      if (matchedTopics.length === 0) {
+        if (!isAppended) container.innerHTML = '<p class="text-xs text-slate-500 italic p-4 text-center">Nenhum tópico encontrado.</p>';
+        return;
+      }
+
+      if (isAppended) {
+        const divider = document.createElement('div');
+        divider.className = 'pt-6 pb-2 border-t border-slate-800 flex items-center space-x-2';
+        divider.innerHTML = `
+          <i data-lucide="radio" class="w-4 h-4 text-amber-400"></i>
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Tópicos MQTT da Plataforma (${matchedTopics.length})</h4>
+        `;
+        container.appendChild(divider);
+      }
+
+      matchedTopics.forEach(t => {
+        const card = document.createElement('div');
+        card.className = 'bg-slate-950 border border-slate-800 rounded-xl p-5 space-y-3 shadow-sm';
+        card.innerHTML = `
+          <div class="flex items-center justify-between border-b border-slate-900 pb-3">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-indigo-400">${t.category}</span>
+              <div class="flex items-center space-x-2 mt-1">
+                <code class="mono text-sm font-bold text-slate-100">${t.topic}</code>
+                <span class="text-slate-500 text-xs">/</span>
+                <code class="mono text-xs text-amber-400">${t.dev_topic}</code>
+              </div>
+            </div>
+            <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-medium">${t.direction}</span>
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">${t.description}</p>
+          <div>
+            <span class="text-[10px] uppercase font-bold text-slate-500">Exemplo de Payload no Tópico:</span>
+            <pre class="text-xs text-emerald-400 bg-slate-900/80 p-2.5 rounded-lg mono mt-1 overflow-x-auto whitespace-pre-wrap border border-slate-800/80">${escapeHtml(t.payload_example)}</pre>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function loadExamplePayload(payload) {
+      if (!payload) return;
+      if (payload.addr) {
+        document.getElementById('builder-addrs').value = Array.isArray(payload.addr) ? payload.addr.join(', ') : payload.addr;
+      }
+      if (payload.data) {
+        if (payload.data.method) selectMethod(payload.data.method);
+        if (payload.data.function) document.getElementById('builder-function-input').value = payload.data.function;
+        if (payload.data.value !== undefined && payload.data.value !== null) {
+          document.getElementById('builder-value').value = typeof payload.data.value === 'object' ? JSON.stringify(payload.data.value, null, 2) : payload.data.value;
+        } else {
+          document.getElementById('builder-value').value = '';
+        }
+      }
+      if (payload.for_mesh !== undefined) {
+        document.getElementById('builder-formesh').checked = Boolean(payload.for_mesh);
+      }
+      updateLivePreview();
+      switchTab('builder');
+    }
+
+    function loadCommandIntoBuilder(method, funcName) {
+      selectMethod(method);
+      const cmdObj = commandsDocs.find(c => c.method === method && c.function === funcName);
+      if (cmdObj) {
+        selectFunction(cmdObj);
+      }
+      switchTab('builder');
+    }
+
+    // ================= AÇÕES RÁPIDAS =================
+    async function sendQuickCommand(method, func, value = null, explicitTarget = null) {
+      const target = explicitTarget || document.getElementById('global-target').value.trim() || 'root';
+      const payload = {
+        addr: [target],
+        method: method,
+        function: func,
+        value: value,
+        env: currentEnv
+      };
+
+      try {
+        const res = await fetch('/api/command/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (res.ok) {
+          switchTab('logs');
+        } else {
+          alert('Erro ao enviar: ' + (data.detail || 'Falha'));
+        }
+      } catch (e) {
+        alert('Erro: ' + e);
+      }
+    }
+
+    // ================= ÁRVORE DE TOPOLOGIA VISUAL =================
+    async function generateMockTree() {
+      try {
+        const res = await fetch('/api/topology/mock', { method: 'POST' });
+        const mockData = await res.json();
+        renderVisualTree(mockData);
+      } catch (e) {
+        console.error("Erro ao gerar mock:", e);
+      }
+    }
+
+    function renderVisualTree(data) {
+      const container = document.getElementById('visual-tree-container');
+      if (!data) return;
+
+      const root = data.data || data;
+
+      function getRssiBadge(rssi) {
+        if (!rssi) return '';
+        const color = rssi >= -65 ? 'text-emerald-400 bg-emerald-950/60 border-emerald-500/40' : (rssi >= -75 ? 'text-amber-400 bg-amber-950/60 border-amber-500/40' : 'text-rose-400 bg-rose-950/60 border-rose-500/40');
+        return `<span class="border px-1.5 py-0.5 rounded text-[10px] mono font-bold ${color}">${rssi} dBm</span>`;
+      }
+
+      function buildNodeCard(node, isRoot = false) {
+        const mac = node.mac_addr || node.id || 'N/A';
+        const layer = node.layer || (isRoot ? 1 : 2);
+        const rssi = isRoot ? node.router_rssi : node.parent_rssi;
+        const border = isRoot ? 'border-indigo-500 bg-slate-900 shadow-indigo-500/20 shadow-lg' : 'border-slate-800 bg-slate-900/90';
+
+        const cleanMac = mac.toLowerCase().replace(/:/g, '');
+        const dev = devicesList.find(d => d.mac.toLowerCase() === cleanMac);
+        const devName = dev ? dev.name : null;
+        const meterSerial = dev && dev.meter_serial ? dev.meter_serial : null;
+
+        return `
+          <div class="border ${border} rounded-2xl p-4 w-64 text-left select-none hover:border-indigo-400 transition cursor-pointer" onclick="useDeviceInBuilder('${cleanMac}')">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded uppercase ${isRoot ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-300'}">
+                ${isRoot ? '👑 ROOT (L1)' : `NODE (L${layer})`}
+              </span>
+              ${getRssiBadge(rssi)}
+            </div>
+            ${devName ? `<div class="font-bold text-xs text-cyan-300 truncate mb-0.5">${escapeHtml(devName)}</div>` : ''}
+            <div class="font-bold text-sm text-slate-100 mono truncate mb-1" title="${mac}">${formatMac(mac)}</div>
+            <div class="text-[11px] text-slate-400 space-y-0.5">
+              ${meterSerial ? `<div>Serial: <span class="mono text-slate-200 font-semibold">${escapeHtml(meterSerial)}</span></div>` : ''}
+              ${isRoot && node.router_ssid ? `<div>SSID: <span class="text-slate-300 font-semibold">${node.router_ssid}</span></div>` : ''}
+              ${isRoot && node.ip ? `<div>IP: <span class="text-emerald-400 font-mono">${node.ip}</span></div>` : ''}
+              ${!isRoot && node.parent_mac ? `<div>Parent: <span class="mono text-slate-300">${node.parent_mac.slice(-6)}</span></div>` : ''}
+            </div>
+            <div class="mt-2 pt-2 border-t border-slate-900/80 flex items-center justify-between text-[10px]">
+              <span class="text-slate-500">Clique para usar</span>
+              <span class="text-cyan-400 font-bold hover:underline">Selecionar Alvo ⚡</span>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderBranches(nodes) {
+        if (!nodes || nodes.length === 0) return '';
+        let html = '<div class="tree-connector-down"></div>';
+        html += '<div class="flex justify-center space-x-6 relative pt-4 border-t-2 border-indigo-600/40">';
+        nodes.forEach(child => {
+          html += '<div class="flex flex-col items-center">';
+          html += buildNodeCard(child, false);
+          if (child.nodes && child.nodes.length > 0) {
+            html += renderBranches(child.nodes);
+          }
+          html += '</div>';
+        });
+        html += '</div>';
+        return html;
+      }
+
+      let treeHtml = '<div class="flex flex-col items-center py-4">';
+      treeHtml += buildNodeCard(root, true);
+      if (root.nodes && root.nodes.length > 0) {
+        treeHtml += renderBranches(root.nodes);
+      }
+      treeHtml += '</div>';
+
+      container.innerHTML = treeHtml;
+      lucide.createIcons();
+    }
+
+    // ================= PUBLICADOR & ASSINANTE =================
+    function formatPubJSON() {
+      const area = document.getElementById('pub-payload');
+      try {
+        const parsed = JSON.parse(area.value);
+        area.value = JSON.stringify(parsed, null, 2);
+      } catch {
+        alert('Conteúdo atual não é JSON válido.');
+      }
+    }
+
+    async function handleCustomPublish(event) {
+      event.preventDefault();
+      const topic = document.getElementById('pub-topic').value.trim();
+      const rawPayload = document.getElementById('pub-payload').value.trim();
+      const qos = parseInt(document.getElementById('pub-qos').value);
+      const retain = document.getElementById('pub-retain').checked;
+
+      let payload = rawPayload;
+      try { payload = JSON.parse(rawPayload); } catch {}
+
+      try {
+        const res = await fetch('/api/mqtt/publish', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ topic, payload, qos, retain })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          alert(`Mensagem publicada com sucesso em: ${topic}`);
+          switchTab('logs');
+        } else {
+          alert('Erro ao publicar: ' + (data.detail || 'Falha'));
+        }
+      } catch (e) {
+        alert('Erro: ' + e);
+      }
+    }
+
+    async function loadSubscriptions() {
+      try {
+        const res = await fetch('/api/mqtt/subscriptions');
+        const data = await res.json();
+        subscribedTopics = data.subscriptions || ["#"];
+        renderSubList();
+      } catch (e) {
+        console.error("Erro ao carregar assinaturas:", e);
+      }
+    }
+
+    function renderSubList() {
+      const container = document.getElementById('sub-list');
+      container.innerHTML = '';
+      subscribedTopics.forEach(topic => {
+        const item = document.createElement('div');
+        item.className = 'flex items-center justify-between p-2 bg-slate-900 border border-slate-800 rounded-lg text-xs';
+        item.innerHTML = `
+          <span class="mono text-indigo-400 font-semibold truncate" title="${topic}">${topic}</span>
+          ${topic !== '#' ? `<button onclick="handleUnsubscribe('${topic}')" class="text-rose-400 hover:text-rose-300 p-1" title="Desinscrever"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>` : '<span class="text-[10px] text-slate-500 uppercase font-bold">PADRÃO</span>'}
+        `;
+        container.appendChild(item);
+      });
+      lucide.createIcons();
+    }
+
+    async function handleSubscribe(event) {
+      event.preventDefault();
+      const input = document.getElementById('sub-topic-input');
+      const topic = input.value.trim();
+      if (!topic) return;
+
+      try {
+        const res = await fetch('/api/mqtt/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ topic })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          input.value = '';
+          subscribedTopics = data.subscriptions;
+          renderSubList();
+        }
+      } catch (e) {
+        alert('Erro ao assinar: ' + e);
+      }
+    }
+
+    async function handleUnsubscribe(topic) {
+      try {
+        const res = await fetch('/api/mqtt/unsubscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ topic })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          subscribedTopics = data.subscriptions;
+          renderSubList();
+        }
+      } catch (e) {
+        alert('Erro: ' + e);
+      }
+    }
+
+    function appendSubFeedLine(msg) {
+      const container = document.getElementById('sub-messages-feed');
+      if (!container) return;
+
+      if (container.children.length === 1 && container.children[0].tagName === 'P') {
+        container.innerHTML = '';
+      }
+
+      const item = document.createElement('div');
+      item.className = 'border-b border-slate-900 pb-2';
+      let payloadStr = typeof msg.payload === 'object' ? JSON.stringify(msg.payload, null, 2) : msg.raw;
+
+      item.innerHTML = `
+        <div class="flex items-center space-x-2 text-[10px] text-slate-500 mb-0.5">
+          <span>${msg.timestamp}</span>
+          <span class="text-indigo-400 font-semibold">${msg.topic}</span>
+        </div>
+        <pre class="text-slate-200 whitespace-pre-wrap">${escapeHtml(payloadStr)}</pre>
+      `;
+
+      container.appendChild(item);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function clearSubMessages() {
+      document.getElementById('sub-messages-feed').innerHTML = '<p class="text-slate-500 italic">Feed limpo.</p>';
+    }
+
+    // ================= GERENCIADOR & CADASTRO DE MEDIDORES =================
+    function formatMac(mac) {
+      if (!mac) return '';
+      const clean = mac.replace(/[^a-fA-F0-9]/g, '').toLowerCase();
+      if (clean.length === 12) {
+        return clean.match(/.{1,2}/g).join(':').toUpperCase();
+      }
+      return mac.toUpperCase();
+    }
+
+    async function loadDevices() {
+      try {
+        const res = await fetch('/api/devices');
+        if (res.ok) {
+          devicesList = await res.json();
+          renderDevicesCards();
+          renderBuilderChips();
+          updateTargetSuggestions();
+
+          const regCount = document.getElementById('metric-registered-count');
+          if (regCount) regCount.innerText = devicesList.length;
+
+          const badgeCount = document.getElementById('badge-devices-count');
+          if (badgeCount) badgeCount.innerText = devicesList.length;
+
+          const onlineCount = document.getElementById('metric-online-count');
+          if (onlineCount) {
+            const online = devicesList.filter(d => d.status === 'online').length;
+            onlineCount.innerText = online;
+          }
+        }
+      } catch (e) {
+        console.error("Erro ao carregar dispositivos:", e);
+      }
+    }
+
+    async function loadDiscovered() {
+      try {
+        const res = await fetch('/api/discovered');
+        if (res.ok) {
+          discoveredList = await res.json();
+          renderDiscoveredCards();
+          const discCount = document.getElementById('metric-discovered-count');
+          if (discCount) discCount.innerText = discoveredList.length;
+        }
+      } catch (e) {
+        console.error("Erro ao carregar descobertos:", e);
+      }
+    }
+
+    function renderDevicesCards() {
+      const container = document.getElementById('devices-cards-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (!devicesList || devicesList.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full bg-slate-950/60 border border-dashed border-slate-800 p-8 rounded-2xl text-center">
+            <i data-lucide="gauge" class="w-8 h-8 text-slate-500 mx-auto mb-2"></i>
+            <p class="text-sm font-semibold text-slate-300">Nenhum medidor cadastrado ainda.</p>
+            <p class="text-xs text-slate-500 mt-1">Clique em "+ Cadastrar Medidor" para registrar sua primeira placa com apelido.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      devicesList.forEach(dev => {
+        const card = document.createElement('div');
+        const isRoot = dev.role === 'ROOT';
+        const isOnline = dev.status === 'online';
+
+        let roleBadge = 'bg-slate-800 text-slate-300 border-slate-700';
+        if (isRoot) roleBadge = 'bg-purple-950/80 text-purple-300 border-purple-500/40';
+        else if (dev.role === 'NODE') roleBadge = 'bg-blue-950/80 text-blue-300 border-blue-500/40';
+
+        card.className = 'bg-slate-950 border border-slate-800/80 hover:border-slate-700 rounded-2xl p-5 space-y-4 transition flex flex-col justify-between';
+        card.innerHTML = `
+          <div class="space-y-2.5">
+            <div class="flex items-start justify-between gap-2 border-b border-slate-900 pb-3">
+              <div>
+                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border ${roleBadge} mono">${dev.role}</span>
+                <h4 class="font-extrabold text-sm text-slate-100 mt-1.5 leading-snug">${escapeHtml(dev.name)}</h4>
+              </div>
+              <div class="flex items-center space-x-1.5 shrink-0">
+                <span class="w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}"></span>
+                <span class="text-[10px] font-semibold ${isOnline ? 'text-emerald-400' : 'text-slate-500'}">${isOnline ? 'Online' : 'Offline'}</span>
+              </div>
+            </div>
+
+            <div class="text-xs space-y-1.5 text-slate-300">
+              <div class="flex items-center justify-between">
+                <span class="text-slate-500 text-[11px]">MAC:</span>
+                <code class="mono font-bold text-indigo-300 bg-slate-900 px-1.5 py-0.5 rounded">${formatMac(dev.mac)}</code>
+              </div>
+              ${dev.meter_serial ? `
+                <div class="flex items-center justify-between">
+                  <span class="text-slate-500 text-[11px]">Serial Medidor:</span>
+                  <span class="font-semibold text-slate-200 mono">${escapeHtml(dev.meter_serial)}</span>
+                </div>
+              ` : ''}
+              <div class="flex items-center justify-between">
+                <span class="text-slate-500 text-[11px]">Protocolo:</span>
+                <span class="text-emerald-400 font-medium text-[11px]">${escapeHtml(dev.meter_type || 'ABNT NBR 14522')}</span>
+              </div>
+              ${dev.notes ? `
+                <div class="text-[11px] text-slate-400 pt-1 italic border-t border-slate-900 truncate" title="${escapeHtml(dev.notes)}">
+                  📌 ${escapeHtml(dev.notes)}
+                </div>
+              ` : ''}
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-slate-900 space-y-2">
+            <button onclick="useDeviceInBuilder('${dev.mac}')" class="w-full bg-cyan-600/20 hover:bg-cyan-600 text-cyan-300 hover:text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center space-x-1.5 border border-cyan-500/30">
+              <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+              <span>Usar no Construtor</span>
+            </button>
+            <div class="grid grid-cols-4 gap-1.5 text-[11px]">
+              <button onclick="sendQuickCommand('query', 'ping', null, '${dev.mac}')" class="bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold py-1.5 rounded-lg transition text-center" title="Ping">Ping</button>
+              <button onclick="sendQuickCommand('query', 'info', null, '${dev.mac}')" class="bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold py-1.5 rounded-lg transition text-center" title="Informações">Info</button>
+              <button onclick="openDeviceModal('${dev.mac}', '${escapeHtml(dev.name)}', '${escapeHtml(dev.meter_serial || '')}', '${escapeHtml(dev.meter_type || '')}', '${dev.role}', '${escapeHtml(dev.notes || '')}')" class="bg-slate-900 hover:bg-slate-800 text-amber-300 font-semibold py-1.5 rounded-lg transition text-center" title="Editar">Editar</button>
+              <button onclick="deleteDevice('${dev.mac}')" class="bg-slate-900 hover:bg-rose-950/60 text-rose-400 font-semibold py-1.5 rounded-lg transition text-center" title="Excluir">Excluir</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function renderDiscoveredCards() {
+      const container = document.getElementById('discovered-cards-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (!discoveredList || discoveredList.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-500 italic col-span-full">Nenhuma nova placa detectada ainda. Aguardando tráfego MQTT...</p>';
+        return;
+      }
+
+      discoveredList.forEach(item => {
+        const card = document.createElement('div');
+        const isReg = item.registered;
+        card.className = 'bg-slate-950/90 border border-slate-800 rounded-xl p-4 space-y-3 flex flex-col justify-between';
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center space-x-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span class="font-mono text-xs font-extrabold text-indigo-300">${formatMac(item.mac)}</span>
+              </div>
+              <span class="text-[10px] bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded mono">L${item.layer || 2}</span>
+            </div>
+            <div class="text-[11px] text-slate-400 space-y-0.5">
+              <div>Visto em: <span class="text-slate-300 font-semibold">${item.last_seen || 'Agora'}</span></div>
+              ${item.rssi ? `<div>Sinal RSSI: <span class="text-amber-400 font-mono">${item.rssi} dBm</span></div>` : ''}
+              ${isReg ? `<div class="text-emerald-400 font-semibold">✓ Cadastrado: ${escapeHtml(item.name)}</div>` : '<div class="text-amber-400/90 font-medium">⚠️ Placa não cadastrada</div>'}
+            </div>
+          </div>
+          <div class="pt-2 border-t border-slate-900 flex items-center space-x-2">
+            ${isReg ? `
+              <button onclick="useDeviceInBuilder('${item.mac}')" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs py-1.5 rounded-lg transition font-semibold">
+                Usar como Alvo
+              </button>
+            ` : `
+              <button onclick="openDeviceModal('${item.mac}', 'Placa ${item.mac.slice(-4).toUpperCase()}', '', 'ABNT NBR 14522', '${item.layer === 1 ? 'ROOT' : 'NODE'}')" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white text-xs py-1.5 rounded-lg transition font-bold flex items-center justify-center space-x-1 shadow-sm">
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                <span>Cadastrar em 1 Clique</span>
+              </button>
+            `}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    function renderBuilderChips() {
+      const container = document.getElementById('builder-device-chips');
+      const selectDropdown = document.getElementById('builder-add-device-select');
+      if (!container) return;
+
+      const rawAddrs = document.getElementById('builder-addrs') ? document.getElementById('builder-addrs').value.toLowerCase() : '';
+      const selectedTokens = rawAddrs.split(',').map(s => s.trim().replace(/:/g, '')).filter(Boolean);
+
+      container.innerHTML = '';
+
+      // 1. Chips Especiais (ROOT, ANY, BROADCAST)
+      const specials = [
+        { alias: 'root', label: '★ ROOT', mac: 'ff0000010000' },
+        { alias: 'any', label: '★ ANY', mac: 'ffffffffffff' },
+        { alias: 'broadcast', label: '★ BROADCAST', mac: 'fffffffffe' }
+      ];
+
+      specials.forEach(s => {
+        const isSel = selectedTokens.includes(s.alias) || selectedTokens.includes(s.mac);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => toggleBuilderMac(s.alias);
+        btn.className = `px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center space-x-1 ${
+          isSel ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800'
+        }`;
+        btn.innerHTML = `${isSel ? '<span>✓</span>' : ''}<span>${s.label}</span>`;
+        container.appendChild(btn);
+      });
+
+      // 2. Chips para cada Medidor Cadastrado
+      devicesList.forEach(dev => {
+        const cleanMac = dev.mac.toLowerCase();
+        const isSel = selectedTokens.includes(cleanMac) || selectedTokens.includes(dev.name.toLowerCase());
+        const isRoot = dev.role === 'ROOT';
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => toggleBuilderMac(cleanMac);
+        btn.className = `px-2.5 py-1 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5 border ${
+          isSel
+            ? 'bg-cyan-600/30 border-cyan-500 text-cyan-200 shadow-sm'
+            : 'bg-slate-900/90 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 hover:bg-slate-800'
+        }`;
+        btn.innerHTML = `
+          <span>${isSel ? '✓' : (isRoot ? '🏢' : '⚡')}</span>
+          <span class="font-bold">${escapeHtml(dev.name)}</span>
+          <span class="mono text-[10px] text-slate-400">(${cleanMac.slice(-4)})</span>
+        `;
+        container.appendChild(btn);
+      });
+
+      // Atualizar o dropdown "+ Selecionar Medidor..."
+      if (selectDropdown) {
+        selectDropdown.innerHTML = '<option value="">+ Adicionar Medidor à Lista...</option>';
+        devicesList.forEach(dev => {
+          const opt = document.createElement('option');
+          opt.value = dev.mac;
+          opt.innerText = `${dev.name} [${formatMac(dev.mac)}]`;
+          selectDropdown.appendChild(opt);
+        });
+      }
+    }
+
+    function toggleBuilderMac(macOrAlias) {
+      const input = document.getElementById('builder-addrs');
+      const val = input.value.trim();
+      const currentList = val ? val.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+      const targetNorm = macOrAlias.toLowerCase().replace(/:/g, '');
+      const idx = currentList.findIndex(s => s.toLowerCase().replace(/:/g, '') === targetNorm);
+
+      if (idx >= 0) {
+        currentList.splice(idx, 1);
+      } else {
+        currentList.push(macOrAlias);
+      }
+
+      input.value = currentList.join(', ');
+      updateLivePreview();
+      renderBuilderChips();
+    }
+
+    function clearBuilderAddrs() {
+      document.getElementById('builder-addrs').value = '';
+      updateLivePreview();
+      renderBuilderChips();
+    }
+
+    function selectAllRegisteredDevices() {
+      const allMacs = devicesList.map(d => d.mac);
+      document.getElementById('builder-addrs').value = allMacs.join(', ');
+      updateLivePreview();
+      renderBuilderChips();
+    }
+
+    function onSelectDeviceDropdown(selectEl) {
+      const mac = selectEl.value;
+      if (!mac) return;
+      toggleBuilderMac(mac);
+      selectEl.value = '';
+    }
+
+    function updateTargetSuggestions() {
+      const datalist = document.getElementById('target-suggestions');
+      if (!datalist) return;
+      datalist.innerHTML = `
+        <option value="root">ROOT (ff:00:00:01:00:00)</option>
+        <option value="any">ANY (ff:ff:ff:ff:ff:ff)</option>
+        <option value="broadcast">BROADCAST (ff:ff:ff:ff:ff:fe)</option>
+      `;
+      devicesList.forEach(dev => {
+        const opt = document.createElement('option');
+        opt.value = dev.mac;
+        opt.innerText = `${dev.name} [${formatMac(dev.mac)}]`;
+        datalist.appendChild(opt);
+      });
+    }
+
+    function useDeviceInBuilder(mac) {
+      document.getElementById('builder-addrs').value = mac;
+      document.getElementById('global-target').value = mac;
+      updateLivePreview();
+      renderBuilderChips();
+      switchTab('builder');
+    }
+
+    function openDeviceModal(mac = '', name = '', serial = '', type = 'ABNT NBR 14522', role = 'NODE', notes = '') {
+      document.getElementById('dev-modal-mac').value = mac;
+      document.getElementById('dev-modal-name').value = name;
+      document.getElementById('dev-modal-serial').value = serial;
+      document.getElementById('dev-modal-type').value = type || 'ABNT NBR 14522';
+      document.getElementById('dev-modal-role').value = role || 'NODE';
+      document.getElementById('dev-modal-notes').value = notes;
+
+      document.getElementById('device-modal-title').innerText = mac ? 'Editar Medidor / Placa' : 'Cadastrar Novo Medidor / Placa';
+      document.getElementById('device-modal').classList.remove('hidden');
+      document.getElementById('dev-modal-name').focus();
+    }
+
+    function closeDeviceModal() {
+      document.getElementById('device-modal').classList.add('hidden');
+    }
+
+    async function handleSaveDevice(e) {
+      e.preventDefault();
+      const mac = document.getElementById('dev-modal-mac').value.trim();
+      const name = document.getElementById('dev-modal-name').value.trim();
+      const serial = document.getElementById('dev-modal-serial').value.trim();
+      const type = document.getElementById('dev-modal-type').value;
+      const role = document.getElementById('dev-modal-role').value;
+      const notes = document.getElementById('dev-modal-notes').value.trim();
+
+      try {
+        const res = await fetch('/api/devices', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mac: mac,
+            name: name,
+            meter_serial: serial,
+            meter_type: type,
+            role: role,
+            notes: notes
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          closeDeviceModal();
+          await loadDevices();
+          await loadDiscovered();
+        } else {
+          alert('Erro ao salvar: ' + (data.detail || 'Falha'));
+        }
+      } catch (err) {
+        alert('Erro ao conectar com servidor: ' + err);
+      }
+    }
+
+    async function deleteDevice(mac) {
+      if (!confirm(`Deseja realmente remover o medidor [${formatMac(mac)}] do cadastro?`)) {
+        return;
+      }
+      try {
+        const res = await fetch(`/api/devices/${mac}`, { method: 'DELETE' });
+        if (res.ok) {
+          await loadDevices();
+          await loadDiscovered();
+        } else {
+          alert('Erro ao excluir dispositivo.');
+        }
+      } catch (err) {
+        alert('Erro: ' + err);
+      }
+    }
+
+    // ================= CENTRAL DE OTA =================
+    async function loadFirmwares() {
+      try {
+        const res = await fetch('/api/firmware/list');
+        const list = await res.json();
+        const container = document.getElementById('firmware-list');
+        container.innerHTML = '';
+
+        if (!list || list.length === 0) {
+          container.innerHTML = '<p class="text-xs text-slate-500 italic">Nenhum firmware .bin encontrado na pasta ./firmware.</p>';
+          return;
+        }
+
+        list.forEach(fw => {
+          const card = document.createElement('div');
+          card.className = 'bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3';
+          card.innerHTML = `
+            <div class="flex items-center space-x-3">
+              <div class="p-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl">
+                <i data-lucide="binary" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <p class="font-bold text-sm text-slate-200 mono">${fw.name}</p>
+                <p class="text-xs text-slate-500">${fw.size_formatted} • Modificado em ${fw.modified}</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+              <button onclick="copyOtaUrl('${fw.url}')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-3 py-1.5 rounded-lg transition">Copiar URL</button>
+              <button onclick="openOtaModal('${fw.name}')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition flex items-center space-x-1 shadow-sm">
+                <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                <span>Instalar OTA</span>
+              </button>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+        lucide.createIcons();
+      } catch (e) {
+        console.error("Erro ao carregar firmwares:", e);
+      }
+    }
+
+    function copyOtaUrl(url) {
+      navigator.clipboard.writeText(url);
+      alert(`Link de download copiado: ${url}`);
+    }
+
+    async function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const res = await fetch('/api/firmware/upload', { method: 'POST', body: formData });
+        if (res.ok) {
+          alert(`Firmware ${file.name} carregado com sucesso!`);
+          loadFirmwares();
+        } else {
+          const err = await res.json();
+          alert('Erro no upload: ' + (err.detail || 'Falha'));
+        }
+      } catch (e) {
+        alert('Erro ao enviar: ' + e);
+      }
+    }
+
+    function openOtaModal(filename) {
+      document.getElementById('ota-selected-filename').value = filename;
+      document.getElementById('ota-target-mac').value = document.getElementById('global-target').value || 'any';
+      document.getElementById('modal-ota').classList.remove('hidden');
+    }
+
+    function closeOtaModal() {
+      document.getElementById('modal-ota').classList.add('hidden');
+    }
+
+    async function handleStartOta(event) {
+      event.preventDefault();
+      const filename = document.getElementById('ota-selected-filename').value;
+      const target = document.getElementById('ota-target-mac').value.trim() || 'any';
+      const block = document.getElementById('ota-block-mode').value;
+
+      const formData = new FormData();
+      formData.append('filename', filename);
+      formData.append('target_addr', target);
+      formData.append('block', block);
+      formData.append('env', currentEnv);
+
+      try {
+        const res = await fetch('/api/ota/start', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (res.ok) {
+          closeOtaModal();
+          alert(`Comando de OTA disparado para ${target}!\nAcompanhe as mensagens de progresso no Console ao Vivo.`);
+          switchTab('logs');
+        } else {
+          alert('Erro ao iniciar OTA: ' + (data.detail || 'Falha'));
+        }
+      } catch (e) {
+        alert('Erro: ' + e);
+      }
+    }
+
+    // ================= CONSOLE AO VIVO =================
+    function setLogCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-filter-btn').forEach(b => {
+        b.className = 'cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white';
+      });
+      document.getElementById(`btn-cat-${cat}`).className = 'cat-filter-btn px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-medium';
+      renderLogs();
+    }
+
+    function clearConsole() {
+      allMessages = [];
+      renderLogs();
+      fetch('/api/messages/clear', { method: 'POST' });
+    }
+
+    function renderLogs() {
+      const container = document.getElementById('console-output');
+      container.innerHTML = '';
+
+      const query = document.getElementById('log-search').value.toLowerCase().trim();
+
+      const filtered = allMessages.filter(msg => {
+        if (currentCategory !== 'all' && msg.category !== currentCategory) return false;
+        if (query) {
+          const str = (msg.topic + ' ' + msg.raw).toLowerCase();
+          return str.includes(query);
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<p class="text-slate-500 italic">Nenhuma mensagem compatível com o filtro atual.</p>';
+        return;
+      }
+
+      filtered.forEach(msg => {
+        appendLogLine(msg, false);
+      });
+
+      if (document.getElementById('autoscroll-toggle').checked) {
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+
+    function appendLogLine(msg, autoScroll = true) {
+      const container = document.getElementById('console-output');
+
+      let badge = '<span class="text-slate-400 bg-slate-800 px-2 py-0.5 rounded">MSG</span>';
+      if (msg.category === 'retorno') badge = '<span class="text-emerald-300 bg-emerald-950/80 border border-emerald-500/30 px-2 py-0.5 rounded font-bold">RETORNO</span>';
+      else if (msg.category === 'telemetria') badge = '<span class="text-sky-300 bg-sky-950/80 border border-sky-500/30 px-2 py-0.5 rounded font-bold">TEL</span>';
+      else if (msg.category === 'topologia') badge = '<span class="text-purple-300 bg-purple-950/80 border border-purple-500/30 px-2 py-0.5 rounded font-bold">TOPO</span>';
+      else if (msg.category === 'conexao') badge = '<span class="text-blue-300 bg-blue-950/80 border border-blue-500/30 px-2 py-0.5 rounded font-bold">CONN</span>';
+      else if (msg.category === 'erro') badge = '<span class="text-rose-300 bg-rose-950/80 border border-rose-500/30 px-2 py-0.5 rounded font-bold">ERRO</span>';
+
+      const line = document.createElement('div');
+      line.className = 'border-b border-slate-900 pb-2.5 hover:bg-slate-900/60 p-2 rounded-lg transition';
+      
+      let formattedPayload = msg.raw;
+      if (typeof msg.payload === 'object') {
+        formattedPayload = JSON.stringify(msg.payload, null, 2);
+      }
+
+      line.innerHTML = `
+        <div class="flex items-center space-x-2.5 text-[11px] text-slate-400 mb-1">
+          <span class="text-slate-500 font-mono">${msg.timestamp}</span>
+          ${badge}
+          <span class="text-indigo-400 font-semibold font-mono">${msg.topic}</span>
+        </div>
+        <pre class="text-slate-200 overflow-x-auto whitespace-pre-wrap font-mono">${escapeHtml(formattedPayload)}</pre>
+      `;
+
+      container.appendChild(line);
+
+      if (autoScroll && document.getElementById('autoscroll-toggle').checked) {
+        container.scrollTop = container.scrollHeight;
+      }
+    }
+
+    function escapeHtml(text) {
+      if (text === null || text === undefined) return '';
+      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+      return String(text).replace(/[&<>"']/g, m => map[m]);
+    }
+  </script>
+</body>
+</html>

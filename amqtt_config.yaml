@@ -1,0 +1,10 @@
+auth:
+  allow-anonymous: true
+  plugins:
+  - auth_anonymous
+listeners:
+  default:
+    bind: 0.0.0.0:1883
+    type: tcp
+topic-check:
+  enabled: false

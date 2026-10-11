@@ -1,0 +1,9 @@
+fastapi>=0.100.0
+uvicorn[standard]>=0.22.0
+paho-mqtt>=1.6.1
+pydantic>=2.0.0
+websockets>=11.0.0
+python-multipart>=0.0.6
+requests>=2.28.0
+amqtt>=0.10.1
+pyyaml>=6.0
