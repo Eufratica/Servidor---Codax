@@ -9,12 +9,18 @@ Desenvolvido para substituir com total autonomia infraestruturas de nuvem (AWS I
 ## 🚀 Principais Funcionalidades
 
 ### 1. 🎛️ Construtor Interativo de Comandos Codax
-* **Fim do Copia e Cola:** Selecione qualquer medidor ou controladora cadastrada através de **chips clicáveis interativos** ou dropdown rápido.
-* **Prevenção de Crash Automática:** Deduplicação inteligente de endereços MAC no payload (o envio de MACs repetidos pode crashar o microcontrolador ESP32).
+* **Destinatários Avançados (Múltiplos Destinos):** Menu flutuante acionado por setinha (`chevron-down`) com checklist completa de alvos broadcast (`ROOT`, `ANY`, `BROADCAST`), medidores cadastrados e placas detectadas.
+* **Chips Interativos de Medidores:** Selecione ou desmarque alvos diretamente clicando nos chips, com contador em tempo real (`X alvos selecionados`).
+* **Proteção Anti-Crash de Firmware:** Normalização e deduplicação estrita de MACs (`Set` sem repetição de endereços), impedindo que o firmware do ESP32 trave por MAC duplicado.
+* **Function com Busca Instantânea & Filtros:** Campo com botão de setinha expansível e filtros por categoria (`🌐 Rede & Mesh`, `⚡ Medidores`, `🛠️ Diagnóstico`, `📦 Sistema & OTA`), exibindo badges de tipo de valor e resumo técnico.
 * **Catálogo Exaustivo (62 Comandos):** Autocomplete em tempo real para todos os métodos (`query`, `change`, `setting`) com documentação técnica, dicas e valores de exemplo.
-* **Live Preview & Validação:** Visualização instantânea do JSON exato que será publicado no broker.
+* **Live JSON Preview & Formatação:** Visualização instantânea do JSON exato que será publicado no broker.
 
-### 2. ⚡ Cadastro Centralizado de Medidores & Placas
+### 2. 🎚️ Topbar Moderna & Painel de Bancada na Barra Lateral
+* **Barra Horizontal Primária:** Navegação completa de abas com design moderno SaaS, badges dinâmicos de contagem de medidores e console, indicador de IP do host, status do broker 1883 e alternador DEV/PROD.
+* **Barra Lateral (Painel de Operações & Telemetria):** Eliminação de redundâncias visuais, transformando a lateral em monitor de bancada com contagem de nós em tempo real, tópico de comando ativo, seletor de alvo global, botões de emergência (`Ping Malha`, `Ler Topologia`, `mwifi_restart`) e mini-feed de retornos MQTT ao vivo.
+
+### 3. ⚡ Cadastro Centralizado de Medidores & Placas
 * **Identificação Amigável:** Associe o MAC da placa a nomes reais (ex: *ROOT Laboratório*, *Medidor Bancada 01*).
 * **Campos Específicos de Medição:**
   * Número de Série do Medidor (ex: `MED-LAB-01`, `ABNT-998822`);
@@ -24,12 +30,12 @@ Desenvolvido para substituir com total autonomia infraestruturas de nuvem (AWS I
 * **Persistência Permanente:** Dados salvos em `devices.json`.
 * **Auto-Descoberta de Nós:** O servidor escuta o tráfego MQTT e a topologia. Ao detectar novos nós na rede, disponibiliza o botão `+ Cadastrar Este Nó` em 1 clique.
 
-### 3. 🌳 Árvore Visual de Topologia Mesh
+### 4. 🌳 Árvore Visual de Topologia Mesh
 * **Renderização Gráfica por Camadas:** Exibe a hierarquia da malha (Camada 1 ROOT, Camada 2 nós intermediários, Camada 3 folhas).
 * **Métricas de Link:** Intensidade de sinal RSSI do pai (*parent RSSI*), MACs de origem/destino e status online/offline.
 * **Ação Direta:** Botão `Selecionar Alvo ⚡` no próprio cartão do nó da árvore para enviá-lo ao construtor de comandos.
 
-### 4. 📖 Dicionário Oficial & Especificação de Arquitetura
+### 5. 📖 Dicionário Oficial & Especificação de Arquitetura
 * **Filtro "Regras & Arquitetura":**
   * Credencial global da malha: `QNfW7kyR1bAM` (com 1 clique para copiar);
   * Definições de papéis (`ROOT`, `NODE`, `IDLE`);
@@ -42,17 +48,17 @@ Desenvolvido para substituir com total autonomia infraestruturas de nuvem (AWS I
   * `setting raw_debug`: Inclui os 5 exemplos de captura de frames brutos (sem filtro, por medidor, por IP, por grandeza e parada imediata), além de guia de diagnóstico de retry do RS485 (`a` de 0 a 24).
   * `query reset_diag_log`: Tabela com os 10 códigos de boot/reset do ESP-IDF v4.4.8 (`esp_reset_reason`).
 
-### 5. 📦 Central de Firmware & OTA HTTP
+### 6. 📦 Central de Firmware & OTA HTTP
 * Upload de binários compilados (`.bin`) via interface ou arrastar-e-soltar.
 * Servidor HTTP embutido para entrega de firmware de alta velocidade.
 * Disparo de comando `mupgrade` apontando para o binário no servidor local com seleção de destino (`any`, `root` ou nó específico).
 
-### 6. 📡 Console ao Vivo MQTT (WebSockets)
+### 7. 📡 Console ao Vivo MQTT (WebSockets)
 * Escuta em tempo real de todos os tópicos da malha.
 * Filtros rápidos por categoria (*Retorno de Comandos*, *Telemetria*, *Topologia*, *Conexão*, *Erros de Barramento*).
 * Busca textual dinâmica, formatação de payloads JSON e auto-scroll inteligente com pause.
 
-### 7. 🔄 Alternador DEV / PROD
+### 8. 🔄 Alternador DEV / PROD
 * Alterne entre tópicos de produção (`config/shopba/mesh`) e desenvolvimento (`dev/config/shopba/mesh`) com apenas um clique.
 
 ---

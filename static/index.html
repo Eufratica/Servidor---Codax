@@ -82,35 +82,37 @@
       </div>
     </div>
 
-    <!-- Barra de Navegação Horizontal das Abas -->
-    <nav class="hidden md:flex items-center space-x-1 bg-slate-950/70 p-1 rounded-xl border border-slate-800/90 overflow-x-auto shrink-0">
-      <button onclick="switchTab('quick')" id="top-nav-btn-quick" class="top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition bg-indigo-600 text-white flex items-center space-x-1.5 shadow-sm">
+    <!-- Barra de Navegação Horizontal das Abas (Navegação Primária) -->
+    <nav class="hidden md:flex items-center space-x-1.5 bg-slate-950/80 p-1.5 rounded-2xl border border-slate-800/90 overflow-x-auto shrink-0 shadow-inner">
+      <button onclick="switchTab('quick')" id="top-nav-btn-quick" class="top-nav-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition bg-indigo-600 text-white flex items-center space-x-1.5 shadow-md shadow-indigo-600/30">
         <i data-lucide="zap" class="w-3.5 h-3.5"></i>
         <span>Ações</span>
       </button>
-      <button onclick="switchTab('builder')" id="top-nav-btn-builder" class="top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+      <button onclick="switchTab('builder')" id="top-nav-btn-builder" class="top-nav-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition text-slate-400 hover:text-white hover:bg-slate-800/80 flex items-center space-x-1.5">
         <i data-lucide="sliders" class="w-3.5 h-3.5 text-indigo-400"></i>
         <span>Construtor</span>
       </button>
-      <button onclick="switchTab('devices')" id="top-nav-btn-devices" class="top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+      <button onclick="switchTab('devices')" id="top-nav-btn-devices" class="top-nav-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition text-slate-400 hover:text-white hover:bg-slate-800/80 flex items-center space-x-1.5">
         <i data-lucide="gauge" class="w-3.5 h-3.5 text-cyan-400"></i>
         <span>Medidores</span>
+        <span id="top-badge-devices" class="bg-cyan-950/80 text-cyan-300 border border-cyan-500/40 text-[10px] px-1.5 py-0.2 rounded-full font-mono ml-0.5">0</span>
       </button>
-      <button onclick="switchTab('tree')" id="top-nav-btn-tree" class="top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+      <button onclick="switchTab('tree')" id="top-nav-btn-tree" class="top-nav-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition text-slate-400 hover:text-white hover:bg-slate-800/80 flex items-center space-x-1.5">
         <i data-lucide="network" class="w-3.5 h-3.5 text-emerald-400"></i>
         <span>Árvore Malha</span>
       </button>
-      <button onclick="switchTab('dictionary')" id="top-nav-btn-dictionary" class="top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+      <button onclick="switchTab('dictionary')" id="top-nav-btn-dictionary" class="top-nav-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition text-slate-400 hover:text-white hover:bg-slate-800/80 flex items-center space-x-1.5">
         <i data-lucide="book-open" class="w-3.5 h-3.5 text-amber-400"></i>
         <span>Dicionário</span>
       </button>
-      <button onclick="switchTab('ota')" id="top-nav-btn-ota" class="top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+      <button onclick="switchTab('ota')" id="top-nav-btn-ota" class="top-nav-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition text-slate-400 hover:text-white hover:bg-slate-800/80 flex items-center space-x-1.5">
         <i data-lucide="upload-cloud" class="w-3.5 h-3.5 text-purple-400"></i>
         <span>OTA</span>
       </button>
-      <button onclick="switchTab('logs')" id="top-nav-btn-logs" class="top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+      <button onclick="switchTab('logs')" id="top-nav-btn-logs" class="top-nav-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition text-slate-400 hover:text-white hover:bg-slate-800/80 flex items-center space-x-1.5">
         <i data-lucide="terminal" class="w-3.5 h-3.5 text-rose-400"></i>
         <span>Console</span>
+        <span id="top-badge-logs" class="bg-rose-950/80 text-rose-300 border border-rose-500/40 text-[10px] px-1.5 py-0.2 rounded-full font-mono ml-0.5">0</span>
       </button>
     </nav>
 
@@ -118,7 +120,7 @@
     <div class="flex items-center space-x-2.5 shrink-0">
       
       <!-- IP Host -->
-      <div class="hidden 2xl:flex items-center space-x-2 bg-slate-950/80 border border-slate-800 px-3 py-1.5 rounded-lg text-xs">
+      <div class="hidden xl:flex items-center space-x-2 bg-slate-950/80 border border-slate-800 px-3 py-1.5 rounded-xl text-xs shadow-sm">
         <i data-lucide="network" class="w-3.5 h-3.5 text-slate-400"></i>
         <span class="text-slate-400">IP:</span>
         <span id="top-ip" class="font-mono text-emerald-400 font-bold">127.0.0.1</span>
@@ -127,20 +129,26 @@
         </button>
       </div>
 
+      <!-- Tópico Ativo Badge -->
+      <div class="hidden 2xl:flex items-center space-x-1.5 bg-slate-950/80 border border-slate-800 px-2.5 py-1.5 rounded-xl text-xs">
+        <span class="text-slate-500 text-[10px] uppercase font-bold">Tópico:</span>
+        <code id="top-topic-badge" class="font-mono text-indigo-400 font-semibold text-[11px]">config/shopba/mesh</code>
+      </div>
+
       <!-- Broker MQTT Status -->
-      <div class="hidden sm:flex items-center space-x-2 bg-slate-950/80 border border-slate-800 px-3 py-1.5 rounded-lg text-xs">
+      <div class="hidden sm:flex items-center space-x-2 bg-slate-950/80 border border-slate-800 px-3 py-1.5 rounded-xl text-xs shadow-sm">
         <span id="top-dot-broker" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
         <span id="top-label-broker" class="font-semibold text-emerald-400">1883 Ativo</span>
       </div>
 
       <!-- Alternador DEV / PROD -->
-      <button onclick="toggleEnv()" id="top-btn-env" class="flex items-center space-x-1.5 bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/60 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition">
+      <button onclick="toggleEnv()" id="top-btn-env" class="flex items-center space-x-1.5 bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/60 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition shadow-sm">
         <i data-lucide="layers" class="w-3.5 h-3.5"></i>
         <span id="top-label-env">PROD</span>
       </button>
 
       <!-- Botão Solicitar Topologia -->
-      <button onclick="sendQuickCommand('query', 'topology')" class="hidden sm:flex items-center space-x-1.5 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow-sm">
+      <button onclick="sendQuickCommand('query', 'topology')" class="hidden sm:flex items-center space-x-1.5 bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl text-xs font-semibold transition shadow-sm shadow-indigo-600/20">
         <i data-lucide="git-merge" class="w-3.5 h-3.5"></i>
         <span>Ler Malha</span>
       </button>
@@ -152,84 +160,125 @@
   <!-- ================= CONTAINER PRINCIPAL (SIDEBAR + CONTEÚDO) ================= -->
   <div class="flex-1 flex overflow-hidden min-h-0">
     
-    <!-- ================= BARRA LATERAL (SIDEBAR) ================= -->
-    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 select-none z-30 overflow-y-auto min-h-0">
+    <!-- ================= BARRA LATERAL (PAINEL DE BANCADA & TELEMETRIA AO VIVO) ================= -->
+    <aside class="w-72 bg-slate-900/95 border-r border-slate-800 flex flex-col justify-between shrink-0 select-none z-30 overflow-y-auto min-h-0">
       
-      <!-- Menu de Navegação -->
       <div class="p-4 flex flex-col space-y-4 overflow-y-auto">
         
-        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-500 px-2">Menu Principal</div>
-
-        <nav class="space-y-1">
-          
-          <button onclick="switchTab('quick')" id="nav-btn-quick" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition bg-indigo-600 text-white shadow-sm shadow-indigo-600/30">
-            <i data-lucide="zap" class="w-4 h-4"></i>
-            <span>Ações Rápidas</span>
-          </button>
-
-          <button onclick="switchTab('builder')" id="nav-btn-builder" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
-            <i data-lucide="sliders" class="w-4 h-4 text-indigo-400"></i>
-            <span class="text-indigo-300 font-semibold">Construtor Codax</span>
-          </button>
-
-          <button onclick="switchTab('devices')" id="nav-btn-devices" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
-            <div class="flex items-center space-x-3">
-              <i data-lucide="gauge" class="w-4 h-4 text-cyan-400"></i>
-              <span class="text-cyan-300 font-semibold">Medidores & Placas</span>
+        <!-- Header do Painel -->
+        <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <div>
+              <div class="text-[11px] font-extrabold uppercase tracking-wider text-slate-200">Painel de Bancada</div>
+              <div class="text-[10px] text-slate-400">Telemetria & Operações Mesh</div>
             </div>
-            <span id="badge-devices-count" class="bg-slate-800 text-cyan-300 text-[10px] px-2 py-0.5 rounded-full font-mono">0</span>
-          </button>
-
-          <button onclick="switchTab('tree')" id="nav-btn-tree" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
-            <i data-lucide="network" class="w-4 h-4 text-emerald-400"></i>
-            <span class="text-emerald-300 font-semibold">Árvore da Malha</span>
-          </button>
-
-          <button onclick="switchTab('dictionary')" id="nav-btn-dictionary" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
-            <i data-lucide="book-open" class="w-4 h-4 text-amber-400"></i>
-            <span class="text-amber-300 font-semibold">Dicionário de Comandos</span>
-          </button>
-
-          <button onclick="switchTab('ota')" id="nav-btn-ota" class="nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
-            <i data-lucide="upload-cloud" class="w-4 h-4"></i>
-            <span>Central de OTA</span>
-          </button>
-
-          <button onclick="switchTab('logs')" id="nav-btn-logs" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60">
-            <div class="flex items-center space-x-3">
-              <i data-lucide="terminal" class="w-4 h-4"></i>
-              <span>Console ao Vivo</span>
-            </div>
-            <span id="badge-logs-count" class="bg-slate-800 text-slate-300 text-[10px] px-2 py-0.5 rounded-full font-mono">0</span>
-          </button>
-
-        </nav>
-
-        <!-- Seletor Rápido de Alvo na Barra Lateral -->
-        <div class="bg-slate-950/70 border border-slate-800/80 rounded-xl p-3.5 space-y-2.5 mt-2">
-          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
-            <i data-lucide="target" class="w-3.5 h-3.5 text-indigo-400"></i>
-            <span>Alvo Padrão</span>
           </div>
-          <input type="text" id="global-target" list="target-suggestions" value="root" placeholder="MAC ou alias..." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 mono focus:outline-none focus:border-indigo-500">
+          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono font-bold">ONLINE</span>
+        </div>
+
+        <!-- Métricas Rápidas em Tempo Real -->
+        <div class="grid grid-cols-2 gap-2">
+          <div class="bg-slate-950/80 border border-slate-800 p-2.5 rounded-xl cursor-pointer hover:border-cyan-500/40 transition" onclick="switchTab('devices')" title="Ver medidores">
+            <div class="text-[10px] font-semibold text-slate-400">Medidores</div>
+            <div class="text-base font-extrabold text-cyan-400 mt-0.5 flex items-baseline justify-between">
+              <span id="sidebar-count-devices">0</span>
+              <span class="text-[10px] text-slate-500 font-normal">salvos</span>
+            </div>
+          </div>
+          <div class="bg-slate-950/80 border border-slate-800 p-2.5 rounded-xl cursor-pointer hover:border-emerald-500/40 transition" onclick="switchTab('tree')" title="Ver topologia">
+            <div class="text-[10px] font-semibold text-slate-400">Na Malha</div>
+            <div class="text-base font-extrabold text-emerald-400 mt-0.5 flex items-baseline justify-between">
+              <span id="sidebar-count-discovered">0</span>
+              <span class="text-[10px] text-slate-500 font-normal">vistos</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informação do Tópico Ativo & Ambiente -->
+        <div class="bg-slate-950/70 border border-slate-800 rounded-xl p-3 space-y-1.5">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="text-slate-400 font-medium">Tópico de Comando:</span>
+            <span id="sidebar-env-badge" class="text-[10px] bg-indigo-500/20 text-indigo-300 px-1.5 py-0.2 rounded font-bold mono">PROD</span>
+          </div>
+          <code id="sidebar-active-topic" class="block mono text-[11px] font-bold text-indigo-300 bg-slate-900/90 px-2 py-1 rounded border border-slate-800/80 truncate">config/shopba/mesh</code>
+        </div>
+
+        <!-- Seletor Rápido de Alvo Global -->
+        <div class="bg-slate-950/70 border border-slate-800/80 rounded-xl p-3 space-y-2">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-300 flex items-center justify-between">
+            <div class="flex items-center space-x-1.5">
+              <i data-lucide="target" class="w-3.5 h-3.5 text-indigo-400"></i>
+              <span>Alvo Padrão</span>
+            </div>
+            <span class="text-[10px] text-slate-500 font-mono" id="sidebar-target-hint">addr[0]</span>
+          </div>
+          <input type="text" id="global-target" list="target-suggestions" value="root" placeholder="MAC ou alias..." class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1.5 text-xs text-slate-100 mono focus:outline-none focus:border-indigo-500">
           <datalist id="target-suggestions">
             <option value="root">ROOT (ff:00:00:01:00:00)</option>
             <option value="any">ANY (ff:ff:ff:ff:ff:ff)</option>
             <option value="broadcast">BROADCAST (ff:ff:ff:ff:ff:fe)</option>
           </datalist>
           <div class="grid grid-cols-3 gap-1 pt-0.5">
-            <button onclick="setTarget('root')" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-bold py-1 rounded text-slate-300 transition text-center">ROOT</button>
-            <button onclick="setTarget('any')" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-bold py-1 rounded text-slate-300 transition text-center">ANY</button>
-            <button onclick="setTarget('broadcast')" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-bold py-1 rounded text-slate-300 transition text-center">B-CAST</button>
+            <button onclick="setTarget('root')" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-bold py-1 rounded text-slate-300 transition text-center hover:text-white">ROOT</button>
+            <button onclick="setTarget('any')" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-bold py-1 rounded text-slate-300 transition text-center hover:text-white">ANY</button>
+            <button onclick="setTarget('broadcast')" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-bold py-1 rounded text-slate-300 transition text-center hover:text-white">B-CAST</button>
+          </div>
+        </div>
+
+        <!-- Ações de Bancada Imediatas -->
+        <div class="space-y-1.5">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-1">Comandos de Emergência</div>
+          <div class="grid grid-cols-1 gap-1.5">
+            <button onclick="sendQuickCommand('query', 'ping')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-indigo-500/50 text-slate-200 transition">
+              <span class="flex items-center space-x-2">
+                <i data-lucide="signal" class="w-3.5 h-3.5 text-indigo-400"></i>
+                <span>Ping Malha Geral</span>
+              </span>
+              <span class="text-[10px] mono text-slate-500">query</span>
+            </button>
+            <button onclick="sendQuickCommand('query', 'topology')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/50 text-slate-200 transition">
+              <span class="flex items-center space-x-2">
+                <i data-lucide="git-merge" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>Ler Topologia</span>
+              </span>
+              <span class="text-[10px] mono text-slate-500">L1+L2</span>
+            </button>
+            <button onclick="sendQuickCommand('query', 'mwifi_restart')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold bg-slate-950/80 hover:bg-amber-950/40 border border-slate-800 hover:border-amber-500/50 text-amber-300 transition" title="Destrava deadlocks sem reboot">
+              <span class="flex items-center space-x-2">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span>mwifi_restart()</span>
+              </span>
+              <span class="text-[10px] mono text-amber-400/80">destravar</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mini Feed ao Vivo de Retornos MQTT -->
+        <div class="space-y-1.5 pt-1">
+          <div class="flex items-center justify-between px-1">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Feed de Retornos</span>
+            <button onclick="switchTab('logs')" class="text-[10px] text-indigo-400 hover:underline flex items-center space-x-1">
+              <span>Abrir Console</span>
+              <i data-lucide="arrow-right" class="w-3 h-3"></i>
+            </button>
+          </div>
+          <div id="sidebar-mini-feed" class="space-y-1.5 max-h-48 overflow-y-auto">
+            <div class="bg-slate-950/60 border border-slate-800/80 p-2.5 rounded-xl text-[11px] text-slate-500 italic text-center">
+              Aguardando mensagens MQTT...
+            </div>
           </div>
         </div>
 
       </div>
 
-      <!-- Rodapé da Sidebar -->
-      <div class="p-3.5 border-t border-slate-800 text-[11px] text-slate-500 flex items-center justify-between">
-        <span>Codax Hub v2.5</span>
-        <span class="mono text-emerald-400">Pronto</span>
+      <!-- Rodapé da Barra Lateral -->
+      <div class="p-3.5 border-t border-slate-800 bg-slate-950/50 text-[11px] text-slate-500 flex items-center justify-between">
+        <div class="flex items-center space-x-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span>Broker 1883</span>
+        </div>
+        <span class="mono text-indigo-400 font-bold">OTA :8000</span>
       </div>
 
     </aside>
@@ -434,50 +483,131 @@
                     </div>
                   </div>
 
-                  <!-- Function Autocomplete -->
-                  <div>
+                  <!-- Function Autocomplete com Setinha, Busca Instantânea e Filtros -->
+                  <div class="relative">
                     <div class="flex items-center justify-between mb-2">
-                      <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider">2. Function (com Busca Instantânea)</label>
+                      <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-1.5">
+                        <i data-lucide="cpu" class="w-3.5 h-3.5 text-indigo-400"></i>
+                        <span>2. Function do Firmware</span>
+                      </label>
                       <span id="function-count-badge" class="text-[11px] text-indigo-400 font-semibold">32 funções disponíveis</span>
                     </div>
+
                     <div class="relative">
-                      <input type="text" id="builder-function-input" oninput="onFunctionInputFilter()" placeholder="Digite para buscar function (ex: back_trace, ping, meter...)" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-3 pl-10 text-sm text-slate-100 mono focus:outline-none focus:border-indigo-500">
+                      <input type="text" id="builder-function-input" oninput="onFunctionInputFilter()" onclick="openFunctionDropdown()" placeholder="Buscar ou escolher function..." class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-3 pl-10 pr-12 text-sm text-slate-100 mono focus:outline-none focus:border-indigo-500 shadow-inner">
                       <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3.5 top-3.5"></i>
                       
-                      <!-- Dropdown de autocomplete -->
-                      <div id="function-autocomplete-dropdown" class="absolute z-20 left-0 right-0 mt-1 max-h-56 overflow-y-auto bg-slate-900 border border-slate-700 rounded-xl shadow-2xl hidden space-y-1 p-1">
-                      </div>
+                      <!-- Botão com Setinha para Abrir / Fechar Dropdown -->
+                      <button type="button" id="btn-toggle-function-dropdown" onclick="toggleFunctionDropdown()" class="absolute right-2 top-2 p-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition" title="Ver lista com filtros">
+                        <i data-lucide="chevron-down" id="func-arrow-icon" class="w-4 h-4 transition-transform duration-200"></i>
+                      </button>
                     </div>
-                    <p id="builder-doc" class="text-xs text-slate-400 mt-1.5 italic min-h-[1.25rem]"></p>
+
+                    <!-- Dropdown Flutuante de Functions com Filtros de Categoria -->
+                    <div id="function-autocomplete-dropdown" class="absolute z-30 left-0 right-0 mt-2 bg-slate-900/98 backdrop-blur border border-slate-700/90 rounded-2xl shadow-2xl hidden flex flex-col max-h-80 overflow-hidden">
+                      
+                      <!-- Barra de Filtros por Categoria -->
+                      <div class="p-2 bg-slate-950/90 border-b border-slate-800 flex items-center space-x-1 overflow-x-auto shrink-0">
+                        <button type="button" onclick="setFunctionCategoryFilter('all')" id="btn-func-cat-all" class="func-cat-btn px-2.5 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shrink-0">Todas</button>
+                        <button type="button" onclick="setFunctionCategoryFilter('mesh')" id="btn-func-cat-mesh" class="func-cat-btn px-2.5 py-1 rounded-lg text-[11px] font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 shrink-0">🌐 Rede & Mesh</button>
+                        <button type="button" onclick="setFunctionCategoryFilter('meter')" id="btn-func-cat-meter" class="func-cat-btn px-2.5 py-1 rounded-lg text-[11px] font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 shrink-0">⚡ Medidores</button>
+                        <button type="button" onclick="setFunctionCategoryFilter('diag')" id="btn-func-cat-diag" class="func-cat-btn px-2.5 py-1 rounded-lg text-[11px] font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 shrink-0">🛠️ Diagnóstico</button>
+                        <button type="button" onclick="setFunctionCategoryFilter('system')" id="btn-func-cat-system" class="func-cat-btn px-2.5 py-1 rounded-lg text-[11px] font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 shrink-0">📦 Sistema/OTA</button>
+                      </div>
+
+                      <!-- Lista com Rolagem das Funções Filtradas -->
+                      <div id="function-items-list" class="p-1.5 space-y-1 overflow-y-auto max-h-60">
+                        <!-- Itens renderizados dinamicamente por renderFunctionDropdownList() -->
+                      </div>
+
+                    </div>
+
+                    <!-- Dica e descrição da função atual -->
+                    <div id="builder-doc-container" class="mt-2 p-2.5 bg-slate-950/60 border border-slate-800/80 rounded-xl">
+                      <p id="builder-doc" class="text-xs text-slate-300 italic min-h-[1.25rem]">Selecione uma função acima para ver a especificação do firmware.</p>
+                    </div>
                   </div>
 
-                  <!-- Seleção Inteligente de Medidores & MACs -->
-                  <div class="space-y-2">
+                  <!-- Destinatários com Dropdown de Seleção Múltipla, Setinha e Chips Clicáveis -->
+                  <div class="space-y-2 relative">
                     <div class="flex items-center justify-between">
-                      <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-1.5">
-                        <i data-lucide="target" class="w-3.5 h-3.5 text-indigo-400"></i>
-                        <span>3. Destinatários (Clique nos Medidores para Selecionar)</span>
-                      </label>
-                      <div class="flex items-center space-x-1">
-                        <button type="button" onclick="clearBuilderAddrs()" class="text-[10px] bg-slate-800 hover:bg-rose-950/60 hover:text-rose-300 text-slate-400 px-2 py-0.5 rounded transition">Limpar</button>
-                        <button type="button" onclick="selectAllRegisteredDevices()" class="text-[10px] bg-indigo-950 hover:bg-indigo-900 text-indigo-300 border border-indigo-700/50 px-2 py-0.5 rounded transition">Todos Cadastrados</button>
+                      <div class="flex items-center space-x-2">
+                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center space-x-1.5">
+                          <i data-lucide="target" class="w-3.5 h-3.5 text-indigo-400"></i>
+                          <span>3. Destinatários</span>
+                        </label>
+                        <span id="builder-recipients-count" class="text-[10px] bg-indigo-950 text-indigo-300 border border-indigo-700/50 px-2 py-0.5 rounded-full font-mono font-bold">1 alvo</span>
+                      </div>
+                      <div class="flex items-center space-x-1.5">
+                        <button type="button" onclick="clearBuilderAddrs()" class="text-[10px] bg-slate-800 hover:bg-rose-950/60 hover:text-rose-300 text-slate-400 px-2 py-1 rounded-lg transition">Limpar</button>
+                        <button type="button" onclick="setTargetOnlyRoot()" class="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded-lg transition font-medium">Apenas ROOT</button>
+                        <button type="button" onclick="selectAllRegisteredDevices()" class="text-[10px] bg-indigo-950 hover:bg-indigo-900 text-indigo-300 border border-indigo-700/50 px-2 py-1 rounded-lg transition font-bold">Todos Medidores</button>
                       </div>
                     </div>
 
-                    <!-- Chips de Seleção Rápida de Medidores -->
-                    <div id="builder-device-chips" class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-1.5 bg-slate-950/80 rounded-xl border border-slate-800/80">
-                      <!-- Preenchido dinamicamente por renderBuilderChips() -->
+                    <!-- Barra de Entrada com Botão de Setinha para Dropdown Completo -->
+                    <div class="relative flex items-center space-x-2">
+                      <div class="relative flex-1">
+                        <input type="text" id="builder-addrs" oninput="updateLivePreview(); renderBuilderChips(); updateRecipientsPopoverSelection();" list="target-suggestions" value="root" placeholder="MACs ou aliases (ex: root, 4417934f49a4...)" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-3 pr-10 text-xs text-slate-100 mono focus:outline-none focus:border-indigo-500 shadow-inner">
+                        <span class="absolute right-3 top-3 text-[10px] text-slate-500 mono" title="Separar múltiplos com vírgula">CSV</span>
+                      </div>
+                      
+                      <!-- Botão com Setinha para Abrir Menu de Escolha -->
+                      <button type="button" id="btn-toggle-recipients-dropdown" onclick="toggleRecipientsDropdown()" class="h-11 px-3.5 bg-slate-900 hover:bg-slate-800 border border-slate-700/80 hover:border-indigo-500/60 rounded-xl text-xs font-semibold text-slate-200 hover:text-white transition flex items-center space-x-1.5 shrink-0 shadow-sm">
+                        <span>Escolher</span>
+                        <i data-lucide="chevron-down" id="recipients-arrow-icon" class="w-4 h-4 text-slate-400 transition-transform duration-200"></i>
+                      </button>
                     </div>
 
-                    <div class="flex items-center space-x-2 pt-1">
-                      <!-- Dropdown rápido para adicionar medidor cadastrado ou descoberto -->
-                      <select id="builder-add-device-select" onchange="onSelectDeviceDropdown(this)" class="bg-slate-950 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 max-w-xs shrink-0">
-                        <option value="">+ Selecionar Medidor...</option>
-                      </select>
+                    <!-- Dropdown Popover de Destinatários (Alvos Globais + Medidores com Checkbox) -->
+                    <div id="recipients-dropdown-popover" class="absolute z-30 left-0 right-0 mt-1 bg-slate-900/98 backdrop-blur border border-slate-700/90 rounded-2xl shadow-2xl hidden p-3 space-y-3 max-h-80 overflow-y-auto">
+                      
+                      <!-- Seção Alvos Globais -->
+                      <div>
+                        <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center justify-between">
+                          <span>Alvos Globais & Broadcast</span>
+                          <span class="text-[9px] text-slate-500">Clique para alternar</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                          <button type="button" onclick="toggleBuilderMac('root')" id="pop-target-root" class="p-2 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-800 text-left transition text-xs font-semibold text-slate-300">
+                            <div class="text-[11px] font-bold text-indigo-300">★ ROOT</div>
+                            <div class="text-[9px] text-slate-500 mono truncate">ff0000010000</div>
+                          </button>
+                          <button type="button" onclick="toggleBuilderMac('any')" id="pop-target-any" class="p-2 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-800 text-left transition text-xs font-semibold text-slate-300">
+                            <div class="text-[11px] font-bold text-amber-300">★ ANY</div>
+                            <div class="text-[9px] text-slate-500 mono truncate">ffffffffffff</div>
+                          </button>
+                          <button type="button" onclick="toggleBuilderMac('broadcast')" id="pop-target-broadcast" class="p-2 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-800 text-left transition text-xs font-semibold text-slate-300">
+                            <div class="text-[11px] font-bold text-emerald-300">★ BROADCAST</div>
+                            <div class="text-[9px] text-slate-500 mono truncate">fffffffffe</div>
+                          </button>
+                        </div>
+                      </div>
 
-                      <!-- Campo de texto (para visualização dos MACs selecionados ou customizados) -->
-                      <input type="text" id="builder-addrs" oninput="updateLivePreview()" list="target-suggestions" value="root" placeholder="MACs selecionados..." class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100 mono focus:outline-none focus:border-indigo-500">
+                      <!-- Seção Medidores Cadastrados com Checkbox -->
+                      <div class="border-t border-slate-800 pt-2.5">
+                        <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                          <span>Medidores Cadastrados (<span id="pop-devices-count">0</span>)</span>
+                          <span class="text-[9px] text-slate-500">Múltipla seleção suportada</span>
+                        </div>
+                        <div id="popover-devices-checklist" class="space-y-1 max-h-40 overflow-y-auto pr-1">
+                          <!-- Inserido dinamicamente por renderRecipientsPopover() -->
+                        </div>
+                      </div>
+
                     </div>
+
+                    <!-- Chips Interativos de Seleção Rápida (Clique para Ligar / Desligar) -->
+                    <div>
+                      <div class="flex items-center justify-between text-[10px] text-slate-400 mb-1">
+                        <span>Clique nos medidores abaixo para incluir ou remover da lista:</span>
+                        <span class="text-slate-500">🛡️ Proteção anti-crash ativa</span>
+                      </div>
+                      <div id="builder-device-chips" class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-2 bg-slate-950/80 rounded-xl border border-slate-800/80 shadow-inner">
+                        <!-- Preenchido dinamicamente por renderBuilderChips() -->
+                      </div>
+                    </div>
+
                   </div>
 
                   <!-- Value Editor -->
@@ -1023,12 +1153,19 @@
           allMessages = data.recent_messages || [];
           renderLogs();
           if (data.status) updateStatusUI(data.status);
+          if (data.recent_messages && data.recent_messages.length > 0) {
+            data.recent_messages.slice(-4).forEach(m => updateSidebarMiniFeed(m));
+          }
         } else if (data.type === 'mqtt_message') {
           allMessages.push(data.message);
           if (allMessages.length > 300) allMessages.shift();
           appendLogLine(data.message);
           appendSubFeedLine(data.message);
-          document.getElementById('badge-logs-count').innerText = allMessages.length;
+          updateSidebarMiniFeed(data.message);
+          const badgeLogs = document.getElementById('badge-logs-count');
+          if (badgeLogs) badgeLogs.innerText = allMessages.length;
+          const topBadgeLogs = document.getElementById('top-badge-logs');
+          if (topBadgeLogs) topBadgeLogs.innerText = allMessages.length;
 
           if (data.message.category === 'topologia') {
             renderVisualTree(data.message.payload);
@@ -1042,6 +1179,43 @@
         document.getElementById('top-label-broker').innerText = 'Desconectado';
         setTimeout(initWebSocket, 3000);
       };
+    }
+
+    function updateSidebarMiniFeed(msg) {
+      const container = document.getElementById('sidebar-mini-feed');
+      if (!container) return;
+
+      if (container.querySelector('.italic')) {
+        container.innerHTML = '';
+      }
+
+      let badgeColor = 'text-slate-400 bg-slate-800';
+      if (msg.category === 'retorno') badgeColor = 'text-emerald-300 bg-emerald-950/80 border border-emerald-500/30';
+      else if (msg.category === 'telemetria') badgeColor = 'text-cyan-300 bg-cyan-950/80 border border-cyan-500/30';
+      else if (msg.category === 'topologia') badgeColor = 'text-purple-300 bg-purple-950/80 border border-purple-500/30';
+      else if (msg.category === 'erro') badgeColor = 'text-rose-300 bg-rose-950/80 border border-rose-500/30';
+
+      let snippet = msg.raw;
+      if (typeof msg.payload === 'object') {
+        try { snippet = JSON.stringify(msg.payload); } catch {}
+      }
+      if (snippet.length > 55) snippet = snippet.slice(0, 52) + '...';
+
+      const card = document.createElement('div');
+      card.className = 'bg-slate-950/90 hover:bg-slate-800/80 border border-slate-800/80 p-2 rounded-xl text-left cursor-pointer transition space-y-1';
+      card.onclick = () => switchTab('logs');
+      card.innerHTML = `
+        <div class="flex items-center justify-between text-[10px]">
+          <span class="font-mono text-slate-500">${msg.timestamp.split(' ')[1] || msg.timestamp}</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.2 rounded ${badgeColor}">${msg.category.toUpperCase()}</span>
+        </div>
+        <div class="text-[11px] mono text-slate-300 truncate" title="${escapeHtml(snippet)}">${escapeHtml(snippet)}</div>
+      `;
+
+      container.insertBefore(card, container.firstChild);
+      while (container.children.length > 4) {
+        container.removeChild(container.lastChild);
+      }
     }
 
     // ================= STATUS & ENV =================
@@ -1062,15 +1236,22 @@
       const activeTopic = data.active_topic || (currentEnv === 'PROD' ? 'config/shopba/mesh' : 'dev/config/shopba/mesh');
 
       document.getElementById('top-ip').innerText = hostIP;
-      document.getElementById('top-topic-badge').innerText = activeTopic;
-      document.getElementById('builder-target-topic').innerText = activeTopic;
+      const topTopic = document.getElementById('top-topic-badge');
+      if (topTopic) topTopic.innerText = activeTopic;
+      const builderTopic = document.getElementById('builder-target-topic');
+      if (builderTopic) builderTopic.innerText = activeTopic;
       document.getElementById('top-label-env').innerText = currentEnv;
+
+      const sideTopic = document.getElementById('sidebar-active-topic');
+      if (sideTopic) sideTopic.innerText = activeTopic;
+      const sideEnv = document.getElementById('sidebar-env-badge');
+      if (sideEnv) sideEnv.innerText = currentEnv;
 
       const btnEnv = document.getElementById('top-btn-env');
       if (currentEnv === 'PROD') {
-        btnEnv.className = 'flex items-center space-x-1.5 bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/60 px-3 py-1.5 rounded-lg text-xs font-semibold transition';
+        btnEnv.className = 'flex items-center space-x-1.5 bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/60 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition shadow-sm';
       } else {
-        btnEnv.className = 'flex items-center space-x-1.5 bg-amber-950/60 border border-amber-500/40 text-amber-300 hover:bg-amber-900/60 px-3 py-1.5 rounded-lg text-xs font-semibold transition';
+        btnEnv.className = 'flex items-center space-x-1.5 bg-amber-950/60 border border-amber-500/40 text-amber-300 hover:bg-amber-900/60 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition shadow-sm';
       }
     }
 
@@ -1100,29 +1281,18 @@
 
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.className = 'nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60';
-        if (!btn.querySelector('span:nth-child(2)')) {
-          btn.className = 'nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition text-slate-400 hover:text-slate-200 hover:bg-slate-800/60';
-        }
-      });
+
+      // Atualizar botões da barra superior horizontal
       document.querySelectorAll('.top-nav-btn').forEach(btn => {
-        btn.className = 'top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5';
+        btn.className = 'top-nav-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition text-slate-400 hover:text-white hover:bg-slate-800/80 flex items-center space-x-1.5';
       });
 
-      document.getElementById(`view-${tabId}`).classList.remove('hidden');
-      const activeBtn = document.getElementById(`nav-btn-${tabId}`);
-      if (activeBtn) {
-        if (tabId === 'logs' || tabId === 'devices') {
-          activeBtn.className = 'nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition bg-indigo-600 text-white shadow-sm shadow-indigo-600/30';
-        } else {
-          activeBtn.className = 'nav-item w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-medium transition bg-indigo-600 text-white shadow-sm shadow-indigo-600/30';
-        }
-      }
+      const targetView = document.getElementById(`view-${tabId}`);
+      if (targetView) targetView.classList.remove('hidden');
 
       const topActive = document.getElementById(`top-nav-btn-${tabId}`);
       if (topActive) {
-        topActive.className = 'top-nav-btn px-2.5 py-1.5 rounded-lg text-xs font-medium transition bg-indigo-600 text-white flex items-center space-x-1.5 shadow-sm';
+        topActive.className = 'top-nav-btn px-3 py-1.5 rounded-xl text-xs font-semibold transition bg-indigo-600 text-white flex items-center space-x-1.5 shadow-md shadow-indigo-600/30';
       }
 
       const info = TAB_INFO[tabId];
@@ -1142,14 +1312,21 @@
       } else if (tabId === 'devices') {
         loadDevices();
         loadDiscovered();
+      } else if (tabId === 'builder') {
+        renderBuilderChips();
+        renderRecipientsPopover();
       }
       lucide.createIcons();
     }
 
     function setTarget(alias) {
-      document.getElementById('global-target').value = alias;
-      document.getElementById('builder-addrs').value = alias;
+      const globInput = document.getElementById('global-target');
+      if (globInput) globInput.value = alias;
+      const builderAddrs = document.getElementById('builder-addrs');
+      if (builderAddrs) builderAddrs.value = alias;
       updateLivePreview();
+      renderBuilderChips();
+      renderRecipientsPopover();
     }
 
     // ================= SUB-ABAS DO CONSTRUTOR CODAX =================
@@ -1188,6 +1365,122 @@
       }
     }
 
+    let currentFunctionCategoryFilter = 'all';
+
+    function getFunctionCategory(funcName) {
+      if (!funcName) return 'mesh';
+      const f = funcName.toLowerCase();
+      const meshFuncs = ['mwifi_restart', 'block_topology', 'ping', 'topology', 'root', 'mesh_id', 'network', 'self_organized', 'parent_rssi', 'child_rssi', 'all_child_rssi', 'group_id', 'bcast_block', 'mesh_type', 'assoc_delay', 'beacon_interval', 'allow_routing', 'allow_be_parent', 'layer', 'parent_mac', 'router_rssi', 'heap_threshold', 'min_heap_threshold', 'reboot', 'deauth_child', 'change_router'];
+      const meterFuncs = ['meter_serial_number', 'telemetry', 'counter', 'protocol', 'meter_time', 'meter_type'];
+      const diagFuncs = ['core_dump', 'info', 'log_level', 'back_trace', 'memory', 'time', 'raw_debug'];
+      const sysFuncs = ['partition', 'otalinkhttp', 'mupgrade'];
+
+      if (meshFuncs.includes(f)) return 'mesh';
+      if (meterFuncs.includes(f)) return 'meter';
+      if (diagFuncs.includes(f)) return 'diag';
+      if (sysFuncs.includes(f)) return 'system';
+      return 'mesh';
+    }
+
+    function getFunctionCategoryBadge(cat) {
+      if (cat === 'mesh') return '<span class="text-[9px] bg-indigo-950/80 text-indigo-300 border border-indigo-500/30 px-1.5 py-0.5 rounded font-medium">Rede/Mesh</span>';
+      if (cat === 'meter') return '<span class="text-[9px] bg-cyan-950/80 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.5 rounded font-medium">Medidor</span>';
+      if (cat === 'diag') return '<span class="text-[9px] bg-amber-950/80 text-amber-300 border border-amber-500/30 px-1.5 py-0.5 rounded font-medium">Diagnóstico</span>';
+      if (cat === 'system') return '<span class="text-[9px] bg-purple-950/80 text-purple-300 border border-purple-500/30 px-1.5 py-0.5 rounded font-medium">Sistema/OTA</span>';
+      return '';
+    }
+
+    function toggleFunctionDropdown() {
+      const dropdown = document.getElementById('function-autocomplete-dropdown');
+      if (!dropdown) return;
+      if (dropdown.classList.contains('hidden')) {
+        openFunctionDropdown();
+      } else {
+        closeFunctionDropdown();
+      }
+    }
+
+    function openFunctionDropdown() {
+      const dropdown = document.getElementById('function-autocomplete-dropdown');
+      const icon = document.getElementById('func-arrow-icon');
+      if (!dropdown) return;
+      dropdown.classList.remove('hidden');
+      if (icon) icon.classList.add('rotate-180');
+      renderFunctionDropdownList();
+    }
+
+    function closeFunctionDropdown() {
+      const dropdown = document.getElementById('function-autocomplete-dropdown');
+      const icon = document.getElementById('func-arrow-icon');
+      if (!dropdown) return;
+      dropdown.classList.add('hidden');
+      if (icon) icon.classList.remove('rotate-180');
+    }
+
+    function setFunctionCategoryFilter(cat) {
+      currentFunctionCategoryFilter = cat;
+      document.querySelectorAll('.func-cat-btn').forEach(b => {
+        b.className = 'func-cat-btn px-2.5 py-1 rounded-lg text-[11px] font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 shrink-0';
+      });
+      const activeBtn = document.getElementById(`btn-func-cat-${cat}`);
+      if (activeBtn) {
+        activeBtn.className = 'func-cat-btn px-2.5 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shrink-0';
+      }
+      renderFunctionDropdownList();
+    }
+
+    function onFunctionInputFilter() {
+      openFunctionDropdown();
+    }
+
+    function renderFunctionDropdownList() {
+      const container = document.getElementById('function-items-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const query = (document.getElementById('builder-function-input').value || '').toLowerCase().trim();
+
+      const forMethod = commandsDocs.filter(c => c.method === currentSelectedMethod);
+      const matched = forMethod.filter(c => {
+        const cat = getFunctionCategory(c.function);
+        if (currentFunctionCategoryFilter !== 'all' && cat !== currentFunctionCategoryFilter) {
+          return false;
+        }
+        if (query) {
+          const text = (c.function + ' ' + c.summary + ' ' + c.description).toLowerCase();
+          return text.includes(query);
+        }
+        return true;
+      });
+
+      if (matched.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-500 italic p-3 text-center">Nenhuma função encontrada com este filtro ou busca.</p>';
+        return;
+      }
+
+      matched.forEach(cmd => {
+        const cat = getFunctionCategory(cmd.function);
+        const item = document.createElement('div');
+        item.className = 'p-2.5 hover:bg-slate-800/80 rounded-xl cursor-pointer flex flex-col transition border border-transparent hover:border-slate-700/60';
+        item.innerHTML = `
+          <div class="flex items-center justify-between mb-0.5">
+            <div class="flex items-center space-x-2">
+              <span class="mono text-xs font-bold text-indigo-300">${cmd.function}</span>
+              ${getFunctionCategoryBadge(cat)}
+            </div>
+            <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded mono">${cmd.value_type}</span>
+          </div>
+          <span class="text-[11px] text-slate-400 line-clamp-1">${escapeHtml(cmd.summary)}</span>
+        `;
+        item.onclick = () => {
+          selectFunction(cmd);
+          closeFunctionDropdown();
+        };
+        container.appendChild(item);
+      });
+      lucide.createIcons();
+    }
+
     function selectMethod(method) {
       currentSelectedMethod = method;
       document.querySelectorAll('.method-btn').forEach(b => {
@@ -1198,42 +1491,11 @@
       const funcsForMethod = commandsDocs.filter(c => c.method === method);
       document.getElementById('function-count-badge').innerText = `${funcsForMethod.length} funções disponíveis`;
 
-      // Seleciona a primeira por padrão
+      // Seleciona a primeira por padrão se disponível
       if (funcsForMethod.length > 0) {
         selectFunction(funcsForMethod[0]);
       }
-    }
-
-    function onFunctionInputFilter() {
-      const query = document.getElementById('builder-function-input').value.toLowerCase().trim();
-      const dropdown = document.getElementById('function-autocomplete-dropdown');
-      dropdown.innerHTML = '';
-
-      const matched = commandsDocs.filter(c => c.method === currentSelectedMethod && (c.function.toLowerCase().includes(query) || c.summary.toLowerCase().includes(query)));
-
-      if (matched.length === 0) {
-        dropdown.classList.add('hidden');
-        return;
-      }
-
-      matched.forEach(c => {
-        const opt = document.createElement('div');
-        opt.className = 'p-2.5 hover:bg-slate-800 rounded-lg cursor-pointer flex flex-col transition';
-        opt.innerHTML = `
-          <div class="flex items-center justify-between">
-            <span class="mono text-xs font-bold text-indigo-300">${c.function}</span>
-            <span class="text-[10px] text-slate-500">${c.value_type}</span>
-          </div>
-          <span class="text-[11px] text-slate-400 truncate mt-0.5">${c.summary}</span>
-        `;
-        opt.onclick = () => {
-          selectFunction(c);
-          dropdown.classList.add('hidden');
-        };
-        dropdown.appendChild(opt);
-      });
-      dropdown.classList.remove('hidden');
-      updateLivePreview();
+      renderFunctionDropdownList();
     }
 
     function selectFunction(cmdObj) {
@@ -1241,14 +1503,14 @@
       document.getElementById('builder-doc').innerText = `${cmdObj.summary} — ${cmdObj.description}`;
 
       const valArea = document.getElementById('builder-value');
-      const ex = cmdObj.example.data.value;
+      const ex = cmdObj.example && cmdObj.example.data ? cmdObj.example.data.value : null;
       if (ex !== undefined && ex !== null) {
         valArea.value = typeof ex === 'object' ? JSON.stringify(ex, null, 2) : ex;
       } else {
         valArea.value = '';
       }
 
-      document.getElementById('function-autocomplete-dropdown').classList.add('hidden');
+      closeFunctionDropdown();
       updateLivePreview();
     }
 
@@ -2017,6 +2279,7 @@
           devicesList = await res.json();
           renderDevicesCards();
           renderBuilderChips();
+          renderRecipientsPopover();
           updateTargetSuggestions();
 
           const regCount = document.getElementById('metric-registered-count');
@@ -2024,6 +2287,15 @@
 
           const badgeCount = document.getElementById('badge-devices-count');
           if (badgeCount) badgeCount.innerText = devicesList.length;
+
+          const topBadgeDev = document.getElementById('top-badge-devices');
+          if (topBadgeDev) topBadgeDev.innerText = devicesList.length;
+
+          const sideCountDev = document.getElementById('sidebar-count-devices');
+          if (sideCountDev) sideCountDev.innerText = devicesList.length;
+
+          const popCountDev = document.getElementById('pop-devices-count');
+          if (popCountDev) popCountDev.innerText = devicesList.length;
 
           const onlineCount = document.getElementById('metric-online-count');
           if (onlineCount) {
@@ -2044,6 +2316,8 @@
           renderDiscoveredCards();
           const discCount = document.getElementById('metric-discovered-count');
           if (discCount) discCount.innerText = discoveredList.length;
+          const sideCountDisc = document.getElementById('sidebar-count-discovered');
+          if (sideCountDisc) sideCountDisc.innerText = discoveredList.length;
         }
       } catch (e) {
         console.error("Erro ao carregar descobertos:", e);
@@ -2178,13 +2452,117 @@
       lucide.createIcons();
     }
 
+    function toggleRecipientsDropdown() {
+      const pop = document.getElementById('recipients-dropdown-popover');
+      if (!pop) return;
+      if (pop.classList.contains('hidden')) {
+        openRecipientsDropdown();
+      } else {
+        closeRecipientsDropdown();
+      }
+    }
+
+    function openRecipientsDropdown() {
+      const pop = document.getElementById('recipients-dropdown-popover');
+      const icon = document.getElementById('recipients-arrow-icon');
+      if (!pop) return;
+      pop.classList.remove('hidden');
+      if (icon) icon.classList.add('rotate-180');
+      renderRecipientsPopover();
+    }
+
+    function closeRecipientsDropdown() {
+      const pop = document.getElementById('recipients-dropdown-popover');
+      const icon = document.getElementById('recipients-arrow-icon');
+      if (!pop) return;
+      pop.classList.add('hidden');
+      if (icon) icon.classList.remove('rotate-180');
+    }
+
+    function renderRecipientsPopover() {
+      const listContainer = document.getElementById('popover-devices-checklist');
+      const countBadge = document.getElementById('pop-devices-count');
+      if (countBadge) countBadge.innerText = devicesList.length;
+      if (!listContainer) return;
+
+      const rawAddrs = document.getElementById('builder-addrs') ? document.getElementById('builder-addrs').value.toLowerCase() : '';
+      const selectedTokens = rawAddrs.split(',').map(s => s.trim().replace(/:/g, '')).filter(Boolean);
+
+      // Atualizar botões especiais no popover
+      const specials = [
+        { id: 'pop-target-root', alias: 'root', mac: 'ff0000010000' },
+        { id: 'pop-target-any', alias: 'any', mac: 'ffffffffffff' },
+        { id: 'pop-target-broadcast', alias: 'broadcast', mac: 'fffffffffe' }
+      ];
+      specials.forEach(s => {
+        const el = document.getElementById(s.id);
+        if (el) {
+          const isSel = selectedTokens.includes(s.alias) || selectedTokens.includes(s.mac);
+          if (isSel) {
+            el.className = 'p-2 rounded-xl border border-indigo-500 bg-indigo-950/80 text-left transition text-xs font-semibold text-white shadow-sm';
+          } else {
+            el.className = 'p-2 rounded-xl border border-slate-800 bg-slate-950 hover:bg-slate-800 text-left transition text-xs font-semibold text-slate-300';
+          }
+        }
+      });
+
+      listContainer.innerHTML = '';
+      if (devicesList.length === 0) {
+        listContainer.innerHTML = '<p class="text-[11px] text-slate-500 italic p-2 text-center">Nenhum medidor cadastrado. Cadastre medidores na aba "Medidores".</p>';
+        return;
+      }
+
+      devicesList.forEach(dev => {
+        const cleanMac = dev.mac.toLowerCase();
+        const isSel = selectedTokens.includes(cleanMac) || selectedTokens.includes(dev.name.toLowerCase());
+        const isRoot = dev.role === 'ROOT';
+
+        const item = document.createElement('div');
+        item.className = `flex items-center justify-between p-2 rounded-xl border cursor-pointer transition text-xs ${
+          isSel
+            ? 'bg-cyan-950/60 border-cyan-500/80 text-cyan-200'
+            : 'bg-slate-950 hover:bg-slate-800/80 border-slate-800 text-slate-300'
+        }`;
+        item.onclick = (e) => {
+          if (e.target.tagName !== 'INPUT') {
+            toggleBuilderMac(cleanMac);
+          }
+        };
+        item.innerHTML = `
+          <div class="flex items-center space-x-2.5">
+            <input type="checkbox" ${isSel ? 'checked' : ''} onchange="toggleBuilderMac('${cleanMac}')" class="rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-0">
+            <div>
+              <span class="font-bold text-slate-200">${escapeHtml(dev.name)}</span>
+              <span class="mono text-[10px] text-slate-400 block">${formatMac(dev.mac)}</span>
+            </div>
+          </div>
+          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded ${isRoot ? 'bg-purple-950 text-purple-300 border border-purple-500/40' : 'bg-slate-800 text-slate-400'}">${dev.role}</span>
+        `;
+        listContainer.appendChild(item);
+      });
+    }
+
+    function updateRecipientsPopoverSelection() {
+      renderRecipientsPopover();
+    }
+
     function renderBuilderChips() {
       const container = document.getElementById('builder-device-chips');
-      const selectDropdown = document.getElementById('builder-add-device-select');
+      const countBadge = document.getElementById('builder-recipients-count');
       if (!container) return;
 
       const rawAddrs = document.getElementById('builder-addrs') ? document.getElementById('builder-addrs').value.toLowerCase() : '';
       const selectedTokens = rawAddrs.split(',').map(s => s.trim().replace(/:/g, '')).filter(Boolean);
+
+      if (countBadge) {
+        const count = selectedTokens.length;
+        countBadge.innerText = count === 1 ? '1 alvo' : `${count} alvos`;
+        if (count > 1) {
+          countBadge.className = 'text-[10px] bg-cyan-950 text-cyan-300 border border-cyan-700/50 px-2 py-0.5 rounded-full font-mono font-bold';
+        } else {
+          countBadge.className = 'text-[10px] bg-indigo-950 text-indigo-300 border border-indigo-700/50 px-2 py-0.5 rounded-full font-mono font-bold';
+        }
+      }
 
       container.innerHTML = '';
 
@@ -2200,10 +2578,12 @@
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.onclick = () => toggleBuilderMac(s.alias);
-        btn.className = `px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center space-x-1 ${
-          isSel ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-900 text-slate-400 hover:text-white hover:bg-slate-800'
+        btn.className = `px-2.5 py-1 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 border ${
+          isSel
+            ? 'bg-indigo-600 border-indigo-400 text-white shadow-md shadow-indigo-600/30'
+            : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 hover:border-slate-700'
         }`;
-        btn.innerHTML = `${isSel ? '<span>✓</span>' : ''}<span>${s.label}</span>`;
+        btn.innerHTML = `<span>${isSel ? '✓' : '⚡'}</span><span>${s.label}</span>`;
         container.appendChild(btn);
       });
 
@@ -2216,9 +2596,9 @@
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.onclick = () => toggleBuilderMac(cleanMac);
-        btn.className = `px-2.5 py-1 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5 border ${
+        btn.className = `px-2.5 py-1 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 border ${
           isSel
-            ? 'bg-cyan-600/30 border-cyan-500 text-cyan-200 shadow-sm'
+            ? 'bg-cyan-600/30 border-cyan-400 text-cyan-200 shadow-sm'
             : 'bg-slate-900/90 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 hover:bg-slate-800'
         }`;
         btn.innerHTML = `
@@ -2229,16 +2609,7 @@
         container.appendChild(btn);
       });
 
-      // Atualizar o dropdown "+ Selecionar Medidor..."
-      if (selectDropdown) {
-        selectDropdown.innerHTML = '<option value="">+ Adicionar Medidor à Lista...</option>';
-        devicesList.forEach(dev => {
-          const opt = document.createElement('option');
-          opt.value = dev.mac;
-          opt.innerText = `${dev.name} [${formatMac(dev.mac)}]`;
-          selectDropdown.appendChild(opt);
-        });
-      }
+      renderRecipientsPopover();
     }
 
     function toggleBuilderMac(macOrAlias) {
@@ -2255,7 +2626,26 @@
         currentList.push(macOrAlias);
       }
 
-      input.value = currentList.join(', ');
+      // Deduplicação estrita para garantir imunidade a crash do ESP-MESH
+      const seen = new Set();
+      const deduped = [];
+      currentList.forEach(item => {
+        const norm = item.toLowerCase().replace(/:/g, '');
+        if (!seen.has(norm)) {
+          seen.add(norm);
+          deduped.push(item);
+        }
+      });
+
+      input.value = deduped.join(', ');
+      updateLivePreview();
+      renderBuilderChips();
+    }
+
+    function setTargetOnlyRoot() {
+      document.getElementById('builder-addrs').value = 'root';
+      const glob = document.getElementById('global-target');
+      if (glob) glob.value = 'root';
       updateLivePreview();
       renderBuilderChips();
     }
@@ -2268,16 +2658,10 @@
 
     function selectAllRegisteredDevices() {
       const allMacs = devicesList.map(d => d.mac);
-      document.getElementById('builder-addrs').value = allMacs.join(', ');
+      const uniqueMacs = Array.from(new Set(allMacs));
+      document.getElementById('builder-addrs').value = uniqueMacs.join(', ');
       updateLivePreview();
       renderBuilderChips();
-    }
-
-    function onSelectDeviceDropdown(selectEl) {
-      const mac = selectEl.value;
-      if (!mac) return;
-      toggleBuilderMac(mac);
-      selectEl.value = '';
     }
 
     function updateTargetSuggestions() {
@@ -2563,6 +2947,26 @@
       const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
       return String(text).replace(/[&<>"']/g, m => map[m]);
     }
+
+    // Fechar dropdowns flutuantes ao clicar fora
+    document.addEventListener('click', (e) => {
+      const funcDropdown = document.getElementById('function-autocomplete-dropdown');
+      const funcInput = document.getElementById('builder-function-input');
+      const btnToggleFunc = document.getElementById('btn-toggle-function-dropdown');
+      if (funcDropdown && !funcDropdown.classList.contains('hidden')) {
+        if (!funcDropdown.contains(e.target) && e.target !== funcInput && (!btnToggleFunc || !btnToggleFunc.contains(e.target))) {
+          closeFunctionDropdown();
+        }
+      }
+
+      const recPop = document.getElementById('recipients-dropdown-popover');
+      const btnToggleRec = document.getElementById('btn-toggle-recipients-dropdown');
+      if (recPop && !recPop.classList.contains('hidden')) {
+        if (!recPop.contains(e.target) && (!btnToggleRec || !btnToggleRec.contains(e.target))) {
+          closeRecipientsDropdown();
+        }
+      }
+    });
   </script>
 </body>
 </html>
