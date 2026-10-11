@@ -16,9 +16,19 @@ Desenvolvido para substituir com total autonomia infraestruturas de nuvem (AWS I
 * **Catálogo Exaustivo (62 Comandos):** Autocomplete em tempo real para todos os métodos (`query`, `change`, `setting`) com documentação técnica, dicas e valores de exemplo.
 * **Live JSON Preview & Formatação:** Visualização instantânea do JSON exato que será publicado no broker.
 
-### 2. 🎚️ Topbar Moderna & Painel de Bancada na Barra Lateral
-* **Barra Horizontal Primária:** Navegação completa de abas com design moderno SaaS, badges dinâmicos de contagem de medidores e console, indicador de IP do host, status do broker 1883 e alternador DEV/PROD.
-* **Barra Lateral (Painel de Operações & Telemetria):** Eliminação de redundâncias visuais, transformando a lateral em monitor de bancada com contagem de nós em tempo real, tópico de comando ativo, seletor de alvo global, botões de emergência (`Ping Malha`, `Ler Topologia`, `mwifi_restart`) e mini-feed de retornos MQTT ao vivo.
+### 2. 🏛️ Layout Ergonômico Invertido & Fita da Bolsa de Valores (Stock Ticker)
+* **Barra Lateral (Navegação Primária Vertical):** Acesso instantâneo às 7 abas do sistema (`Ações Rápidas`, `Construtor Codax`, `Medidores & Placas`, `Árvore da Malha`, `Dicionário Oficial`, `Central de OTA`, `Console ao Vivo`), com badges numéricos, ícones Lucide, active indicators iluminados e mini-feed de retornos MQTT em tempo real.
+* **Barra Superior Horizontal (Bancada & Telemetria em Tempo Real):** Painel de operações centralizado com métricas ao vivo (`Medidores Salvos`, `Dispositivos na Malha`), seletor rápido de alvo broadcast (`ROOT`, `ANY`, `B-CAST`), comandos imediatos de emergência (`Ping Malha`, `Ler Topologia`, `mwifi_restart()`), IP com cópia para menuconfig e status do Broker 1883.
+* **📈 Fita da Bolsa de Valores ao Vivo (Stock Ticker Marquee):** Faixa contínua no estilo mercado financeiro/B3 posicionada logo abaixo da barra superior. Exibe cotações de telemetria em loop infinito suave (com pausa ao passar o mouse):
+  * `👑 ROOT L1: ONLINE ▲ -62 dBm`
+  * `⚡ MEDIDORES CADASTRADOS ▲ 100% OPERACIONAIS`
+  * `📡 TÓPICO ATIVO ▲ AMBIENTE PROD/DEV`
+  * `🔐 SENHA MESH: QNfW7kyR1bAM ▲ WPA2-PSK`
+  * `📶 BROKER MQTT: 1883 ▲ LATÊNCIA <15ms`
+  * `📦 OTA HTTP :8000 ▲ MUPGRADE PRONTO`
+  * `🛡️ ANTI-CRASH DEDUP ▲ ZERO REBOOTS`
+  * `🧠 HEAP ESP32 ▲ ESTÁVEL`
+  * `🚨 RETORNO AO VIVO ▲ Destaque com efeito flash a cada novo pacote MQTT!`
 
 ### 3. ⚡ Cadastro Centralizado de Medidores & Placas
 * **Identificação Amigável:** Associe o MAC da placa a nomes reais (ex: *ROOT Laboratório*, *Medidor Bancada 01*).
