@@ -25,35 +25,175 @@
       }
     }
   </script>
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
-    /* Barra de rolagem lateral (Scrollbar) visível, moderna e destacada */
+    :root {
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: #07090e;
+      color: #f1f5f9;
+    }
+
+    .mono, pre, code {
+      font-family: var(--font-mono) !important;
+    }
+
+    /* Scrollbar ultra-fina, elegante e moderna */
     * {
       scrollbar-width: thin;
-      scrollbar-color: #6366f1 #090d16;
+      scrollbar-color: rgba(99, 102, 241, 0.4) #07090e;
     }
     ::-webkit-scrollbar {
-      width: 12px;
-      height: 12px;
+      width: 8px;
+      height: 8px;
     }
     ::-webkit-scrollbar-track {
-      background: #090d16;
-      border-left: 1px solid #1e293b;
+      background: #07090e;
     }
     ::-webkit-scrollbar-thumb {
-      background: #475569;
-      border-radius: 6px;
-      border: 2px solid #090d16;
+      background: rgba(71, 85, 105, 0.45);
+      border-radius: 9999px;
+      border: 2px solid #07090e;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #6366f1;
+      background: rgba(99, 102, 241, 0.75);
     }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+
+    /* Camada de Iluminação Ambiente Atmosférica (Luxury Mesh Glow) */
+    .ambient-glow-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: 
+        radial-gradient(1100px circle at 50% -10%, rgba(99, 102, 241, 0.12), transparent 70%),
+        radial-gradient(700px circle at 95% 10%, rgba(168, 85, 247, 0.08), transparent 60%),
+        radial-gradient(600px circle at 5% 45%, rgba(6, 182, 212, 0.06), transparent 50%),
+        radial-gradient(800px circle at 50% 100%, rgba(15, 23, 42, 0.9), transparent 70%);
+    }
+
+    /* Textura de micro-grade sutil de laboratório */
+    .mesh-grid-pattern {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+      mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 40%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 40%, transparent 100%);
+    }
+
+    /* Painéis de Vidro de Luxo (Glassmorphism Pro) */
+    .glass-header {
+      background: rgba(10, 15, 29, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .glass-sidebar {
+      background: rgba(8, 12, 23, 0.94);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-right: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 4px 0 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .glass-card {
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card:hover {
+      border-color: rgba(99, 102, 241, 0.35);
+      box-shadow: 0 12px 40px -4px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .glass-pill {
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .glass-panel {
+      background: rgba(13, 20, 38, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-card {
+      background: rgba(15, 23, 42, 0.65) !important;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-card:hover {
+      background: rgba(26, 36, 60, 0.8) !important;
+      border-color: rgba(99, 102, 241, 0.45) !important;
+      box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.16), inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    /* Botão com Gradiente Luxury & Shimmer */
+    .btn-luxury-primary {
+      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #06b6d4 100%);
+      background-size: 200% auto;
+      box-shadow: 0 4px 20px rgba(79, 70, 229, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-luxury-primary:hover {
+      background-position: right center;
+      box-shadow: 0 6px 25px rgba(6, 182, 212, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      transform: translateY(-1px);
+    }
+    .btn-luxury-primary:active {
+      transform: translateY(0.5px) scale(0.99);
+    }
+
+    /* Farol com Pulso Halo Vivo */
+    .beacon-halo {
+      position: relative;
+    }
+    .beacon-halo::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 9999px;
+      background: currentColor;
+      opacity: 0.35;
+      animation: beaconPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes beaconPulse {
+      0%, 100% { transform: scale(1); opacity: 0.35; }
+      50% { transform: scale(1.9); opacity: 0; }
+    }
     
     /* Conexões visuais da árvore */
     .tree-connector-down {
       width: 2px;
       height: 28px;
-      background: #6366f1;
+      background: linear-gradient(to bottom, #6366f1, #06b6d4);
       margin: 0 auto;
     }
     .tree-branch-container {
@@ -62,7 +202,7 @@
       position: relative;
     }
 
-    /* Ticker Tape da Bolsa de Valores (B3 / NASDAQ Style Marquee) */
+    /* Ticker Tape da Bolsa de Valores (Elite Ribbon Marquee) */
     @keyframes tickerTapeScroll {
       0% {
         transform: translate3d(0, 0, 0);
@@ -74,8 +214,8 @@
     .ticker-viewport {
       overflow: hidden;
       position: relative;
-      mask-image: linear-gradient(to right, transparent 0%, black 1.5%, black 98.5%, transparent 100%);
-      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 1.5%, black 98.5%, transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0%, black 2.5%, black 97.5%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2.5%, black 97.5%, transparent 100%);
     }
     .ticker-strip {
       display: inline-flex;
@@ -90,9 +230,9 @@
       display: inline-flex;
       align-items: center;
       padding: 0 1.25rem;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-family: var(--font-mono);
       font-size: 0.72rem;
-      border-right: 1px solid rgba(51, 65, 85, 0.45);
+      border-right: 1px solid rgba(255, 255, 255, 0.07);
     }
     @keyframes tickerFlashAnim {
       0%, 100% { background-color: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.4); }
@@ -103,34 +243,38 @@
     }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 h-screen flex flex-col antialiased overflow-hidden">
+<body class="bg-[#07090e] text-slate-100 h-screen flex flex-col antialiased overflow-hidden relative">
+
+  <!-- Camadas Atmosféricas de Fundo (Ambient Mesh Glow & Micro-Grid) -->
+  <div class="ambient-glow-layer"></div>
+  <div class="mesh-grid-pattern"></div>
 
   <!-- ================= BARRA HORIZONTAL SUPERIOR (PAINEL DE BANCADA & OPERAÇÕES AO VIVO) ================= -->
-  <header class="bg-slate-900 border-b border-slate-800 h-16 flex items-center justify-between px-4 sm:px-6 shrink-0 z-40 select-none shadow-sm gap-3">
+  <header class="glass-header h-16 flex items-center justify-between px-4 sm:px-6 shrink-0 z-40 select-none gap-3 relative">
     
     <!-- Esquerda: Status da Bancada & Contadores de Telemetria -->
     <div class="flex items-center space-x-3 shrink-0">
-      <div class="flex items-center space-x-2 bg-slate-950/80 border border-slate-800 px-3 py-1.5 rounded-xl shadow-sm">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+      <div class="flex items-center space-x-2.5 glass-pill px-3.5 py-1.5 rounded-xl shadow-sm border border-white/[0.08]">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 beacon-halo"></span>
         <div>
-          <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-200 flex items-center space-x-1.5">
+          <div class="text-[10px] font-black uppercase tracking-wider text-slate-200 flex items-center space-x-1.5">
             <span>BANCADA MESH</span>
-            <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-1 py-0.2 rounded font-mono">LIVE</span>
+            <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.2 rounded-full font-mono font-bold">LIVE</span>
           </div>
-          <div class="text-[9px] text-slate-400 hidden lg:block">Operações de Telemetria</div>
+          <div class="text-[9px] text-slate-400 hidden lg:block font-medium">Operações em Tempo Real</div>
         </div>
       </div>
 
-      <!-- Métricas Rápidas Interativas -->
+      <!-- Métricas Rápidas Interativas (Instrumentos de Precisão) -->
       <div class="flex items-center space-x-2">
-        <button onclick="switchTab('devices')" title="Ver medidores cadastrados" class="bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/40 px-2.5 py-1.5 rounded-xl transition flex items-center space-x-1.5 shadow-sm">
-          <i data-lucide="gauge" class="w-3.5 h-3.5 text-cyan-400"></i>
+        <button onclick="switchTab('devices')" title="Ver medidores cadastrados" class="glass-pill hover:bg-slate-800/80 border border-white/[0.07] hover:border-cyan-500/40 px-3 py-1.5 rounded-xl transition flex items-center space-x-2 shadow-sm group">
+          <i data-lucide="gauge" class="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition"></i>
           <span class="text-[11px] text-slate-400 font-semibold">Medidores:</span>
           <span id="top-count-devices" class="text-xs font-mono font-bold text-cyan-400">0</span>
         </button>
 
-        <button onclick="switchTab('tree')" title="Ver nós ativos na árvore da malha" class="bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/40 px-2.5 py-1.5 rounded-xl transition flex items-center space-x-1.5 shadow-sm">
-          <i data-lucide="network" class="w-3.5 h-3.5 text-emerald-400"></i>
+        <button onclick="switchTab('tree')" title="Ver nós ativos na árvore da malha" class="glass-pill hover:bg-slate-800/80 border border-white/[0.07] hover:border-emerald-500/40 px-3 py-1.5 rounded-xl transition flex items-center space-x-2 shadow-sm group">
+          <i data-lucide="network" class="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition"></i>
           <span class="text-[11px] text-slate-400 font-semibold">Na Malha:</span>
           <span id="top-count-discovered" class="text-xs font-mono font-bold text-emerald-400">0</span>
         </button>
@@ -138,69 +282,69 @@
     </div>
 
     <!-- Centro: Alvo Global & Ações de Emergência Imediatas -->
-    <div class="hidden xl:flex items-center space-x-2 bg-slate-950/70 p-1.5 rounded-2xl border border-slate-800/90 shadow-inner">
+    <div class="hidden xl:flex items-center space-x-2.5 glass-pill p-1.5 rounded-2xl border border-white/[0.08] shadow-inner">
       <div class="flex items-center space-x-1.5 px-2">
-        <i data-lucide="target" class="w-3.5 h-3.5 text-indigo-400"></i>
-        <span class="text-[11px] font-bold text-slate-300">Alvo:</span>
+        <i data-lucide="target" class="w-3.5 h-3.5 text-indigo-400 animate-pulse"></i>
+        <span class="text-[11px] font-extrabold text-slate-300 uppercase tracking-wider">Alvo:</span>
       </div>
-      <input type="text" id="global-target" list="target-suggestions" value="root" placeholder="MAC ou alias..." class="bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1 text-xs text-slate-100 mono w-32 focus:outline-none focus:border-indigo-500">
+      <input type="text" id="global-target" list="target-suggestions" value="root" placeholder="MAC ou alias..." class="bg-[#070b14] border border-white/[0.1] rounded-lg px-2.5 py-1 text-xs text-slate-100 mono w-32 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400/40 transition">
       <datalist id="target-suggestions">
         <option value="root">ROOT (ff:00:00:01:00:00)</option>
         <option value="any">ANY (ff:ff:ff:ff:ff:ff)</option>
         <option value="broadcast">BROADCAST (ff:ff:ff:ff:ff:fe)</option>
       </datalist>
       <div class="flex items-center space-x-1">
-        <button onclick="setTarget('root')" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-bold px-2 py-1 rounded text-slate-300 transition hover:text-white">ROOT</button>
-        <button onclick="setTarget('any')" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-bold px-2 py-1 rounded text-slate-300 transition hover:text-white">ANY</button>
-        <button onclick="setTarget('broadcast')" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-bold px-2 py-1 rounded text-slate-300 transition hover:text-white">B-CAST</button>
+        <button onclick="setTarget('root')" class="bg-white/[0.05] hover:bg-indigo-600/80 border border-white/[0.06] hover:border-indigo-400/40 text-[10px] font-bold px-2 py-1 rounded-lg text-slate-300 hover:text-white transition shadow-sm">ROOT</button>
+        <button onclick="setTarget('any')" class="bg-white/[0.05] hover:bg-cyan-600/80 border border-white/[0.06] hover:border-cyan-400/40 text-[10px] font-bold px-2 py-1 rounded-lg text-slate-300 hover:text-white transition shadow-sm">ANY</button>
+        <button onclick="setTarget('broadcast')" class="bg-white/[0.05] hover:bg-purple-600/80 border border-white/[0.06] hover:border-purple-400/40 text-[10px] font-bold px-2 py-1 rounded-lg text-slate-300 hover:text-white transition shadow-sm">B-CAST</button>
       </div>
 
-      <div class="h-4 w-px bg-slate-800 mx-1"></div>
+      <div class="h-4 w-px bg-white/[0.1] mx-1"></div>
 
       <!-- Comandos de Emergência Imediatos -->
-      <button onclick="sendQuickCommand('query', 'ping')" title="Ping geral na malha" class="bg-slate-900 hover:bg-indigo-950/80 border border-slate-800 hover:border-indigo-500/50 text-slate-300 hover:text-indigo-200 px-2.5 py-1 rounded-lg text-xs font-semibold transition flex items-center space-x-1">
+      <button onclick="sendQuickCommand('query', 'ping')" title="Ping geral na malha" class="bg-indigo-950/40 hover:bg-indigo-900/60 border border-indigo-500/30 hover:border-indigo-400 text-indigo-300 hover:text-white px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
         <i data-lucide="signal" class="w-3 h-3 text-indigo-400"></i>
         <span>Ping</span>
       </button>
-      <button onclick="sendQuickCommand('query', 'topology')" title="Solicitar topologia da malha" class="bg-slate-900 hover:bg-emerald-950/80 border border-slate-800 hover:border-emerald-500/50 text-slate-300 hover:text-emerald-200 px-2.5 py-1 rounded-lg text-xs font-semibold transition flex items-center space-x-1">
+      <button onclick="sendQuickCommand('query', 'topology')" title="Solicitar topologia da malha" class="bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-500/30 hover:border-emerald-400 text-emerald-300 hover:text-white px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
         <i data-lucide="git-merge" class="w-3 h-3 text-emerald-400"></i>
         <span>Ler Malha</span>
       </button>
-      <button onclick="sendQuickCommand('query', 'mwifi_restart')" title="Destrava deadlocks de conexão sem reboot" class="bg-slate-900 hover:bg-amber-950/80 border border-slate-800 hover:border-amber-500/50 text-amber-300 px-2.5 py-1 rounded-lg text-xs font-semibold transition flex items-center space-x-1">
+      <button onclick="sendQuickCommand('query', 'mwifi_restart')" title="Destrava deadlocks de conexão sem reboot" class="bg-amber-950/40 hover:bg-amber-900/60 border border-amber-500/30 hover:border-amber-400 text-amber-300 hover:text-white px-2.5 py-1 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
         <i data-lucide="refresh-cw" class="w-3 h-3 text-amber-400"></i>
         <span>mwifi_restart()</span>
       </button>
     </div>
 
     <!-- Direita: Tópico Ativo, Ambiente DEV/PROD, IP Host & Broker 1883 -->
-    <div class="flex items-center space-x-2 shrink-0">
+    <div class="flex items-center space-x-2.5 shrink-0">
       
       <!-- Tópico Ativo Badge -->
-      <div class="hidden 2xl:flex items-center space-x-1.5 bg-slate-950/80 border border-slate-800 px-2.5 py-1.5 rounded-xl text-xs">
-        <span class="text-slate-500 text-[10px] uppercase font-bold">Tópico:</span>
-        <code id="top-topic-badge" class="font-mono text-indigo-400 font-semibold text-[11px]">config/shopba/mesh</code>
+      <div class="hidden 2xl:flex items-center space-x-1.5 glass-pill px-3 py-1.5 rounded-xl text-xs border border-white/[0.08]">
+        <span class="text-slate-400 text-[10px] uppercase font-bold tracking-wider">Tópico:</span>
+        <code id="top-topic-badge" class="font-mono text-indigo-400 font-bold text-[11px]">config/shopba/mesh</code>
       </div>
 
       <!-- Alternador DEV / PROD -->
-      <button onclick="toggleEnv()" id="top-btn-env" class="flex items-center space-x-1.5 bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/60 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition shadow-sm">
+      <button onclick="toggleEnv()" id="top-btn-env" class="flex items-center space-x-1.5 bg-emerald-950/70 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/70 px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm">
         <i data-lucide="layers" class="w-3.5 h-3.5"></i>
         <span id="top-label-env">PROD</span>
       </button>
 
       <!-- IP Host com cópia rápida -->
-      <div class="hidden sm:flex items-center space-x-2 bg-slate-950/80 border border-slate-800 px-2.5 py-1.5 rounded-xl text-xs shadow-sm">
+      <div class="hidden sm:flex items-center space-x-2 glass-pill px-3 py-1.5 rounded-xl text-xs shadow-sm border border-white/[0.08]">
         <i data-lucide="network" class="w-3.5 h-3.5 text-slate-400"></i>
-        <span class="text-slate-400 text-[11px]">IP:</span>
+        <span class="text-slate-400 text-[11px] font-semibold">IP:</span>
         <span id="top-ip" class="font-mono text-emerald-400 font-bold">127.0.0.1</span>
-        <button onclick="copyHostIP()" title="Copiar IP para menuconfig" class="text-slate-400 hover:text-white transition">
+        <button onclick="copyHostIP()" title="Copiar IP para menuconfig" class="text-slate-400 hover:text-white transition p-0.5">
           <i data-lucide="copy" class="w-3.5 h-3.5"></i>
         </button>
       </div>
 
       <!-- Broker MQTT Status -->
-      <div class="flex items-center space-x-2 bg-slate-950/80 border border-slate-800 px-2.5 py-1.5 rounded-xl text-xs shadow-sm">
-        <span id="top-dot-broker" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span id="top-label-broker" class="font-semibold text-emerald-400 text-[11px]">1883 Ativo</span>
+      <div class="flex items-center space-x-2 glass-pill px-3 py-1.5 rounded-xl text-xs shadow-sm border border-white/[0.08]">
+        <span id="top-dot-broker" class="w-2.5 h-2.5 rounded-full bg-emerald-400 beacon-halo"></span>
+        <span id="top-label-broker" class="font-bold text-emerald-400 text-[11px]">1883 Ativo</span>
       </div>
 
     </div>
@@ -208,15 +352,15 @@
   </header>
 
   <!-- ================= FITA DA BOLSA DE VALORES AO VIVO (STOCK TICKER TAPE) ================= -->
-  <div id="mesh-stock-ticker" class="bg-slate-950 border-b border-slate-800/90 h-9 flex items-center shrink-0 z-30 select-none overflow-hidden relative">
+  <div id="mesh-stock-ticker" class="bg-[#050811]/90 backdrop-blur-md border-b border-white/[0.06] h-10 flex items-center shrink-0 z-30 select-none overflow-hidden relative">
     
     <!-- Badge Fixo à Esquerda: Ticker Terminal Anchor -->
-    <div class="h-full px-3.5 bg-slate-900/90 border-r border-slate-800 flex items-center space-x-2 shrink-0 z-10 shadow-md">
+    <div class="h-full px-4 bg-gradient-to-r from-emerald-950/90 via-slate-900/90 to-slate-900/90 border-r border-white/[0.08] flex items-center space-x-2 shrink-0 z-10 shadow-lg">
       <div class="flex items-center space-x-1.5">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span class="w-2 h-2 rounded-full bg-emerald-400 beacon-halo"></span>
         <span class="font-mono text-[10px] font-black uppercase tracking-wider text-emerald-400">MKT CODAX</span>
       </div>
-      <span class="text-[9px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-1 py-0.2 rounded font-mono font-bold">AO VIVO</span>
+      <span class="text-[9px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.2 rounded-full font-mono font-bold">AO VIVO</span>
     </div>
 
     <!-- Viewport Rolante Contínuo (Seamless 50% Loop) -->
@@ -265,9 +409,9 @@
             <span class="text-emerald-400 font-bold">&gt;180KB</span>
             <span class="text-emerald-400 ml-1.5">▲ ESTÁVEL</span>
           </div>
-          <div id="ticker-live-alert" class="ticker-pill bg-indigo-950/40 border border-indigo-500/30 rounded px-2.5 py-0.5">
+          <div id="ticker-live-alert" class="ticker-pill bg-indigo-950/50 border border-indigo-500/40 rounded-lg px-2.5 py-0.5">
             <span class="text-indigo-300 font-bold mr-1.5">🚨 RETORNO AO VIVO:</span>
-            <span id="ticker-live-alert-text" class="text-slate-300">Aguardando telemetria MQTT...</span>
+            <span id="ticker-live-alert-text" class="text-slate-200 font-medium">Aguardando telemetria MQTT...</span>
             <span class="text-indigo-400 ml-1.5">▲ SYNC</span>
           </div>
         </div>
@@ -314,9 +458,9 @@
             <span class="text-emerald-400 font-bold">&gt;180KB</span>
             <span class="text-emerald-400 ml-1.5">▲ ESTÁVEL</span>
           </div>
-          <div class="ticker-pill bg-indigo-950/40 border border-indigo-500/30 rounded px-2.5 py-0.5">
+          <div class="ticker-pill bg-indigo-950/50 border border-indigo-500/40 rounded-lg px-2.5 py-0.5">
             <span class="text-indigo-300 font-bold mr-1.5">🚨 RETORNO AO VIVO:</span>
-            <span class="text-slate-300 ticker-alert-copy">Aguardando telemetria MQTT...</span>
+            <span class="text-slate-200 font-medium ticker-alert-copy">Aguardando telemetria MQTT...</span>
             <span class="text-indigo-400 ml-1.5">▲ SYNC</span>
           </div>
         </div>
@@ -325,115 +469,117 @@
     </div>
 
     <!-- Indicador de Pausa ao Passar o Mouse (Pequena dica sutil no canto direito) -->
-    <div class="hidden md:flex items-center px-3 bg-slate-900/80 border-l border-slate-800 h-full text-[10px] text-slate-500 shrink-0 font-mono">
+    <div class="hidden md:flex items-center px-3.5 bg-slate-900/90 border-l border-white/[0.08] h-full text-[10px] text-slate-400 shrink-0 font-mono">
       <span>⏸️ passe o mouse p/ pausar</span>
     </div>
 
   </div>
 
   <!-- ================= CONTAINER PRINCIPAL (SIDEBAR + CONTEÚDO) ================= -->
-  <div class="flex-1 flex overflow-hidden min-h-0">
+  <div class="flex-1 flex overflow-hidden min-h-0 relative z-10">
     
     <!-- ================= BARRA LATERAL (MENU DE NAVEGAÇÃO VERTICAL & BRAND) ================= -->
-    <aside class="w-64 bg-slate-900/95 border-r border-slate-800 flex flex-col justify-between shrink-0 select-none z-30 overflow-y-auto min-h-0">
+    <aside class="w-68 glass-sidebar flex flex-col justify-between shrink-0 select-none z-30 overflow-y-auto min-h-0">
       
       <div class="p-4 flex flex-col space-y-4">
         
-        <!-- Logo & Marca da Plataforma -->
-        <div class="flex items-center space-x-3 pb-3 border-b border-slate-800/80">
-          <div class="bg-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-indigo-600/30 flex items-center justify-center shrink-0">
-            <i data-lucide="radio" class="w-5 h-5"></i>
+        <!-- Logo & Marca da Plataforma (Haute-SaaS Emblem) -->
+        <div class="flex items-center space-x-3 pb-3 border-b border-white/[0.07]">
+          <div class="p-0.5 rounded-2xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 shadow-lg shadow-indigo-500/25 shrink-0">
+            <div class="bg-slate-950 p-2 rounded-[14px] text-white flex items-center justify-center">
+              <i data-lucide="radio" class="w-5 h-5 text-indigo-400"></i>
+            </div>
           </div>
           <div class="min-w-0">
             <div class="flex items-center space-x-1.5">
-              <span class="font-extrabold text-sm sm:text-base tracking-wide text-white truncate">CODAX HUB</span>
-              <span class="text-[9px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-1 py-0.2 rounded font-bold">2.5 PRO</span>
+              <span class="font-extrabold text-sm sm:text-base tracking-tight text-white truncate">CODAX HUB</span>
+              <span class="text-[9px] bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-300 border border-indigo-400/30 px-1.5 py-0.5 rounded-full font-bold">2.5 PRO</span>
             </div>
-            <p class="text-[10px] text-slate-400 truncate">On-Premise ESP-MESH Hub</p>
+            <p class="text-[10px] text-slate-400 font-medium tracking-wide truncate">ESP-MESH TELEMETRY SUITE</p>
           </div>
         </div>
 
         <!-- Seção de Navegação Principal (As 7 Abas) -->
         <nav class="space-y-1">
-          <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-2.5 pb-1">Menu Principal</div>
+          <div class="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 px-3 pb-1">Menu Principal</div>
           
-          <button onclick="switchTab('quick')" id="nav-btn-quick" class="sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-between bg-indigo-600 text-white shadow-md shadow-indigo-600/30">
+          <button onclick="switchTab('quick')" id="nav-btn-quick" class="sidebar-nav-btn w-full px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-between bg-gradient-to-r from-indigo-600/90 via-indigo-600/80 to-purple-600/70 text-white shadow-lg shadow-indigo-600/25 border border-indigo-400/30 relative overflow-hidden">
             <span class="flex items-center space-x-2.5">
-              <i data-lucide="zap" class="w-4 h-4"></i>
+              <i data-lucide="zap" class="w-4 h-4 text-amber-300"></i>
               <span>Ações Rápidas</span>
             </span>
-            <span class="text-[10px] opacity-75">1-clique</span>
+            <span class="text-[10px] bg-white/20 text-white px-1.5 py-0.5 rounded font-mono font-bold">1-clique</span>
           </button>
 
-          <button onclick="switchTab('builder')" id="nav-btn-builder" class="sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/80">
+          <button onclick="switchTab('builder')" id="nav-btn-builder" class="sidebar-nav-btn w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 flex items-center justify-between text-slate-400 hover:text-slate-100 hover:bg-white/[0.04] border border-transparent hover:border-white/[0.05] hover:translate-x-0.5">
             <span class="flex items-center space-x-2.5">
               <i data-lucide="sliders" class="w-4 h-4 text-indigo-400"></i>
               <span>Construtor Codax</span>
             </span>
-            <span class="text-[9px] bg-indigo-950 text-indigo-300 border border-indigo-500/30 px-1.5 py-0.2 rounded font-mono">JSON</span>
+            <span class="text-[9px] bg-indigo-950/80 text-indigo-300 border border-indigo-500/30 px-1.5 py-0.5 rounded font-mono">JSON</span>
           </button>
 
-          <button onclick="switchTab('devices')" id="nav-btn-devices" class="sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/80">
+          <button onclick="switchTab('devices')" id="nav-btn-devices" class="sidebar-nav-btn w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 flex items-center justify-between text-slate-400 hover:text-slate-100 hover:bg-white/[0.04] border border-transparent hover:border-white/[0.05] hover:translate-x-0.5">
             <span class="flex items-center space-x-2.5">
               <i data-lucide="gauge" class="w-4 h-4 text-cyan-400"></i>
               <span>Medidores & Placas</span>
             </span>
-            <span id="sidebar-badge-devices" class="bg-cyan-950/80 text-cyan-300 border border-cyan-500/40 text-[10px] px-1.5 py-0.2 rounded-full font-mono">0</span>
+            <span id="sidebar-badge-devices" class="bg-cyan-950/80 text-cyan-300 border border-cyan-500/40 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">0</span>
           </button>
 
-          <button onclick="switchTab('tree')" id="nav-btn-tree" class="sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/80">
+          <button onclick="switchTab('tree')" id="nav-btn-tree" class="sidebar-nav-btn w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 flex items-center justify-between text-slate-400 hover:text-slate-100 hover:bg-white/[0.04] border border-transparent hover:border-white/[0.05] hover:translate-x-0.5">
             <span class="flex items-center space-x-2.5">
               <i data-lucide="network" class="w-4 h-4 text-emerald-400"></i>
               <span>Árvore da Malha</span>
             </span>
-            <span class="text-[9px] text-emerald-400 font-mono">L1+L2</span>
+            <span class="text-[9px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 px-1.5 py-0.5 rounded font-mono font-bold">L1+L2</span>
           </button>
 
-          <button onclick="switchTab('dictionary')" id="nav-btn-dictionary" class="sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/80">
+          <button onclick="switchTab('dictionary')" id="nav-btn-dictionary" class="sidebar-nav-btn w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 flex items-center justify-between text-slate-400 hover:text-slate-100 hover:bg-white/[0.04] border border-transparent hover:border-white/[0.05] hover:translate-x-0.5">
             <span class="flex items-center space-x-2.5">
               <i data-lucide="book-open" class="w-4 h-4 text-amber-400"></i>
               <span>Dicionário Oficial</span>
             </span>
-            <span class="text-[9px] bg-amber-950/80 text-amber-300 border border-amber-500/30 px-1.5 py-0.2 rounded font-mono font-bold">62 cmds</span>
+            <span class="text-[9px] bg-amber-950/80 text-amber-300 border border-amber-500/30 px-1.5 py-0.5 rounded font-mono font-bold">62 cmds</span>
           </button>
 
-          <button onclick="switchTab('ota')" id="nav-btn-ota" class="sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/80">
+          <button onclick="switchTab('ota')" id="nav-btn-ota" class="sidebar-nav-btn w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 flex items-center justify-between text-slate-400 hover:text-slate-100 hover:bg-white/[0.04] border border-transparent hover:border-white/[0.05] hover:translate-x-0.5">
             <span class="flex items-center space-x-2.5">
               <i data-lucide="upload-cloud" class="w-4 h-4 text-purple-400"></i>
               <span>Central de OTA</span>
             </span>
-            <span class="text-[9px] bg-purple-950/80 text-purple-300 border border-purple-500/30 px-1.5 py-0.2 rounded font-mono">HTTP</span>
+            <span class="text-[9px] bg-purple-950/80 text-purple-300 border border-purple-500/30 px-1.5 py-0.5 rounded font-mono font-bold">HTTP</span>
           </button>
 
-          <button onclick="switchTab('logs')" id="nav-btn-logs" class="sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/80">
+          <button onclick="switchTab('logs')" id="nav-btn-logs" class="sidebar-nav-btn w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 flex items-center justify-between text-slate-400 hover:text-slate-100 hover:bg-white/[0.04] border border-transparent hover:border-white/[0.05] hover:translate-x-0.5">
             <span class="flex items-center space-x-2.5">
               <i data-lucide="terminal" class="w-4 h-4 text-rose-400"></i>
               <span>Console ao Vivo</span>
             </span>
-            <span id="sidebar-badge-logs" class="bg-rose-950/80 text-rose-300 border border-rose-500/40 text-[10px] px-1.5 py-0.2 rounded-full font-mono">0</span>
+            <span id="sidebar-badge-logs" class="bg-rose-950/80 text-rose-300 border border-rose-500/40 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">0</span>
           </button>
         </nav>
 
         <!-- Feed ao Vivo de Retornos MQTT (Últimos retornos) -->
-        <div class="pt-2 border-t border-slate-800/80 space-y-2">
+        <div class="pt-3 border-t border-white/[0.07] space-y-2.5">
           <div class="flex items-center justify-between px-1">
             <div class="flex items-center space-x-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span class="text-[10px] font-bold uppercase tracking-wider text-slate-300">Últimos Retornos</span>
-              <span id="sidebar-returns-count" class="text-[9px] bg-slate-800 text-slate-400 px-1.5 py-0.2 rounded font-mono font-bold">0</span>
+              <span class="w-2 h-2 rounded-full bg-emerald-400 beacon-halo"></span>
+              <span class="text-[10px] font-extrabold uppercase tracking-widest text-slate-300">ÚLTIMOS RETORNOS</span>
+              <span id="sidebar-returns-count" class="text-[9px] bg-indigo-950/80 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-mono font-bold">0</span>
             </div>
             <div class="flex items-center space-x-2">
-              <button onclick="clearSidebarReturns()" title="Limpar histórico recente da barra" class="text-[10px] text-slate-500 hover:text-rose-400 transition">
-                <i data-lucide="trash-2" class="w-3 h-3"></i>
+              <button onclick="clearSidebarReturns()" title="Limpar histórico recente da barra" class="text-[10px] text-slate-500 hover:text-rose-400 transition p-1 hover:bg-white/[0.05] rounded-lg">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
-              <button onclick="switchTab('logs')" class="text-[10px] text-indigo-400 hover:underline flex items-center space-x-0.5">
+              <button onclick="switchTab('logs')" class="text-[10px] text-indigo-400 hover:text-indigo-300 font-semibold flex items-center space-x-0.5 transition">
                 <span>Console</span>
                 <i data-lucide="arrow-right" class="w-3 h-3"></i>
               </button>
             </div>
           </div>
-          <div id="sidebar-mini-feed" class="space-y-2.5 max-h-[350px] overflow-y-auto pr-1">
-            <div class="bg-slate-950/60 border border-slate-800/80 p-3.5 rounded-xl text-[10px] text-slate-500 italic text-center">
+          <div id="sidebar-mini-feed" class="space-y-2.5 max-h-[360px] overflow-y-auto pr-1">
+            <div class="bg-slate-950/60 border border-white/[0.06] p-3.5 rounded-xl text-[10px] text-slate-500 italic text-center">
               Aguardando respostas e telemetria das controladoras...
             </div>
           </div>
@@ -442,20 +588,20 @@
       </div>
 
       <!-- Rodapé da Barra Lateral com Link do GitHub -->
-      <div class="p-3 border-t border-slate-800 bg-slate-950/60 space-y-2">
-        <a href="https://github.com/Eufratica/Servidor---Codax.git" target="_blank" class="w-full flex items-center justify-between px-2.5 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800/80 hover:border-slate-700 rounded-xl text-[11px] text-slate-300 transition group">
+      <div class="p-3.5 border-t border-white/[0.07] bg-slate-950/60 space-y-2">
+        <a href="https://github.com/Eufratica/Servidor---Codax.git" target="_blank" class="w-full flex items-center justify-between px-3 py-2 bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.07] hover:border-white/[0.12] rounded-xl text-[11px] text-slate-300 transition group shadow-sm">
           <span class="flex items-center space-x-2">
-            <i data-lucide="github" class="w-3.5 h-3.5 text-slate-400 group-hover:text-white"></i>
-            <span class="font-semibold">GitHub Repo</span>
+            <i data-lucide="github" class="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition"></i>
+            <span class="font-bold">GitHub Repository</span>
           </span>
-          <i data-lucide="external-link" class="w-3 h-3 text-slate-500"></i>
+          <i data-lucide="external-link" class="w-3 h-3 text-slate-500 group-hover:text-slate-300 transition"></i>
         </a>
-        <div class="text-[10px] text-slate-500 flex items-center justify-between px-1">
-          <span class="flex items-center space-x-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            <span>Broker 1883</span>
+        <div class="text-[10px] text-slate-400 flex items-center justify-between px-1">
+          <span class="flex items-center space-x-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 beacon-halo"></span>
+            <span class="font-semibold text-slate-300">Broker 1883</span>
           </span>
-          <span class="mono text-indigo-400 font-bold">OTA :8000</span>
+          <span class="font-mono text-indigo-400 font-bold bg-indigo-950/60 border border-indigo-500/30 px-1.5 py-0.2 rounded">OTA :8000</span>
         </div>
       </div>
 
@@ -465,12 +611,12 @@
     <main id="main-scroll-view" class="flex-1 flex flex-col h-full overflow-y-auto min-h-0 bg-slate-950 relative">
 
       <!-- Subheader da Página Atual (Fixado no topo durante a rolagem) -->
-      <div class="h-12 border-b border-slate-800/80 bg-slate-900/90 backdrop-blur px-6 flex items-center justify-between shrink-0 sticky top-0 z-20 shadow-sm">
-        <h1 id="page-title" class="font-bold text-sm text-slate-100 flex items-center space-x-2">
+      <div class="h-12 border-b border-white/[0.07] bg-slate-950/80 backdrop-blur-xl px-6 flex items-center justify-between shrink-0 sticky top-0 z-20 shadow-md">
+        <h1 id="page-title" class="font-extrabold text-sm text-slate-100 flex items-center space-x-2">
           <i data-lucide="zap" class="w-4 h-4 text-indigo-400"></i>
           <span>Ações Rápidas de Bancada</span>
         </h1>
-        <div id="page-context-pill" class="text-xs text-slate-400">
+        <div id="page-context-pill" class="text-xs text-slate-400 font-medium px-2.5 py-1 rounded-full bg-white/[0.03] border border-white/[0.06]">
           Envio direto para as controladoras conectadas
         </div>
       </div>
@@ -614,20 +760,20 @@
         <!-- ================= ABA 2: CONSTRUTOR CODAX (COM SUB-ABAS) ================= -->
         <section id="view-builder" class="tab-content hidden space-y-6">
           
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+          <div class="glass-card rounded-2xl shadow-sm overflow-hidden border border-white/[0.08]">
             
             <!-- Barra de Sub-Abas do Construtor -->
-            <div class="bg-slate-950/60 border-b border-slate-800 px-6 py-2.5 flex items-center justify-between">
+            <div class="bg-slate-950/60 border-b border-white/[0.07] px-6 py-2.5 flex items-center justify-between">
               <div class="flex items-center space-x-2">
-                <button onclick="switchBuilderSubTab('official')" id="btn-subtab-official" class="builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1.5">
+                <button onclick="switchBuilderSubTab('official')" id="btn-subtab-official" class="builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-600/30 flex items-center space-x-1.5 border border-indigo-400/30">
                   <i data-lucide="file-code" class="w-3.5 h-3.5"></i>
                   <span>1. Template Oficial Codax</span>
                 </button>
-                <button onclick="switchBuilderSubTab('raw-pub')" id="btn-subtab-raw-pub" class="builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+                <button onclick="switchBuilderSubTab('raw-pub')" id="btn-subtab-raw-pub" class="builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white hover:bg-white/[0.04] border border-transparent flex items-center space-x-1.5">
                   <i data-lucide="send" class="w-3.5 h-3.5"></i>
                   <span>2. Publicador MQTT Livre</span>
                 </button>
-                <button onclick="switchBuilderSubTab('sub-feed')" id="btn-subtab-sub-feed" class="builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5">
+                <button onclick="switchBuilderSubTab('sub-feed')" id="btn-subtab-sub-feed" class="builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white hover:bg-white/[0.04] border border-transparent flex items-center space-x-1.5">
                   <i data-lucide="radio" class="w-3.5 h-3.5"></i>
                   <span>3. Assinante & Feed de Retornos</span>
                 </button>
@@ -811,28 +957,28 @@
                 </div>
 
                 <!-- Live JSON Preview (Direita, 5 cols) -->
-                <div class="lg:col-span-5 flex flex-col justify-between bg-slate-950 border border-slate-800 rounded-2xl p-5">
+                <div class="lg:col-span-5 flex flex-col justify-between glass-card rounded-2xl p-5 border border-white/[0.08] shadow-inner">
                   <div>
-                    <div class="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
-                      <span class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center space-x-1.5">
+                    <div class="flex items-center justify-between mb-3 border-b border-white/[0.07] pb-2">
+                      <span class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center space-x-1.5">
                         <i data-lucide="code" class="w-3.5 h-3.5 text-indigo-400"></i>
                         <span>JSON Preview em Tempo Real</span>
                       </span>
-                      <button onclick="copyPayloadPreview()" class="text-[11px] text-slate-400 hover:text-white flex items-center space-x-1">
+                      <button onclick="copyPayloadPreview()" class="text-[11px] text-slate-400 hover:text-white flex items-center space-x-1 p-1 hover:bg-white/[0.05] rounded-lg transition">
                         <i data-lucide="copy" class="w-3 h-3"></i>
                         <span>Copiar</span>
                       </button>
                     </div>
-                    <p class="text-[11px] text-slate-500 mb-2">Este é o payload exato que será serializado e publicado:</p>
-                    <pre id="live-json-preview" class="text-xs text-emerald-400 bg-slate-900/90 border border-slate-800/80 p-3.5 rounded-xl mono overflow-x-auto whitespace-pre-wrap max-h-72"></pre>
+                    <p class="text-[11px] text-slate-400 mb-2">Este é o payload exato que será serializado e publicado:</p>
+                    <pre id="live-json-preview" class="text-xs text-emerald-400 bg-slate-950/80 border border-white/[0.07] p-3.5 rounded-xl mono overflow-x-auto whitespace-pre-wrap max-h-72"></pre>
                   </div>
 
-                  <div class="pt-4 border-t border-slate-800 mt-4 space-y-2">
+                  <div class="pt-4 border-t border-white/[0.07] mt-4 space-y-2">
                     <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
                       <span>Tópico de Disparo:</span>
                       <code id="builder-target-topic" class="mono text-indigo-400 font-bold">config/shopba/mesh</code>
                     </div>
-                    <button onclick="handleSendOfficialCommand()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm py-3 rounded-xl flex items-center justify-center space-x-2 transition shadow-lg shadow-indigo-600/25">
+                    <button onclick="handleSendOfficialCommand()" class="w-full btn-luxury-primary text-white font-bold text-sm py-3.5 rounded-xl flex items-center justify-center space-x-2 transition cursor-pointer">
                       <i data-lucide="send" class="w-4 h-4"></i>
                       <span>Disparar Comando no Broker</span>
                     </button>
@@ -911,12 +1057,12 @@
         <!-- ================= ABA: CADASTRO DE MEDIDORES & DISPOSITIVOS ================= -->
         <section id="view-devices" class="tab-content hidden space-y-6">
           
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-6">
+          <div class="glass-panel rounded-2xl p-6 shadow-xl space-y-6">
             
             <!-- Cabeçalho do Cadastro -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/[0.07] pb-6">
               <div>
-                <h3 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+                <h3 class="text-base font-extrabold text-slate-100 flex items-center space-x-2">
                   <i data-lucide="gauge" class="w-5 h-5 text-cyan-400"></i>
                   <span>Cadastro de Medidores & Placas Codax</span>
                 </h3>
@@ -926,11 +1072,11 @@
               </div>
 
               <div class="flex items-center space-x-2.5 flex-wrap">
-                <button onclick="openDeviceModal()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl flex items-center space-x-2 transition shadow-lg shadow-cyan-600/25">
+                <button onclick="openDeviceModal()" class="btn-luxury-primary text-white font-bold text-xs px-4 py-2.5 rounded-xl flex items-center space-x-2 transition shadow-lg cursor-pointer">
                   <i data-lucide="plus-circle" class="w-4 h-4"></i>
                   <span>+ Cadastrar Medidor</span>
                 </button>
-                <button onclick="loadDevices(); loadDiscovered();" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold px-3 py-2.5 rounded-xl flex items-center space-x-1.5 transition border border-slate-700">
+                <button onclick="loadDevices(); loadDiscovered();" class="glass-pill hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-semibold px-3 py-2.5 rounded-xl flex items-center space-x-1.5 transition border border-white/[0.08]">
                   <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
                   <span>Atualizar</span>
                 </button>
@@ -939,7 +1085,7 @@
 
             <!-- Resumo e Métricas dos Medidores -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div class="bg-slate-950/80 border border-slate-800/80 p-3.5 rounded-xl flex items-center justify-between">
+              <div class="glass-pill p-4 rounded-xl flex items-center justify-between border border-white/[0.08]">
                 <div class="flex items-center space-x-3">
                   <div class="p-2 rounded-lg bg-cyan-950/60 text-cyan-400 border border-cyan-500/30">
                     <i data-lucide="cpu" class="w-4 h-4"></i>
@@ -951,7 +1097,7 @@
                 </div>
               </div>
 
-              <div class="bg-slate-950/80 border border-slate-800/80 p-3.5 rounded-xl flex items-center justify-between">
+              <div class="glass-pill p-4 rounded-xl flex items-center justify-between border border-white/[0.08]">
                 <div class="flex items-center space-x-3">
                   <div class="p-2 rounded-lg bg-emerald-950/60 text-emerald-400 border border-emerald-500/30">
                     <i data-lucide="activity" class="w-4 h-4"></i>
@@ -963,7 +1109,7 @@
                 </div>
               </div>
 
-              <div class="bg-slate-950/80 border border-slate-800/80 p-3.5 rounded-xl flex items-center justify-between">
+              <div class="glass-pill p-4 rounded-xl flex items-center justify-between border border-white/[0.08]">
                 <div class="flex items-center space-x-3">
                   <div class="p-2 rounded-lg bg-indigo-950/60 text-indigo-400 border border-indigo-500/30">
                     <i data-lucide="radio" class="w-4 h-4"></i>
@@ -1013,11 +1159,11 @@
         <!-- ================= ABA 3: ÁRVORE DA MALHA (TOPOLOGIA VISUAL) ================= -->
         <section id="view-tree" class="tab-content hidden space-y-6">
           
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
+          <div class="glass-panel rounded-2xl p-6 shadow-xl space-y-6">
             
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/[0.07]">
               <div>
-                <h3 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+                <h3 class="text-base font-extrabold text-slate-100 flex items-center space-x-2">
                   <i data-lucide="network" class="w-5 h-5 text-emerald-400"></i>
                   <span>Hierarquia Visual da Malha Mesh (Camadas 1, 2 e 3)</span>
                 </h3>
@@ -1052,12 +1198,12 @@
         <!-- ================= ABA 4: DICIONÁRIO DE COMANDOS (EXAUSTIVO) ================= -->
         <section id="view-dictionary" class="tab-content hidden space-y-6">
           
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-6">
+          <div class="glass-panel rounded-2xl p-6 shadow-xl space-y-6">
             
             <!-- Cabeçalho & Barra de Pesquisa do Dicionário -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/[0.07] pb-6">
               <div>
-                <h3 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+                <h3 class="text-base font-extrabold text-slate-100 flex items-center space-x-2">
                   <i data-lucide="book-open" class="w-5 h-5 text-amber-400"></i>
                   <span>Dicionário Oficial de Comandos & Tópicos Codax</span>
                 </h3>
@@ -1096,14 +1242,14 @@
         <!-- ================= ABA 5: CENTRAL DE OTA ================= -->
         <section id="view-ota" class="tab-content hidden space-y-6">
           
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
-            <h3 class="text-base font-bold text-slate-100 mb-1 flex items-center space-x-2">
+          <div class="glass-panel rounded-2xl p-6 shadow-xl">
+            <h3 class="text-base font-extrabold text-slate-100 mb-1 flex items-center space-x-2">
               <i data-lucide="upload-cloud" class="w-5 h-5 text-indigo-400"></i>
               <span>Upload de Novo Firmware (.bin)</span>
             </h3>
             <p class="text-xs text-slate-400 mb-4">Envie o arquivo binário compilado pelo ESP-IDF para servi-lo via HTTP local.</p>
 
-            <div class="border-2 border-dashed border-slate-700/80 hover:border-indigo-500 rounded-2xl p-6 text-center transition cursor-pointer bg-slate-950/40" onclick="document.getElementById('ota-file-input').click()">
+            <div class="border-2 border-dashed border-indigo-500/40 hover:border-indigo-400 rounded-2xl p-6 text-center transition cursor-pointer bg-slate-950/60 hover:bg-slate-900/60" onclick="document.getElementById('ota-file-input').click()">
               <input type="file" id="ota-file-input" accept=".bin" class="hidden" onchange="handleFileUpload(event)">
               <i data-lucide="file-up" class="w-10 h-10 text-indigo-400 mx-auto mb-2"></i>
               <p class="text-sm font-semibold text-slate-200">Clique para selecionar o arquivo .bin</p>
@@ -1111,13 +1257,13 @@
             </div>
           </div>
 
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-sm font-bold text-slate-100 flex items-center space-x-2">
+          <div class="glass-panel rounded-2xl p-6 shadow-xl">
+            <div class="flex items-center justify-between mb-4 border-b border-white/[0.07] pb-3">
+              <h3 class="text-sm font-extrabold text-slate-100 flex items-center space-x-2">
                 <i data-lucide="folder" class="w-4 h-4 text-amber-400"></i>
                 <span>Firmwares Prontos no Servidor Local</span>
               </h3>
-              <button onclick="loadFirmwares()" class="text-xs text-slate-400 hover:text-white flex items-center space-x-1">
+              <button onclick="loadFirmwares()" class="glass-pill text-xs text-slate-300 hover:text-white px-2.5 py-1 rounded-lg flex items-center space-x-1 transition border border-white/[0.08]">
                 <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
                 <span>Atualizar</span>
               </button>
@@ -1133,7 +1279,7 @@
         <!-- ================= ABA 6: CONSOLE DE MENSAGENS AO VIVO ================= -->
         <section id="view-logs" class="tab-content hidden space-y-4">
           
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="glass-panel rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs shadow-md">
             
             <div class="flex items-center space-x-1.5 flex-wrap">
               <button onclick="setLogCategory('all')" id="btn-cat-all" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-medium">Todos</button>
@@ -1145,9 +1291,9 @@
             </div>
 
             <div class="flex items-center space-x-2">
-              <input type="text" id="log-search" oninput="renderLogs()" placeholder="Filtrar por MAC ou texto..." class="bg-slate-950 border border-slate-700/80 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500 w-48">
-              <button onclick="clearConsole()" class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-slate-300 transition font-semibold" title="Limpar mensagens">Limpar</button>
-              <label class="flex items-center space-x-1.5 text-slate-400 cursor-pointer">
+              <input type="text" id="log-search" oninput="renderLogs()" placeholder="Filtrar por MAC ou texto..." class="bg-slate-950/90 border border-white/[0.08] rounded-xl px-3 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500 w-48 text-xs mono">
+              <button onclick="clearConsole()" class="glass-pill hover:bg-slate-800 px-3 py-1.5 rounded-xl text-slate-300 transition font-semibold border border-white/[0.08]" title="Limpar mensagens">Limpar</button>
+              <label class="flex items-center space-x-1.5 text-slate-400 cursor-pointer text-xs">
                 <input type="checkbox" id="autoscroll-toggle" checked class="rounded bg-slate-950 border-slate-700 text-indigo-600">
                 <span>Auto-scroll</span>
               </label>
@@ -1155,7 +1301,7 @@
 
           </div>
 
-          <div id="console-output" class="bg-slate-950 border border-slate-800 rounded-2xl p-5 h-[calc(100vh-220px)] overflow-y-auto space-y-2 mono text-xs">
+          <div id="console-output" class="bg-[#04060d]/95 border border-white/[0.08] rounded-2xl p-5 h-[calc(100vh-220px)] overflow-y-auto space-y-2 mono text-xs shadow-inner">
             <p class="text-slate-500 italic">Aguardando mensagens do Broker MQTT...</p>
           </div>
 
@@ -1168,8 +1314,8 @@
   </div>
 
   <!-- ================= MODAL DE CONFIRMAÇÃO DE OTA ================= -->
-  <div id="modal-ota" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+  <div id="modal-ota" class="fixed inset-0 bg-black/75 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-[#0a0f1d]/95 border border-white/[0.1] rounded-2xl max-w-md w-full p-6 shadow-2xl backdrop-blur-2xl">
       <div class="flex items-center space-x-3 mb-4">
         <div class="bg-indigo-600/20 text-indigo-400 p-2.5 rounded-xl border border-indigo-500/30">
           <i data-lucide="upload-cloud" class="w-6 h-6"></i>
@@ -1209,20 +1355,20 @@
   </div>
 
   <!-- ================= MODAL DE CADASTRO DE MEDIDOR / DISPOSITIVO ================= -->
-  <div id="device-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-5">
+  <div id="device-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md hidden p-4">
+    <div class="bg-[#0a0f1d]/95 border border-white/[0.1] rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-5 backdrop-blur-2xl">
       
-      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+      <div class="flex items-center justify-between border-b border-white/[0.07] pb-4">
         <div class="flex items-center space-x-3">
           <div class="p-2 bg-cyan-600/20 text-cyan-400 rounded-xl border border-cyan-500/30">
             <i data-lucide="gauge" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 id="device-modal-title" class="font-bold text-slate-100 text-sm">Cadastrar Novo Medidor / Placa</h3>
+            <h3 id="device-modal-title" class="font-extrabold text-slate-100 text-sm">Cadastrar Novo Medidor / Placa</h3>
             <p class="text-[11px] text-slate-400">Vincule um nome amigável e dados do medidor ao MAC</p>
           </div>
         </div>
-        <button type="button" onclick="closeDeviceModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+        <button type="button" onclick="closeDeviceModal()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/[0.06] transition">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
@@ -1230,23 +1376,23 @@
       <form onsubmit="handleSaveDevice(event)" class="space-y-4 text-xs">
         <div>
           <label class="block font-semibold text-slate-300 mb-1">Endereço MAC (12 dígitos hexadecimais) *</label>
-          <input type="text" id="dev-modal-mac" required placeholder="Ex: 4417934f49a4 ou 44:17:93:4F:49:A4" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-2.5 text-slate-100 mono focus:outline-none focus:border-cyan-500">
+          <input type="text" id="dev-modal-mac" required placeholder="Ex: 4417934f49a4 ou 44:17:93:4F:49:A4" class="w-full bg-slate-950/80 border border-white/[0.09] rounded-xl p-2.5 text-slate-100 mono focus:outline-none focus:border-cyan-400">
           <p class="text-[11px] text-slate-500 mt-1">Normalizado automaticamente (com ou sem dois pontos).</p>
         </div>
 
         <div>
           <label class="block font-semibold text-slate-300 mb-1">Nome Amigável / Apelido *</label>
-          <input type="text" id="dev-modal-name" required placeholder="Ex: Bancada 01 - Medidor Trifásico, ROOT Lab..." class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-2.5 text-slate-100 focus:outline-none focus:border-cyan-500">
+          <input type="text" id="dev-modal-name" required placeholder="Ex: Bancada 01 - Medidor Trifásico, ROOT Lab..." class="w-full bg-slate-950/80 border border-white/[0.09] rounded-xl p-2.5 text-slate-100 focus:outline-none focus:border-cyan-400">
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block font-semibold text-slate-300 mb-1">Nº Série do Medidor (Opcional)</label>
-            <input type="text" id="dev-modal-serial" placeholder="Ex: 0012345678, MED-01" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-2.5 text-slate-200 mono focus:outline-none focus:border-cyan-500">
+            <input type="text" id="dev-modal-serial" placeholder="Ex: 0012345678, MED-01" class="w-full bg-slate-950/80 border border-white/[0.09] rounded-xl p-2.5 text-slate-200 mono focus:outline-none focus:border-cyan-400">
           </div>
           <div>
             <label class="block font-semibold text-slate-300 mb-1">Papel na Malha Mesh</label>
-            <select id="dev-modal-role" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500">
+            <select id="dev-modal-role" class="w-full bg-slate-950/80 border border-white/[0.09] rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-cyan-400">
               <option value="NODE">NODE (Nó Filho / Segunda Camada)</option>
               <option value="ROOT">ROOT (Controladora Principal com Wi-Fi)</option>
               <option value="IDLE">IDLE (Dispositivo Livre / Standby)</option>
@@ -1256,7 +1402,7 @@
 
         <div>
           <label class="block font-semibold text-slate-300 mb-1">Protocolo / Interface de Medição</label>
-          <select id="dev-modal-type" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500">
+          <select id="dev-modal-type" class="w-full bg-slate-950/80 border border-white/[0.09] rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-cyan-400">
             <option value="ABNT NBR 14522">ABNT NBR 14522 (Óptica / Serial)</option>
             <option value="Modbus RTU">Modbus RTU (RS485)</option>
             <option value="Modbus UDP">Modbus UDP (Ethernet / WiFi)</option>
@@ -1268,23 +1414,23 @@
 
         <div>
           <label class="block font-semibold text-slate-300 mb-1">Observações / Localização</label>
-          <input type="text" id="dev-modal-notes" placeholder="Ex: Quadro geral de distribuição, Bancada 2..." class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500">
+          <input type="text" id="dev-modal-notes" placeholder="Ex: Quadro geral de distribuição, Bancada 2..." class="w-full bg-slate-950/80 border border-white/[0.09] rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-cyan-400">
         </div>
 
-        <div class="pt-3 flex justify-end space-x-2 border-t border-slate-800">
-          <button type="button" onclick="closeDeviceModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl transition">Cancelar</button>
-          <button type="submit" class="px-5 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-cyan-600/25 transition">Salvar Medidor</button>
+        <div class="pt-3 flex justify-end space-x-2 border-t border-white/[0.07]">
+          <button type="button" onclick="closeDeviceModal()" class="px-4 py-2 bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 rounded-xl transition border border-white/[0.07]">Cancelar</button>
+          <button type="submit" class="px-5 py-2 btn-luxury-primary text-white font-bold rounded-xl shadow-lg cursor-pointer">Salvar Medidor</button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- ================= MODAL DE INSPEÇÃO RÁPIDA DE RETORNO MQTT ================= -->
-  <div id="modal-return-inspector" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden select-none">
-    <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150">
+  <div id="modal-return-inspector" class="fixed inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center p-4 z-50 hidden select-none">
+    <div class="bg-[#0a0f1d]/95 border border-white/[0.1] w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-150">
       
       <!-- Header do Modal -->
-      <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/70">
+      <div class="p-4 border-b border-white/[0.07] flex items-center justify-between bg-slate-950/70">
         <div class="flex items-center space-x-3">
           <div class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
             <i data-lucide="radio" class="w-4 h-4"></i>
@@ -1297,7 +1443,7 @@
             <p id="inspect-timestamp" class="text-xs text-slate-400 font-mono mt-0.5">Recebido às --:--:--</p>
           </div>
         </div>
-        <button onclick="closeReturnInspectorModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition">
+        <button onclick="closeReturnInspectorModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-white/[0.06] transition">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
@@ -1306,7 +1452,7 @@
       <div class="p-5 space-y-4 overflow-y-auto text-xs">
         
         <!-- Bloco de Origem / Dispositivo Identificado -->
-        <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 space-y-2">
+        <div class="bg-slate-950/80 border border-white/[0.08] rounded-xl p-3.5 space-y-2">
           <div class="flex items-center justify-between">
             <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Origem / Placa de Resposta:</span>
             <span id="inspect-device-role" class="text-[10px] px-2 py-0.5 rounded font-mono bg-slate-800 text-slate-300">NODE</span>
@@ -1324,8 +1470,8 @@
         <div class="space-y-1">
           <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Tópico MQTT:</span>
           <div class="flex items-center space-x-2">
-            <code id="inspect-topic" class="flex-1 bg-slate-950 border border-slate-800 p-2.5 rounded-lg mono text-xs text-indigo-300 truncate select-all">retorno/shopba/mesh</code>
-            <button onclick="copyInspectTopic()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 p-2.5 rounded-lg transition" title="Copiar Tópico">
+            <code id="inspect-topic" class="flex-1 bg-slate-950 border border-white/[0.08] p-2.5 rounded-lg mono text-xs text-indigo-300 truncate select-all">retorno/shopba/mesh</code>
+            <button onclick="copyInspectTopic()" class="bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 p-2.5 rounded-lg transition border border-white/[0.08]" title="Copiar Tópico">
               <i data-lucide="copy" class="w-3.5 h-3.5"></i>
             </button>
           </div>
@@ -1336,22 +1482,22 @@
           <div class="flex items-center justify-between">
             <span class="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">Payload Completo da Resposta:</span>
             <button onclick="copyInspectPayload()" class="text-indigo-400 hover:text-indigo-300 font-semibold flex items-center space-x-1">
-              <i data-lucide="copy" class="w-3 h-3"></i>
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
               <span>Copiar Payload Formatado</span>
             </button>
           </div>
-          <pre id="inspect-payload" class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl mono text-xs text-emerald-400 overflow-x-auto max-h-72 whitespace-pre-wrap leading-relaxed select-all">{}</pre>
+          <pre id="inspect-payload" class="bg-slate-950 border border-white/[0.08] p-3.5 rounded-xl mono text-xs text-emerald-400 overflow-x-auto max-h-72 whitespace-pre-wrap leading-relaxed select-all">{}</pre>
         </div>
 
       </div>
 
       <!-- Rodapé do Modal com Ações Rápidas -->
-      <div class="p-4 border-t border-slate-800 bg-slate-950/80 flex items-center justify-between gap-3">
-        <button onclick="useInspectDeviceInBuilder()" id="inspect-btn-builder" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-4 py-2 rounded-xl transition flex items-center space-x-1.5 shadow-sm">
+      <div class="p-4 border-t border-white/[0.07] bg-slate-950/80 flex items-center justify-between gap-3">
+        <button onclick="useInspectDeviceInBuilder()" id="inspect-btn-builder" class="btn-luxury-primary text-white font-bold px-4 py-2 rounded-xl transition flex items-center space-x-1.5 shadow-md cursor-pointer">
           <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
           <span>Enviar Comando para este Nó</span>
         </button>
-        <button onclick="closeReturnInspectorModal()" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl transition font-semibold">
+        <button onclick="closeReturnInspectorModal()" class="px-5 py-2 bg-white/[0.05] hover:bg-white/[0.1] text-slate-200 rounded-xl transition font-semibold border border-white/[0.07]">
           Fechar
         </button>
       </div>
@@ -1779,18 +1925,18 @@
         const isError = badge.label.includes('ERRO');
 
         const card = document.createElement('div');
-        card.className = 'group bg-gradient-to-b from-slate-900/95 to-slate-950/95 hover:from-slate-850 hover:to-slate-900 border border-slate-800/80 hover:border-indigo-500/50 p-3 rounded-2xl text-left cursor-pointer transition-all space-y-2.5 shadow-sm hover:shadow-indigo-500/10 hover:shadow-md relative overflow-hidden';
+        card.className = 'group glass-card hover:border-indigo-500/50 p-3.5 rounded-2xl text-left cursor-pointer transition-all duration-200 space-y-2.5 shadow-md hover:shadow-indigo-500/15 relative overflow-hidden';
         
-        // Highlight lateral bar
-        const accentColor = isGroot || badge.label.includes('RESPOSTA') ? 'bg-emerald-500' : (isError ? 'bg-rose-500' : (badge.label.includes('TELEMETRIA') ? 'bg-cyan-500' : 'bg-indigo-500'));
+        // Highlight lateral bar com efeito luminoso
+        const accentColor = isGroot || badge.label.includes('RESPOSTA') ? 'bg-emerald-400 shadow-[0_0_8px_#34d399]' : (isError ? 'bg-rose-400 shadow-[0_0_8px_#fb7185]' : (badge.label.includes('TELEMETRIA') ? 'bg-cyan-400 shadow-[0_0_8px_#22d3ee]' : 'bg-indigo-400 shadow-[0_0_8px_#818cf8]'));
 
         let avatarBg = 'bg-indigo-950/80 text-indigo-300 border border-indigo-500/30';
         let avatarIcon = '<i data-lucide="radio" class="w-3.5 h-3.5"></i>';
         if (dev && dev.role === 'ROOT') {
-          avatarBg = 'bg-purple-950/80 text-purple-300 border border-purple-500/40';
+          avatarBg = 'bg-purple-950/80 text-purple-300 border border-purple-500/40 shadow-inner';
           avatarIcon = '<i data-lucide="crown" class="w-3.5 h-3.5"></i>';
         } else if (dev) {
-          avatarBg = 'bg-cyan-950/80 text-cyan-300 border border-cyan-500/40';
+          avatarBg = 'bg-cyan-950/80 text-cyan-300 border border-cyan-500/40 shadow-inner';
           avatarIcon = '<i data-lucide="gauge" class="w-3.5 h-3.5"></i>';
         }
 
@@ -1803,7 +1949,7 @@
           <!-- Cabeçalho: Horário, Badge e Status LED -->
           <div class="flex items-center justify-between text-[11px] pl-1.5">
             <div class="flex items-center space-x-1.5">
-              <span class="w-1.5 h-1.5 rounded-full ${isError ? 'bg-rose-400' : 'bg-emerald-400'} animate-pulse"></span>
+              <span class="w-1.5 h-1.5 rounded-full ${isError ? 'bg-rose-400' : 'bg-emerald-400'} beacon-halo"></span>
               <span class="font-mono text-slate-400 font-semibold">${timeStr}</span>
             </div>
             <span class="text-[9px] font-bold px-2 py-0.5 rounded-lg border ${badge.color}">${badge.label}</span>
@@ -1829,18 +1975,18 @@
           </div>
 
           <!-- Footer: Botão Ver Detalhes (Inspetor) e Ações Rápidas -->
-          <div class="pl-1.5 pt-2 border-t border-slate-900 flex items-center justify-between text-[10px]">
-            <button onclick="openReturnInspectorModal(${idx})" class="text-indigo-300 hover:text-white font-bold flex items-center space-x-1.5 bg-indigo-950/70 hover:bg-indigo-900 border border-indigo-500/40 hover:border-indigo-400 px-2.5 py-1 rounded-lg transition shadow-sm">
+          <div class="pl-1.5 pt-2 border-t border-white/[0.06] flex items-center justify-between text-[10px]">
+            <button onclick="openReturnInspectorModal(${idx})" class="text-indigo-200 hover:text-white font-bold flex items-center space-x-1.5 bg-indigo-950/60 hover:bg-indigo-900/80 border border-indigo-500/40 hover:border-indigo-400 px-2.5 py-1 rounded-xl transition shadow-sm text-[10px]">
               <i data-lucide="eye" class="w-3.5 h-3.5"></i>
               <span>Ver Detalhes (JSON)</span>
             </button>
             <div class="flex items-center space-x-1.5" onclick="event.stopPropagation()">
               ${cleanMac ? `
-                <button onclick="setTarget('${cleanMac}')" title="Definir MAC como Alvo no Construtor" class="text-slate-400 hover:text-cyan-300 p-1.5 rounded-lg hover:bg-slate-800 transition">
+                <button onclick="setTarget('${cleanMac}')" title="Definir MAC como Alvo no Construtor" class="text-slate-400 hover:text-cyan-300 p-1.5 rounded-lg hover:bg-white/[0.08] transition">
                   <i data-lucide="target" class="w-3.5 h-3.5"></i>
                 </button>
               ` : ''}
-              <button onclick="copyRawSnippet(${idx})" title="Copiar resposta bruta" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition">
+              <button onclick="copyRawSnippet(${idx})" title="Copiar resposta bruta" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-white/[0.08] transition">
                 <i data-lucide="copy" class="w-3.5 h-3.5"></i>
               </button>
             </div>
@@ -2124,12 +2270,12 @@
 
       // Atualizar botões de navegação na barra lateral
       document.querySelectorAll('.sidebar-nav-btn').forEach(btn => {
-        btn.className = 'sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/80';
+        btn.className = 'sidebar-nav-btn w-full px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 flex items-center justify-between text-slate-400 hover:text-slate-100 hover:bg-white/[0.04] border border-transparent hover:border-white/[0.05] hover:translate-x-0.5';
       });
 
       const sideActive = document.getElementById(`nav-btn-${tabId}`);
       if (sideActive) {
-        sideActive.className = 'sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-between bg-indigo-600 text-white shadow-md shadow-indigo-600/30';
+        sideActive.className = 'sidebar-nav-btn w-full px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all duration-200 flex items-center justify-between bg-gradient-to-r from-indigo-600/90 via-indigo-600/80 to-purple-600/70 text-white shadow-lg shadow-indigo-600/25 border border-indigo-400/30 relative overflow-hidden';
       }
 
       // Suporte para botões na topbar se existirem
@@ -2185,11 +2331,11 @@
       document.getElementById('builder-subview-sub-feed').classList.add('hidden');
 
       document.querySelectorAll('.builder-subtab-btn').forEach(b => {
-        b.className = 'builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800/60 flex items-center space-x-1.5';
+        b.className = 'builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition text-slate-400 hover:text-white hover:bg-white/[0.04] border border-transparent flex items-center space-x-1.5';
       });
 
       document.getElementById(`builder-subview-${subId}`).classList.remove('hidden');
-      document.getElementById(`btn-subtab-${subId}`).className = 'builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1.5';
+      document.getElementById(`btn-subtab-${subId}`).className = 'builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-md shadow-indigo-600/30 flex items-center space-x-1.5 border border-indigo-400/30';
       lucide.createIcons();
     }
 
@@ -3211,7 +3357,7 @@
         if (isRoot) roleBadge = 'bg-purple-950/80 text-purple-300 border-purple-500/40';
         else if (dev.role === 'NODE') roleBadge = 'bg-blue-950/80 text-blue-300 border-blue-500/40';
 
-        card.className = 'bg-slate-950 border border-slate-800/80 hover:border-slate-700 rounded-2xl p-5 space-y-4 transition flex flex-col justify-between';
+        card.className = 'glass-card rounded-2xl p-5 space-y-4 transition flex flex-col justify-between';
         card.innerHTML = `
           <div class="space-y-2.5">
             <div class="flex items-start justify-between gap-2 border-b border-slate-900 pb-3">
@@ -3279,7 +3425,7 @@
       discoveredList.forEach(item => {
         const card = document.createElement('div');
         const isReg = item.registered;
-        card.className = 'bg-slate-950/90 border border-slate-800 rounded-xl p-4 space-y-3 flex flex-col justify-between';
+        card.className = 'glass-card rounded-xl p-4 space-y-3 flex flex-col justify-between';
         card.innerHTML = `
           <div>
             <div class="flex items-center justify-between mb-2">
