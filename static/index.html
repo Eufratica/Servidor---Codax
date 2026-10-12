@@ -432,8 +432,8 @@
               </button>
             </div>
           </div>
-          <div id="sidebar-mini-feed" class="space-y-2 max-h-60 overflow-y-auto pr-0.5">
-            <div class="bg-slate-950/60 border border-slate-800/80 p-3 rounded-xl text-[10px] text-slate-500 italic text-center">
+          <div id="sidebar-mini-feed" class="space-y-2.5 max-h-[350px] overflow-y-auto pr-1">
+            <div class="bg-slate-950/60 border border-slate-800/80 p-3.5 rounded-xl text-[10px] text-slate-500 italic text-center">
               Aguardando respostas e telemetria das controladoras...
             </div>
           </div>
@@ -1496,29 +1496,236 @@
       return { label: (msg.category || 'MSG').toUpperCase(), color: 'bg-slate-800 text-slate-300 border-slate-700' };
     }
 
-    function formatReturnSummary(msg) {
-      if (typeof msg.payload === 'object' && msg.payload !== null) {
-        if (msg.payload.response !== undefined) return String(msg.payload.response);
-        if (msg.payload.layer !== undefined) {
-          const rssi = msg.payload.router_rssi || msg.payload.parent_rssi;
-          return `Camada L${msg.payload.layer}${rssi !== undefined ? ` • RSSI: ${rssi} dBm` : ''}`;
+    function parsePayloadSafely(msg) {
+      if (!msg) return { payload: null, raw: '' };
+      let payload = (typeof msg.payload === 'object' && msg.payload !== null) ? msg.payload : null;
+      const raw = String(msg.raw || '').trim();
+
+      if (!payload && typeof msg.payload === 'string') {
+        const s = msg.payload.trim();
+        if (s.startsWith('{') || s.startsWith('[')) {
+          try { payload = JSON.parse(s); } catch (e) {}
         }
-        if (msg.payload.free_heap !== undefined) {
-          return `Heap Livre: ${(msg.payload.free_heap / 1024).toFixed(1)} KB`;
-        }
-        if (msg.payload.meter_serial_number !== undefined) {
-          return `Serial: ${msg.payload.meter_serial_number}`;
-        }
-        if (msg.payload.method && msg.payload.function) {
-          return `${msg.payload.method} ➔ ${msg.payload.function}${msg.payload.value !== undefined ? ` (${JSON.stringify(msg.payload.value)})` : ''}`;
-        }
-        try {
-          const s = JSON.stringify(msg.payload);
-          return s.length > 60 ? s.slice(0, 58) + '...' : s;
-        } catch {}
       }
-      const raw = String(msg.raw || '');
-      return raw.length > 60 ? raw.slice(0, 58) + '...' : raw;
+      if (!payload && raw) {
+        if (raw.startsWith('{') || raw.startsWith('[')) {
+          try { payload = JSON.parse(raw); } catch (e) {}
+        }
+      }
+      return { payload, raw };
+    }
+
+    function renderHumanReturnPills(msg) {
+      const { payload, raw } = parsePayloadSafely(msg);
+      const rawLower = raw.toLowerCase();
+
+      // Dicionário amigável de chaves técnicas para rótulos em português
+      const FRIENDLY_KEYS = {
+        status: 'Status',
+        ack: 'Confirmação',
+        err: 'Erro',
+        error: 'Erro',
+        response: 'Resposta',
+        uptime: 'Tempo Online',
+        temp: 'Temperatura',
+        temperature: 'Temperatura',
+        voltage: 'Tensão',
+        current: 'Corrente',
+        power: 'Potência',
+        energy: 'Consumo',
+        freq: 'Frequência',
+        time: 'Horário RTC',
+        epoch: 'Timestamp',
+        channel: 'Canal Mesh',
+        firmware: 'Firmware',
+        version: 'Versão',
+        ver: 'Versão',
+        type: 'Tipo',
+        data: 'Dados',
+        mode: 'Modo',
+        parent: 'Nó Pai',
+        parent_mac: 'Nó Pai',
+        layer: 'Camada Mesh',
+        rate: 'Taxa',
+        count: 'Contagem',
+        counter: 'Pulsos',
+        interval: 'Intervalo',
+        method: 'Método',
+        function: 'Função',
+        result: 'Resultado'
+      };
+
+      // 1. Resposta especial "I'm GROOT" (Confirmação de Root)
+      const isGroot = rawLower.includes("groot") || (payload && payload.response && String(payload.response).toLowerCase().includes("groot"));
+      if (isGroot) {
+        return `
+          <div class="flex items-center space-x-2 bg-purple-950/70 border border-purple-500/40 px-2.5 py-1.5 rounded-xl text-purple-200 text-xs font-bold shadow-inner">
+            <span class="text-sm">👑</span>
+            <div class="leading-tight">
+              <div class="text-purple-200 font-extrabold text-[11px]">Controladora ROOT Operacional</div>
+              <div class="text-purple-400 text-[9px] font-mono">Malha Mesh Inicializada & Ativa</div>
+            </div>
+          </div>
+        `;
+      }
+
+      // 2. Reinicialização de Wi-Fi / Mesh (mwifi_restart)
+      if (rawLower.includes("mwifi_restart")) {
+        return `
+          <div class="flex items-center space-x-2 bg-amber-950/70 border border-amber-500/40 px-2.5 py-1.5 rounded-xl text-amber-200 text-xs font-bold shadow-inner">
+            <span class="text-sm">🔄</span>
+            <div class="leading-tight">
+              <div class="text-amber-200 font-extrabold text-[11px]">Malha Mesh Reiniciada</div>
+              <div class="text-amber-400/80 text-[9px]">Autocura de Deadlock Concluída com Sucesso</div>
+            </div>
+          </div>
+        `;
+      }
+
+      // 3. Ping / Camada / RSSI / Conectividade
+      if (payload && (payload.layer !== undefined || payload.router_rssi !== undefined || payload.parent_rssi !== undefined || rawLower.includes('ping'))) {
+        const layer = payload.layer !== undefined ? `Camada L${payload.layer}` : null;
+        const rssi = payload.router_rssi !== undefined ? payload.router_rssi : payload.parent_rssi;
+        let rssiPill = '';
+        if (rssi !== undefined && rssi !== null) {
+          const num = parseInt(rssi);
+          let qLabel = 'Sinal Regular';
+          let qColor = 'border-rose-500/40 bg-rose-950/60 text-rose-300';
+          if (num >= -65) {
+            qLabel = 'Sinal Excelente';
+            qColor = 'border-emerald-500/40 bg-emerald-950/60 text-emerald-300';
+          } else if (num >= -75) {
+            qLabel = 'Sinal Bom';
+            qColor = 'border-amber-500/40 bg-amber-950/60 text-amber-300';
+          }
+          rssiPill = `<span class="border px-2 py-0.5 rounded-lg font-bold text-[10px] ${qColor}">${qLabel} (${num} dBm)</span>`;
+        }
+        return `
+          <div class="flex flex-wrap gap-1.5 items-center">
+            ${layer ? `<span class="bg-indigo-950/80 border border-indigo-500/30 text-indigo-300 px-2 py-0.5 rounded-lg font-bold text-[10px]">${layer}</span>` : ''}
+            ${rssiPill}
+            <span class="bg-slate-900 border border-slate-800 text-emerald-400 font-semibold px-2 py-0.5 rounded-lg text-[10px]">Ping Confirmado</span>
+          </div>
+        `;
+      }
+
+      // 4. Heap / Memória
+      if (payload && (payload.free_heap !== undefined || payload.heap !== undefined)) {
+        const free = payload.free_heap || payload.heap;
+        const min = payload.min_heap;
+        return `
+          <div class="flex flex-wrap gap-1.5 items-center">
+            <span class="bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 px-2 py-0.5 rounded-lg font-mono text-[10px] font-bold">Heap Livre: ${(free / 1024).toFixed(1)} KB</span>
+            ${min ? `<span class="bg-slate-900 border border-slate-800 text-slate-400 px-2 py-0.5 rounded-lg font-mono text-[10px]">Mín: ${(min / 1024).toFixed(1)} KB</span>` : ''}
+            <span class="bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 px-2 py-0.5 rounded-lg text-[10px] font-semibold">Memória Saudável</span>
+          </div>
+        `;
+      }
+
+      // 5. Topologia
+      if (msg.category === 'topologia' || (payload && (payload.nodes || payload.topology))) {
+        const nodeCount = Array.isArray(payload.nodes) ? payload.nodes.length : (payload.data && Array.isArray(payload.data.nodes) ? payload.data.nodes.length : 'OK');
+        return `
+          <div class="flex flex-wrap gap-1.5 items-center">
+            <span class="bg-purple-950/80 border border-purple-500/40 text-purple-300 px-2 py-0.5 rounded-lg font-bold text-[10px]">Topologia Mapeada</span>
+            <span class="bg-slate-900 border border-slate-800 text-slate-300 px-2 py-0.5 rounded-lg text-[10px]">Nós Conectados: ${nodeCount}</span>
+          </div>
+        `;
+      }
+
+      // 6. Medidor / Número de Série
+      if (payload && (payload.meter_serial_number !== undefined || payload.meter_serial !== undefined || rawLower.includes('serial'))) {
+        const sNum = payload.meter_serial_number || payload.meter_serial || 'Identificado';
+        return `
+          <div class="flex flex-wrap gap-1.5 items-center">
+            <span class="bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 px-2 py-0.5 rounded-lg font-mono font-bold text-[10px]">Medidor Serial: ${escapeHtml(String(sNum))}</span>
+            <span class="bg-slate-900 border border-slate-800 text-slate-300 px-2 py-0.5 rounded-lg text-[10px]">ABNT NBR 14522</span>
+          </div>
+        `;
+      }
+
+      // 7. Telemetria de grandezas / pulsos / contadores
+      if (msg.category === 'telemetria' || rawLower.includes('telemetr') || (payload && (payload.counter !== undefined || payload.energy !== undefined || payload.voltage !== undefined || payload.current !== undefined || payload.power !== undefined))) {
+        const items = [];
+        if (payload && payload.counter !== undefined) items.push(`<span class="bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 px-2 py-0.5 rounded-lg font-bold text-[10px]">Pulsos: ${payload.counter}</span>`);
+        if (payload && payload.energy !== undefined) items.push(`<span class="bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 px-2 py-0.5 rounded-lg font-bold text-[10px]">Energia: ${payload.energy} kWh</span>`);
+        if (payload && payload.voltage !== undefined) items.push(`<span class="bg-amber-950/80 border border-amber-500/40 text-amber-300 px-2 py-0.5 rounded-lg font-bold text-[10px]">Tensão: ${payload.voltage} V</span>`);
+        if (payload && payload.current !== undefined) items.push(`<span class="bg-blue-950/80 border border-blue-500/40 text-blue-300 px-2 py-0.5 rounded-lg font-bold text-[10px]">Corrente: ${payload.current} A</span>`);
+        if (payload && payload.power !== undefined) items.push(`<span class="bg-purple-950/80 border border-purple-500/40 text-purple-300 px-2 py-0.5 rounded-lg font-bold text-[10px]">Potência: ${payload.power} W</span>`);
+        if (payload && payload.value !== undefined) items.push(`<span class="bg-slate-900 border border-slate-800 text-slate-200 px-2 py-0.5 rounded-lg font-bold text-[10px]">Valor: ${escapeHtml(String(payload.value))}</span>`);
+        if (items.length === 0) items.push(`<span class="bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 px-2 py-0.5 rounded-lg font-semibold text-[10px]">Telemetria Registrada com Sucesso</span>`);
+        return `<div class="flex flex-wrap gap-1.5 items-center">${items.join(' ')}</div>`;
+      }
+
+      // 8. Resposta a método e função específicos (ex: query -> info)
+      if (payload && payload.method && payload.function) {
+        return `
+          <div class="flex flex-wrap gap-1.5 items-center">
+            <span class="bg-indigo-950/80 border border-indigo-500/40 text-indigo-300 px-2 py-0.5 rounded-lg font-bold text-[10px]">Função: ${escapeHtml(payload.function.toUpperCase())}</span>
+            <span class="bg-slate-900 border border-slate-800 text-slate-400 px-2 py-0.5 rounded-lg text-[10px]">${escapeHtml(payload.method.toUpperCase())}</span>
+            <span class="bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 px-2 py-0.5 rounded-lg text-[10px] font-semibold">✓ Sucesso</span>
+          </div>
+        `;
+      }
+
+      // 9. Status ou resposta em texto simples / ACK
+      if (payload && (payload.response !== undefined || payload.status !== undefined || payload.ack !== undefined || payload.result !== undefined)) {
+        const val = payload.response !== undefined ? payload.response : (payload.result !== undefined ? payload.result : (payload.status !== undefined ? payload.status : payload.ack));
+        const valStr = String(val).toLowerCase().trim();
+        const isOk = valStr === 'ok' || valStr === '1' || valStr === 'true' || valStr === 'success' || valStr === 'sucesso';
+        const isFail = valStr === 'error' || valStr === '0' || valStr === 'false' || valStr === 'fail' || valStr === 'falha';
+
+        if (isOk) {
+          return `
+            <div class="flex items-center space-x-1.5 bg-emerald-950/70 border border-emerald-500/30 px-2.5 py-1 rounded-lg text-emerald-300 text-xs font-semibold">
+              <span class="font-bold">✓</span>
+              <span>Comando Confirmado e Executado</span>
+            </div>
+          `;
+        } else if (isFail) {
+          return `
+            <div class="flex items-center space-x-1.5 bg-rose-950/70 border border-rose-500/30 px-2.5 py-1 rounded-lg text-rose-300 text-xs font-semibold">
+              <span class="font-bold">✕</span>
+              <span>Comando Rejeitado ou Falha</span>
+            </div>
+          `;
+        } else {
+          const cleanVal = String(val).replace(/[{}\[\]"]/g, '').replace(/[:=]/g, ' → ').trim();
+          return `
+            <div class="flex items-center space-x-1.5 bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-lg text-slate-200 text-xs">
+              <span class="text-indigo-400 font-bold">●</span>
+              <span class="font-medium">${escapeHtml(cleanVal)}</span>
+            </div>
+          `;
+        }
+      }
+
+      // 10. Fallback limpo para objetos: formata como pílulas visuais elegantes (SEM NENHUMA NOMENCLATURA JSON!)
+      if (payload && typeof payload === 'object') {
+        const keys = Object.keys(payload).filter(k => !['mac', 'mac_addr', 'addr', 'self_mac', 'timestamp'].includes(k));
+        if (keys.length > 0) {
+          const pills = keys.slice(0, 3).map(k => {
+            let v = payload[k];
+            if (typeof v === 'boolean') v = v ? 'Ativo' : 'Inativo';
+            else if (typeof v === 'object' && v !== null) v = 'Estruturado';
+            const label = FRIENDLY_KEYS[k.toLowerCase()] || (k.charAt(0).toUpperCase() + k.slice(1));
+            return `<span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded-lg text-[10px] flex items-center space-x-1"><span class="text-indigo-400 font-semibold">${escapeHtml(label)}</span><span class="text-slate-100 font-bold">${escapeHtml(String(v))}</span></span>`;
+          }).join(' ');
+          return `<div class="flex flex-wrap gap-1.5 items-center">${pills}</div>`;
+        }
+      }
+
+      // 11. Fallback final para strings (Remove 100% de caracteres de JSON, chaves, colchetes e aspas)
+      let cleanText = raw.replace(/[{}\[\]"]/g, '').replace(/[:=]/g, ' → ').replace(/,/g, ' • ').trim();
+      if (cleanText.length > 55) cleanText = cleanText.slice(0, 52) + '...';
+      if (!cleanText) cleanText = 'Confirmação recebida da malha mesh';
+
+      return `
+        <div class="flex items-center space-x-1.5 text-[11px] text-slate-300 bg-slate-900/80 px-2.5 py-1 rounded-lg border border-slate-800">
+          <span class="text-indigo-400 font-bold">●</span>
+          <span class="font-medium">${escapeHtml(cleanText)}</span>
+        </div>
+      `;
     }
 
     function updateSidebarMiniFeed(msg) {
@@ -1538,7 +1745,7 @@
       const container = document.getElementById('sidebar-mini-feed');
       if (container) {
         container.innerHTML = `
-          <div class="bg-slate-950/60 border border-slate-800/80 p-3 rounded-xl text-[10px] text-slate-500 italic text-center">
+          <div class="bg-slate-950/60 border border-slate-800/80 p-3.5 rounded-xl text-[10px] text-slate-500 italic text-center">
             Histórico limpo. Aguardando respostas das controladoras...
           </div>
         `;
@@ -1551,7 +1758,7 @@
 
       if (recentReturns.length === 0) {
         container.innerHTML = `
-          <div class="bg-slate-950/60 border border-slate-800/80 p-3 rounded-xl text-[10px] text-slate-500 italic text-center">
+          <div class="bg-slate-950/60 border border-slate-800/80 p-3.5 rounded-xl text-[10px] text-slate-500 italic text-center">
             Aguardando respostas e telemetria das controladoras...
           </div>
         `;
@@ -1565,57 +1772,76 @@
         const cleanMac = mac ? mac.toLowerCase().replace(/:/g, '') : null;
         const dev = cleanMac ? devicesList.find(d => d.mac.toLowerCase() === cleanMac) : null;
         const badge = getReturnBadgeInfo(msg);
-        const summary = formatReturnSummary(msg);
         const timeStr = msg.timestamp.split(' ')[1] || msg.timestamp;
+        const pillsHtml = renderHumanReturnPills(msg);
 
         const isGroot = (msg.raw || '').toLowerCase().includes("groot");
+        const isError = badge.label.includes('ERRO');
 
         const card = document.createElement('div');
-        card.className = 'group bg-slate-950/90 hover:bg-slate-850 border border-slate-800/90 hover:border-indigo-500/50 p-2.5 rounded-xl text-left cursor-pointer transition space-y-1.5 shadow-sm relative overflow-hidden';
+        card.className = 'group bg-gradient-to-b from-slate-900/95 to-slate-950/95 hover:from-slate-850 hover:to-slate-900 border border-slate-800/80 hover:border-indigo-500/50 p-3 rounded-2xl text-left cursor-pointer transition-all space-y-2.5 shadow-sm hover:shadow-indigo-500/10 hover:shadow-md relative overflow-hidden';
         
         // Highlight lateral bar
-        const accentColor = badge.label.includes('GROOT') || badge.label.includes('RESPOSTA') ? 'bg-emerald-500' : (badge.label.includes('ERRO') ? 'bg-rose-500' : 'bg-indigo-500');
+        const accentColor = isGroot || badge.label.includes('RESPOSTA') ? 'bg-emerald-500' : (isError ? 'bg-rose-500' : (badge.label.includes('TELEMETRIA') ? 'bg-cyan-500' : 'bg-indigo-500'));
+
+        let avatarBg = 'bg-indigo-950/80 text-indigo-300 border border-indigo-500/30';
+        let avatarIcon = '<i data-lucide="radio" class="w-3.5 h-3.5"></i>';
+        if (dev && dev.role === 'ROOT') {
+          avatarBg = 'bg-purple-950/80 text-purple-300 border border-purple-500/40';
+          avatarIcon = '<i data-lucide="crown" class="w-3.5 h-3.5"></i>';
+        } else if (dev) {
+          avatarBg = 'bg-cyan-950/80 text-cyan-300 border border-cyan-500/40';
+          avatarIcon = '<i data-lucide="gauge" class="w-3.5 h-3.5"></i>';
+        }
+
+        const displayName = dev ? dev.name : (cleanMac ? `Placa ${cleanMac.slice(-4).toUpperCase()}` : 'Canal Global');
+        const formattedMac = cleanMac ? formatMac(cleanMac) : (msg.topic || 'Mesh');
 
         card.innerHTML = `
           <div class="absolute left-0 top-0 bottom-0 w-1 ${accentColor}"></div>
           
-          <div class="flex items-center justify-between text-[10px] pl-1.5">
-            <span class="font-mono text-slate-400 font-semibold">${timeStr}</span>
-            <span class="text-[9px] font-bold px-1.5 py-0.2 rounded border ${badge.color}">${badge.label}</span>
-          </div>
-
-          <div class="pl-1.5 flex items-center justify-between gap-1">
-            <div class="truncate">
-              ${dev ? `
-                <span class="font-bold text-xs text-slate-200 block truncate">${escapeHtml(dev.name)}</span>
-                <span class="font-mono text-[10px] text-indigo-400 block">${formatMac(dev.mac)}</span>
-              ` : (cleanMac ? `
-                <span class="font-mono text-xs font-bold text-indigo-300 block">${formatMac(cleanMac)}</span>
-                <span class="text-[9px] text-amber-400/80 block">⚠️ Placa não cadastrada</span>
-              ` : `
-                <span class="font-mono text-[11px] text-slate-400 block truncate">${escapeHtml(msg.topic)}</span>
-              `)}
+          <!-- Cabeçalho: Horário, Badge e Status LED -->
+          <div class="flex items-center justify-between text-[11px] pl-1.5">
+            <div class="flex items-center space-x-1.5">
+              <span class="w-1.5 h-1.5 rounded-full ${isError ? 'bg-rose-400' : 'bg-emerald-400'} animate-pulse"></span>
+              <span class="font-mono text-slate-400 font-semibold">${timeStr}</span>
             </div>
-            ${dev && dev.role === 'ROOT' ? `<span class="text-[9px] bg-purple-950 text-purple-300 border border-purple-500/30 px-1 py-0.2 rounded font-mono font-bold shrink-0">ROOT</span>` : ''}
+            <span class="text-[9px] font-bold px-2 py-0.5 rounded-lg border ${badge.color}">${badge.label}</span>
           </div>
 
-          <div class="pl-1.5 text-[11px] font-mono ${isGroot ? 'text-emerald-400 font-bold bg-emerald-950/30 p-1.5 rounded border border-emerald-500/20' : 'text-slate-300'} line-clamp-2 leading-relaxed" title="${escapeHtml(msg.raw)}">
-            ${escapeHtml(summary)}
+          <!-- Identificação da Placa: Avatar, Nome e MAC -->
+          <div class="pl-1.5 flex items-center justify-between gap-2">
+            <div class="flex items-center space-x-2 truncate">
+              <div class="w-6 h-6 rounded-lg ${avatarBg} flex items-center justify-center shrink-0 shadow-inner">
+                ${avatarIcon}
+              </div>
+              <div class="truncate">
+                <span class="font-extrabold text-xs text-slate-100 block truncate group-hover:text-indigo-200 transition">${escapeHtml(displayName)}</span>
+                <span class="font-mono text-[10px] text-indigo-400 block">${escapeHtml(formattedMac)}</span>
+              </div>
+            </div>
+            ${dev && dev.role === 'ROOT' ? `<span class="text-[9px] bg-purple-950 text-purple-300 border border-purple-500/40 px-1.5 py-0.2 rounded font-mono font-bold shrink-0">ROOT</span>` : ''}
           </div>
 
-          <div class="pl-1.5 pt-1 border-t border-slate-900/90 flex items-center justify-between text-[10px]">
-            <span class="text-indigo-400 group-hover:text-indigo-300 font-semibold flex items-center space-x-1">
-              <i data-lucide="maximize-2" class="w-3 h-3"></i>
-              <span>Ver Detalhes</span>
-            </span>
+          <!-- Pílulas Humanas (Zero nomenclatura JSON) -->
+          <div class="pl-1.5 pt-0.5">
+            ${pillsHtml}
+          </div>
+
+          <!-- Footer: Botão Ver Detalhes (Inspetor) e Ações Rápidas -->
+          <div class="pl-1.5 pt-2 border-t border-slate-900 flex items-center justify-between text-[10px]">
+            <button onclick="openReturnInspectorModal(${idx})" class="text-indigo-300 hover:text-white font-bold flex items-center space-x-1.5 bg-indigo-950/70 hover:bg-indigo-900 border border-indigo-500/40 hover:border-indigo-400 px-2.5 py-1 rounded-lg transition shadow-sm">
+              <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+              <span>Ver Detalhes (JSON)</span>
+            </button>
             <div class="flex items-center space-x-1.5" onclick="event.stopPropagation()">
               ${cleanMac ? `
-                <button onclick="setTarget('${cleanMac}')" title="Definir como Alvo" class="text-slate-400 hover:text-cyan-300 p-0.5 rounded hover:bg-slate-800 transition">
-                  <i data-lucide="target" class="w-3 h-3"></i>
+                <button onclick="setTarget('${cleanMac}')" title="Definir MAC como Alvo no Construtor" class="text-slate-400 hover:text-cyan-300 p-1.5 rounded-lg hover:bg-slate-800 transition">
+                  <i data-lucide="target" class="w-3.5 h-3.5"></i>
                 </button>
               ` : ''}
-              <button onclick="copyRawSnippet(${idx})" title="Copiar resposta" class="text-slate-400 hover:text-white p-0.5 rounded hover:bg-slate-800 transition">
-                <i data-lucide="copy" class="w-3 h-3"></i>
+              <button onclick="copyRawSnippet(${idx})" title="Copiar resposta bruta" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition">
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
               </button>
             </div>
           </div>
@@ -1751,14 +1977,62 @@
       const textEl = document.getElementById('ticker-live-alert-text');
       if (!textEl) return;
 
-      let snippet = msg.raw;
-      if (typeof msg.payload === 'object') {
-        try { snippet = JSON.stringify(msg.payload); } catch {}
-      }
-      if (snippet.length > 45) snippet = snippet.slice(0, 42) + '...';
-
       const catTag = (msg.category || 'MSG').toUpperCase();
-      const formatted = `[${catTag}] ${snippet}`;
+      let humanSnippet = '';
+
+      const { payload, raw } = parsePayloadSafely(msg);
+      const rawLower = raw.toLowerCase();
+
+      if (rawLower.includes("groot") || (payload && payload.response && String(payload.response).toLowerCase().includes("groot"))) {
+        humanSnippet = '👑 ROOT: Online & Operacional';
+      } else if (rawLower.includes("mwifi_restart")) {
+        humanSnippet = '🔄 Malha Reiniciada (Sem Deadlock)';
+      } else if (payload && (payload.layer !== undefined || payload.router_rssi !== undefined || payload.parent_rssi !== undefined)) {
+        const rssi = payload.router_rssi !== undefined ? payload.router_rssi : payload.parent_rssi;
+        humanSnippet = `Camada L${payload.layer || 1}${rssi !== undefined ? ` • Sinal ${rssi} dBm` : ''}`;
+      } else if (payload && (payload.free_heap !== undefined || payload.heap !== undefined)) {
+        const free = payload.free_heap || payload.heap;
+        humanSnippet = `Heap Livre: ${(free / 1024).toFixed(1)} KB`;
+      } else if (payload && (payload.meter_serial_number !== undefined || payload.meter_serial !== undefined)) {
+        humanSnippet = `Medidor Serial: ${payload.meter_serial_number || payload.meter_serial}`;
+      } else if (payload && (payload.response !== undefined || payload.ack !== undefined || payload.status !== undefined)) {
+        const val = payload.response !== undefined ? payload.response : (payload.status !== undefined ? payload.status : payload.ack);
+        const valStr = String(val).toLowerCase().trim();
+        if (valStr === 'ok' || valStr === '1' || valStr === 'true' || valStr === 'success') {
+          humanSnippet = '✓ Comando Executado com Sucesso';
+        } else if (valStr === 'error' || valStr === '0' || valStr === 'false') {
+          humanSnippet = '✕ Falha na Execução';
+        } else {
+          humanSnippet = String(val).replace(/[{}\[\]"]/g, '').replace(/[:=]/g, ' → ').trim();
+        }
+      } else if (payload && typeof payload === 'object') {
+        if (payload.data && typeof payload.data === 'object') {
+          const fn = payload.data.function || payload.data.method || 'Ação';
+          humanSnippet = `Comando: ${String(fn).toUpperCase()}`;
+        } else {
+          const FRIENDLY_KEYS = {
+            counter: 'Pulsos', energy: 'Consumo', voltage: 'Tensão', current: 'Corrente', power: 'Potência'
+          };
+          const keys = Object.keys(payload).filter(k => !['mac', 'mac_addr', 'addr', 'self_mac', 'timestamp'].includes(k));
+          if (keys.length > 0) {
+            humanSnippet = keys.slice(0, 2).map(k => {
+              const label = FRIENDLY_KEYS[k.toLowerCase()] || (k.charAt(0).toUpperCase() + k.slice(1));
+              let val = payload[k];
+              if (typeof val === 'object' && val !== null) val = val.function || val.response || 'Ativo';
+              return `${label} ${val}`;
+            }).join(' • ');
+          } else {
+            humanSnippet = 'Telemetria Processada';
+          }
+        }
+      } else {
+        humanSnippet = raw.replace(/[{}\[\]"]/g, '').replace(/[:=]/g, ' → ').trim();
+        if (!humanSnippet) humanSnippet = 'Mensagem Recebida';
+      }
+
+      if (humanSnippet.length > 48) humanSnippet = humanSnippet.slice(0, 45) + '...';
+
+      const formatted = `[${catTag}] ${humanSnippet}`;
       textEl.innerText = formatted;
       document.querySelectorAll('.ticker-alert-copy').forEach(el => el.innerText = formatted);
 
