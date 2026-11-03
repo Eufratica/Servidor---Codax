@@ -1,4 +1,12 @@
 {
+  "704bca491ca0": {
+    "mac": "704bca491ca0",
+    "name": "Codax Bancada (70:4B:CA:49:1C:A0)",
+    "meter_serial": "MED-CODAX-01",
+    "meter_type": "Modbus RTU",
+    "role": "ROOT",
+    "notes": "Placa Codax em teste de envio MQTT"
+  },
   "4417934f49a4": {
     "mac": "4417934f49a4",
     "name": "ROOT Laboratório (Principal)",
@@ -7,20 +15,20 @@
     "role": "ROOT",
     "notes": "Controladora principal conectada ao Wi-Fi"
   },
-  "44179358768c": {
-    "mac": "44179358768c",
-    "name": "Medidor Bancada 01 (Nó L2)",
-    "meter_serial": "MED-01-BANCADA",
-    "meter_type": "Modbus RTU",
+  "3083986350b0": {
+    "mac": "3083986350b0",
+    "name": "Ethernet",
+    "meter_serial": "MED-01",
+    "meter_type": "Modbus UDP",
     "role": "NODE",
     "notes": "Medidor na bancada de testes 1"
   },
-  "441793516dcc": {
-    "mac": "441793516dcc",
-    "name": "Medidor Bancada 02 (Nó L3)",
-    "meter_serial": "MED-02-BANCADA",
-    "meter_type": "Pulso",
+  "704bca491d9c": {
+    "mac": "704bca491d9c",
+    "name": "Codax - 0032",
+    "meter_serial": "MED",
+    "meter_type": "Outro / Genérico",
     "role": "NODE",
-    "notes": "Medidor secundário com sensor de pulsos"
+    "notes": "Controladora principal conectada ao Wi-Fi"
   }
 }

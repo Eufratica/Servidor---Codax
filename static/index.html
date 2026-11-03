@@ -26,26 +26,31 @@
     }
   </script>
   <style>
-    /* Barra de rolagem lateral (Scrollbar) visível, moderna e destacada */
-    * {
-      scrollbar-width: thin;
-      scrollbar-color: #6366f1 #090d16;
+    /* Barras de rolagem invisíveis em repouso — aparecem imediatamente ao encostar o mouse (sem precisar clicar) */
+    *::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+      background: transparent;
     }
-    ::-webkit-scrollbar {
-      width: 12px;
-      height: 12px;
+    *::-webkit-scrollbar-track {
+      background: transparent;
     }
-    ::-webkit-scrollbar-track {
-      background: #090d16;
-      border-left: 1px solid #1e293b;
+    *::-webkit-scrollbar-thumb {
+      background-color: transparent;
+      border-radius: 9999px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
     }
-    ::-webkit-scrollbar-thumb {
-      background: #475569;
-      border-radius: 6px;
-      border: 2px solid #090d16;
+    .scrollbar-near::-webkit-scrollbar-thumb,
+    *::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(148, 163, 184, 0.65);
+      border: 2px solid transparent;
+      background-clip: padding-box;
     }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #6366f1;
+    *::-webkit-scrollbar-thumb:active {
+      background-color: rgba(99, 102, 241, 0.9);
+      border: 2px solid transparent;
+      background-clip: padding-box;
     }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
     
@@ -101,9 +106,112 @@
     .ticker-flash {
       animation: tickerFlashAnim 1.2s ease-in-out 3;
     }
+
+    /* ================= CODAX GLASSMORPHISM DESIGN SYSTEM (VIDRO FOSCO TRANSLÚCIDO) ================= */
+    body {
+      background-color: #020617;
+      background-image:
+        radial-gradient(circle at 18% 15%, rgba(99, 102, 241, 0.16) 0%, transparent 42%),
+        radial-gradient(circle at 85% 22%, rgba(6, 182, 212, 0.13) 0%, transparent 38%),
+        radial-gradient(circle at 52% 85%, rgba(16, 185, 129, 0.11) 0%, transparent 45%),
+        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+        linear-gradient(to bottom right, rgba(15, 23, 42, 0.9), rgba(2, 6, 23, 0.98));
+      background-attachment: fixed;
+    }
+
+    /* Malha sutil de pontos luminosos ao fundo para realçar o desfoque (backdrop-blur) */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background-image: radial-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    /* Superfícies principais de vidro fosco (Mesma estética do menu da setinha do Construtor) */
+    .codax-glass,
+    .bg-slate-900,
+    .bg-slate-900\/95,
+    .bg-slate-900\/90,
+    .bg-slate-900\/80 {
+      background-color: rgba(15, 23, 42, 0.38) !important;
+      backdrop-filter: blur(14px) saturate(140%) !important;
+      -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
+      box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.55), inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
+    }
+
+    /* Sub-containers, inputs, console e blocos internos em vidro escuro translúcido */
+    .codax-glass-deep,
+    .bg-slate-950,
+    .bg-slate-950\/90,
+    .bg-slate-950\/80,
+    .bg-slate-950\/70,
+    .bg-slate-950\/60 {
+      background-color: rgba(2, 6, 23, 0.42) !important;
+      backdrop-filter: blur(10px) saturate(130%) !important;
+      -webkit-backdrop-filter: blur(10px) saturate(130%) !important;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+    }
+
+    /* Dropdowns Flutuantes (Setinhas do Construtor), Popups de Risco, Inspetor UI e Janelas de Modais — Vidro Cristalino Puro */
+    #function-autocomplete-dropdown,
+    #recipients-dropdown-popover,
+    #modal-ota > div,
+    #device-modal > div,
+    #modal-return-inspector > div,
+    #modal-glass-confirm > div,
+    #ui-inspector-popover,
+    .glass-toast-card {
+      background-color: rgba(15, 23, 42, 0.25) !important;
+      backdrop-filter: blur(16px) saturate(160%) !important;
+      -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
+      border-color: rgba(71, 85, 105, 0.85) !important;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.82), inset 0 1px 0 0 rgba(255, 255, 255, 0.14) !important;
+    }
+
+    body.ui-inspector-active,
+    body.ui-inspector-active * {
+      cursor: crosshair !important;
+    }
+    body.ui-inspector-active #ui-inspector-popover,
+    body.ui-inspector-active #ui-inspector-popover * {
+      cursor: auto !important;
+    }
+
+    /* Área principal transparente para permitir ver as luzes atmosféricas através do vidro */
+    #main-scroll-view {
+      background-color: transparent !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Bordas lapidadas estilo vidro jateado */
+    .border-slate-800,
+    .border-slate-800\/80,
+    .border-slate-800\/90 {
+      border-color: rgba(51, 65, 85, 0.65) !important;
+    }
+
+    /* Efeito hover aveludado nos cards interativos */
+    .btn-card {
+      background-color: rgba(15, 23, 42, 0.32) !important;
+      backdrop-filter: blur(12px) saturate(140%) !important;
+      -webkit-backdrop-filter: blur(12px) saturate(140%) !important;
+      border-color: rgba(51, 65, 85, 0.75) !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.08) !important;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .btn-card:hover {
+      background-color: rgba(30, 41, 59, 0.52) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 18px 35px -8px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.15) !important;
+    }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 h-screen flex flex-col antialiased overflow-hidden">
+<body class="text-slate-100 h-screen flex flex-col antialiased overflow-hidden relative">
 
   <!-- ================= BARRA HORIZONTAL SUPERIOR (PAINEL DE BANCADA & OPERAÇÕES AO VIVO) ================= -->
   <header class="bg-slate-900 border-b border-slate-800 h-16 flex items-center justify-between px-4 sm:px-6 shrink-0 z-40 select-none shadow-sm gap-3">
@@ -197,11 +305,18 @@
         </button>
       </div>
 
-      <!-- Broker MQTT Status -->
-      <div class="flex items-center space-x-2 bg-slate-950/80 border border-slate-800 px-2.5 py-1.5 rounded-xl text-xs shadow-sm">
+      <!-- Broker MQTT Status (AWS IoT Core / Local) -->
+      <button onclick="toggleBrokerMode()" title="Clique para alternar entre AWS IoT Core (8883 TLS) e Broker Local (1883)" class="flex items-center space-x-2 bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-indigo-500/50 px-2.5 py-1.5 rounded-xl text-xs shadow-sm transition">
         <span id="top-dot-broker" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span id="top-label-broker" class="font-semibold text-emerald-400 text-[11px]">1883 Ativo</span>
-      </div>
+        <span id="top-label-broker" class="font-semibold text-emerald-400 text-[11px]">☁️ AWS IoT (8883)</span>
+      </button>
+
+      <!-- Modo Inspetor Visual para IA (F2 ou Alt+Clique) -->
+      <button onclick="toggleUiInspector()" id="top-btn-ui-inspector" title="Ativar/Desativar Modo Seleção Visual para IA (Atalho: F2 ou Alt+Clique)" class="flex items-center space-x-1.5 bg-slate-950/80 hover:bg-indigo-950/70 border border-slate-800 hover:border-indigo-500/60 text-slate-300 hover:text-indigo-200 px-2.5 py-1.5 rounded-xl text-xs font-bold shadow-sm transition">
+        <i data-lucide="crosshair" class="w-3.5 h-3.5 text-indigo-400"></i>
+        <span>Inspetor IA</span>
+        <span class="text-[9px] font-mono bg-slate-800/80 text-slate-400 px-1 py-0.2 rounded">F2</span>
+      </button>
 
     </div>
 
@@ -347,7 +462,7 @@
           <div class="min-w-0">
             <div class="flex items-center space-x-1.5">
               <span class="font-extrabold text-sm sm:text-base tracking-wide text-white truncate">CODAX HUB</span>
-              <span class="text-[9px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-1 py-0.2 rounded font-bold">2.5 PRO</span>
+              <span class="text-[9px] bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 px-1 py-0.2 rounded font-bold">2.6 PRO</span>
             </div>
             <p class="text-[10px] text-slate-400 truncate">On-Premise ESP-MESH Hub</p>
           </div>
@@ -432,7 +547,7 @@
               </button>
             </div>
           </div>
-          <div id="sidebar-mini-feed" class="space-y-2.5 max-h-[350px] overflow-y-auto pr-1">
+          <div id="sidebar-mini-feed" class="space-y-1.5 max-h-[350px] overflow-y-auto pr-0.5">
             <div class="bg-slate-950/60 border border-slate-800/80 p-3.5 rounded-xl text-[10px] text-slate-500 italic text-center">
               Aguardando respostas e telemetria das controladoras...
             </div>
@@ -614,10 +729,10 @@
         <!-- ================= ABA 2: CONSTRUTOR CODAX (COM SUB-ABAS) ================= -->
         <section id="view-builder" class="tab-content hidden space-y-6">
           
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-sm overflow-visible">
             
             <!-- Barra de Sub-Abas do Construtor -->
-            <div class="bg-slate-950/60 border-b border-slate-800 px-6 py-2.5 flex items-center justify-between">
+            <div class="bg-slate-950/60 border-b border-slate-800 px-6 py-2.5 rounded-t-2xl flex items-center justify-between">
               <div class="flex items-center space-x-2">
                 <button onclick="switchBuilderSubTab('official')" id="btn-subtab-official" class="builder-subtab-btn px-4 py-2 rounded-xl text-xs font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1.5">
                   <i data-lucide="file-code" class="w-3.5 h-3.5"></i>
@@ -737,8 +852,8 @@
                       </button>
                     </div>
 
-                    <!-- Dropdown Popover de Destinatários (Alvos Globais + Medidores com Checkbox) -->
-                    <div id="recipients-dropdown-popover" class="absolute z-30 left-0 right-0 mt-1 bg-slate-900/98 backdrop-blur border border-slate-700/90 rounded-2xl shadow-2xl hidden p-3 space-y-3 max-h-80 overflow-y-auto">
+                    <!-- Dropdown Popover de Destinatários (Alvos Globais + Medidores com Checkbox + Chips Rápidos) -->
+                    <div id="recipients-dropdown-popover" class="absolute z-30 left-0 right-0 mt-1 bg-slate-900/98 backdrop-blur border border-slate-700/90 rounded-2xl shadow-2xl hidden p-3.5 space-y-3 max-h-96 overflow-y-auto">
                       
                       <!-- Seção Alvos Globais -->
                       <div>
@@ -762,10 +877,21 @@
                         </div>
                       </div>
 
-                      <!-- Seção Medidores Cadastrados com Checkbox -->
-                      <div class="border-t border-slate-800 pt-2.5">
+                      <!-- Seção Pílulas de Seleção Rápida (Dentro do Vidro Borrado!) -->
+                      <div class="border-t border-slate-800/80 pt-2.5">
                         <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                          <span>Medidores Cadastrados (<span id="pop-devices-count">0</span>)</span>
+                          <span>Atalhos Rápidos (Chips)</span>
+                          <span class="text-[9px] text-slate-500">🛡️ Anti-crash ativo</span>
+                        </div>
+                        <div id="builder-device-chips" class="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto p-2 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                          <!-- Preenchido dinamicamente por renderBuilderChips() -->
+                        </div>
+                      </div>
+
+                      <!-- Seção Medidores Cadastrados com Checkbox -->
+                      <div class="border-t border-slate-800/80 pt-2.5">
+                        <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                          <span>Lista Detalhada de Medidores (<span id="pop-devices-count">0</span>)</span>
                           <span class="text-[9px] text-slate-500">Múltipla seleção suportada</span>
                         </div>
                         <div id="popover-devices-checklist" class="space-y-1 max-h-40 overflow-y-auto pr-1">
@@ -775,15 +901,15 @@
 
                     </div>
 
-                    <!-- Chips Interativos de Seleção Rápida (Clique para Ligar / Desligar) -->
-                    <div>
-                      <div class="flex items-center justify-between text-[10px] text-slate-400 mb-1">
-                        <span>Clique nos medidores abaixo para incluir ou remover da lista:</span>
-                        <span class="text-slate-500">🛡️ Proteção anti-crash ativa</span>
+                    <!-- Barra Discreta de Alvos Selecionados (Sem expor todas as placas na tela) -->
+                    <div class="flex items-center justify-between gap-2 pt-0.5">
+                      <div id="builder-active-chips-summary" class="flex flex-wrap items-center gap-1.5 min-h-[1.5rem]">
+                        <!-- Mostra apenas quem está selecionado no momento + botão discreto para abrir o menu -->
                       </div>
-                      <div id="builder-device-chips" class="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto p-2 bg-slate-950/80 rounded-xl border border-slate-800/80 shadow-inner">
-                        <!-- Preenchido dinamicamente por renderBuilderChips() -->
-                      </div>
+                      <button type="button" onclick="toggleRecipientsDropdown()" class="text-[10px] text-slate-400 hover:text-indigo-300 transition flex items-center space-x-1 shrink-0">
+                        <i data-lucide="layers" class="w-3 h-3 text-indigo-400"></i>
+                        <span>Ver todas as placas</span>
+                      </button>
                     </div>
 
                   </div>
@@ -836,6 +962,7 @@
                       <i data-lucide="send" class="w-4 h-4"></i>
                       <span>Disparar Comando no Broker</span>
                     </button>
+                    <div id="builder-response-feedback" class="hidden mt-3 p-3 rounded-xl border text-xs transition-all"></div>
                   </div>
                 </div>
 
@@ -1137,6 +1264,7 @@
             
             <div class="flex items-center space-x-1.5 flex-wrap">
               <button onclick="setLogCategory('all')" id="btn-cat-all" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-medium">Todos</button>
+              <button onclick="setLogCategory('msg')" id="btn-cat-msg" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">💬 MSG</button>
               <button onclick="setLogCategory('retorno')" id="btn-cat-retorno" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">✅ Retorno</button>
               <button onclick="setLogCategory('telemetria')" id="btn-cat-telemetria" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">📊 Telemetria</button>
               <button onclick="setLogCategory('topologia')" id="btn-cat-topologia" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">🌳 Topologia</button>
@@ -1359,8 +1487,216 @@
     </div>
   </div>
 
+  <!-- ================= MODAL DE CONFIRMAÇÃO DE RISCO (GLASSMORPHISM) ================= -->
+  <div id="modal-glass-confirm" class="fixed inset-0 bg-slate-950/65 backdrop-blur-md flex items-center justify-center p-4 z-[60] hidden select-none">
+    <div class="bg-slate-900 border border-slate-700/90 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+      
+      <!-- Cabeçalho com Ícone de Alerta -->
+      <div class="p-5 pb-4 flex items-start space-x-3.5">
+        <div id="confirm-modal-icon-box" class="p-3 rounded-2xl bg-rose-500/15 text-rose-400 border border-rose-500/35 shrink-0 shadow-inner">
+          <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center justify-between">
+            <span id="confirm-modal-tag" class="text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-500/40">AÇÃO DE RISCO</span>
+            <button type="button" onclick="resolveGlassConfirm(false)" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800/60 transition">
+              <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+          </div>
+          <h3 id="confirm-modal-title" class="font-extrabold text-base text-slate-100 mt-1.5">Confirmar Remoção</h3>
+          <p id="confirm-modal-message" class="text-xs text-slate-300 mt-1 leading-relaxed">Deseja realmente prosseguir com esta operação?</p>
+        </div>
+      </div>
+
+      <!-- Card Interno do Alvo (Nome + MAC) -->
+      <div id="confirm-modal-target-box" class="mx-5 mb-4 p-3 rounded-xl bg-slate-950/70 border border-slate-800/90 flex items-center justify-between">
+        <div class="truncate pr-2">
+          <div id="confirm-modal-target-name" class="text-xs font-bold text-slate-200 truncate">Medidor Selecionado</div>
+          <div id="confirm-modal-target-sub" class="text-[11px] font-mono text-indigo-400 font-semibold mt-0.5">--:--:--:--:--:--</div>
+        </div>
+        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-400 shrink-0">CADASTRO</span>
+      </div>
+
+      <!-- Rodapé de Botões -->
+      <div class="px-5 py-3.5 bg-slate-950/60 border-t border-slate-800/80 flex items-center justify-end space-x-2.5">
+        <button type="button" onclick="resolveGlassConfirm(false)" class="px-4 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700/80 text-slate-200 text-xs font-semibold transition">
+          Cancelar
+        </button>
+        <button type="button" id="confirm-modal-ok-btn" onclick="resolveGlassConfirm(true)" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-lg shadow-rose-600/30 transition flex items-center space-x-1.5">
+          <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          <span id="confirm-modal-ok-text">Confirmar Exclusão</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= CONTAINER DE NOTIFICAÇÕES / TOASTS EM VIDRO FOSCO ================= -->
+  <div id="glass-toast-container" class="fixed top-20 right-5 z-[70] flex flex-col space-y-2.5 max-w-sm w-full pointer-events-none"></div>
+
+  <!-- ================= INSPETOR VISUAL IA (CONTORNO + CAIXA FLUTUANTE EM VIDRO FOSCO) ================= -->
+  <!-- Contorno Luminoso do Elemento Sob o Mouse / Selecionado -->
+  <div id="ui-inspector-highlight" class="fixed pointer-events-none z-[80] hidden border-2 border-indigo-400 bg-indigo-500/10 rounded-xl transition-all duration-75 shadow-[0_0_20px_rgba(99,102,241,0.35)]">
+    <div id="ui-inspector-badge" class="absolute -top-6 left-0 bg-indigo-600/95 backdrop-blur-md text-white text-[10px] font-mono font-bold px-2 py-0.5 rounded-md shadow-lg whitespace-nowrap border border-indigo-300/50">
+      elemento
+    </div>
+  </div>
+
+  <!-- Retângulo de Arrastar (Lasso de Seleção de Área) -->
+  <div id="ui-inspector-lasso" class="fixed pointer-events-none z-[81] hidden border-2 border-dashed border-cyan-400 bg-cyan-500/15 backdrop-blur-[2px] rounded-xl shadow-[0_0_25px_rgba(6,182,212,0.3)]"></div>
+
+  <!-- Mini-Caixinha Flutuante de Vidro ao Clicar ou Selecionar Área -->
+  <div id="ui-inspector-popover" class="fixed z-[85] hidden w-80 sm:w-96 rounded-2xl border border-slate-600/90 p-3.5 space-y-3 text-xs select-none">
+    
+    <!-- Cabeçalho da Caixa Flutuante -->
+    <div class="flex items-center justify-between gap-2 border-b border-slate-700/70 pb-2">
+      <div class="flex items-center space-x-1.5 min-w-0">
+        <span class="w-2 h-2 rounded-full bg-indigo-400 animate-ping shrink-0"></span>
+        <span class="text-[10px] font-mono font-extrabold uppercase tracking-wider text-indigo-300 shrink-0">🎯 Alvo UI</span>
+        <code id="ui-inspector-pop-tag" class="text-[10px] font-mono text-cyan-300 bg-slate-950/70 px-1.5 py-0.5 rounded border border-slate-700/80 truncate">button</code>
+      </div>
+      <div class="flex items-center space-x-1 shrink-0">
+        <button type="button" onclick="inspectorStepParent()" title="Expandir contorno para o elemento/card Pai" class="px-1.5 py-0.5 rounded bg-slate-800/80 hover:bg-indigo-600/40 text-slate-300 hover:text-white border border-slate-700 text-[10px] font-semibold transition">
+          ⬆️ Pai
+        </button>
+        <button type="button" onclick="inspectorStepChild()" title="Voltar para o elemento Filho" class="px-1.5 py-0.5 rounded bg-slate-800/80 hover:bg-indigo-600/40 text-slate-300 hover:text-white border border-slate-700 text-[10px] font-semibold transition">
+          ⬇️ Filho
+        </button>
+        <button type="button" onclick="closeInspectorPopover()" title="Fechar (Esc)" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800/70 transition">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Resumo do Caminho / Texto do Elemento -->
+    <div class="bg-slate-950/65 border border-slate-800/90 rounded-xl p-2 space-y-1">
+      <div class="flex items-center justify-between text-[10px]">
+        <span class="text-slate-400 font-semibold">Local/Seletor:</span>
+        <span id="ui-inspector-pop-rect" class="font-mono text-slate-500">--×-- px</span>
+      </div>
+      <div id="ui-inspector-pop-selector" class="font-mono text-[10px] text-indigo-300 truncate select-all"></div>
+      <div id="ui-inspector-pop-text" class="text-[10px] text-slate-400 italic truncate"></div>
+    </div>
+
+    <!-- Campo para Digitar o Pedido de Alteração -->
+    <div class="space-y-1">
+      <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-300">
+        O que você quer alterar ou adicionar aqui?
+      </label>
+      <textarea id="ui-inspector-note-input" rows="2" placeholder="Ex: Mude a cor para azul, esconda essa parte, deixe menor... (Aperte Enter p/ copiar)" class="w-full bg-slate-950/80 border border-slate-700/90 focus:border-indigo-400 rounded-xl p-2.5 text-xs text-slate-100 focus:outline-none resize-none"></textarea>
+    </div>
+
+    <!-- Botões de Ação -->
+    <div class="flex items-center justify-between gap-2 pt-0.5">
+      <span class="text-[10px] text-slate-400">Aperte <kbd class="px-1.5 py-0.5 bg-slate-900 border border-slate-700 rounded font-mono text-slate-300">Enter</kbd> para copiar</span>
+      <button type="button" onclick="copyUiInspectorPayload()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-lg shadow-indigo-600/30 transition flex items-center space-x-1.5">
+        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+        <span>Copiar p/ o Chat</span>
+      </button>
+    </div>
+
+  </div>
+
   <!-- ================= SCRIPTS JAVASCRIPT ================= -->
   <script>
+    let glassConfirmResolver = null;
+
+    function showGlassConfirm({
+      title = 'Confirmar Ação',
+      message = 'Deseja realmente realizar esta operação?',
+      tag = 'AÇÃO DE RISCO',
+      targetName = '',
+      targetSub = '',
+      confirmText = 'Confirmar',
+      variant = 'danger'
+    } = {}) {
+      return new Promise((resolve) => {
+        glassConfirmResolver = resolve;
+        const modal = document.getElementById('modal-glass-confirm');
+        const titleEl = document.getElementById('confirm-modal-title');
+        const msgEl = document.getElementById('confirm-modal-message');
+        const tagEl = document.getElementById('confirm-modal-tag');
+        const targetBox = document.getElementById('confirm-modal-target-box');
+        const targetNameEl = document.getElementById('confirm-modal-target-name');
+        const targetSubEl = document.getElementById('confirm-modal-target-sub');
+        const okBtn = document.getElementById('confirm-modal-ok-btn');
+        const iconBox = document.getElementById('confirm-modal-icon-box');
+
+        if (titleEl) titleEl.innerText = title;
+        if (msgEl) msgEl.innerText = message;
+        if (tagEl) tagEl.innerText = tag;
+
+        if (targetBox) {
+          if (targetName || targetSub) {
+            targetBox.classList.remove('hidden');
+            if (targetNameEl) targetNameEl.innerText = targetName || 'Dispositivo Alvo';
+            if (targetSubEl) targetSubEl.innerText = targetSub || '';
+          } else {
+            targetBox.classList.add('hidden');
+          }
+        }
+
+        if (variant === 'warning') {
+          if (iconBox) iconBox.className = 'p-3 rounded-2xl bg-amber-500/15 text-amber-400 border border-amber-500/35 shrink-0 shadow-inner';
+          if (tagEl) tagEl.className = 'text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-500/40';
+          if (okBtn) {
+            okBtn.className = 'px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shadow-lg shadow-amber-600/30 transition flex items-center space-x-1.5';
+            okBtn.innerHTML = `<i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i><span>${escapeHtml(confirmText)}</span>`;
+          }
+        } else {
+          if (iconBox) iconBox.className = 'p-3 rounded-2xl bg-rose-500/15 text-rose-400 border border-rose-500/35 shrink-0 shadow-inner';
+          if (tagEl) tagEl.className = 'text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-500/40';
+          if (okBtn) {
+            okBtn.className = 'px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-lg shadow-rose-600/30 transition flex items-center space-x-1.5';
+            okBtn.innerHTML = `<i data-lucide="trash-2" class="w-3.5 h-3.5"></i><span>${escapeHtml(confirmText)}</span>`;
+          }
+        }
+
+        if (modal) modal.classList.remove('hidden');
+        lucide.createIcons();
+      });
+    }
+
+    function resolveGlassConfirm(result) {
+      const modal = document.getElementById('modal-glass-confirm');
+      if (modal) modal.classList.add('hidden');
+      if (glassConfirmResolver) {
+        const r = glassConfirmResolver;
+        glassConfirmResolver = null;
+        r(Boolean(result));
+      }
+    }
+
+    function showGlassToast(message) {
+      const container = document.getElementById('glass-toast-container');
+      if (!container) return;
+      const text = String(message || '');
+      const isErr = text.toLowerCase().includes('erro') || text.toLowerCase().includes('falha') || text.toLowerCase().includes(' n');
+      const toast = document.createElement('div');
+      toast.className = `glass-toast-card pointer-events-auto border ${isErr ? 'border-rose-500/60' : 'border-indigo-500/60'} rounded-2xl p-3.5 text-xs text-slate-100 flex items-start space-x-3 transition-all duration-300 shadow-2xl`;
+      toast.innerHTML = `
+        <div class="p-1.5 rounded-xl ${isErr ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'} shrink-0">
+          <i data-lucide="${isErr ? 'alert-circle' : 'check-circle-2'}" class="w-4 h-4"></i>
+        </div>
+        <div class="flex-1 min-w-0 leading-relaxed font-medium whitespace-pre-line">${escapeHtml(text)}</div>
+        <button type="button" class="text-slate-400 hover:text-white p-0.5 shrink-0" onclick="this.parentElement.remove()">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+      `;
+      container.appendChild(toast);
+      lucide.createIcons();
+      setTimeout(() => {
+        if (toast && toast.parentElement) {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateX(16px)';
+          setTimeout(() => toast.remove(), 250);
+        }
+      }, 4200);
+    }
+
+    // Substitui o alert nativo do navegador pelo popup em vidro fosco
+    window.alert = showGlassToast;
+
     let allMessages = [];
     let recentReturns = [];
     let currentInspectedReturn = null;
@@ -1379,6 +1715,82 @@
     let discoveredList = [];
     let currentDictFilter = 'all';
     let currentSelectedMethod = 'query';
+    let pendingDeviceChecks = {}; // mac -> { state: 'waiting'|'responded'|'timeout', func: string, sentAt: string, time?: string, topic?: string, raw?: string, timer?: any }
+
+    function markDeviceWaiting(macOrAlias, funcName) {
+      const clean = macOrAlias.toLowerCase().replace(/:/g, '').trim();
+      const nowStr = new Date().toLocaleTimeString('pt-BR', { hour12: false });
+      const targets = [];
+      if (clean === 'root' || clean === 'ff0000010000') {
+        devicesList.filter(d => d.role === 'ROOT').forEach(d => targets.push(d.mac.toLowerCase()));
+      } else if (clean === 'any' || clean === 'ffffffffffff' || clean === 'broadcast' || clean === 'fffffffffe') {
+        devicesList.forEach(d => targets.push(d.mac.toLowerCase()));
+      } else if (clean.length === 12) {
+        targets.push(clean);
+      }
+
+      targets.forEach(m => {
+        if (pendingDeviceChecks[m] && pendingDeviceChecks[m].timer) {
+          clearTimeout(pendingDeviceChecks[m].timer);
+        }
+        const timer = setTimeout(() => {
+          if (pendingDeviceChecks[m] && pendingDeviceChecks[m].state === 'waiting') {
+            pendingDeviceChecks[m].state = 'timeout';
+            renderDevicesCards();
+            updateBuilderFeedbackTimeout(m, funcName);
+          }
+        }, 8000);
+        pendingDeviceChecks[m] = {
+          state: 'waiting',
+          func: funcName,
+          sentAt: nowStr,
+          timer: timer
+        };
+      });
+      renderDevicesCards();
+      showBuilderFeedbackWaiting(macOrAlias, funcName, nowStr);
+    }
+
+    function showBuilderFeedbackWaiting(targetLabel, funcName, nowStr) {
+      const box = document.getElementById('builder-response-feedback');
+      if (!box) return;
+      box.className = 'mt-3 p-3 rounded-xl border border-amber-500/40 bg-amber-950/50 text-amber-200 text-xs space-y-1 animate-pulse';
+      box.innerHTML = `
+        <div class="flex items-center justify-between font-bold">
+          <span>⏳ Aguardando resposta da placa...</span>
+          <span class="mono text-[10px] text-amber-400">${nowStr}</span>
+        </div>
+        <div class="text-[11px] text-amber-300/90">Comando <code class="mono font-bold">${escapeHtml(funcName)}</code> enviado para <code class="mono font-bold">${escapeHtml(formatMac(targetLabel))}</code>. Escutando retorno no MQTT...</div>
+      `;
+    }
+
+    function updateBuilderFeedbackTimeout(mac, funcName) {
+      const box = document.getElementById('builder-response-feedback');
+      if (!box) return;
+      box.className = 'mt-3 p-3 rounded-xl border border-rose-500/40 bg-rose-950/60 text-rose-200 text-xs space-y-1';
+      box.innerHTML = `
+        <div class="flex items-center justify-between font-bold text-rose-300">
+          <span>⚠️ Sem resposta da placa (Timeout 8s)</span>
+          <span class="mono text-[10px]">${formatMac(mac)}</span>
+        </div>
+        <div class="text-[11px] text-rose-300/90">A placa não publicou retorno para <code class="mono font-bold">${escapeHtml(funcName)}</code>. Verifique se ela está ligada, conectada ao Broker (<code class="mono">${hostIP}:1883</code>) e no mesmo ambiente (${currentEnv}).</div>
+      `;
+    }
+
+    function updateBuilderFeedbackSuccess(msg, mac) {
+      const box = document.getElementById('builder-response-feedback');
+      if (!box) return;
+      const snippet = typeof msg.payload === 'object' && msg.payload !== null ? JSON.stringify(msg.payload, null, 2) : msg.raw;
+      box.className = 'mt-3 p-3 rounded-xl border border-emerald-500/50 bg-emerald-950/60 text-emerald-200 text-xs space-y-2';
+      box.innerHTML = `
+        <div class="flex items-center justify-between font-bold text-emerald-300">
+          <span>✅ Placa respondeu com sucesso!</span>
+          <span class="mono text-[10px]">${msg.timestamp}</span>
+        </div>
+        <div class="text-[11px] text-emerald-300/90">Tópico: <code class="mono font-bold">${escapeHtml(msg.topic)}</code> ${mac ? `• MAC: <code class="mono font-bold">${formatMac(mac)}</code>` : ''}</div>
+        <pre class="bg-slate-950/90 border border-emerald-500/30 p-2 rounded-lg mono text-[11px] text-emerald-300 overflow-x-auto max-h-40 whitespace-pre-wrap">${escapeHtml(snippet)}</pre>
+      `;
+    }
 
     window.addEventListener('DOMContentLoaded', async () => {
       lucide.createIcons();
@@ -1402,9 +1814,7 @@
       ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
-        document.getElementById('top-dot-broker').className = 'w-2.5 h-2.5 rounded-full bg-emerald-400';
-        document.getElementById('top-label-broker').className = 'font-semibold text-emerald-400';
-        document.getElementById('top-label-broker').innerText = '1883 Ativo';
+        fetchStatus();
       };
 
       ws.onmessage = (event) => {
@@ -1414,17 +1824,46 @@
           renderLogs();
           if (data.status) updateStatusUI(data.status);
           if (data.recent_messages && data.recent_messages.length > 0) {
-            recentReturns = data.recent_messages.slice(-20).reverse();
+            const onlyDeviceMsgs = data.recent_messages.filter(m => m.category !== 'configuracao');
+            recentReturns = onlyDeviceMsgs.slice(-20).reverse();
             renderSidebarReturns();
-            pushTickerAlert(data.recent_messages[data.recent_messages.length - 1]);
+            if (onlyDeviceMsgs.length > 0) {
+              pushTickerAlert(onlyDeviceMsgs[onlyDeviceMsgs.length - 1]);
+            }
           }
         } else if (data.type === 'mqtt_message') {
           allMessages.push(data.message);
           if (allMessages.length > 300) allMessages.shift();
-          appendLogLine(data.message);
+          if (matchesActiveLogFilter(data.message)) {
+            const con = document.getElementById('console-output');
+            if (con && con.children.length === 1 && con.children[0].tagName === 'P') {
+              con.innerHTML = '';
+            }
+            appendLogLine(data.message);
+          }
           appendSubFeedLine(data.message);
-          updateSidebarMiniFeed(data.message);
-          pushTickerAlert(data.message);
+
+          if (data.message.category !== 'configuracao') {
+            updateSidebarMiniFeed(data.message);
+            pushTickerAlert(data.message);
+
+            const respMac = extractMacFromMessage(data.message);
+            if (respMac) {
+              if (pendingDeviceChecks[respMac] && pendingDeviceChecks[respMac].timer) {
+                clearTimeout(pendingDeviceChecks[respMac].timer);
+              }
+              pendingDeviceChecks[respMac] = {
+                state: 'responded',
+                func: (pendingDeviceChecks[respMac] && pendingDeviceChecks[respMac].func) || 'MQTT',
+                time: data.message.timestamp,
+                topic: data.message.topic,
+                raw: data.message.raw
+              };
+            }
+            updateBuilderFeedbackSuccess(data.message, respMac);
+            loadDevices();
+            loadDiscovered();
+          }
 
           const badgeLogs = document.getElementById('badge-logs-count');
           if (badgeLogs) badgeLogs.innerText = allMessages.length;
@@ -1450,17 +1889,23 @@
     // ================= SISTEMA PRO DE 'ÚLTIMOS RETORNOS' =================
     function extractMacFromMessage(msg) {
       if (!msg) return null;
+      // 1. Priorizar o endereço real do nó dentro do payload (ex: addr: "30:83:98:63:50:b0(30:83:98:63:50:b0)" ou data.mac)
+      if (msg.payload && typeof msg.payload === 'object' && msg.payload !== null) {
+        const d = msg.payload.data && typeof msg.payload.data === 'object' ? msg.payload.data : {};
+        const candidates = [d.mac, d.id, msg.payload.addr, msg.payload.mac_addr, msg.payload.mac, msg.payload.self_mac, msg.payload.id, msg.payload.root];
+        for (const c of candidates) {
+          if (typeof c === 'string') {
+            const base = c.split('(')[0].trim();
+            const clean = base.replace(/[^a-fA-F0-9]/g, '').toLowerCase();
+            if (clean.length === 12 && !clean.startsWith('ff')) return clean;
+          }
+        }
+      }
+      // 2. Fallback: extrair do sufixo do tópico MQTT (ex: dev/retorno/shopba/mesh/704bca491d9c)
       if (msg.topic) {
         const parts = msg.topic.split('/');
-        const last = parts[parts.length - 1].replace(/[^a-fA-F0-9]/g, '').toLowerCase();
-        if (last.length === 12 && last !== 'ffffffffffff' && last !== 'ff0000010000') return last;
-      }
-      if (msg.payload && typeof msg.payload === 'object' && msg.payload !== null) {
-        const m = msg.payload.mac_addr || msg.payload.mac || msg.payload.addr || msg.payload.self_mac || msg.payload.id;
-        if (typeof m === 'string') {
-          const clean = m.replace(/[^a-fA-F0-9]/g, '').toLowerCase();
-          if (clean.length === 12) return clean;
-        }
+        const last = parts[parts.length - 1].split('(')[0].replace(/[^a-fA-F0-9]/g, '').toLowerCase();
+        if (last.length === 12 && !last.startsWith('ff')) return last;
       }
       return null;
     }
@@ -1700,30 +2145,51 @@
         }
       }
 
-      // 10. Fallback limpo para objetos: formata como pílulas visuais elegantes (SEM NENHUMA NOMENCLATURA JSON!)
+      // 10. Pacote de Conexão / Heartbeat / Sincronismo (ex: root, times, timezone)
+      if (msg.category === 'conexao' || (payload && (payload.root !== undefined || payload.times !== undefined || payload.timezone !== undefined))) {
+        let rootShort = '';
+        if (payload && payload.root) {
+          const cleanR = String(payload.root).split('(')[0].replace(/[^a-fA-F0-9]/g, '').toUpperCase();
+          if (cleanR.length >= 4) rootShort = ` • Root ${cleanR.slice(-4, -2)}:${cleanR.slice(-2)}`;
+        }
+        return `
+          <div class="flex items-center space-x-1.5 text-[10px] text-sky-300 truncate">
+            <span class="px-1.5 py-0.5 rounded bg-sky-950/70 border border-sky-500/30 font-bold shrink-0">ONLINE</span>
+            <span class="text-slate-300 truncate">Sincronizado${escapeHtml(rootShort)}</span>
+          </div>
+        `;
+      }
+
+      // 11. Fallback limpo para objetos: formata como resumo compacto de 1 linha (sem estourar a largura)
       if (payload && typeof payload === 'object') {
-        const keys = Object.keys(payload).filter(k => !['mac', 'mac_addr', 'addr', 'self_mac', 'timestamp'].includes(k));
+        const keys = Object.keys(payload).filter(k => !['mac', 'mac_addr', 'addr', 'self_mac', 'timestamp', 'times', 'timezone', 'type'].includes(k));
         if (keys.length > 0) {
-          const pills = keys.slice(0, 3).map(k => {
+          const pills = keys.slice(0, 2).map(k => {
             let v = payload[k];
             if (typeof v === 'boolean') v = v ? 'Ativo' : 'Inativo';
-            else if (typeof v === 'object' && v !== null) v = 'Estruturado';
+            else if (typeof v === 'object' && v !== null) v = v.function || v.response || 'OK';
+            else if (typeof v === 'string') {
+              v = v.split('(')[0].trim();
+              const hexTry = v.replace(/[^a-fA-F0-9]/g, '');
+              if (hexTry.length === 12) v = `..${hexTry.slice(-4).toUpperCase()}`;
+              else if (v.length > 16) v = v.slice(0, 14) + '…';
+            }
             const label = FRIENDLY_KEYS[k.toLowerCase()] || (k.charAt(0).toUpperCase() + k.slice(1));
-            return `<span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded-lg text-[10px] flex items-center space-x-1"><span class="text-indigo-400 font-semibold">${escapeHtml(label)}</span><span class="text-slate-100 font-bold">${escapeHtml(String(v))}</span></span>`;
+            return `<span class="bg-slate-950/70 border border-slate-800/90 px-1.5 py-0.5 rounded text-[10px] inline-flex items-center space-x-1 truncate max-w-full"><span class="text-indigo-400 font-semibold">${escapeHtml(label)}:</span><span class="text-slate-200 font-bold truncate">${escapeHtml(String(v))}</span></span>`;
           }).join(' ');
-          return `<div class="flex flex-wrap gap-1.5 items-center">${pills}</div>`;
+          return `<div class="flex flex-wrap gap-1 items-center overflow-hidden">${pills}</div>`;
         }
       }
 
-      // 11. Fallback final para strings (Remove 100% de caracteres de JSON, chaves, colchetes e aspas)
+      // 12. Fallback final para strings
       let cleanText = raw.replace(/[{}\[\]"]/g, '').replace(/[:=]/g, ' → ').replace(/,/g, ' • ').trim();
-      if (cleanText.length > 55) cleanText = cleanText.slice(0, 52) + '...';
-      if (!cleanText) cleanText = 'Confirmação recebida da malha mesh';
+      if (cleanText.length > 36) cleanText = cleanText.slice(0, 34) + '…';
+      if (!cleanText) cleanText = 'Retorno recebido da malha';
 
       return `
-        <div class="flex items-center space-x-1.5 text-[11px] text-slate-300 bg-slate-900/80 px-2.5 py-1 rounded-lg border border-slate-800">
+        <div class="flex items-center space-x-1.5 text-[10px] text-slate-300 truncate">
           <span class="text-indigo-400 font-bold">●</span>
-          <span class="font-medium">${escapeHtml(cleanText)}</span>
+          <span class="font-medium truncate">${escapeHtml(cleanText)}</span>
         </div>
       `;
     }
@@ -1767,7 +2233,7 @@
 
       container.innerHTML = '';
 
-      recentReturns.slice(0, 6).forEach((msg, idx) => {
+      recentReturns.slice(0, 8).forEach((msg, idx) => {
         const mac = extractMacFromMessage(msg);
         const cleanMac = mac ? mac.toLowerCase().replace(/:/g, '') : null;
         const dev = cleanMac ? devicesList.find(d => d.mac.toLowerCase() === cleanMac) : null;
@@ -1778,72 +2244,50 @@
         const isGroot = (msg.raw || '').toLowerCase().includes("groot");
         const isError = badge.label.includes('ERRO');
 
+        const dotColor = isGroot || badge.label.includes('RESPOSTA')
+          ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)]'
+          : isError
+            ? 'bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.7)]'
+            : badge.label.includes('TELEMETRIA')
+              ? 'bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.7)]'
+              : 'bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.7)]';
+
+        const displayName = dev ? dev.name : (cleanMac ? `Placa ${cleanMac.slice(-4).toUpperCase()}` : 'Malha Mesh');
+        const shortMac = cleanMac ? `${cleanMac.slice(-4, -2).toUpperCase()}:${cleanMac.slice(-2).toUpperCase()}` : '';
+
         const card = document.createElement('div');
-        card.className = 'group bg-gradient-to-b from-slate-900/95 to-slate-950/95 hover:from-slate-850 hover:to-slate-900 border border-slate-800/80 hover:border-indigo-500/50 p-3 rounded-2xl text-left cursor-pointer transition-all space-y-2.5 shadow-sm hover:shadow-indigo-500/10 hover:shadow-md relative overflow-hidden';
-        
-        // Highlight lateral bar
-        const accentColor = isGroot || badge.label.includes('RESPOSTA') ? 'bg-emerald-500' : (isError ? 'bg-rose-500' : (badge.label.includes('TELEMETRIA') ? 'bg-cyan-500' : 'bg-indigo-500'));
-
-        let avatarBg = 'bg-indigo-950/80 text-indigo-300 border border-indigo-500/30';
-        let avatarIcon = '<i data-lucide="radio" class="w-3.5 h-3.5"></i>';
-        if (dev && dev.role === 'ROOT') {
-          avatarBg = 'bg-purple-950/80 text-purple-300 border border-purple-500/40';
-          avatarIcon = '<i data-lucide="crown" class="w-3.5 h-3.5"></i>';
-        } else if (dev) {
-          avatarBg = 'bg-cyan-950/80 text-cyan-300 border border-cyan-500/40';
-          avatarIcon = '<i data-lucide="gauge" class="w-3.5 h-3.5"></i>';
-        }
-
-        const displayName = dev ? dev.name : (cleanMac ? `Placa ${cleanMac.slice(-4).toUpperCase()}` : 'Canal Global');
-        const formattedMac = cleanMac ? formatMac(cleanMac) : (msg.topic || 'Mesh');
+        card.className = 'group codax-glass-deep hover:bg-slate-800/45 border border-slate-800/80 hover:border-slate-600/80 px-2.5 py-2 rounded-xl text-left cursor-pointer transition-all space-y-1.5 relative overflow-hidden';
 
         card.innerHTML = `
-          <div class="absolute left-0 top-0 bottom-0 w-1 ${accentColor}"></div>
-          
-          <!-- Cabeçalho: Horário, Badge e Status LED -->
-          <div class="flex items-center justify-between text-[11px] pl-1.5">
-            <div class="flex items-center space-x-1.5">
-              <span class="w-1.5 h-1.5 rounded-full ${isError ? 'bg-rose-400' : 'bg-emerald-400'} animate-pulse"></span>
-              <span class="font-mono text-slate-400 font-semibold">${timeStr}</span>
+          <!-- Linha 1: Ponto Luminoso + Nome da Placa + Sufixo MAC | Horário (ou Ações Rápidas no Hover) -->
+          <div class="flex items-center justify-between gap-1.5 min-w-0">
+            <div class="flex items-center space-x-1.5 min-w-0 flex-1">
+              <span class="w-1.5 h-1.5 rounded-full ${dotColor} shrink-0"></span>
+              <span class="font-bold text-[11px] text-slate-100 truncate group-hover:text-indigo-200 transition">${escapeHtml(displayName)}</span>
+              ${shortMac ? `<span class="font-mono text-[9px] text-slate-500 shrink-0">${shortMac}</span>` : ''}
             </div>
-            <span class="text-[9px] font-bold px-2 py-0.5 rounded-lg border ${badge.color}">${badge.label}</span>
-          </div>
 
-          <!-- Identificação da Placa: Avatar, Nome e MAC -->
-          <div class="pl-1.5 flex items-center justify-between gap-2">
-            <div class="flex items-center space-x-2 truncate">
-              <div class="w-6 h-6 rounded-lg ${avatarBg} flex items-center justify-center shrink-0 shadow-inner">
-                ${avatarIcon}
-              </div>
-              <div class="truncate">
-                <span class="font-extrabold text-xs text-slate-100 block truncate group-hover:text-indigo-200 transition">${escapeHtml(displayName)}</span>
-                <span class="font-mono text-[10px] text-indigo-400 block">${escapeHtml(formattedMac)}</span>
-              </div>
-            </div>
-            ${dev && dev.role === 'ROOT' ? `<span class="text-[9px] bg-purple-950 text-purple-300 border border-purple-500/40 px-1.5 py-0.2 rounded font-mono font-bold shrink-0">ROOT</span>` : ''}
-          </div>
-
-          <!-- Pílulas Humanas (Zero nomenclatura JSON) -->
-          <div class="pl-1.5 pt-0.5">
-            ${pillsHtml}
-          </div>
-
-          <!-- Footer: Botão Ver Detalhes (Inspetor) e Ações Rápidas -->
-          <div class="pl-1.5 pt-2 border-t border-slate-900 flex items-center justify-between text-[10px]">
-            <button onclick="openReturnInspectorModal(${idx})" class="text-indigo-300 hover:text-white font-bold flex items-center space-x-1.5 bg-indigo-950/70 hover:bg-indigo-900 border border-indigo-500/40 hover:border-indigo-400 px-2.5 py-1 rounded-lg transition shadow-sm">
-              <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-              <span>Ver Detalhes (JSON)</span>
-            </button>
-            <div class="flex items-center space-x-1.5" onclick="event.stopPropagation()">
-              ${cleanMac ? `
-                <button onclick="setTarget('${cleanMac}')" title="Definir MAC como Alvo no Construtor" class="text-slate-400 hover:text-cyan-300 p-1.5 rounded-lg hover:bg-slate-800 transition">
-                  <i data-lucide="target" class="w-3.5 h-3.5"></i>
+            <div class="flex items-center shrink-0">
+              <span class="font-mono text-[10px] text-slate-500 group-hover:hidden">${timeStr}</span>
+              <div class="hidden group-hover:flex items-center space-x-0.5" onclick="event.stopPropagation()">
+                ${cleanMac ? `
+                  <button onclick="setTarget('${cleanMac}')" title="Usar como alvo" class="text-slate-400 hover:text-cyan-300 p-0.5 rounded hover:bg-slate-700/50 transition">
+                    <i data-lucide="target" class="w-3 h-3"></i>
+                  </button>
+                ` : ''}
+                <button onclick="copyRawSnippet(${idx})" title="Copiar JSON" class="text-slate-400 hover:text-white p-0.5 rounded hover:bg-slate-700/50 transition">
+                  <i data-lucide="copy" class="w-3 h-3"></i>
                 </button>
-              ` : ''}
-              <button onclick="copyRawSnippet(${idx})" title="Copiar resposta bruta" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition">
-                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-              </button>
+                <button onclick="openReturnInspectorModal(${idx})" title="Inspecionar retorno" class="text-indigo-400 hover:text-indigo-200 p-0.5 rounded hover:bg-slate-700/50 transition">
+                  <i data-lucide="maximize-2" class="w-3 h-3"></i>
+                </button>
+              </div>
             </div>
+          </div>
+
+          <!-- Linha 2: Resumo Inteligente Compacto (1 Linha sem estourar) -->
+          <div class="pl-3 overflow-hidden">
+            ${pillsHtml}
           </div>
         `;
 
@@ -2054,10 +2498,40 @@
       }
     }
 
+    let brokerMode = 'AWS';
+    let brokerHost = 'a15sonvcesw5o-ats.iot.us-west-2.amazonaws.com';
+    let awsProdSubRestricted = false;
+
+    async function toggleBrokerMode() {
+      const res = await fetch('/api/broker/toggle', { method: 'POST' });
+      if (res.ok) {
+        const data = await res.json();
+        updateStatusUI(data);
+        setTimeout(fetchStatus, 1500);
+      }
+    }
+
     function updateStatusUI(data) {
       hostIP = data.local_ip || hostIP;
       webPort = data.web_port || webPort;
       currentEnv = data.current_env || currentEnv;
+      if (data.broker_mode) brokerMode = data.broker_mode;
+      if (data.broker_host) brokerHost = data.broker_host;
+      if (data.aws_prod_sub_restricted !== undefined) awsProdSubRestricted = data.aws_prod_sub_restricted;
+
+      const dotB = document.getElementById('top-dot-broker');
+      const lblB = document.getElementById('top-label-broker');
+      if (dotB && lblB) {
+        if (data.broker_connected) {
+          dotB.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400';
+          lblB.className = 'font-semibold text-emerald-400 text-[11px]';
+          lblB.innerText = brokerMode === 'AWS' ? '☁️ AWS IoT (8883)' : '💻 Local (1883)';
+        } else {
+          dotB.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse';
+          lblB.className = 'font-semibold text-amber-400 text-[11px]';
+          lblB.innerText = brokerMode === 'AWS' ? '☁️ Conectando AWS...' : '💻 Conectando 1883...';
+        }
+      }
       const activeTopic = data.active_topic || (currentEnv === 'PROD' ? 'config/shopba/mesh' : 'dev/config/shopba/mesh');
 
       const topIp = document.getElementById('top-ip');
@@ -2418,6 +2892,7 @@
 
       const payload = {
         addr: addrs,
+        type: 'json',
         data: {
           method: currentSelectedMethod,
           function: func
@@ -2469,7 +2944,7 @@
         });
         const data = await res.json();
         if (res.ok) {
-          switchTab('logs');
+          addrs.forEach(a => markDeviceWaiting(a, `${currentSelectedMethod} ${func}`));
         } else {
           alert('Erro ao enviar: ' + (data.detail || 'Verifique os dados'));
         }
@@ -2866,8 +3341,24 @@
     }
 
     // ================= AÇÕES RÁPIDAS =================
-    async function sendQuickCommand(method, func, value = null, explicitTarget = null) {
+    async function sendQuickCommand(method, func, value = null, explicitTarget = null, stayOnTab = false) {
       const target = explicitTarget || document.getElementById('global-target').value.trim() || 'root';
+
+      if (func === 'restart' || func === 'reboot') {
+        const cleanT = target.toLowerCase().replace(/:/g, '');
+        const dev = devicesList.find(d => d.mac.toLowerCase() === cleanT);
+        const confirmed = await showGlassConfirm({
+          title: 'Confirmar Soft Reset (10s)',
+          message: 'Esta ação reiniciará fisicamente a controladora alvo em 10 segundos. Deseja prosseguir com o envio do comando?',
+          tag: 'OPERAÇÃO CRÍTICA',
+          targetName: dev ? dev.name : `Alvo: ${target.toUpperCase()}`,
+          targetSub: formatMac(target),
+          confirmText: 'Reiniciar Controladora',
+          variant: 'warning'
+        });
+        if (!confirmed) return;
+      }
+
       const payload = {
         addr: [target],
         method: method,
@@ -2875,6 +3366,8 @@
         value: value,
         env: currentEnv
       };
+
+      markDeviceWaiting(target, `${method} ${func}`);
 
       try {
         const res = await fetch('/api/command/send', {
@@ -2884,7 +3377,9 @@
         });
         const data = await res.json();
         if (res.ok) {
-          switchTab('logs');
+          if (!stayOnTab && !explicitTarget) {
+            switchTab('logs');
+          }
         } else {
           alert('Erro ao enviar: ' + (data.detail || 'Falha'));
         }
@@ -3220,8 +3715,8 @@
                 <h4 class="font-extrabold text-sm text-slate-100 mt-1.5 leading-snug">${escapeHtml(dev.name)}</h4>
               </div>
               <div class="flex items-center space-x-1.5 shrink-0">
-                <span class="w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}"></span>
-                <span class="text-[10px] font-semibold ${isOnline ? 'text-emerald-400' : 'text-slate-500'}">${isOnline ? 'Online' : 'Offline'}</span>
+                <span class="w-2.5 h-2.5 rounded-full ${isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'}"></span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${isOnline ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40' : 'bg-slate-900 text-slate-400 border-slate-800'}">${isOnline ? 'Respondendo (Online)' : 'Sem Retorno (Offline)'}</span>
               </div>
             </div>
 
@@ -3246,16 +3741,74 @@
                 </div>
               ` : ''}
             </div>
+
+            <!-- Painel de Diagnóstico de Retorno da Placa -->
+            ${(() => {
+              const cleanM = dev.mac.toLowerCase();
+              const chk = pendingDeviceChecks[cleanM];
+              if (chk && chk.state === 'waiting') {
+                return `
+                  <div class="p-2.5 rounded-xl border border-amber-500/40 bg-amber-950/40 text-amber-200 text-[11px] space-y-1 animate-pulse">
+                    <div class="flex items-center justify-between font-bold">
+                      <span>⏳ Aguardando retorno...</span>
+                      <span class="mono text-[10px]">${chk.sentAt}</span>
+                    </div>
+                    <div class="text-[10px] text-amber-300/80">Comando <code>${escapeHtml(chk.func)}</code> enviado. Escutando MQTT...</div>
+                  </div>
+                `;
+              } else if (chk && chk.state === 'timeout') {
+                return `
+                  <div class="p-2.5 rounded-xl border border-rose-500/40 bg-rose-950/50 text-rose-200 text-[11px] space-y-1">
+                    <div class="flex items-center justify-between font-bold text-rose-300">
+                      <span>❌ Sem resposta (Timeout 8s)</span>
+                      <span class="mono text-[10px]">${chk.sentAt}</span>
+                    </div>
+                    <div class="text-[10px] text-rose-300/80">Não houve retorno para <code>${escapeHtml(chk.func)}</code>.</div>
+                  </div>
+                `;
+              } else if (isOnline || (chk && chk.state === 'responded')) {
+                const lastTime = (chk && chk.time) || dev.last_seen || 'Agora';
+                const lastTop = (chk && chk.topic) || dev.last_topic || 'MQTT';
+                let preview = '';
+                const rawData = (chk && chk.raw) ? chk.raw : (dev.last_data ? JSON.stringify(dev.last_data) : '');
+                if (rawData) {
+                  preview = rawData.length > 90 ? rawData.slice(0, 87) + '...' : rawData;
+                }
+                return `
+                  <div class="p-2.5 rounded-xl border border-emerald-500/40 bg-emerald-950/40 text-emerald-200 text-[11px] space-y-1">
+                    <div class="flex items-center justify-between font-bold text-emerald-300">
+                      <span>✅ Placa Respondendo!</span>
+                      <span class="mono text-[10px]">Último: ${escapeHtml(lastTime)}</span>
+                    </div>
+                    <div class="text-[10px] text-emerald-300/80 truncate">Tópico: <code class="mono">${escapeHtml(lastTop)}</code></div>
+                    ${preview ? `<div class="mono text-[10px] bg-slate-950/80 p-1.5 rounded border border-emerald-500/20 text-emerald-300 break-all">${escapeHtml(preview)}</div>` : ''}
+                  </div>
+                `;
+              } else {
+                return `
+                  <div class="p-2.5 rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 text-[11px] flex items-center justify-between">
+                    <span>⚪ Nenhum retorno recebido ainda</span>
+                    <span class="text-[10px] text-indigo-400 font-semibold">Teste abaixo ↓</span>
+                  </div>
+                `;
+              }
+            })()}
           </div>
 
           <div class="pt-3 border-t border-slate-900 space-y-2">
-            <button onclick="useDeviceInBuilder('${dev.mac}')" class="w-full bg-cyan-600/20 hover:bg-cyan-600 text-cyan-300 hover:text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center space-x-1.5 border border-cyan-500/30">
-              <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
-              <span>Usar no Construtor</span>
-            </button>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button onclick="sendQuickCommand('query', 'meter', null, '${dev.mac}', true)" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center space-x-1 shadow-sm" title="Enviar query meter e verificar resposta">
+                <i data-lucide="activity" class="w-3.5 h-3.5"></i>
+                <span>Testar Meter</span>
+              </button>
+              <button onclick="useDeviceInBuilder('${dev.mac}')" class="bg-cyan-600/20 hover:bg-cyan-600 text-cyan-300 hover:text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center space-x-1 border border-cyan-500/30">
+                <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
+                <span>No Construtor</span>
+              </button>
+            </div>
             <div class="grid grid-cols-4 gap-1.5 text-[11px]">
-              <button onclick="sendQuickCommand('query', 'ping', null, '${dev.mac}')" class="bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold py-1.5 rounded-lg transition text-center" title="Ping">Ping</button>
-              <button onclick="sendQuickCommand('query', 'info', null, '${dev.mac}')" class="bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold py-1.5 rounded-lg transition text-center" title="Informações">Info</button>
+              <button onclick="sendQuickCommand('query', 'ping', null, '${dev.mac}', true)" class="bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold py-1.5 rounded-lg transition text-center" title="Ping">Ping</button>
+              <button onclick="sendQuickCommand('query', 'info', null, '${dev.mac}', true)" class="bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold py-1.5 rounded-lg transition text-center" title="Informações">Info</button>
               <button onclick="openDeviceModal('${dev.mac}', '${escapeHtml(dev.name)}', '${escapeHtml(dev.meter_serial || '')}', '${escapeHtml(dev.meter_type || '')}', '${dev.role}', '${escapeHtml(dev.notes || '')}')" class="bg-slate-900 hover:bg-slate-800 text-amber-300 font-semibold py-1.5 rounded-lg transition text-center" title="Editar">Editar</button>
               <button onclick="deleteDevice('${dev.mac}')" class="bg-slate-900 hover:bg-rose-950/60 text-rose-400 font-semibold py-1.5 rounded-lg transition text-center" title="Excluir">Excluir</button>
             </div>
@@ -3409,6 +3962,7 @@
 
     function renderBuilderChips() {
       const container = document.getElementById('builder-device-chips');
+      const activeSummary = document.getElementById('builder-active-chips-summary');
       const countBadge = document.getElementById('builder-recipients-count');
       if (!container) return;
 
@@ -3426,6 +3980,8 @@
       }
 
       container.innerHTML = '';
+      if (activeSummary) activeSummary.innerHTML = '';
+      const activePills = [];
 
       // 1. Chips Especiais (ROOT, ANY, BROADCAST)
       const specials = [
@@ -3446,6 +4002,10 @@
         }`;
         btn.innerHTML = `<span>${isSel ? '✓' : '⚡'}</span><span>${s.label}</span>`;
         container.appendChild(btn);
+
+        if (isSel) {
+          activePills.push({ label: s.label, token: s.alias, isSpecial: true });
+        }
       });
 
       // 2. Chips para cada Medidor Cadastrado
@@ -3468,7 +4028,38 @@
           <span class="mono text-[10px] text-slate-400">(${cleanMac.slice(-4)})</span>
         `;
         container.appendChild(btn);
+
+        if (isSel) {
+          activePills.push({ label: `${dev.name} (${cleanMac.slice(-4)})`, token: cleanMac, isSpecial: false });
+        }
       });
+
+      // Renderiza fora apenas um resumo discreto de quem está selecionado (sem expor todas as placas)
+      if (activeSummary) {
+        if (activePills.length === 0) {
+          activeSummary.innerHTML = `<span class="text-[10px] text-slate-500 italic">Nenhum atalho marcado • Clique em "Escolher" para abrir a lista</span>`;
+        } else {
+          activePills.slice(0, 3).forEach(p => {
+            const pill = document.createElement('button');
+            pill.type = 'button';
+            pill.title = 'Clique para remover este alvo';
+            pill.onclick = () => toggleBuilderMac(p.token);
+            pill.className = p.isSpecial
+              ? 'px-2 py-0.5 rounded-lg text-[10px] font-bold bg-indigo-950/70 border border-indigo-500/40 text-indigo-300 hover:bg-rose-950/60 hover:border-rose-500/40 hover:text-rose-300 transition flex items-center space-x-1'
+              : 'px-2 py-0.5 rounded-lg text-[10px] font-semibold bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 hover:bg-rose-950/60 hover:border-rose-500/40 hover:text-rose-300 transition flex items-center space-x-1';
+            pill.innerHTML = `<span>✓ ${escapeHtml(p.label)}</span><span class="opacity-60 ml-1">×</span>`;
+            activeSummary.appendChild(pill);
+          });
+          if (activePills.length > 3) {
+            const more = document.createElement('button');
+            more.type = 'button';
+            more.onclick = () => toggleRecipientsDropdown();
+            more.className = 'px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-slate-800 text-slate-300 hover:text-white transition';
+            more.innerText = `+${activePills.length - 3} selecionados`;
+            activeSummary.appendChild(more);
+          }
+        }
+      }
 
       renderRecipientsPopover();
     }
@@ -3603,7 +4194,18 @@
     }
 
     async function deleteDevice(mac) {
-      if (!confirm(`Deseja realmente remover o medidor [${formatMac(mac)}] do cadastro?`)) {
+      const cleanM = (mac || '').toLowerCase().replace(/:/g, '');
+      const dev = devicesList.find(d => d.mac.toLowerCase() === cleanM);
+      const confirmed = await showGlassConfirm({
+        title: 'Remover Medidor do Cadastro',
+        message: 'Deseja realmente excluir este dispositivo da plataforma? Os apelidos e dados vinculados ao MAC serão removidos.',
+        tag: 'AÇÃO DE RISCO',
+        targetName: dev ? dev.name : 'Medidor Cadastrado',
+        targetSub: formatMac(mac),
+        confirmText: 'Sim, Excluir Medidor',
+        variant: 'danger'
+      });
+      if (!confirmed) {
         return;
       }
       try {
@@ -3611,6 +4213,7 @@
         if (res.ok) {
           await loadDevices();
           await loadDiscovered();
+          showGlassToast(`Medidor [${formatMac(mac)}] removido com sucesso.`);
         } else {
           alert('Erro ao excluir dispositivo.');
         }
@@ -3740,20 +4343,32 @@
       fetch('/api/messages/clear', { method: 'POST' });
     }
 
+    function isMsgCategory(cat) {
+      return !['retorno', 'telemetria', 'topologia', 'conexao', 'erro'].includes(cat);
+    }
+
+    function matchesActiveLogFilter(msg) {
+      if (currentCategory !== 'all') {
+        if (currentCategory === 'msg') {
+          if (!isMsgCategory(msg.category)) return false;
+        } else if (msg.category !== currentCategory) {
+          return false;
+        }
+      }
+      const searchEl = document.getElementById('log-search');
+      const query = searchEl ? searchEl.value.toLowerCase().trim() : '';
+      if (query) {
+        const str = (msg.topic + ' ' + msg.raw).toLowerCase();
+        return str.includes(query);
+      }
+      return true;
+    }
+
     function renderLogs() {
       const container = document.getElementById('console-output');
       container.innerHTML = '';
 
-      const query = document.getElementById('log-search').value.toLowerCase().trim();
-
-      const filtered = allMessages.filter(msg => {
-        if (currentCategory !== 'all' && msg.category !== currentCategory) return false;
-        if (query) {
-          const str = (msg.topic + ' ' + msg.raw).toLowerCase();
-          return str.includes(query);
-        }
-        return true;
-      });
+      const filtered = allMessages.filter(msg => matchesActiveLogFilter(msg));
 
       if (filtered.length === 0) {
         container.innerHTML = '<p class="text-slate-500 italic">Nenhuma mensagem compatível com o filtro atual.</p>';
@@ -3772,7 +4387,7 @@
     function appendLogLine(msg, autoScroll = true) {
       const container = document.getElementById('console-output');
 
-      let badge = '<span class="text-slate-400 bg-slate-800 px-2 py-0.5 rounded">MSG</span>';
+      let badge = '<span class="text-indigo-300 bg-indigo-950/80 border border-indigo-500/30 px-2 py-0.5 rounded font-bold">MSG</span>';
       if (msg.category === 'retorno') badge = '<span class="text-emerald-300 bg-emerald-950/80 border border-emerald-500/30 px-2 py-0.5 rounded font-bold">RETORNO</span>';
       else if (msg.category === 'telemetria') badge = '<span class="text-sky-300 bg-sky-950/80 border border-sky-500/30 px-2 py-0.5 rounded font-bold">TEL</span>';
       else if (msg.category === 'topologia') badge = '<span class="text-purple-300 bg-purple-950/80 border border-purple-500/30 px-2 py-0.5 rounded font-bold">TOPO</span>';
@@ -3832,10 +4447,29 @@
       if (returnModal && !returnModal.classList.contains('hidden') && e.target === returnModal) {
         closeReturnInspectorModal();
       }
+
+      const confirmModal = document.getElementById('modal-glass-confirm');
+      if (confirmModal && !confirmModal.classList.contains('hidden') && e.target === confirmModal) {
+        resolveGlassConfirm(false);
+      }
     });
 
     document.addEventListener('keydown', (e) => {
+      if (e.key === 'F2') {
+        e.preventDefault();
+        toggleUiInspector();
+        return;
+      }
       if (e.key === 'Escape') {
+        if (!document.getElementById('ui-inspector-popover').classList.contains('hidden')) {
+          closeInspectorPopover();
+          return;
+        }
+        if (uiInspectorActive) {
+          toggleUiInspector(false);
+          return;
+        }
+        resolveGlassConfirm(false);
         closeReturnInspectorModal();
         closeDeviceModal();
         closeOtaModal();
@@ -3843,6 +4477,364 @@
         closeRecipientsDropdown();
       }
     });
+
+    // ================= LÓGICA DO INSPETOR VISUAL IA (RAIO-X + CAIXA FLUTUANTE) =================
+    let uiInspectorActive = false;
+    let uiInspectorLocked = false;
+    let uiInspectorTargetEl = null;
+    let uiInspectorChildStack = [];
+    let uiInspectorAreaData = null;
+    let lassoDragStart = null;
+    let isLassoDragging = false;
+
+    function isInspectorInternalElement(el) {
+      if (!el) return true;
+      const pop = document.getElementById('ui-inspector-popover');
+      const hl = document.getElementById('ui-inspector-highlight');
+      const lasso = document.getElementById('ui-inspector-lasso');
+      const topBtn = document.getElementById('top-btn-ui-inspector');
+      const toasts = document.getElementById('glass-toast-container');
+      return (
+        (pop && pop.contains(el)) ||
+        (hl && hl.contains(el)) ||
+        (lasso && lasso.contains(el)) ||
+        (topBtn && topBtn.contains(el)) ||
+        (toasts && toasts.contains(el))
+      );
+    }
+
+    function toggleUiInspector(forceState) {
+      uiInspectorActive = typeof forceState === 'boolean' ? forceState : !uiInspectorActive;
+      const btn = document.getElementById('top-btn-ui-inspector');
+      const hl = document.getElementById('ui-inspector-highlight');
+
+      if (uiInspectorActive) {
+        document.body.classList.add('ui-inspector-active');
+        if (btn) {
+          btn.className = 'flex items-center space-x-1.5 bg-indigo-600 border border-indigo-400 text-white px-2.5 py-1.5 rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/40 transition animate-pulse';
+        }
+        showGlassToast('🎯 Modo Inspetor IA Ativo!\nClique em qualquer elemento ou arraste uma área na tela. (Esc para sair)');
+      } else {
+        document.body.classList.remove('ui-inspector-active');
+        uiInspectorLocked = false;
+        uiInspectorTargetEl = null;
+        uiInspectorChildStack = [];
+        uiInspectorAreaData = null;
+        if (hl) hl.classList.add('hidden');
+        closeInspectorPopover();
+        if (btn) {
+          btn.className = 'flex items-center space-x-1.5 bg-slate-950/80 hover:bg-indigo-950/70 border border-slate-800 hover:border-indigo-500/60 text-slate-300 hover:text-indigo-200 px-2.5 py-1.5 rounded-xl text-xs font-bold shadow-sm transition';
+        }
+      }
+    }
+
+    function getDomSelectorPath(el) {
+      if (!el || el.nodeType !== 1) return '';
+      const parts = [];
+      let curr = el;
+      let depth = 0;
+      while (curr && curr.nodeType === 1 && curr !== document.body && depth < 5) {
+        let seg = curr.tagName.toLowerCase();
+        if (curr.id) {
+          seg += `#${curr.id}`;
+          parts.unshift(seg);
+          break;
+        } else {
+          const cls = Array.from(curr.classList || [])
+            .filter(c => !['hidden', 'transition', 'flex', 'items-center', 'justify-between', 'space-x-2', 'ui-inspector-active'].includes(c))
+            .slice(0, 2);
+          if (cls.length > 0) seg += `.${cls.join('.')}`;
+          parts.unshift(seg);
+        }
+        curr = curr.parentElement;
+        depth++;
+      }
+      return parts.join(' > ');
+    }
+
+    function getActiveTabName() {
+      const visibleSec = Array.from(document.querySelectorAll('.tab-content')).find(s => !s.classList.contains('hidden'));
+      if (!visibleSec) return 'Global / Header';
+      const id = visibleSec.id.replace('view-', '');
+      const info = TAB_INFO[id];
+      return info ? `${info.title} (#${visibleSec.id})` : `#${visibleSec.id}`;
+    }
+
+    function updateHighlightBox(el) {
+      const hl = document.getElementById('ui-inspector-highlight');
+      const badge = document.getElementById('ui-inspector-badge');
+      if (!hl || !el) return;
+
+      const rect = el.getBoundingClientRect();
+      hl.style.left = `${Math.max(0, rect.left - 3)}px`;
+      hl.style.top = `${Math.max(0, rect.top - 3)}px`;
+      hl.style.width = `${rect.width + 6}px`;
+      hl.style.height = `${rect.height + 6}px`;
+      hl.classList.remove('hidden');
+
+      if (badge) {
+        const tag = el.tagName.toLowerCase();
+        const idStr = el.id ? `#${el.id}` : '';
+        badge.innerText = `${tag}${idStr} • ${Math.round(rect.width)}×${Math.round(rect.height)}px`;
+        badge.style.top = rect.top < 28 ? '4px' : '-24px';
+      }
+    }
+
+    function openInspectorPopoverForElement(el, areaInfo = null) {
+      if (!el) return;
+      uiInspectorLocked = true;
+      uiInspectorTargetEl = el;
+      uiInspectorAreaData = areaInfo;
+
+      updateHighlightBox(el);
+
+      const pop = document.getElementById('ui-inspector-popover');
+      const tagEl = document.getElementById('ui-inspector-pop-tag');
+      const rectEl = document.getElementById('ui-inspector-pop-rect');
+      const selEl = document.getElementById('ui-inspector-pop-selector');
+      const txtEl = document.getElementById('ui-inspector-pop-text');
+      const inputEl = document.getElementById('ui-inspector-note-input');
+
+      const rect = areaInfo ? areaInfo.rect : el.getBoundingClientRect();
+      const selector = getDomSelectorPath(el);
+      const rawText = (el.innerText || el.value || el.getAttribute('placeholder') || el.getAttribute('title') || '').replace(/\s+/g, ' ').trim();
+
+      if (tagEl) {
+        tagEl.innerText = areaInfo
+          ? `Área (${areaInfo.elementsCount} itens)`
+          : `<${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}>`;
+      }
+      if (rectEl) {
+        rectEl.innerText = `${Math.round(rect.width)}×${Math.round(rect.height)}px (x:${Math.round(rect.left)}, y:${Math.round(rect.top)})`;
+      }
+      if (selEl) {
+        selEl.innerText = areaInfo ? `Região em ${selector}` : selector;
+      }
+      if (txtEl) {
+        txtEl.innerText = rawText ? `"${rawText.slice(0, 75)}${rawText.length > 75 ? '...' : ''}"` : '(Elemento sem texto interno)';
+      }
+
+      pop.classList.remove('hidden');
+
+      // Posicionamento inteligente ao lado ou abaixo do elemento (sem sair da tela)
+      const popW = 368;
+      const popH = 260;
+      let left = rect.right + 14;
+      let top = rect.top;
+
+      if (left + popW > window.innerWidth - 12) {
+        left = rect.left - popW - 14;
+      }
+      if (left < 12) {
+        left = Math.min(Math.max(12, rect.left), window.innerWidth - popW - 12);
+        top = rect.bottom + 12;
+      }
+      if (top + popH > window.innerHeight - 12) {
+        top = Math.max(12, window.innerHeight - popH - 12);
+      }
+
+      pop.style.left = `${left}px`;
+      pop.style.top = `${top}px`;
+
+      if (inputEl) {
+        inputEl.value = '';
+        setTimeout(() => inputEl.focus(), 30);
+      }
+      lucide.createIcons();
+    }
+
+    function closeInspectorPopover() {
+      const pop = document.getElementById('ui-inspector-popover');
+      if (pop) pop.classList.add('hidden');
+      uiInspectorLocked = false;
+      uiInspectorAreaData = null;
+      if (!uiInspectorActive) {
+        const hl = document.getElementById('ui-inspector-highlight');
+        if (hl) hl.classList.add('hidden');
+      }
+    }
+
+    function inspectorStepParent() {
+      if (!uiInspectorTargetEl || !uiInspectorTargetEl.parentElement || uiInspectorTargetEl.parentElement === document.body) return;
+      uiInspectorChildStack.push(uiInspectorTargetEl);
+      openInspectorPopoverForElement(uiInspectorTargetEl.parentElement, null);
+    }
+
+    function inspectorStepChild() {
+      if (uiInspectorChildStack.length === 0) return;
+      const child = uiInspectorChildStack.pop();
+      openInspectorPopoverForElement(child, null);
+    }
+
+    function copyUiInspectorPayload() {
+      if (!uiInspectorTargetEl) return;
+      const el = uiInspectorTargetEl;
+      const noteEl = document.getElementById('ui-inspector-note-input');
+      const userNote = noteEl ? noteEl.value.trim() : '';
+
+      const rect = uiInspectorAreaData ? uiInspectorAreaData.rect : el.getBoundingClientRect();
+      const selector = getDomSelectorPath(el);
+      const activeTab = getActiveTabName();
+      const classes = (el.className && typeof el.className === 'string') ? el.className.trim() : '';
+      const textContent = (el.innerText || el.value || '').replace(/\s+/g, ' ').trim().slice(0, 140);
+
+      let outerSnippet = el.outerHTML || '';
+      if (outerSnippet.length > 550) {
+        outerSnippet = outerSnippet.slice(0, 550) + '\n  <!-- ... (truncado) ... -->';
+      }
+
+      const lines = [
+        `🎯 [ALVO UI CODAX]`,
+        userNote ? `• Pedido de Alteração: ${userNote}` : null,
+        `• Aba Ativa: ${activeTab}`,
+        uiInspectorAreaData
+          ? `• Modo: Seleção de Área (${uiInspectorAreaData.elementsCount} elementos na região) -> [${uiInspectorAreaData.summary}]`
+          : `• Elemento: <${el.tagName.toLowerCase()}> ${el.id ? `(#${el.id})` : ''}`,
+        `• Seletor DOM: ${selector}`,
+        textContent ? `• Texto Visível: "${textContent}"` : null,
+        `• Contorno / Posição: ${Math.round(rect.width)}x${Math.round(rect.height)}px (x: ${Math.round(rect.left)}, y: ${Math.round(rect.top)})`,
+        classes ? `• Classes Atuais: ${classes}` : null,
+        `• Código HTML da Área:`,
+        `\`\`\`html`,
+        outerSnippet,
+        `\`\`\``
+      ].filter(Boolean).join('\n');
+
+      navigator.clipboard.writeText(lines);
+      showGlassToast('✅ Código da área copiado!\nBasta dar Ctrl + V no chat para pedir a alteração.');
+      toggleUiInspector(false);
+    }
+
+    // Enter dentro da caixinha flutuante já copia na hora
+    document.getElementById('ui-inspector-note-input')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        copyUiInspectorPayload();
+      }
+    });
+
+    // Hover para desenhar o contorno em tempo real
+    document.addEventListener('mousemove', (e) => {
+      if (isLassoDragging && lassoDragStart) {
+        const lasso = document.getElementById('ui-inspector-lasso');
+        const x = Math.min(lassoDragStart.x, e.clientX);
+        const y = Math.min(lassoDragStart.y, e.clientY);
+        const w = Math.abs(e.clientX - lassoDragStart.x);
+        const h = Math.abs(e.clientY - lassoDragStart.y);
+        if (w > 10 || h > 10) {
+          lasso.style.left = `${x}px`;
+          lasso.style.top = `${y}px`;
+          lasso.style.width = `${w}px`;
+          lasso.style.height = `${h}px`;
+          lasso.classList.remove('hidden');
+        }
+        return;
+      }
+
+      if (!uiInspectorActive || uiInspectorLocked) return;
+      if (isInspectorInternalElement(e.target)) return;
+
+      updateHighlightBox(e.target);
+    }, true);
+
+    // Mousedown para iniciar seleção de área (arrastar) no modo inspetor
+    document.addEventListener('mousedown', (e) => {
+      if (!uiInspectorActive || e.button !== 0) return;
+      if (isInspectorInternalElement(e.target)) return;
+      lassoDragStart = { x: e.clientX, y: e.clientY, target: e.target };
+      isLassoDragging = true;
+    }, true);
+
+    // Mouseup para finalizar arraste de área ou clique simples
+    document.addEventListener('mouseup', (e) => {
+      if (!isLassoDragging || !lassoDragStart) return;
+      const start = lassoDragStart;
+      isLassoDragging = false;
+      lassoDragStart = null;
+
+      const lasso = document.getElementById('ui-inspector-lasso');
+      if (lasso) lasso.classList.add('hidden');
+
+      const w = Math.abs(e.clientX - start.x);
+      const h = Math.abs(e.clientY - start.y);
+
+      if (w > 24 && h > 24) {
+        e.preventDefault();
+        e.stopPropagation();
+        const box = {
+          left: Math.min(start.x, e.clientX),
+          top: Math.min(start.y, e.clientY),
+          right: Math.max(start.x, e.clientX),
+          bottom: Math.max(start.y, e.clientY),
+          width: w,
+          height: h
+        };
+        // Encontrar elementos interativos ou cards dentro do retângulo
+        const candidates = Array.from(document.querySelectorAll('button, input, select, textarea, h1, h3, h4, code, .btn-card, [id]'))
+          .filter(el => !isInspectorInternalElement(el) && el.offsetParent !== null)
+          .filter(el => {
+            const r = el.getBoundingClientRect();
+            return r.width > 0 && r.height > 0 && r.left >= box.left - 8 && r.right <= box.right + 8 && r.top >= box.top - 8 && r.bottom <= box.bottom + 8;
+          });
+
+        const summaryList = candidates.slice(0, 6).map(c => getDomSelectorPath(c)).join(', ');
+        const primaryEl = candidates[0] || start.target;
+        uiInspectorChildStack = [];
+        openInspectorPopoverForElement(primaryEl, {
+          rect: box,
+          elementsCount: candidates.length || 1,
+          summary: summaryList || getDomSelectorPath(primaryEl)
+        });
+      }
+    }, true);
+
+    // Interceptar clique quando o Inspetor IA estiver ativo (ou quando segurar Alt + Clique)
+    document.addEventListener('click', (e) => {
+      if (isInspectorInternalElement(e.target)) return;
+
+      if (e.altKey && !uiInspectorActive) {
+        e.preventDefault();
+        e.stopPropagation();
+        uiInspectorActive = true;
+        document.body.classList.add('ui-inspector-active');
+        uiInspectorChildStack = [];
+        openInspectorPopoverForElement(e.target, null);
+        return;
+      }
+
+      if (!uiInspectorActive) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+      uiInspectorChildStack = [];
+      openInspectorPopoverForElement(e.target, null);
+    }, true);
+
+    // Revelar a barrinha de scroll assim que o ponteiro do mouse encostar na borda de rolagem (sem precisar clicar)
+    let lastNearScrollEl = null;
+    document.addEventListener('mousemove', (e) => {
+      let found = null;
+      let el = e.target;
+      while (el && el !== document.body && el !== document.documentElement) {
+        if (el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth) {
+          const rect = el.getBoundingClientRect();
+          const nearRightEdge = (rect.right - e.clientX) <= 22 && (rect.right - e.clientX) >= -4;
+          const nearBottomEdge = (rect.bottom - e.clientY) <= 22 && (rect.bottom - e.clientY) >= -4;
+          if (nearRightEdge || nearBottomEdge) {
+            found = el;
+            break;
+          }
+        }
+        el = el.parentElement;
+      }
+      if (lastNearScrollEl && lastNearScrollEl !== found) {
+        lastNearScrollEl.classList.remove('scrollbar-near');
+      }
+      if (found) {
+        found.classList.add('scrollbar-near');
+      }
+      lastNearScrollEl = found;
+    }, { passive: true });
   </script>
 </body>
 </html>

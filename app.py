@@ -12,9 +12,23 @@ from pydantic import BaseModel
 import paho.mqtt.client as mqtt
 from commands_data import CODAX_COMMANDS
 
-# ================= CONFIGURAÇÕES =================
-BROKER_HOST = os.getenv("BROKER_HOST", "localhost")
-BROKER_PORT = int(os.getenv("BROKER_PORT", 1883))
+# ================= CONFIGURAÇÕES (AWS IoT Core + Local) =================
+import ssl
+import random
+
+CERTS_DIR = os.path.abspath("./certs")
+AWS_ENDPOINT = os.getenv("AWS_ENDPOINT", "a15sonvcesw5o-ats.iot.us-west-2.amazonaws.com")
+AWS_PORT = int(os.getenv("AWS_PORT", 8883))
+AWS_CA_CERT = os.path.join(CERTS_DIR, "aws-root-ca.pem")
+AWS_CLIENT_CERT = os.path.join(CERTS_DIR, "certificate.pem.crt")
+AWS_PRIVATE_KEY = os.path.join(CERTS_DIR, "private.pem.key")
+
+LOCAL_BROKER_HOST = os.getenv("BROKER_HOST", "127.0.0.1")
+LOCAL_BROKER_PORT = int(os.getenv("BROKER_PORT", 1883))
+
+BROKER_MODE = os.getenv("BROKER_MODE", "AWS")  # "AWS" ou "LOCAL"
+BROKER_HOST = AWS_ENDPOINT if BROKER_MODE == "AWS" else LOCAL_BROKER_HOST
+BROKER_PORT = AWS_PORT if BROKER_MODE == "AWS" else LOCAL_BROKER_PORT
 WEB_PORT = int(os.getenv("WEB_PORT", 8000))
 FIRMWARE_DIR = os.path.abspath("./firmware")
 
@@ -71,13 +85,17 @@ ws_manager = ConnectionManager()
 # Estado da Aplicação
 app_state = {
     "current_env": "PROD",
+    "broker_mode": BROKER_MODE,
+    "broker_host": BROKER_HOST,
+    "broker_port": BROKER_PORT,
     "broker_connected": False,
+    "aws_prod_sub_restricted": True,
     "local_ip": LOCAL_IP,
     "web_port": WEB_PORT,
     "recent_messages": [],
     "nodes": {},
     "last_topology": None,
-    "subscribed_topics": ["#"]
+    "subscribed_topics": ["config/shopba/mesh", "dev/#"] if BROKER_MODE == "AWS" else ["#"]
 }
 
 # ================= CADASTRO & REGISTRO DE MEDIDORES =================
@@ -137,7 +155,12 @@ class DeviceModel(BaseModel):
 
 # ================= REGRAS DE COMANDO & MESH =================
 def normalize_mac(mac: str) -> str:
-    return mac.replace(":", "").strip().lower()
+    if not isinstance(mac, str):
+        return ""
+    # Suporta formato "70:4b:ca:49:1d:9c(70:4b:ca:49:1d:9c)" do firmware Codax
+    base = mac.split("(")[0].strip()
+    cleaned = "".join(c for c in base.lower() if c in "0123456789abcdef")
+    return cleaned if len(cleaned) == 12 else base.replace(":", "").strip().lower()
 
 def resolve_mac_alias(mac: str) -> str:
     m = mac.strip().lower()
@@ -188,6 +211,7 @@ def build_payload(addrs: List[str], method: str, function: str, value: Any = Non
 
     payload = {
         "addr": cleaned,
+        "type": "json",
         "data": {
             "method": method.lower(),
             "function": function.lower()
@@ -269,7 +293,24 @@ def extract_macs_recursive(obj, timestamp: str, topic: str, layer: int = None, p
                 extract_macs_recursive(v, timestamp, topic, layer=curr_layer, parent_mac=curr_mac_str)
     elif isinstance(obj, list):
         for item in obj:
-            extract_macs_recursive(item, timestamp, topic, layer=layer, parent_mac=parent_mac)
+            if isinstance(item, str) and "|mac:" in item:
+                import re
+                m_mac = re.search(r"mac:\s*([0-9a-fA-F:]{12,17})", item)
+                m_lay = re.search(r"layer:\s*(\d+)", item)
+                m_par = re.search(r"parent_id:\s*([0-9a-fA-F:]{12,17})", item)
+                m_rssi = re.search(r"rssi:\s*(-?\d+)", item)
+                if m_mac:
+                    register_discovered_node(
+                        m_mac.group(1),
+                        timestamp,
+                        layer=int(m_lay.group(1)) if m_lay else layer,
+                        parent_mac=normalize_mac(m_par.group(1)) if m_par else parent_mac,
+                        rssi=int(m_rssi.group(1)) if m_rssi else None,
+                        data=item,
+                        topic=topic
+                    )
+            else:
+                extract_macs_recursive(item, timestamp, topic, layer=layer, parent_mac=parent_mac)
 
 def on_mqtt_message(client, userdata, msg):
     try:
@@ -284,19 +325,26 @@ def on_mqtt_message(client, userdata, msg):
         except Exception:
             pass
 
-        # 1. Descobrir MAC a partir do tópico (ex: retorno/shopba/mesh/4417934f49a4)
-        topic_parts = topic.strip().split('/')
-        if topic_parts:
-            register_discovered_node(topic_parts[-1], timestamp, topic=topic)
+        # Apenas marcar nó como online/respondendo quando a mensagem vier da placa (não do comando enviado pelo servidor)
+        if category != "configuracao":
+            # 1. Descobrir MAC a partir do tópico (ex: retorno/shopba/mesh/4417934f49a4)
+            topic_parts = topic.strip().split('/')
+            if topic_parts:
+                register_discovered_node(
+                    topic_parts[-1],
+                    timestamp,
+                    data=parsed_json if parsed_json is not None else raw_payload,
+                    topic=topic
+                )
 
-        # 2. Descobrir MACs e árvore de nós recursivamente no JSON recebido
-        if parsed_json:
-            extract_macs_recursive(parsed_json, timestamp, topic)
-            if category == "topologia":
-                app_state["last_topology"] = {
-                    "timestamp": timestamp,
-                    "data": parsed_json
-                }
+            # 2. Descobrir MACs e árvore de nós recursivamente no JSON recebido
+            if parsed_json:
+                extract_macs_recursive(parsed_json, timestamp, topic)
+                if category == "topologia":
+                    app_state["last_topology"] = {
+                        "timestamp": timestamp,
+                        "data": parsed_json
+                    }
 
         msg_record = {
             "timestamp": timestamp,
@@ -321,21 +369,32 @@ def on_mqtt_message(client, userdata, msg):
     except Exception as e:
         print(f"[MQTT] Erro ao processar mensagem: {e}")
 
-try:
-    mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
-except Exception:
-    mqtt_client = mqtt.Client()
+def create_mqtt_client(mode: str):
+    cid = f"circuitID{random.randint(100000000000, 999999999999)}"
+    try:
+        cl = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1, client_id=cid)
+    except Exception:
+        cl = mqtt.Client(client_id=cid)
+    cl.on_connect = on_mqtt_connect
+    cl.on_disconnect = on_mqtt_disconnect
+    cl.on_message = on_mqtt_message
+    if mode == "AWS" and os.path.exists(AWS_CA_CERT) and os.path.exists(AWS_CLIENT_CERT) and os.path.exists(AWS_PRIVATE_KEY):
+        cl.tls_set(
+            ca_certs=AWS_CA_CERT,
+            certfile=AWS_CLIENT_CERT,
+            keyfile=AWS_PRIVATE_KEY,
+            tls_version=ssl.PROTOCOL_TLSv1_2
+        )
+    return cl
 
-mqtt_client.on_connect = on_mqtt_connect
-mqtt_client.on_disconnect = on_mqtt_disconnect
-mqtt_client.on_message = on_mqtt_message
+mqtt_client = create_mqtt_client(BROKER_MODE)
 
 @app.on_event("startup")
 async def startup_event():
     global mqtt_loop
     mqtt_loop = asyncio.get_event_loop()
     try:
-        mqtt_client.connect_async(BROKER_HOST, BROKER_PORT, 60)
+        mqtt_client.connect_async(app_state["broker_host"], app_state["broker_port"], 60)
         mqtt_client.loop_start()
     except Exception as e:
         print(f"[MQTT] Aviso: Não foi possível conectar ao broker imediatamente ({e}). Tentará reconectar.")
@@ -350,6 +409,10 @@ async def shutdown_event():
 def get_status():
     return {
         "broker_connected": app_state["broker_connected"],
+        "broker_mode": app_state["broker_mode"],
+        "broker_host": app_state["broker_host"],
+        "broker_port": app_state["broker_port"],
+        "aws_prod_sub_restricted": app_state.get("aws_prod_sub_restricted", False),
         "local_ip": app_state["local_ip"],
         "web_port": app_state["web_port"],
         "current_env": app_state["current_env"],
@@ -358,6 +421,31 @@ def get_status():
         "messages_count": len(app_state["recent_messages"]),
         "subscriptions": app_state["subscribed_topics"]
     }
+
+@app.post("/api/broker/toggle")
+def toggle_broker_mode():
+    global mqtt_client
+    try:
+        mqtt_client.loop_stop()
+        mqtt_client.disconnect()
+    except Exception:
+        pass
+
+    new_mode = "LOCAL" if app_state["broker_mode"] == "AWS" else "AWS"
+    app_state["broker_mode"] = new_mode
+    app_state["broker_host"] = AWS_ENDPOINT if new_mode == "AWS" else LOCAL_BROKER_HOST
+    app_state["broker_port"] = AWS_PORT if new_mode == "AWS" else LOCAL_BROKER_PORT
+    app_state["broker_connected"] = False
+    app_state["subscribed_topics"] = ["config/shopba/mesh", "dev/#"] if new_mode == "AWS" else ["#"]
+
+    mqtt_client = create_mqtt_client(new_mode)
+    try:
+        mqtt_client.connect_async(app_state["broker_host"], app_state["broker_port"], 60)
+        mqtt_client.loop_start()
+    except Exception as e:
+        print(f"[MQTT] Erro ao alternar broker ({new_mode}): {e}")
+
+    return get_status()
 
 @app.post("/api/env/toggle")
 def toggle_env():
@@ -596,7 +684,9 @@ def get_registered_devices():
             "last_seen": live.get("last_seen", "Desconhecido"),
             "layer": live.get("layer", 1 if dev.get("role") == "ROOT" else 2),
             "parent_mac": live.get("parent_mac"),
-            "rssi": live.get("rssi")
+            "rssi": live.get("rssi"),
+            "last_topic": live.get("last_topic"),
+            "last_data": live.get("data")
         }
         result.append(merged)
     result.sort(key=lambda d: (0 if d.get("role") == "ROOT" else 1, d.get("name", "").lower()))

@@ -62,7 +62,11 @@ def main():
     if not is_port_open(1883):
         print("[1/3] Broker MQTT (1883) não detectado. Iniciando AMQTT...")
         try:
-            subprocess.Popen([sys.executable, "-m", "amqtt.scripts.broker"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            config_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "amqtt_config.yaml")
+            cmd = [sys.executable, "-m", "amqtt.scripts.broker_script"]
+            if os.path.exists(config_path):
+                cmd.extend(["-c", config_path])
+            subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             time.sleep(2)
             if is_port_open(1883):
                 print("      ✅ Broker MQTT iniciado com sucesso na porta 1883!")
