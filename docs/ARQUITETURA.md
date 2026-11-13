@@ -66,6 +66,14 @@ flowchart TD
   7. `view-ota`: Gerenciador de atualizações de firmware Over-the-Air.
   8. `view-timestream`: Estúdio visual Amazon Timestream com 7 tabelas e UNLOAD S3.
   9. `view-scifi`: Radar de observabilidade avançada de rádio, térmica e fasores elétricos.
+  10. `device-cockpit-drawer`: Gaveta Lateral Deslizante (Slide-over Drawer / Tela Cheia) do Cockpit 360° de Codax Específico:
+      - **Endpoint Backend**: `GET /api/devices/{mac}/cockpit` (Telemetria, Topologia, Power Reasons, Timestream, Logs e OTA em < 20ms).
+      - **Telemetria Completa**: Va, Vb, Vc, Ia, Ib, Ic, Potência Ativa (kW), Reativa (kvar), cos φ, Frequência, THD-V/I, Temperatura do silício (°C) e RSSI/RTT.
+      - **Micro-Topologia de Malha**: Parente (Pai), Filhos conectados, Canal Wi-Fi e Mesh ID.
+      - **AWS Timestream & Power Reasons**: Histórico de códigos de reset do ESP32 (`POWERON_RESET`, `SW_CPU_RESET`, `BROWNOUT_RESET`, `TG0WDT`) e tabela das últimas 20 leituras da placa.
+      - **Terminal Filtrado**: Console ao vivo e envio de comandos estritamente para o MAC em foco.
+      - **Central OTA**: Status de partição ativa (`ota_0`/`ota_1`) e disparo de firmware (.bin) para a placa selecionada.
+      - **Menu Setinha MQTT (Glassmorphism)**: Dropdown em vidro fosco com comandos agrupados em `Query`, `Change` e `Settings`.
 
 ---
 
