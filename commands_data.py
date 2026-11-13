@@ -1286,5 +1286,85 @@ CODAX_COMMANDS = [
                 }
             }
         ]
+    },
+    {
+        "method": "query",
+        "function": "broker",
+        "summary": "Consulta o Broker MQTT ativo na placa (AWS 8883 ou Local 1883)",
+        "description": "Retorna a configuração atual do cliente MQTT da controladora: modo configurado na NVS (configured_mode), modo em execução (active_mode), se está em fallback de segurança (fallback_active), host e porta.",
+        "tips": "Retorno esperado da placa: {\"mode\", \"configured_mode\", \"active_mode\", \"fallback_active\", \"host\", \"port\"}.",
+        "value_type": "Nenhum (omitido)",
+        "example": {
+            "addr": [
+                "ff0000010000"
+            ],
+            "type": "json",
+            "data": {
+                "method": "query",
+                "function": "broker"
+            }
+        }
+    },
+    {
+        "method": "change",
+        "function": "broker",
+        "summary": "Alterna a controladora entre Broker Local (1883) e AWS IoT Core (8883)",
+        "description": "Altera dinamicamente o Broker MQTT para o qual a controladora se conecta e salva na NVS. Possui proteção de Fail-Safe: caso o Broker Local (1883) fique inacessível, a placa faz fallback automático para o AWS IoT Core (8883).",
+        "tips": "Use for_mesh: true para propagar na malha. Nunca use 127.0.0.1 no campo host (use sempre o IP da placa de rede do PC, ex: 10.74.1.157).",
+        "value_type": "Objeto JSON {\"mode\": \"local\"|\"aws\", \"host\": \"<IP_LAN>\", \"port\": 1883}",
+        "example": {
+            "addr": [
+                "ff0000010000"
+            ],
+            "for_mesh": True,
+            "type": "json",
+            "data": {
+                "method": "change",
+                "function": "broker",
+                "value": {
+                    "mode": "local",
+                    "host": "10.74.1.157",
+                    "port": 1883
+                }
+            }
+        },
+        "examples": [
+            {
+                "label": "Exemplo 1: Puxar Placa da AWS para o Broker Local do PC (1883)",
+                "payload": {
+                    "addr": [
+                        "ff0000010000"
+                    ],
+                    "for_mesh": True,
+                    "type": "json",
+                    "data": {
+                        "method": "change",
+                        "function": "broker",
+                        "value": {
+                            "mode": "local",
+                            "host": "10.74.1.157",
+                            "port": 1883
+                        }
+                    }
+                }
+            },
+            {
+                "label": "Exemplo 2: Devolver Placa do Broker Local para a AWS IoT Core (8883)",
+                "payload": {
+                    "addr": [
+                        "ff0000010000"
+                    ],
+                    "for_mesh": True,
+                    "type": "json",
+                    "data": {
+                        "method": "change",
+                        "function": "broker",
+                        "value": {
+                            "mode": "aws"
+                        }
+                    }
+                }
+            }
+        ]
     }
 ]

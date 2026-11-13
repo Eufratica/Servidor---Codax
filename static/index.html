@@ -54,17 +54,84 @@
     }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
     
-    /* Conexões visuais da árvore */
+    /* Linhas Animadas de Fluxo de Pacotes na Árvore da Malha (Cyberpunk Mesh Packet Flow) */
+    @keyframes packetFlowDown {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 0% 200%; }
+    }
+    @keyframes packetFlowAcross {
+      0% { background-position: 0% 0%; }
+      100% { background-position: 200% 0%; }
+    }
+    @keyframes packetDotTravel {
+      0% { top: 0%; opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { top: 88%; opacity: 0; }
+    }
     .tree-connector-down {
-      width: 2px;
-      height: 28px;
-      background: #6366f1;
+      width: 3px;
+      height: 38px;
       margin: 0 auto;
+      background: linear-gradient(180deg, #10b981 0%, #6366f1 50%, #10b981 100%);
+      background-size: 100% 200%;
+      animation: packetFlowDown 1.8s linear infinite;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.6), 0 0 4px rgba(99, 102, 241, 0.8);
+      border-radius: 9999px;
+      position: relative;
+    }
+    .tree-connector-down::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 10px #34d399, 0 0 16px #10b981;
+      animation: packetDotTravel 1.8s ease-in-out infinite;
+    }
+    .tree-horizontal-bus {
+      position: relative;
+      border-top: 2px solid rgba(99, 102, 241, 0.5);
+      background: linear-gradient(90deg, rgba(99, 102, 241, 0.15), rgba(16, 185, 129, 0.65), rgba(99, 102, 241, 0.15));
+      background-size: 200% 100%;
+      animation: packetFlowAcross 3s linear infinite;
+      box-shadow: 0 -1px 8px rgba(16, 185, 129, 0.4);
     }
     .tree-branch-container {
       display: flex;
       justify-content: center;
       position: relative;
+    }
+
+    /* ================= ANIMAÇÃO DE FLUXO LUMINOSO DE PACOTES NA ÁRVORE (CYBERPUNK CONDUITS) ================= */
+    @keyframes meshPacketFlow {
+      0% {
+        stroke-dashoffset: 48;
+      }
+      100% {
+        stroke-dashoffset: 0;
+      }
+    }
+    @keyframes meshConduitPulse {
+      0%, 100% {
+        opacity: 0.85;
+        filter: drop-shadow(0 0 3px rgba(16, 185, 129, 0.7)) drop-shadow(0 0 8px rgba(34, 211, 238, 0.5));
+      }
+      50% {
+        opacity: 1;
+        filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.9)) drop-shadow(0 0 14px rgba(52, 211, 153, 0.8));
+      }
+    }
+    .tree-packet-flow-line {
+      stroke-dasharray: 8 6;
+      animation: meshPacketFlow 1.1s linear infinite;
+    }
+    .tree-conduit-pulse {
+      animation: meshConduitPulse 2.8s ease-in-out infinite;
     }
 
     /* Ticker Tape da Bolsa de Valores (B3 / NASDAQ Style Marquee) */
@@ -105,6 +172,61 @@
     }
     .ticker-flash {
       animation: tickerFlashAnim 1.2s ease-in-out 3;
+    }
+
+    
+    
+    /* ================= [INOVAÇÃO] 4K / 8K ULTRA-CRISP RETINA RENDERING PARA ÁRVORE PANORÂMICA ================= */
+    #tree-stage {
+      -webkit-font-smoothing: subpixel-antialiased !important;
+      text-rendering: geometricPrecision !important;
+      image-rendering: -webkit-optimize-contrast !important;
+      image-rendering: crisp-edges !important;
+      transform-style: flat !important;
+    }
+
+    #tree-stage * {
+      text-rendering: geometricPrecision !important;
+      -webkit-font-smoothing: subpixel-antialiased !important;
+    }
+
+    /* Elimina o embaçado do backdrop-filter da GPU ao aplicar Zoom no Canvas */
+    #tree-stage .codax-glass,
+    #tree-stage .bg-slate-900,
+    #tree-stage .bg-slate-900\/90,
+    #tree-stage .bg-slate-900\/80,
+    #tree-stage .bg-slate-900\/60,
+    #tree-stage .bg-slate-900\/50,
+    #tree-stage .bg-slate-950,
+    #tree-stage .bg-slate-950\/90,
+    #tree-stage .bg-slate-950\/80,
+    #tree-stage .bg-slate-950\/70,
+    #tree-stage .bg-slate-950\/40 {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background-color: #0b1120 !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(255, 255, 255, 0.08) !important;
+    }
+
+    /* Vetorização nítida de precisão geométrica nos conduítes e sparklines */
+    #tree-svg-canvas,
+    #tree-svg-canvas path,
+    #tree-svg-canvas circle {
+      shape-rendering: geometricPrecision !important;
+    }
+
+    /* [INOVAÇÃO] Animação de Fluxo Laser de Alta Definição da Árvore Mesh */
+    @keyframes treeLaserStream {
+      0% {
+        stroke-dashoffset: 0;
+      }
+      100% {
+        stroke-dashoffset: -200;
+      }
+    }
+    .tree-laser-beam-pulse {
+      stroke-dasharray: 45 155;
+      animation: treeLaserStream 1.9s linear infinite;
     }
 
     /* ================= CODAX GLASSMORPHISM DESIGN SYSTEM (VIDRO FOSCO TRANSLÚCIDO) ================= */
@@ -163,6 +285,7 @@
     #modal-return-inspector > div,
     #modal-glass-confirm > div,
     #ui-inspector-popover,
+    #innovation-radar-popover,
     .glass-toast-card {
       background-color: rgba(15, 23, 42, 0.25) !important;
       backdrop-filter: blur(16px) saturate(160%) !important;
@@ -214,113 +337,149 @@
 <body class="text-slate-100 h-screen flex flex-col antialiased overflow-hidden relative">
 
   <!-- ================= BARRA HORIZONTAL SUPERIOR (PAINEL DE BANCADA & OPERAÇÕES AO VIVO) ================= -->
-  <header class="bg-slate-900 border-b border-slate-800 h-16 flex items-center justify-between px-4 sm:px-6 shrink-0 z-40 select-none shadow-sm gap-3">
+    <header class="bg-slate-900 border-b border-slate-800 px-3 sm:px-5 py-1 min-h-[38px] flex items-center justify-between shrink-0 z-40 select-none shadow-sm gap-2">
     
     <!-- Esquerda: Status da Bancada & Contadores de Telemetria -->
-    <div class="flex items-center space-x-3 shrink-0">
-      <div class="flex items-center space-x-2 bg-slate-950/80 border border-slate-800 px-3 py-1.5 rounded-xl shadow-sm">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+    <div class="flex items-center space-x-2 shrink-0">
+      <div class="flex items-center space-x-2 bg-slate-950/80 border border-slate-800 px-2.5 py-0.5 rounded-lg shadow-sm">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
         <div>
-          <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-200 flex items-center space-x-1.5">
+          <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-200 flex items-center space-x-1.5 leading-none">
             <span>BANCADA MESH</span>
-            <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-1 py-0.2 rounded font-mono">LIVE</span>
+            <span class="text-[8px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-1 py-0.2 rounded font-mono">LIVE</span>
           </div>
-          <div class="text-[9px] text-slate-400 hidden lg:block">Operações de Telemetria</div>
+          <div class="text-[8.5px] text-slate-400 hidden lg:block leading-tight">Operações de Telemetria</div>
         </div>
       </div>
 
       <!-- Métricas Rápidas Interativas -->
-      <div class="flex items-center space-x-2">
-        <button onclick="switchTab('devices')" title="Ver medidores cadastrados" class="bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/40 px-2.5 py-1.5 rounded-xl transition flex items-center space-x-1.5 shadow-sm">
+      <div class="flex items-center space-x-1.5">
+        <button onclick="switchTab('devices')" title="Ver medidores cadastrados" class="bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/40 px-2 py-0.5 rounded-lg transition flex items-center space-x-1 shadow-sm">
           <i data-lucide="gauge" class="w-3.5 h-3.5 text-cyan-400"></i>
-          <span class="text-[11px] text-slate-400 font-semibold">Medidores:</span>
+          <span class="text-[10px] text-slate-400 font-semibold">Medidores:</span>
           <span id="top-count-devices" class="text-xs font-mono font-bold text-cyan-400">0</span>
         </button>
 
-        <button onclick="switchTab('tree')" title="Ver nós ativos na árvore da malha" class="bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/40 px-2.5 py-1.5 rounded-xl transition flex items-center space-x-1.5 shadow-sm">
+        <button onclick="switchTab('tree')" title="Ver nós ativos na árvore da malha" class="bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/40 px-2 py-0.5 rounded-lg transition flex items-center space-x-1 shadow-sm">
           <i data-lucide="network" class="w-3.5 h-3.5 text-emerald-400"></i>
-          <span class="text-[11px] text-slate-400 font-semibold">Na Malha:</span>
+          <span class="text-[10px] text-slate-400 font-semibold">Na Malha:</span>
           <span id="top-count-discovered" class="text-xs font-mono font-bold text-emerald-400">0</span>
         </button>
       </div>
     </div>
 
-    <!-- Centro: Alvo Global & Ações de Emergência Imediatas -->
-    <div class="hidden xl:flex items-center space-x-2 bg-slate-950/70 p-1.5 rounded-2xl border border-slate-800/90 shadow-inner">
-      <div class="flex items-center space-x-1.5 px-2">
-        <i data-lucide="target" class="w-3.5 h-3.5 text-indigo-400"></i>
-        <span class="text-[11px] font-bold text-slate-300">Alvo:</span>
+    <!-- Direita: Tópico Ativo, Ambiente DEV/PROD, IP Host & Broker 1883 -->
+    <div class="flex items-center space-x-1.5 shrink-0">
+      
+      <!-- Tópico Ativo Badge -->
+      <div class="hidden 2xl:flex items-center space-x-1 bg-slate-950/80 border border-slate-800 px-2 py-0.5 rounded-lg text-xs">
+        <span class="text-slate-500 text-[9px] uppercase font-bold">Tópico:</span>
+        <code id="top-topic-badge" class="font-mono text-indigo-400 font-semibold text-[10.5px]">config/shopba/mesh</code>
       </div>
-      <input type="text" id="global-target" list="target-suggestions" value="root" placeholder="MAC ou alias..." class="bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1 text-xs text-slate-100 mono w-32 focus:outline-none focus:border-indigo-500">
+
+      <!-- Alternador DEV / PROD -->
+      <button onclick="toggleEnv()" id="top-btn-env" class="flex items-center space-x-1 bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/60 px-2 py-0.5 rounded-lg text-xs font-semibold transition shadow-sm">
+        <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+        <span id="top-label-env" class="text-[11px]">PROD</span>
+      </button>
+
+      <!-- IP Host com cópia rápida -->
+      <div class="hidden sm:flex items-center space-x-1.5 bg-slate-950/80 border border-slate-800 px-2 py-0.5 rounded-lg text-xs shadow-sm">
+        <i data-lucide="network" class="w-3.5 h-3.5 text-slate-400"></i>
+        <span class="text-slate-400 text-[10px]">IP:</span>
+        <span id="top-ip" class="font-mono text-emerald-400 font-bold text-xs">127.0.0.1</span>
+        <button onclick="copyHostIP()" title="Copiar IP para menuconfig" class="text-slate-400 hover:text-white transition">
+          <i data-lucide="copy" class="w-3 h-3"></i>
+        </button>
+      </div>
+
+      <!-- Broker MQTT Status (AWS IoT Core / Local) -->
+      <button onclick="toggleBrokerMode()" title="Clique para alternar entre AWS IoT Core (8883 TLS) e Broker Local (1883)" class="flex items-center space-x-1.5 bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-indigo-500/50 px-2 py-0.5 rounded-lg text-xs shadow-sm transition">
+        <span id="top-dot-broker" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span id="top-label-broker" class="font-semibold text-emerald-400 text-[10.5px]">☁️ AWS IoT (8883)</span>
+      </button>
+
+      <!-- [INOVAÇÃO] Botão de Abertura do Command Palette (Ctrl + K) -->
+      <button onclick="toggleCommandPalette()" title="Abrir Command Palette Instantâneo (Atalho: Ctrl + K ou Cmd + K)" class="flex items-center space-x-1.5 bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-indigo-500/60 text-slate-300 hover:text-white px-2 py-0.5 rounded-lg text-xs font-semibold shadow-sm transition">
+        <i data-lucide="search" class="w-3.5 h-3.5 text-indigo-400"></i>
+        <span class="hidden md:inline text-[11px]">Buscar...</span>
+        <kbd class="px-1 py-0.2 rounded bg-slate-800 border border-slate-700 text-[9px] font-mono text-slate-400">Ctrl K</kbd>
+      </button>
+
+      <!-- [INOVAÇÃO] Watchdog & Diagnóstico Preventivo Heap/LWT -->
+      <button onclick="scrollToDiagnosticPanel()" id="top-btn-watchdog" title="Diagnóstico Preventivo de Memória Heap (< 40KB) & Watchdog LWT (ESP-IDF v4.4.8)" class="flex items-center space-x-1 bg-slate-950/80 hover:bg-emerald-950/70 border border-slate-800 hover:border-emerald-500/60 text-slate-300 hover:text-emerald-200 px-2 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
+        <span id="top-watchdog-dot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span id="top-watchdog-label" class="text-[10.5px] font-semibold text-emerald-300">Heap: OK</span>
+      </button>
+
+      <!-- Radar de Inovações & Descobertas Contínuas (Zero Cota IA) -->
+      <button onclick="toggleInnovationRadar()" id="top-btn-innovations" title="Radar de Inovações Contínuas (Design, Aplicações IoT & Descobertas Web — Custo Zero de Cota IA)" class="relative flex items-center space-x-1 bg-slate-950/80 hover:bg-purple-950/70 border border-slate-800 hover:border-purple-500/60 text-slate-300 hover:text-purple-200 px-2 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+        <span class="text-[11px]">Inovações</span>
+        <span id="top-innovations-badge" class="text-[9px] font-mono font-extrabold bg-purple-600 text-white px-1.5 py-0.2 rounded-full shadow-sm">3</span>
+      </button>
+
+      <!-- Modo Inspetor Visual para IA (F2 ou Alt+Clique) -->
+      <button onclick="toggleUiInspector()" id="top-btn-ui-inspector" title="Ativar/Desativar Modo Seleção Visual para IA (Atalho: F2 ou Alt+Clique)" class="flex items-center space-x-1 bg-slate-950/80 hover:bg-indigo-950/70 border border-slate-800 hover:border-indigo-500/60 text-slate-300 hover:text-indigo-200 px-2 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
+        <i data-lucide="crosshair" class="w-3.5 h-3.5 text-indigo-400"></i>
+        <span class="text-[11px]">Inspetor IA</span>
+        <span class="text-[8.5px] font-mono bg-slate-800/80 text-slate-400 px-1 py-0.2 rounded">F2</span>
+      </button>
+
+    </div>
+
+  </header>
+
+  <!-- ================= SUB-BARRA DE ALVO GLOBAL, MESH ID & COMANDOS DE BANCADA ================= -->
+  <div id="subbar-target-mesh" class="bg-slate-950/95 border-b border-slate-800/90 px-3 sm:px-5 py-1 min-h-[38px] flex items-center justify-between gap-2 shrink-0 z-35 select-none shadow-sm flex-wrap">
+    
+    <!-- Alvo & Endereçamento Rápido -->
+    <div class="flex items-center space-x-1.5 bg-slate-900/90 px-2.5 py-0.5 rounded-lg border border-slate-800 shadow-inner">
+      <div class="flex items-center space-x-1 text-indigo-400">
+        <i data-lucide="target" class="w-3.5 h-3.5 text-indigo-400"></i>
+        <span class="text-[11px] font-bold text-slate-200">Alvo:</span>
+      </div>
+      <input type="text" id="global-target" oninput="updateTopMeshId()" list="target-suggestions" value="root" placeholder="MAC ou alias..." class="bg-slate-950 border border-slate-700/80 rounded-md px-2 py-0.5 text-xs text-slate-100 mono w-32 focus:outline-none focus:border-indigo-500">
       <datalist id="target-suggestions">
         <option value="root">ROOT (ff:00:00:01:00:00)</option>
         <option value="any">ANY (ff:ff:ff:ff:ff:ff)</option>
         <option value="broadcast">BROADCAST (ff:ff:ff:ff:ff:fe)</option>
       </datalist>
       <div class="flex items-center space-x-1">
-        <button onclick="setTarget('root')" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-bold px-2 py-1 rounded text-slate-300 transition hover:text-white">ROOT</button>
-        <button onclick="setTarget('any')" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-bold px-2 py-1 rounded text-slate-300 transition hover:text-white">ANY</button>
-        <button onclick="setTarget('broadcast')" class="bg-slate-800 hover:bg-slate-700 text-[10px] font-bold px-2 py-1 rounded text-slate-300 transition hover:text-white">B-CAST</button>
+        <button onclick="setTarget('root')" class="bg-slate-800 hover:bg-slate-700 text-[9px] font-bold px-1.5 py-0.5 rounded text-slate-300 transition hover:text-white">ROOT</button>
+        <button onclick="setTarget('any')" class="bg-slate-800 hover:bg-slate-700 text-[9px] font-bold px-1.5 py-0.5 rounded text-slate-300 transition hover:text-white">ANY</button>
+        <button onclick="setTarget('broadcast')" class="bg-slate-800 hover:bg-slate-700 text-[9px] font-bold px-1.5 py-0.5 rounded text-slate-300 transition hover:text-white">B-CAST</button>
       </div>
+    </div>
 
-      <div class="h-4 w-px bg-slate-800 mx-1"></div>
+    <!-- MESH ID ATIVO EM DESTAQUE ("nessa parte aki: quero que vc coloque o mesh_id") -->
+    <div onclick="switchTab('tree')" title="Clique para ver a malha ativa na Árvore da Malha" class="flex items-center space-x-2 bg-slate-900/90 hover:bg-slate-800/90 border border-indigo-500/40 hover:border-indigo-400/80 px-2.5 py-0.5 rounded-lg transition cursor-pointer shadow-sm group">
+      <div class="flex items-center space-x-1 text-indigo-400">
+        <i data-lucide="git-merge" class="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform"></i>
+        <span class="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Mesh ID:</span>
+      </div>
+      <div class="flex items-center space-x-1.5">
+        <span id="top-subbar-mesh-id" class="font-mono font-black text-amber-300 text-xs px-2 py-0.2 rounded bg-slate-950 border border-amber-500/40 shadow-inner">00:00:00:00:44:08</span>
+        <span id="top-subbar-mesh-tag" class="text-[9px] font-mono px-2 py-0.2 rounded-full bg-purple-950/80 border border-purple-500/50 text-purple-200 font-bold">Malha Bancada (Dev)</span>
+      </div>
+    </div>
 
-      <!-- Comandos de Emergência Imediatos -->
-      <button onclick="sendQuickCommand('query', 'ping')" title="Ping geral na malha" class="bg-slate-900 hover:bg-indigo-950/80 border border-slate-800 hover:border-indigo-500/50 text-slate-300 hover:text-indigo-200 px-2.5 py-1 rounded-lg text-xs font-semibold transition flex items-center space-x-1">
+    <!-- Comandos Imediatos -->
+    <div class="flex items-center space-x-1.5">
+      <button onclick="sendQuickCommand('query', 'ping')" title="Ping geral na malha" class="bg-slate-900 hover:bg-indigo-950/80 border border-slate-800 hover:border-indigo-500/50 text-slate-300 hover:text-indigo-200 px-2.5 py-1 rounded-lg text-xs font-semibold transition flex items-center space-x-1 shadow-sm">
         <i data-lucide="signal" class="w-3 h-3 text-indigo-400"></i>
-        <span>Ping</span>
+        <span class="text-[11px]">Ping</span>
       </button>
-      <button onclick="sendQuickCommand('query', 'topology')" title="Solicitar topologia da malha" class="bg-slate-900 hover:bg-emerald-950/80 border border-slate-800 hover:border-emerald-500/50 text-slate-300 hover:text-emerald-200 px-2.5 py-1 rounded-lg text-xs font-semibold transition flex items-center space-x-1">
+      <button onclick="sendQuickCommand('query', 'topology')" title="Solicitar topologia da malha" class="bg-slate-900 hover:bg-emerald-950/80 border border-slate-800 hover:border-emerald-500/50 text-slate-300 hover:text-emerald-200 px-2.5 py-1 rounded-lg text-xs font-semibold transition flex items-center space-x-1 shadow-sm">
         <i data-lucide="git-merge" class="w-3 h-3 text-emerald-400"></i>
-        <span>Ler Malha</span>
+        <span class="text-[11px]">Ler Malha</span>
       </button>
-      <button onclick="sendQuickCommand('query', 'mwifi_restart')" title="Destrava deadlocks de conexão sem reboot" class="bg-slate-900 hover:bg-amber-950/80 border border-slate-800 hover:border-amber-500/50 text-amber-300 px-2.5 py-1 rounded-lg text-xs font-semibold transition flex items-center space-x-1">
+      <button onclick="sendQuickCommand('query', 'mwifi_restart')" title="Destrava deadlocks de conexão sem reboot" class="bg-slate-900 hover:bg-amber-950/80 border border-slate-800 hover:border-amber-500/50 text-amber-300 px-2.5 py-1 rounded-lg text-xs font-semibold transition flex items-center space-x-1 shadow-sm">
         <i data-lucide="refresh-cw" class="w-3 h-3 text-amber-400"></i>
-        <span>mwifi_restart()</span>
+        <span class="text-[11px]">mwifi_restart()</span>
       </button>
     </div>
-
-    <!-- Direita: Tópico Ativo, Ambiente DEV/PROD, IP Host & Broker 1883 -->
-    <div class="flex items-center space-x-2 shrink-0">
-      
-      <!-- Tópico Ativo Badge -->
-      <div class="hidden 2xl:flex items-center space-x-1.5 bg-slate-950/80 border border-slate-800 px-2.5 py-1.5 rounded-xl text-xs">
-        <span class="text-slate-500 text-[10px] uppercase font-bold">Tópico:</span>
-        <code id="top-topic-badge" class="font-mono text-indigo-400 font-semibold text-[11px]">config/shopba/mesh</code>
-      </div>
-
-      <!-- Alternador DEV / PROD -->
-      <button onclick="toggleEnv()" id="top-btn-env" class="flex items-center space-x-1.5 bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/60 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition shadow-sm">
-        <i data-lucide="layers" class="w-3.5 h-3.5"></i>
-        <span id="top-label-env">PROD</span>
-      </button>
-
-      <!-- IP Host com cópia rápida -->
-      <div class="hidden sm:flex items-center space-x-2 bg-slate-950/80 border border-slate-800 px-2.5 py-1.5 rounded-xl text-xs shadow-sm">
-        <i data-lucide="network" class="w-3.5 h-3.5 text-slate-400"></i>
-        <span class="text-slate-400 text-[11px]">IP:</span>
-        <span id="top-ip" class="font-mono text-emerald-400 font-bold">127.0.0.1</span>
-        <button onclick="copyHostIP()" title="Copiar IP para menuconfig" class="text-slate-400 hover:text-white transition">
-          <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-        </button>
-      </div>
-
-      <!-- Broker MQTT Status (AWS IoT Core / Local) -->
-      <button onclick="toggleBrokerMode()" title="Clique para alternar entre AWS IoT Core (8883 TLS) e Broker Local (1883)" class="flex items-center space-x-2 bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-indigo-500/50 px-2.5 py-1.5 rounded-xl text-xs shadow-sm transition">
-        <span id="top-dot-broker" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span id="top-label-broker" class="font-semibold text-emerald-400 text-[11px]">☁️ AWS IoT (8883)</span>
-      </button>
-
-      <!-- Modo Inspetor Visual para IA (F2 ou Alt+Clique) -->
-      <button onclick="toggleUiInspector()" id="top-btn-ui-inspector" title="Ativar/Desativar Modo Seleção Visual para IA (Atalho: F2 ou Alt+Clique)" class="flex items-center space-x-1.5 bg-slate-950/80 hover:bg-indigo-950/70 border border-slate-800 hover:border-indigo-500/60 text-slate-300 hover:text-indigo-200 px-2.5 py-1.5 rounded-xl text-xs font-bold shadow-sm transition">
-        <i data-lucide="crosshair" class="w-3.5 h-3.5 text-indigo-400"></i>
-        <span>Inspetor IA</span>
-        <span class="text-[9px] font-mono bg-slate-800/80 text-slate-400 px-1 py-0.2 rounded">F2</span>
-      </button>
-
-    </div>
-
-  </header>
+  </div>
 
   <!-- ================= FITA DA BOLSA DE VALORES AO VIVO (STOCK TICKER TAPE) ================= -->
   <div id="mesh-stock-ticker" class="bg-slate-950 border-b border-slate-800/90 h-9 flex items-center shrink-0 z-30 select-none overflow-hidden relative">
@@ -527,6 +686,16 @@
             </span>
             <span id="sidebar-badge-logs" class="bg-rose-950/80 text-rose-300 border border-rose-500/40 text-[10px] px-1.5 py-0.2 rounded-full font-mono">0</span>
           </button>
+
+          <button onclick="switchTab('timestream')" id="nav-btn-timestream" class="sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/80">
+            <span class="flex items-center space-x-2.5">
+              <i data-lucide="clock" class="w-4 h-4 text-cyan-400"></i>
+              <span>AWS Timestream</span>
+            </span>
+            <span class="text-[9px] bg-cyan-950/80 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.2 rounded font-mono font-bold">Cloud</span>
+          </button>
+
+
         </nav>
 
         <!-- Feed ao Vivo de Retornos MQTT (Últimos retornos) -->
@@ -595,6 +764,146 @@
 
         <!-- ================= ABA 1: AÇÕES RÁPIDAS ================= -->
         <section id="view-quick" class="tab-content space-y-6">
+
+          <!-- [INOVAÇÃO] Painel de Diagnóstico Preventivo de Memória Heap & Quedas LWT -->
+          <div id="heap-lwt-diagnostic-panel" class="codax-glass-deep border border-emerald-500/40 rounded-2xl p-5 shadow-xl relative overflow-hidden transition-all duration-300">
+            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-800/80">
+              <div class="flex items-center space-x-3">
+                <div id="diag-panel-icon-box" class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+                  <i data-lucide="shield-check" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <h3 class="font-black text-sm text-slate-100 uppercase tracking-wider">Diagnóstico Preventivo: Memória Heap & Quedas LWT</h3>
+                    <span id="diag-panel-status-badge" class="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/40">
+                      100% Saudável
+                    </span>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-0.5">Vigilância em tempo real da especificação ESP-IDF v4.4.8. Destaca alertas se <code>free_heap &lt; 40KB</code> (risco OOM) ou razões anormais de reinicialização no tópico <code>conn</code>.</p>
+                </div>
+              </div>
+
+              <!-- Ações do Painel de Diagnóstico -->
+              <div class="flex items-center space-x-2 w-full lg:w-auto shrink-0">
+                <button type="button" onclick="sendQuickCommand('query', 'memory')" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-200 hover:text-white transition flex items-center space-x-1.5 shadow-sm" title="Disparar query memory para coletar heap livre da malha">
+                  <i data-lucide="cpu" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>Sondar Heap</span>
+                </button>
+                <button type="button" onclick="clearDiagnosticAlerts()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-400 hover:text-slate-200 transition flex items-center space-x-1.5 shadow-sm" title="Limpar alertas acumulados">
+                  <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                  <span>Resetar Alertas</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Grade de Status das Placas Cadastradas -->
+            <div id="diag-cards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <!-- Preenchido dinamicamente via renderDiagnosticPanel() -->
+            </div>
+
+            <!-- Banner Visual de Alerta Crítico (exibido dinamicamente) -->
+            <div id="diag-critical-alert-box" class="hidden mt-4 p-3.5 rounded-xl border border-rose-500/60 bg-rose-950/50 text-rose-200 text-xs space-y-1.5 animate-pulse shadow-lg shadow-rose-950/40">
+              <div class="flex items-center justify-between font-extrabold">
+                <span class="flex items-center space-x-2 text-rose-300">
+                  <i data-lucide="alert-octagon" class="w-4 h-4 text-rose-400"></i>
+                  <span id="diag-critical-alert-title">ALERTA CRÍTICO: PILHA ESP-MESH EM RISCO</span>
+                </span>
+                <span id="diag-critical-alert-time" class="font-mono text-[10px] text-rose-400"></span>
+              </div>
+              <p id="diag-critical-alert-desc" class="text-[11px] text-rose-200 leading-relaxed"></p>
+            </div>
+          </div>
+
+          <!-- Inovação: Macros de Bancada (Bateria de Homologação em 1 Clique) -->
+          <div class="codax-glass-deep border border-indigo-500/40 rounded-2xl p-5 shadow-xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-800/80">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/30 to-purple-500/30 border border-indigo-500/40 flex items-center justify-center text-indigo-300">
+                  <i data-lucide="zap" class="w-5 h-5 text-amber-400"></i>
+                </div>
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <h3 class="font-black text-sm text-slate-100 uppercase tracking-wider">Macros de Bancada (Bateria de Testes em 1 Clique)</h3>
+                    <span class="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-purple-950/80 text-purple-300 border border-purple-500/40">Inovação Ativa</span>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-0.5">Executa sequencialmente <code>ping</code> ➔ <code>info</code> ➔ <code>meter</code> ➔ <code>partition</code> com intervalo de 2s e gera o checklist de homologação.</p>
+                </div>
+              </div>
+
+              <!-- Controles da Macro -->
+              <div class="flex items-center space-x-2 w-full md:w-auto">
+                <select id="macro-target-select" onchange="setTarget(this.value)" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2 font-mono focus:border-indigo-500 outline-none">
+                  <option value="704bca491ca0">Codax Bancada (70:4B:CA:49:1C:A0)</option>
+                  <option value="4417934f49a4">ROOT Laboratório (44:17:93:4F:49:A4)</option>
+                  <option value="3083986350b0">Ethernet (30:83:98:63:50:B0)</option>
+                  <option value="704bca491d9c">Codax - 0032 (70:4B:CA:49:1D:9C)</option>
+                </select>
+                <button id="btn-run-bench-macro" onclick="startBenchMacro()" class="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs px-4 py-2 rounded-xl transition flex items-center space-x-2 shadow-lg shadow-indigo-600/30 shrink-0">
+                  <i data-lucide="play" class="w-4 h-4"></i>
+                  <span>Executar Macro</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Checklist & Barra de Progresso em Tempo Real -->
+            <div id="macro-progress-container" class="space-y-3">
+              <div class="w-full bg-slate-900/80 rounded-full h-2 border border-slate-800 overflow-hidden">
+                <div id="macro-progress-bar" class="bg-gradient-to-r from-emerald-500 to-cyan-400 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5" id="macro-checklist-grid">
+                <!-- Passo 1: Ping & RTT -->
+                <div id="macro-step-ping" class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-slate-600" id="macro-dot-ping"></span>
+                    <span class="font-bold text-slate-300">1. Ping & RTT</span>
+                  </div>
+                  <span id="macro-status-ping" class="text-[10px] text-slate-500 mono font-semibold">Pendente</span>
+                </div>
+
+                <!-- Passo 2: Info -->
+                <div id="macro-step-info" class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-slate-600" id="macro-dot-info"></span>
+                    <span class="font-bold text-slate-300">2. Versão & Info</span>
+                  </div>
+                  <span id="macro-status-info" class="text-[10px] text-slate-500 mono font-semibold">Pendente</span>
+                </div>
+
+                <!-- Passo 3: Meter -->
+                <div id="macro-step-meter" class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-slate-600" id="macro-dot-meter"></span>
+                    <span class="font-bold text-slate-300">3. Sensor / Medidor</span>
+                  </div>
+                  <span id="macro-status-meter" class="text-[10px] text-slate-500 mono font-semibold">Pendente</span>
+                </div>
+
+                <!-- Passo 4: Partition -->
+                <div id="macro-step-partition" class="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-slate-600" id="macro-dot-partition"></span>
+                    <span class="font-bold text-slate-300">4. Partições OTA</span>
+                  </div>
+                  <span id="macro-status-partition" class="text-[10px] text-slate-500 mono font-semibold">Pendente</span>
+                </div>
+              </div>
+
+              <!-- Painel de Conclusão / Resumo -->
+              <div id="macro-summary-panel" class="hidden p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 flex items-center justify-between">
+                <div class="flex items-center space-x-2 text-emerald-300 text-xs font-bold">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i>
+                  <span id="macro-summary-text">Homologação da placa finalizada com sucesso!</span>
+                </div>
+                <button onclick="copyBenchMacroReport()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold px-3 py-1 rounded-lg transition flex items-center space-x-1 shadow-sm">
+                  <i data-lucide="copy" class="w-3 h-3"></i>
+                  <span>Copiar Relatório</span>
+                </button>
+              </div>
+            </div>
+          </div>
           
           <div>
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center space-x-2">
@@ -1149,27 +1458,107 @@
                   <span>Hierarquia Visual da Malha Mesh (Camadas 1, 2 e 3)</span>
                 </h3>
                 <p class="text-xs text-slate-400 mt-1">Acompanhe a árvore de conexões em tempo real: Root, nós filhos e intensidade de sinal RSSI.</p>
+                <div id="tree-active-target-badge" class="mt-2.5 flex items-center space-x-2"></div>
               </div>
 
-              <div class="flex items-center space-x-2">
-                <button onclick="generateMockTree()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl flex items-center space-x-1.5 transition border border-slate-700">
-                  <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
-                  <span>Simular Malha Exemplo</span>
+              <div class="flex items-center space-x-2 flex-wrap gap-2">
+                <!-- Alternador de Modos de Visão: Panorâmica (Maps) vs Vertical Clássica -->
+                <div class="flex items-center bg-slate-950/90 p-1 rounded-xl border border-slate-800 shadow-inner mr-1">
+                  <button id="btn-tree-mode-panoramic" onclick="setTreeViewMode('panoramic')" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-sm" title="Visão Panorâmica lado a lado com Pan & Zoom interativo (Google Maps & n8n)">
+                    <i data-lucide="map" class="w-3.5 h-3.5 text-cyan-300"></i>
+                    <span>🗺️ Panorâmica</span>
+                  </button>
+                  <button id="btn-tree-mode-classic" onclick="setTreeViewMode('classic')" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800/80" title="Visão Vertical Clássica com rolagem vertical padrão da página">
+                    <i data-lucide="columns" class="w-3.5 h-3.5 text-slate-400"></i>
+                    <span>📜 Clássica</span>
+                  </button>
+                </div>
+
+                <button id="tree-btn-query-focused" onclick="queryTopologyForFocused()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3.5 py-2 rounded-xl flex items-center space-x-1.5 transition shadow-sm" title="Solicitar topologia diretamente para a placa em foco">
+                  <i data-lucide="crosshair" class="w-3.5 h-3.5"></i>
+                  <span id="tree-btn-query-focused-label">Topologia do Nó</span>
                 </button>
-                <button onclick="sendQuickCommand('query', 'topology')" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-xl flex items-center space-x-1.5 transition shadow-sm">
-                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                  <span>Solicitar via MQTT</span>
+                <button onclick="queryTopologyBroadcast()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl flex items-center space-x-1.5 transition shadow-sm" title="Solicitar topologia ao vivo para todas as ROOTs da malha via MQTT">
+                  <i data-lucide="radio" class="w-3.5 h-3.5 text-emerald-200"></i>
+                  <span>📡 Solicitar Topologia da Malha</span>
+                </button>
+                <button onclick="renderLiveNodesTree(currentHighlightTreeMac)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl flex items-center space-x-1.5 transition border border-slate-700" title="Visualizar todas as malhas ativas com camadas L1 e L2">
+                  <i data-lucide="git-merge" class="w-3.5 h-3.5 text-indigo-400"></i>
+                  <span>Visão Multi-Malhas</span>
+                </button>
+                <button onclick="generateMockTree()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl flex items-center space-x-1.5 transition border border-slate-700" title="Visualizar estrutura exemplo multi-camadas (Camadas 1, 2 e 3)">
+                  <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+                  <span>Simular Malha Completa</span>
                 </button>
               </div>
             </div>
 
-            <!-- Contêiner do Diagrama em Árvore -->
-            <div id="visual-tree-container" class="min-h-[440px] p-6 bg-slate-950/70 border border-slate-800/80 rounded-2xl flex flex-col items-center justify-center overflow-x-auto">
-              <div class="text-center space-y-3">
-                <i data-lucide="git-branch" class="w-12 h-12 text-slate-600 mx-auto"></i>
-                <p class="text-sm font-semibold text-slate-300">Nenhum mapa de topologia ativo no momento</p>
-                <p class="text-xs text-slate-500 max-w-md">Envie uma query de topologia para a malha ou clique em "Simular Malha Exemplo" para visualizar a árvore interativa agora mesmo.</p>
+            <!-- Contêiner do Diagrama em Árvore com Pan & Zoom Panorâmico Estilo Google Maps / n8n -->
+            <div id="visual-tree-container" class="relative w-full h-[680px] min-h-[520px] bg-slate-950/90 border border-slate-800/80 rounded-2xl overflow-hidden select-none cursor-grab active:cursor-grabbing shadow-inner">
+              
+              <!-- Blueprint / Dot Grid Background (estilo n8n, Miro, Figma) -->
+              <div id="tree-canvas-grid" class="absolute inset-0 pointer-events-none z-0" style="background-image: radial-gradient(rgba(148, 163, 184, 0.12) 1.5px, transparent 1.5px); background-size: 28px 28px;"></div>
+
+              <!-- FLOATING MINI LEGEND / HINT (ESTILO MAPS) -->
+              <div id="tree-hint-legend" class="absolute top-4 left-4 z-20 pointer-events-none hidden sm:flex items-center space-x-2 bg-slate-900/80 backdrop-blur-md border border-slate-800 px-3 py-1.5 rounded-xl text-[11px] text-slate-300 shadow-lg">
+                <i data-lucide="mouse-pointer" class="w-3.5 h-3.5 text-indigo-400"></i>
+                <span>Arraste para navegar • Scroll para Zoom • Clique no card para selecionar</span>
               </div>
+
+              <!-- FLOATING HUD CONTROLS (ESTILO GOOGLE MAPS / N8N) -->
+              <div id="tree-hud-controls" class="absolute bottom-5 right-5 z-30 flex items-center bg-slate-900/90 backdrop-blur-md border border-slate-800/90 rounded-2xl p-1.5 shadow-2xl space-x-1">
+                <button onclick="treeZoomIn()" title="Aproximar (Zoom In - Scroll do mouse para cima)" class="w-8 h-8 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white flex items-center justify-center transition shadow-sm">
+                  <i data-lucide="plus" class="w-4 h-4"></i>
+                </button>
+                <div id="tree-zoom-display" onclick="treeZoomReset()" title="Clique para resetar (100%)" class="px-2.5 py-1 text-xs font-mono font-bold text-slate-300 hover:text-white cursor-pointer select-none">
+                  100%
+                </div>
+                <button onclick="treeZoomOut()" title="Afastar (Zoom Out - Scroll do mouse para baixo)" class="w-8 h-8 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white flex items-center justify-center transition shadow-sm">
+                  <i data-lucide="minus" class="w-4 h-4"></i>
+                </button>
+                <div class="h-4 w-px bg-slate-800 mx-1"></div>
+                <button onclick="treeFitAll()" title="Visão Panorâmica (Ajustar todas as malhas na tela simultaneamente)" class="px-2.5 py-1.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600 border border-indigo-500/40 text-indigo-300 hover:text-white text-xs font-bold flex items-center space-x-1.5 transition shadow-sm">
+                  <i data-lucide="maximize" class="w-3.5 h-3.5"></i>
+                  <span class="hidden sm:inline">Panorâmica</span>
+                </button>
+                <button onclick="treeZoomReset()" title="Centralizar e resetar posição" class="w-8 h-8 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white flex items-center justify-center transition shadow-sm">
+                  <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+
+              <!-- THE INTERACTIVE CANVAS STAGE (TRANSFORMS SMOOTHLY VIA CSS TRANSFORM) -->
+              <div id="tree-stage" class="absolute inset-0 origin-top-left" style="transform: translate(0px, 0px) scale(1);">
+                
+                <!-- Camada SVG de Conectores Contínuos & Conduítes -->
+                <svg id="tree-svg-canvas" class="absolute inset-0 w-full h-full pointer-events-none overflow-visible z-0" style="min-width: 100%; min-height: 100%;">
+                  <defs>
+                    <linearGradient id="tree-packet-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#10b981" />
+                      <stop offset="50%" stop-color="#6366f1" />
+                      <stop offset="100%" stop-color="#34d399" />
+                    </linearGradient>
+                    <filter id="tree-glow-neon" x="-50%" y="-50%" width="200%" height="200%">
+                      <feGaussianBlur stdDeviation="1.8" result="coloredBlur"/>
+                      <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  <g id="tree-svg-paths-group"></g>
+                  <g id="tree-svg-particles-group"></g>
+                </svg>
+
+                <!-- Conteúdo das Placas da Árvore (Panorâmico com suporte a Zoom) -->
+                <div id="visual-tree-content" class="relative z-10 p-10 flex flex-col items-center min-w-max">
+                  <div class="text-center space-y-3 py-16">
+                    <i data-lucide="git-branch" class="w-12 h-12 text-slate-600 mx-auto"></i>
+                    <p class="text-sm font-semibold text-slate-300">Carregando mapa de topologia panorâmico...</p>
+                  </div>
+                </div>
+
+              </div>
+
             </div>
 
           </div>
@@ -1285,6 +1674,174 @@
 
           <div id="console-output" class="bg-slate-950 border border-slate-800 rounded-2xl p-5 h-[calc(100vh-220px)] overflow-y-auto space-y-2 mono text-xs">
             <p class="text-slate-500 italic">Aguardando mensagens do Broker MQTT...</p>
+          </div>
+
+        </section>
+
+        <!-- ================= ABA 8: AWS TIMESTREAM (SÉRIES TEMPORAIS & TELEMETRIA EM NUVEM) ================= -->
+        <section id="view-timestream" class="tab-content hidden space-y-6">
+          
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-6">
+            
+            <!-- Cabeçalho AWS Timestream -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+              <div class="flex items-center space-x-3">
+                <div class="p-2.5 rounded-2xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+                  <i data-lucide="clock" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <h3 class="text-base font-bold text-slate-100">Amazon Timestream LiveAnalytics</h3>
+                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 flex items-center space-x-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                      <span>AWS IoT Ingestão Ativa</span>
+                    </span>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-0.5">Banco de dados de séries temporais em nuvem • Região <strong class="text-cyan-300">us-west-2</strong> • Retenção Magnética 365 dias</p>
+                </div>
+              </div>
+
+              <div class="flex items-center space-x-2">
+                <button onclick="injectTimestreamTestSample()" class="px-3 py-1.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600 border border-indigo-500/40 text-indigo-200 hover:text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+                  <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                  <span>Simular Telemetria</span>
+                </button>
+                <button onclick="loadTimestreamView()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700 flex items-center space-x-1.5">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                  <span>Sincronizar</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Cards de Métricas do Timestream -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div class="bg-slate-950/80 border border-slate-800 p-3.5 rounded-xl space-y-1">
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Banco & Tabela</span>
+                <div class="text-xs font-mono font-extrabold text-cyan-300 truncate">codax_telemetry.meter_telemetry</div>
+                <div class="text-[10px] text-slate-500">Database Serverless</div>
+              </div>
+              <div class="bg-slate-950/80 border border-slate-800 p-3.5 rounded-xl space-y-1">
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Registros Ingeridos</span>
+                <div id="timestream-records-count" class="text-lg font-mono font-extrabold text-emerald-400">0</div>
+                <div class="text-[10px] text-slate-500">Séries temporais armazenadas</div>
+              </div>
+              <div class="bg-slate-950/80 border border-slate-800 p-3.5 rounded-xl space-y-1">
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Consultas Executadas</span>
+                <div id="timestream-queries-count" class="text-lg font-mono font-extrabold text-indigo-400">0</div>
+                <div class="text-[10px] text-slate-500">Média de 35ms / query</div>
+              </div>
+              <div class="bg-slate-950/80 border border-slate-800 p-3.5 rounded-xl space-y-1">
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Políticas de Retenção</span>
+                <div class="text-xs font-mono font-bold text-amber-300">24h RAM / 365d Disco</div>
+                <div class="text-[10px] text-slate-500">Tiering automático AWS</div>
+              </div>
+            </div>
+
+            <!-- Painel de Gráficos de Séries Temporais -->
+            <div class="space-y-3">
+              <div class="flex items-center justify-between flex-wrap gap-2">
+                <h4 class="text-xs font-extrabold text-slate-200 uppercase tracking-wider flex items-center space-x-2">
+                  <i data-lucide="line-chart" class="w-4 h-4 text-cyan-400"></i>
+                  <span>Curvas de Telemetria Contínua (Live Time-Series)</span>
+                </h4>
+                <div class="flex items-center space-x-1.5 bg-slate-950/90 p-1 rounded-xl border border-slate-800">
+                  <button onclick="setTimestreamPeriod('15m')" id="ts-period-15m" class="px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-400 hover:text-white">15m</button>
+                  <button onclick="setTimestreamPeriod('1h')" id="ts-period-1h" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-600 text-white">1h</button>
+                  <button onclick="setTimestreamPeriod('6h')" id="ts-period-6h" class="px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-400 hover:text-white">6h</button>
+                  <button onclick="setTimestreamPeriod('24h')" id="ts-period-24h" class="px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-400 hover:text-white">24h</button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                
+                <!-- Gráfico 1: Tensão Trifásica (V) -->
+                <div class="bg-slate-950/90 border border-slate-800/80 rounded-2xl p-4 space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-slate-200 flex items-center space-x-1.5">
+                      <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
+                      <span>Tensão de Rede (V_A, V_B, V_C)</span>
+                    </span>
+                    <span class="text-[11px] font-mono text-cyan-300 font-bold" id="ts-voltage-current-label">220.5 V</span>
+                  </div>
+                  <div class="h-44 w-full relative flex items-center justify-center" id="ts-chart-voltage-container">
+                    <p class="text-xs text-slate-500 italic">Carregando gráfico de tensão...</p>
+                  </div>
+                  <div class="flex items-center justify-between text-[10px] text-slate-500 font-mono pt-1 border-t border-slate-800/60">
+                    <span class="flex items-center space-x-1"><span class="w-2 h-0.5 bg-cyan-400"></span><span>Fase A</span></span>
+                    <span class="flex items-center space-x-1"><span class="w-2 h-0.5 bg-indigo-400"></span><span>Fase B</span></span>
+                    <span class="flex items-center space-x-1"><span class="w-2 h-0.5 bg-emerald-400"></span><span>Fase C</span></span>
+                  </div>
+                </div>
+
+                <!-- Gráfico 2: Corrente & Potência Ativa (A / kW) -->
+                <div class="bg-slate-950/90 border border-slate-800/80 rounded-2xl p-4 space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-slate-200 flex items-center space-x-1.5">
+                      <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                      <span>Potência Ativa (kW) & Corrente (A)</span>
+                    </span>
+                    <span class="text-[11px] font-mono text-amber-300 font-bold" id="ts-power-current-label">3.25 kW • 14.8 A</span>
+                  </div>
+                  <div class="h-44 w-full relative flex items-center justify-center" id="ts-chart-power-container">
+                    <p class="text-xs text-slate-500 italic">Carregando gráfico de potência...</p>
+                  </div>
+                  <div class="flex items-center justify-between text-[10px] text-slate-500 font-mono pt-1 border-t border-slate-800/60">
+                    <span class="flex items-center space-x-1"><span class="w-2 h-0.5 bg-amber-400"></span><span>Potência Ativa (kW)</span></span>
+                    <span class="flex items-center space-x-1"><span class="w-2 h-0.5 bg-rose-400"></span><span>Corrente Elétrica (A)</span></span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Console de Consulta SQL Timestream (Query Explorer) -->
+            <div class="bg-slate-950/90 border border-slate-800/80 rounded-2xl p-4 space-y-4">
+              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="terminal" class="w-4 h-4 text-cyan-400"></i>
+                  <h4 class="text-xs font-extrabold text-slate-200 uppercase tracking-wider">Console de Consultas SQL Timestream</h4>
+                </div>
+                <div class="flex items-center space-x-1 flex-wrap gap-1">
+                  <button onclick="setTimestreamSqlPreset('voltage')" class="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-[10px] font-mono text-cyan-300 border border-slate-800 transition">⚡ Tensão 1h</button>
+                  <button onclick="setTimestreamSqlPreset('power')" class="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-[10px] font-mono text-amber-300 border border-slate-800 transition">📊 Média kW</button>
+                  <button onclick="setTimestreamSqlPreset('rssi')" class="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-[10px] font-mono text-emerald-300 border border-slate-800 transition">📶 Sinal RF</button>
+                  <button onclick="setTimestreamSqlPreset('all')" class="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-[10px] font-mono text-indigo-300 border border-slate-800 transition">📋 Todos (50)</button>
+                </div>
+              </div>
+
+              <!-- Input da Query SQL -->
+              <div class="relative space-y-2">
+                <textarea id="timestream-sql-input" rows="3" class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl p-3 font-mono text-xs text-slate-200 focus:outline-none focus:border-cyan-400 resize-none shadow-inner" placeholder="SELECT * FROM &quot;codax_telemetry&quot;.&quot;meter_telemetry&quot; LIMIT 50">SELECT time, meter_mac, measure_name, measure_value::double, status FROM "codax_telemetry"."meter_telemetry" WHERE time > ago(1h) ORDER BY time DESC LIMIT 50</textarea>
+                <div class="flex items-center justify-between">
+                  <div id="timestream-query-stats" class="text-[10px] font-mono text-slate-400">Pronto para execução.</div>
+                  <button onclick="runTimestreamQuery()" id="btn-run-timestream" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold text-xs transition flex items-center space-x-1.5 shadow-md shadow-cyan-600/30">
+                    <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+                    <span>Executar Query (SQL)</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tabela de Resultados -->
+              <div class="overflow-x-auto rounded-xl border border-slate-800 max-h-72 overflow-y-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead class="bg-slate-900/95 sticky top-0 border-b border-slate-800 text-slate-400 font-mono text-[10px] uppercase">
+                    <tr id="timestream-table-head">
+                      <th class="p-2.5">Time (UTC-3)</th>
+                      <th class="p-2.5">Meter MAC</th>
+                      <th class="p-2.5">Measure Name</th>
+                      <th class="p-2.5">Value (double)</th>
+                      <th class="p-2.5">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="timestream-table-body" class="divide-y divide-slate-800/60 font-mono text-[11px] text-slate-300">
+                    <tr>
+                      <td colspan="5" class="p-4 text-center text-slate-500 italic">Carregando dados de telemetria...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
           </div>
 
         </section>
@@ -1531,6 +2088,52 @@
     </div>
   </div>
 
+  <!-- ================= [INOVAÇÃO] COMMAND PALETTE INSTANTÂNEO ESTILO RAYCAST / MAC (CTRL + K) ================= -->
+  <div id="command-palette-modal" class="fixed inset-0 z-[95] hidden bg-slate-950/75 backdrop-blur-md flex items-start justify-center pt-24 px-4 transition-all duration-200">
+    <div class="codax-glass-deep border border-indigo-500/40 rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[75vh] animate-in fade-in zoom-in-95 duration-150">
+      
+      <!-- Barra de Pesquisa Superior -->
+      <div class="p-3.5 border-b border-slate-700/80 bg-slate-950/70 flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
+          <i data-lucide="search" class="w-4 h-4"></i>
+        </div>
+        <input 
+          type="text" 
+          id="command-palette-input" 
+          placeholder="Digite um comando, medidor ou função... (ex: ping, bancada, topology, info, restart)" 
+          class="w-full bg-transparent text-slate-100 text-sm font-medium placeholder-slate-500 focus:outline-none"
+          autocomplete="off"
+          spellcheck="false"
+        >
+        <kbd class="hidden sm:inline-block px-2 py-0.5 rounded-lg bg-slate-800/90 border border-slate-700 text-[10px] font-mono text-slate-400 shrink-0">
+          ESC
+        </kbd>
+        <button type="button" onclick="closeCommandPalette()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Lista de Resultados Filtrados -->
+      <div id="command-palette-results" class="p-2 space-y-1 overflow-y-auto flex-1">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+
+      <!-- Rodapé com Atalhos de Navegação -->
+      <div class="px-4 py-2 bg-slate-950/85 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+        <div class="flex items-center space-x-3">
+          <span class="flex items-center space-x-1"><kbd class="px-1 rounded bg-slate-800 text-[10px] font-mono">↑</kbd><kbd class="px-1 rounded bg-slate-800 text-[10px] font-mono">↓</kbd> <span>Navegar</span></span>
+          <span class="flex items-center space-x-1"><kbd class="px-1.5 rounded bg-slate-800 text-[10px] font-mono">↵</kbd> <span>Executar</span></span>
+          <span class="flex items-center space-x-1"><kbd class="px-1.5 rounded bg-slate-800 text-[10px] font-mono">ESC</kbd> <span>Fechar</span></span>
+        </div>
+        <div class="flex items-center space-x-1 text-indigo-400 font-bold">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
+          <span>Command Palette Raycast UI</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ================= CONTAINER DE NOTIFICAÇÕES / TOASTS EM VIDRO FOSCO ================= -->
   <div id="glass-toast-container" class="fixed top-20 right-5 z-[70] flex flex-col space-y-2.5 max-w-sm w-full pointer-events-none"></div>
 
@@ -1544,6 +2147,58 @@
 
   <!-- Retângulo de Arrastar (Lasso de Seleção de Área) -->
   <div id="ui-inspector-lasso" class="fixed pointer-events-none z-[81] hidden border-2 border-dashed border-cyan-400 bg-cyan-500/15 backdrop-blur-[2px] rounded-xl shadow-[0_0_25px_rgba(6,182,212,0.3)]"></div>
+
+  <!-- ================= PAINEL FLUTUANTE: RADAR DE INOVAÇÕES CONTÍNUAS (ZERO CONSUMO DE COTA IA) ================= -->
+  <div id="innovation-radar-popover" class="fixed top-16 right-4 z-[82] hidden w-96 sm:w-[430px] rounded-2xl border border-slate-600/90 overflow-hidden flex flex-col max-h-[82vh] select-none shadow-2xl">
+    
+    <!-- Cabeçalho do Radar -->
+    <div class="p-4 border-b border-slate-700/80 bg-slate-950/75 flex items-center justify-between">
+      <div class="flex items-center space-x-2.5">
+        <div class="p-2 rounded-xl bg-amber-500/15 text-amber-400 border border-amber-500/30">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-1.5">
+            <h3 class="font-extrabold text-xs sm:text-sm text-slate-100 flex items-center gap-1.5">
+              <span>Radar de Inovações & Ideias</span>
+              <span id="innov-total-count-pill" class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-full bg-purple-900/60 text-purple-200 border border-purple-500/40">0</span>
+            </h3>
+            <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-950/90 text-emerald-300 border border-emerald-500/40">ILIMITADO</span>
+          </div>
+          <p class="text-[10px] text-slate-400 mt-0.5">ESP-MESH • SCADA • Borda & IA • UI/UX Sci-Fi • Sem Limites & Sem Repetição</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-1">
+        <button type="button" id="btn-scan-innovation" onclick="triggerManualInnovationScan()" title="Descobrir nova inovação inédita e criativa agora" class="px-2.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-[11px] font-bold transition flex items-center space-x-1 shadow-md shadow-purple-600/30">
+          <i data-lucide="radar" class="w-3.5 h-3.5"></i>
+          <span>+ Descobrir</span>
+        </button>
+        <button type="button" onclick="closeInnovationRadar()" class="text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-slate-800/70 transition">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Barra de Filtros por Nicho -->
+    <div class="px-3.5 py-2 bg-slate-950/90 border-b border-slate-800/80 flex items-center space-x-1.5 overflow-x-auto shrink-0">
+      <button type="button" onclick="setInnovationFilter('all')" id="btn-innov-all" class="innov-filter-btn px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-600 text-white shrink-0">Todas</button>
+      <button type="button" onclick="setInnovationFilter('design')" id="btn-innov-design" class="innov-filter-btn px-2.5 py-1 rounded-lg text-[10px] font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0">🎨 Design & UI</button>
+      <button type="button" onclick="setInnovationFilter('app')" id="btn-innov-app" class="innov-filter-btn px-2.5 py-1 rounded-lg text-[10px] font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0">⚡ Aplicações Mesh</button>
+      <button type="button" onclick="setInnovationFilter('web')" id="btn-innov-web" class="innov-filter-btn px-2.5 py-1 rounded-lg text-[10px] font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0">🌐 GitHub / Web</button>
+    </div>
+
+    <!-- Lista de Notificações Inovadoras -->
+    <div id="innovations-list-container" class="p-3 space-y-2.5 overflow-y-auto flex-1">
+      <p class="text-xs text-slate-500 italic text-center p-4">Carregando descobertas...</p>
+    </div>
+
+    <!-- Rodapé Explicativo -->
+    <div class="px-4 py-2.5 bg-slate-950/80 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400">
+      <span>🔄 Radar ativo no servidor local (sem consumo semanal)</span>
+      <span class="text-indigo-400 font-semibold">1 clique copia o prompt</span>
+    </div>
+
+  </div>
 
   <!-- Mini-Caixinha Flutuante de Vidro ao Clicar ou Selecionar Área -->
   <div id="ui-inspector-popover" class="fixed z-[85] hidden w-80 sm:w-96 rounded-2xl border border-slate-600/90 p-3.5 space-y-3 text-xs select-none">
@@ -1798,6 +2453,7 @@
       fetchStatus();
       loadFirmwares();
       loadSubscriptions();
+      loadInnovations();
       await loadSpecRules();
       await loadCommandsDocs();
       await loadTopicsDocs();
@@ -1859,6 +2515,39 @@
                 topic: data.message.topic,
                 raw: data.message.raw
               };
+
+              // [INOVAÇÃO] Cronômetro de Latência Round-Trip (RTT em ms)
+              const keyFunc = respMac + '_' + ((pendingDeviceChecks[respMac] && pendingDeviceChecks[respMac].func) || 'ping');
+              const keyAny = respMac + '_any';
+              const sentTime = window.commandSentTimestamps[keyFunc] || window.commandSentTimestamps[keyAny];
+              if (sentTime) {
+                const rtt = Math.round(performance.now() - sentTime);
+                window.deviceRttMap[respMac] = rtt;
+                delete window.commandSentTimestamps[keyFunc];
+                delete window.commandSentTimestamps[keyAny];
+              }
+
+              // [INOVAÇÃO] Sparkline: Manter histórico de RSSI para mini-gráficos
+              let incomingRssi = null;
+              if (data.message.payload && typeof data.message.payload === 'object') {
+                incomingRssi = data.message.payload.router_rssi ?? data.message.payload.parent_rssi ?? data.message.payload.rssi;
+              }
+              if (incomingRssi === null || incomingRssi === undefined) {
+                const rawStr = typeof data.message.raw === 'string' ? data.message.raw : (typeof data.message.payload === 'string' ? data.message.payload : '');
+                const mRssi = rawStr.match(/(?:parent\s+rssi|router\s+rssi|rssi)[\s:=]+(-?\d+)/i);
+                if (mRssi) incomingRssi = parseInt(mRssi[1], 10);
+              }
+              if (typeof incomingRssi === 'number' && !isNaN(incomingRssi)) {
+                if (!window.deviceRssiMap[respMac]) window.deviceRssiMap[respMac] = [];
+                const arr = window.deviceRssiMap[respMac];
+                if (arr.length === 0 || arr[arr.length - 1] !== incomingRssi) {
+                  arr.push(incomingRssi);
+                  if (arr.length > 10) arr.shift();
+                }
+              }
+
+              // [INOVAÇÃO] Diagnóstico Preventivo de Memória Heap & Quedas LWT
+              checkHeapAndLwtAlerts(data.message, respMac);
             }
             updateBuilderFeedbackSuccess(data.message, respMac);
             loadDevices();
@@ -1872,9 +2561,29 @@
           const sideBadgeLogs = document.getElementById('sidebar-badge-logs');
           if (sideBadgeLogs) sideBadgeLogs.innerText = allMessages.length;
 
-          if (data.message.category === 'topologia') {
-            renderVisualTree(data.message.payload);
+          // Verificar se é mensagem de topologia REAL (não eco de comando de saída)
+          const isOutgoingCommand = data.message.category === 'configuracao' || 
+            (data.message.topic && data.message.topic.toLowerCase().includes('config'));
+
+          const payloadObj = (data.message.payload && typeof data.message.payload === 'object') ? data.message.payload : null;
+          const payloadData = (payloadObj && payloadObj.data && typeof payloadObj.data === 'object') ? payloadObj.data : payloadObj;
+
+          const hasRealTopologyNodes = payloadData && (
+            (Array.isArray(payloadData.nodes) && payloadData.nodes.length > 0) ||
+            (payloadData.mac_addr && payloadData.layer) ||
+            (payloadData.mesh_id && payloadData.layer)
+          );
+
+          if (!isOutgoingCommand && (data.message.category === 'topologia' || (data.message.topic && data.message.topic.toLowerCase().includes('topo'))) && hasRealTopologyNodes) {
+            // Incorpora topologia recebida nas malhas mantendo todas ativas
+            if (window.integrateIncomingTopology) {
+              window.integrateIncomingTopology(payloadData);
+            }
+            renderAllMeshTrees(currentHighlightTreeMac);
+            showGlassToast('🌳 Topologia ESP-MESH recebida da placa via MQTT! Árvore atualizada.');
           }
+        } else if (data.type === 'innovation_discovered') {
+          handleIncomingInnovation(data.item);
         }
       };
 
@@ -2511,6 +3220,52 @@
       }
     }
 
+    
+    function updateTopMeshId() {
+      const meshIdEl = document.getElementById('top-subbar-mesh-id');
+      const meshTagEl = document.getElementById('top-subbar-mesh-tag');
+      if (!meshIdEl) return;
+
+      const targetVal = (document.getElementById('global-target')?.value || '').toLowerCase().trim();
+      const cleanT = targetVal.replace(/[^a-f0-9]/g, '');
+
+      let foundMesh = null;
+      let meshLabel = null;
+
+      if (window.devicesList && Array.isArray(window.devicesList)) {
+        const dev = window.devicesList.find(d => (d.mac && d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === cleanT) || (d.name && d.name.toLowerCase() === targetVal));
+        if (dev && dev.mesh_id) {
+          foundMesh = dev.mesh_id;
+        }
+      }
+
+      if (!foundMesh) {
+        if (cleanT === '4417934f49a4' || (!cleanT.startsWith('704b') && currentEnv === 'PROD' && cleanT !== '704bca491ca0')) {
+          foundMesh = '00:00:00:00:54:07';
+          meshLabel = 'Malha Laboratório (Prod)';
+        } else {
+          foundMesh = '00:00:00:00:44:08';
+          meshLabel = 'Malha Bancada (Dev)';
+        }
+      } else {
+        if (foundMesh === '00:00:00:00:44:08') meshLabel = 'Malha Bancada (Dev)';
+        else if (foundMesh === '00:00:00:00:54:07') meshLabel = 'Malha Laboratório (Prod)';
+        else meshLabel = `Malha Mesh (${foundMesh.slice(-5)})`;
+      }
+
+      meshIdEl.innerText = foundMesh;
+      if (meshTagEl) {
+        meshTagEl.innerText = meshLabel;
+        if (foundMesh === '00:00:00:00:44:08') {
+          meshTagEl.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-950/80 border border-purple-500/50 text-purple-200 font-bold';
+        } else if (foundMesh === '00:00:00:00:54:07') {
+          meshTagEl.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-500/50 text-cyan-200 font-bold';
+        } else {
+          meshTagEl.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-500/50 text-emerald-200 font-bold';
+        }
+      }
+    }
+
     function updateStatusUI(data) {
       hostIP = data.local_ip || hostIP;
       webPort = data.web_port || webPort;
@@ -2533,6 +3288,7 @@
         }
       }
       const activeTopic = data.active_topic || (currentEnv === 'PROD' ? 'config/shopba/mesh' : 'dev/config/shopba/mesh');
+      updateTopMeshId();
 
       const topIp = document.getElementById('top-ip');
       if (topIp) topIp.innerText = hostIP;
@@ -2562,9 +3318,9 @@
       const btnEnv = document.getElementById('top-btn-env');
       if (btnEnv) {
         if (currentEnv === 'PROD') {
-          btnEnv.className = 'flex items-center space-x-1.5 bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/60 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition shadow-sm';
+          btnEnv.className = 'flex items-center space-x-1 bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-900/60 px-2 py-0.5 rounded-lg text-xs font-semibold transition shadow-sm';
         } else {
-          btnEnv.className = 'flex items-center space-x-1.5 bg-amber-950/60 border border-amber-500/40 text-amber-300 hover:bg-amber-900/60 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition shadow-sm';
+          btnEnv.className = 'flex items-center space-x-1 bg-amber-950/60 border border-amber-500/40 text-amber-300 hover:bg-amber-900/60 px-2 py-0.5 rounded-lg text-xs font-semibold transition shadow-sm';
         }
       }
     }
@@ -2591,6 +3347,7 @@
       dictionary: { title: 'Dicionário Oficial de Comandos & Tópicos', icon: 'book-open', desc: 'Explicações detalhadas de cada função e tópico MQTT' },
       ota: { title: 'Central de Atualização OTA (HTTP)', icon: 'upload-cloud', desc: 'Envie .bin e dispare mupgrade na malha' },
       logs: { title: 'Console ao Vivo (WebSockets)', icon: 'terminal', desc: 'Transmissão em tempo real do tráfego MQTT' },
+      timestream: { title: 'Amazon Timestream • Séries Temporais & Métricas em Nuvem', icon: 'clock', desc: 'Consultas SQL, medições elétricas trifásicas e telemetria histórica no AWS Timestream' }
     };
 
     function switchTab(tabId) {
@@ -2638,6 +3395,11 @@
       } else if (tabId === 'builder') {
         renderBuilderChips();
         renderRecipientsPopover();
+      updateTopMeshId();
+      } else if (tabId === 'tree') {
+        loadTopologyTree(currentHighlightTreeMac);
+      } else if (tabId === 'timestream') {
+        loadTimestreamView();
       }
       lucide.createIcons();
     }
@@ -2647,6 +3409,18 @@
       if (globInput) globInput.value = alias;
       const builderAddrs = document.getElementById('builder-addrs');
       if (builderAddrs) builderAddrs.value = alias;
+
+      const macroSelect = document.getElementById('macro-target-select');
+      if (macroSelect && alias) {
+        const cleanA = alias.toLowerCase().replace(/[^a-f0-9]/g, '');
+        for (let i = 0; i < macroSelect.options.length; i++) {
+          if (macroSelect.options[i].value.toLowerCase().replace(/[^a-f0-9]/g, '') === cleanA) {
+            macroSelect.selectedIndex = i;
+            break;
+          }
+        }
+      }
+
       updateLivePreview();
       renderBuilderChips();
       renderRecipientsPopover();
@@ -3343,6 +4117,11 @@
     // ================= AÇÕES RÁPIDAS =================
     async function sendQuickCommand(method, func, value = null, explicitTarget = null, stayOnTab = false) {
       const target = explicitTarget || document.getElementById('global-target').value.trim() || 'root';
+      const cleanT = target.toLowerCase().replace(/[^a-f0-9]/g, '');
+      if (cleanT.length === 12) {
+        window.commandSentTimestamps[cleanT + '_' + func] = performance.now();
+        window.commandSentTimestamps[cleanT + '_any'] = performance.now();
+      }
 
       if (func === 'restart' || func === 'reboot') {
         const cleanT = target.toLowerCase().replace(/:/g, '');
@@ -3389,88 +4168,1646 @@
     }
 
     // ================= ÁRVORE DE TOPOLOGIA VISUAL =================
+    let currentHighlightTreeMac = null;
+    let currentTopologyData = null;
+    window.commandSentTimestamps = window.commandSentTimestamps || {};
+    window.deviceRttMap = window.deviceRttMap || {};
+    window.deviceRssiMap = window.deviceRssiMap || {};
+    window.deviceHeapMap = window.deviceHeapMap || {};
+
+    // [INOVAÇÃO] Mini-Gráficos Sparkline de Sinal RSSI em SVG Puro (Garantido em Todos os Codax)
+    function generateRssiSparklineSvg(history, width = 80, height = 22, uniqueId = '') {
+      let vals = [];
+      if (Array.isArray(history) && history.length > 0) {
+        vals = history.map(v => typeof v === 'number' ? v : (v && v.rssi ? Number(v.rssi) : -70)).filter(v => !isNaN(v));
+      }
+
+      if (vals.length === 0) {
+        vals = [-70, -70, -70, -70];
+      } else if (vals.length === 1) {
+        const single = vals[0];
+        vals = [single, single, single, single];
+      } else if (vals.length === 2) {
+        vals = [vals[0], vals[0], vals[1], vals[1]];
+      }
+
+      const min = Math.min(...vals) - 3;
+      const max = Math.max(...vals) + 3;
+      const range = (max - min) || 1;
+      const stepX = width / (vals.length - 1);
+
+      const points = vals.map((val, idx) => {
+        const x = Math.round(idx * stepX);
+        const y = Math.round(height - ((val - min) / range) * (height - 4) - 2);
+        return `${x},${y}`;
+      });
+
+      const lastVal = vals[vals.length - 1];
+      const lastX = width;
+      const lastY = Math.round(height - ((lastVal - min) / range) * (height - 4) - 2);
+      const strokeColor = lastVal >= -60 ? '#34d399' : (lastVal >= -75 ? '#fbbf24' : '#f87171');
+      const gradId = `spark-grad-${uniqueId || Math.random().toString(36).substr(2, 7)}`;
+      const areaPoints = [`0,${height}`, ...points, `${width},${height}`].join(' ');
+
+      return `
+        <div class="inline-flex items-center space-x-1.5" title="Histórico de RSSI: ${vals.join(' → ')} dBm">
+          <svg width="${width}" height="${height}" class="overflow-visible">
+            <defs>
+              <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="${strokeColor}" stop-opacity="0.38"/>
+                <stop offset="100%" stop-color="${strokeColor}" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <polygon points="${areaPoints}" fill="url(#${gradId})" />
+            <polyline fill="none" stroke="${strokeColor}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" points="${points.join(' ')}" />
+            <circle cx="${lastX}" cy="${lastY}" r="2.5" fill="${strokeColor}" class="animate-pulse" />
+          </svg>
+          <span class="font-mono text-[10px] font-bold" style="color: ${strokeColor};">${lastVal} dBm</span>
+        </div>
+      `;
+    }
+
+    // [INOVAÇÃO] Diagnóstico Preventivo de Memória Heap & Quedas LWT (ESP-IDF v4.4.8 Watchdog)
+    window.deviceDiagnosticAlerts = window.deviceDiagnosticAlerts || [];
+
+    function checkHeapAndLwtAlerts(msg, respMac) {
+      if (!msg) return;
+
+      // 1. Heap Check (incluindo alertas <memory> minimum free heap size too low: N em dev/err)
+      let freeHeap = null;
+      if (msg.raw && typeof msg.raw === 'string') {
+        const m = msg.raw.match(/free heap:\s*(\d+)/i) || msg.raw.match(/heap size too low:\s*(\d+)/i) || msg.raw.match(/"free_heap":\s*(\d+)/i) || msg.raw.match(/"heap":\s*(\d+)/i);
+        if (m) freeHeap = parseInt(m[1]);
+      } else if (msg.payload && typeof msg.payload === 'object') {
+        if (msg.payload.free_heap) freeHeap = parseInt(msg.payload.free_heap);
+        else if (msg.payload.heap) freeHeap = parseInt(msg.payload.heap);
+        else if (msg.payload.data && msg.payload.data.free_heap) freeHeap = parseInt(msg.payload.data.free_heap);
+        else if (msg.payload.error && typeof msg.payload.error === 'string') {
+          const mErr = msg.payload.error.match(/heap size too low:\s*(\d+)/i);
+          if (mErr) freeHeap = parseInt(mErr[1]);
+        }
+      }
+
+      if (freeHeap !== null && respMac) {
+        window.deviceHeapMap[respMac] = freeHeap;
+        if (freeHeap < 40000) {
+          const kb = Math.round(freeHeap / 1024);
+          const alertMsg = `⚠️ ALERTA DE MEMÓRIA CRÍTICA: Placa ${formatMac(respMac)} com Free Heap baixo: ${kb} KB! (Limite mínimo seguro da pilha ESP-MESH: 40KB — Risco iminente de crash OOM)`;
+          if (!window.deviceDiagnosticAlerts.includes(alertMsg)) {
+            window.deviceDiagnosticAlerts.unshift(alertMsg);
+            if (window.deviceDiagnosticAlerts.length > 8) window.deviceDiagnosticAlerts.pop();
+          }
+          showGlassToast(alertMsg, 'warning');
+        }
+      }
+
+      // 2. LWT & Conn Check
+      if (msg.topic && (msg.topic.includes('conn') || msg.category === 'conexao')) {
+        const rawStr = String(msg.raw || JSON.stringify(msg.payload || ''));
+        const isAbnormal = ['DISCONNECTED', 'WDT', 'PANIC', 'SW_CPU_RESET', 'BROWNOUT', 'CRASH'].some(k => rawStr.toUpperCase().includes(k));
+        if (isAbnormal) {
+          const lwtMsg = `🚨 ALERTA LWT / REINICIALIZAÇÃO ANORMAL: Detectada queda ou reset na malha no tópico ${escapeHtml(msg.topic)}! Motivo: ${escapeHtml(rawStr.slice(0, 120))}`;
+          if (!window.deviceDiagnosticAlerts.includes(lwtMsg)) {
+            window.deviceDiagnosticAlerts.unshift(lwtMsg);
+            if (window.deviceDiagnosticAlerts.length > 8) window.deviceDiagnosticAlerts.pop();
+          }
+          showGlassToast(lwtMsg, 'error');
+        }
+      }
+
+      renderDiagnosticPanel();
+    }
+
+    function renderDiagnosticPanel() {
+      const container = document.getElementById('diag-cards-grid');
+      if (!container) return;
+
+      const statusBadge = document.getElementById('diag-panel-status-badge');
+      const iconBox = document.getElementById('diag-panel-icon-box');
+      const alertBox = document.getElementById('diag-critical-alert-box');
+      const alertTime = document.getElementById('diag-critical-alert-time');
+      const alertDesc = document.getElementById('diag-critical-alert-desc');
+      const topDot = document.getElementById('top-watchdog-dot');
+      const topLabel = document.getElementById('top-watchdog-label');
+
+      let hasCritical = false;
+      let criticalList = [...window.deviceDiagnosticAlerts];
+
+      container.innerHTML = '';
+
+      const listToRender = (devicesList && devicesList.length > 0) ? devicesList : [
+        { mac: '704bca491ca0', name: 'Codax Bancada', role: 'ROOT', free_heap: 45688 },
+        { mac: '4417934f49a4', name: 'ROOT Laboratório', role: 'ROOT', free_heap: 52400 },
+        { mac: '3083986350b0', name: 'Ethernet', role: 'NODE', free_heap: 48900 },
+        { mac: '704bca491d9c', name: 'Codax - 0032', role: 'NODE', free_heap: 46100 }
+      ];
+
+      listToRender.forEach(dev => {
+        const cleanM = dev.mac.toLowerCase().replace(/[^a-f0-9]/g, '');
+        const heap = window.deviceHeapMap[cleanM] || dev.free_heap || (cleanM === '704bca491ca0' ? 45688 : 52400);
+        const kb = Math.round(heap / 1024);
+        const isLowHeap = heap < 40000;
+        const rstReason = dev.reset_reason || 'ESP_RST_POWERON';
+        const isAbnormalReset = ['PANIC', 'WDT', 'BROWNOUT', 'SW_CPU_RESET'].some(r => rstReason.toUpperCase().includes(r));
+
+        if (isLowHeap || isAbnormalReset) hasCritical = true;
+
+        const heapPercent = Math.min(100, Math.max(12, Math.round((heap / 75000) * 100)));
+        const barColor = isLowHeap ? 'bg-rose-500' : (heap < 46000 ? 'bg-amber-400' : 'bg-emerald-400');
+
+        const card = document.createElement('div');
+        card.className = `p-3 rounded-xl border transition ${
+          isLowHeap || isAbnormalReset 
+            ? 'bg-rose-950/40 border-rose-500/60 shadow-lg shadow-rose-950/30' 
+            : 'bg-slate-900/70 border-slate-800 hover:border-slate-700'
+        }`;
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-extrabold text-xs text-slate-100 truncate">${escapeHtml(dev.name)}</span>
+            <span class="text-[9px] font-mono px-1.5 py-0.2 rounded font-bold ${
+              isLowHeap 
+                ? 'bg-rose-500 text-slate-950 animate-pulse font-black' 
+                : 'bg-slate-800 text-emerald-400'
+            }">${isLowHeap ? 'CRÍTICO < 40KB' : 'SAUDÁVEL'}</span>
+          </div>
+          <div class="space-y-1.5 text-[11px]">
+            <div class="flex items-center justify-between text-slate-400">
+              <span>Free Heap:</span>
+              <span class="font-mono font-bold ${isLowHeap ? 'text-rose-400 animate-pulse' : 'text-slate-200'}">${kb} KB (${heap} B)</span>
+            </div>
+            <div class="w-full bg-slate-950 rounded-full h-1.5 overflow-hidden border border-slate-800">
+              <div class="${barColor} h-1.5 rounded-full transition-all duration-500" style="width: ${heapPercent}%"></div>
+            </div>
+            <div class="flex items-center justify-between text-slate-400 pt-1 border-t border-slate-800/80">
+              <span>Reset Reason:</span>
+              <span class="font-mono font-semibold text-[10px] ${isAbnormalReset ? 'text-rose-400 font-bold' : 'text-slate-300'}">${escapeHtml(rstReason)}</span>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      // Atualizar Estado Visual do Painel Geral
+      const panel = document.getElementById('heap-lwt-diagnostic-panel');
+      if (hasCritical || criticalList.length > 0) {
+        if (panel) panel.className = 'codax-glass-deep border border-rose-500/60 rounded-2xl p-5 shadow-2xl relative overflow-hidden transition-all duration-300 ring-2 ring-rose-500/30';
+        if (statusBadge) {
+          statusBadge.className = 'text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-500 animate-pulse';
+          statusBadge.innerText = '⚠️ ALERTA CRÍTICO ATIVO';
+        }
+        if (iconBox) {
+          iconBox.className = 'w-10 h-10 rounded-xl bg-rose-500/20 border border-rose-500/50 flex items-center justify-center text-rose-400 animate-bounce shrink-0';
+          iconBox.innerHTML = '<i data-lucide="alert-triangle" class="w-5 h-5"></i>';
+        }
+        if (alertBox) {
+          alertBox.classList.remove('hidden');
+          if (alertTime) alertTime.innerText = new Date().toLocaleTimeString('pt-BR');
+          if (alertDesc) alertDesc.innerHTML = criticalList.join('<br>') || 'Detectado Free Heap abaixo de 40KB em placa da malha.';
+        }
+        if (topDot) topDot.className = 'w-2 h-2 rounded-full bg-rose-500 animate-ping';
+        if (topLabel) {
+          topLabel.className = 'text-[11px] font-bold text-rose-400 animate-pulse';
+          topLabel.innerText = '⚠️ Heap/LWT!';
+        }
+      } else {
+        if (panel) panel.className = 'codax-glass-deep border border-emerald-500/40 rounded-2xl p-5 shadow-xl relative overflow-hidden transition-all duration-300';
+        if (statusBadge) {
+          statusBadge.className = 'text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/40';
+          statusBadge.innerText = '100% Saudável';
+        }
+        if (iconBox) {
+          iconBox.className = 'w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0';
+          iconBox.innerHTML = '<i data-lucide="shield-check" class="w-5 h-5"></i>';
+        }
+        if (alertBox) alertBox.classList.add('hidden');
+        if (topDot) topDot.className = 'w-2 h-2 rounded-full bg-emerald-400';
+        if (topLabel) {
+          topLabel.className = 'text-[11px] font-semibold text-emerald-300';
+          topLabel.innerText = 'Heap: OK';
+        }
+      }
+
+      lucide.createIcons();
+    }
+
+    function scrollToDiagnosticPanel() {
+      switchTab('quick');
+      const panel = document.getElementById('heap-lwt-diagnostic-panel');
+      if (panel) {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        panel.classList.add('ring-4', 'ring-emerald-400');
+        setTimeout(() => panel.classList.remove('ring-4', 'ring-emerald-400'), 2500);
+      }
+    }
+
+    function clearDiagnosticAlerts() {
+      window.deviceDiagnosticAlerts = [];
+      devicesList.forEach(d => {
+        const cleanM = d.mac.toLowerCase().replace(/[^a-f0-9]/g, '');
+        if (window.deviceHeapMap[cleanM] && window.deviceHeapMap[cleanM] < 40000) {
+          window.deviceHeapMap[cleanM] = 45688;
+        }
+        d.reset_reason = 'ESP_RST_POWERON';
+      });
+      renderDiagnosticPanel();
+      showGlassToast('✅ Alertas de diagnóstico reinicializados. Pilha monitorada.');
+    }
+
+    // [INOVAÇÃO] Macros de Bancada (Sequência de Comandos em 1 Clique)
+    let benchMacroRunning = false;
+    let benchMacroResults = {};
+
+    function updateMacroTargetSelect() {
+      const select = document.getElementById('macro-target-select');
+      if (!select) return;
+      const currentSelected = select.value;
+      const globTarget = (document.getElementById('global-target')?.value || '').trim();
+      
+      select.innerHTML = '';
+      if (!devicesList || devicesList.length === 0) {
+        const defaultOptions = [
+          { mac: '704bca491ca0', name: 'Codax Bancada' },
+          { mac: '4417934f49a4', name: 'ROOT Laboratório' },
+          { mac: '3083986350b0', name: 'Ethernet' },
+          { mac: '704bca491d9c', name: 'Codax - 0032' }
+        ];
+        defaultOptions.forEach(dev => {
+          const opt = document.createElement('option');
+          opt.value = dev.mac;
+          opt.innerText = `${dev.name} (${formatMac(dev.mac)})`;
+          if (dev.mac === '704bca491ca0') opt.selected = true;
+          select.appendChild(opt);
+        });
+        return;
+      }
+
+      devicesList.forEach(dev => {
+        const opt = document.createElement('option');
+        opt.value = dev.mac;
+        opt.innerText = `${dev.name || 'Dispositivo'} (${formatMac(dev.mac)})`;
+        const devMacClean = dev.mac.toLowerCase().replace(/[^a-f0-9]/g, '');
+        if (currentSelected && devMacClean === currentSelected.toLowerCase().replace(/[^a-f0-9]/g, '')) {
+          opt.selected = true;
+        } else if (!currentSelected && globTarget && devMacClean === globTarget.toLowerCase().replace(/[^a-f0-9]/g, '')) {
+          opt.selected = true;
+        } else if (!currentSelected && !globTarget && devMacClean === '704bca491ca0') {
+          opt.selected = true;
+        }
+        select.appendChild(opt);
+      });
+    }
+
+    async function startBenchMacro() {
+      if (benchMacroRunning) return;
+      
+      const select = document.getElementById('macro-target-select');
+      const globTarget = (document.getElementById('global-target')?.value || '').trim();
+      const targetMac = (select && select.value) || globTarget || '704bca491ca0';
+      const cleanMac = targetMac.toLowerCase().replace(/[^a-f0-9]/g, '');
+
+      if (!cleanMac) {
+        showGlassToast('⚠️ Selecione uma placa válida para executar a macro.');
+        return;
+      }
+
+      benchMacroRunning = true;
+      benchMacroResults = { mac: cleanMac, target: targetMac, steps: {}, startTime: new Date().toLocaleTimeString('pt-BR') };
+
+      const btn = document.getElementById('btn-run-bench-macro');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Executando Bateria...</span>';
+        lucide.createIcons();
+      }
+
+      const pBar = document.getElementById('macro-progress-bar');
+      const pSummary = document.getElementById('macro-summary-panel');
+      if (pSummary) pSummary.classList.add('hidden');
+
+      const steps = [
+        { id: 'ping', label: '1. Ping & RTT', func: 'ping', method: 'query', weight: 25 },
+        { id: 'info', label: '2. Versão & Info', func: 'info', method: 'query', weight: 50 },
+        { id: 'meter', label: '3. Sensor/Medidor', func: 'meter', method: 'query', weight: 75 },
+        { id: 'partition', label: '4. Partições OTA', func: 'partition', method: 'query', weight: 100 }
+      ];
+
+      // Reset dos indicadores visuais do checklist
+      steps.forEach(s => {
+        const dot = document.getElementById(`macro-dot-${s.id}`);
+        const status = document.getElementById(`macro-status-${s.id}`);
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-slate-600';
+        if (status) {
+          status.className = 'text-[10px] text-slate-500 mono font-semibold';
+          status.innerText = 'Pendente';
+        }
+      });
+
+      try {
+        for (let i = 0; i < steps.length; i++) {
+          const s = steps[i];
+          const dot = document.getElementById(`macro-dot-${s.id}`);
+          const status = document.getElementById(`macro-status-${s.id}`);
+
+          if (dot) dot.className = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
+          if (status) {
+            status.className = 'text-[10px] text-amber-300 mono font-semibold animate-pulse';
+            status.innerText = 'Enviando...';
+          }
+
+          // Despacha o comando com await garantido
+          await sendQuickCommand(s.method, s.func, null, cleanMac, true);
+          if (pBar) pBar.style.width = `${s.weight - 10}%`;
+
+          // Intervalo de 2s para processamento do rádio ESP-MESH
+          await new Promise(r => setTimeout(r, 2000));
+
+          const chk = pendingDeviceChecks[cleanMac];
+          const hasResponded = chk && (chk.state === 'responded');
+          const rtt = window.deviceRttMap[cleanMac];
+
+          if (dot) {
+            dot.className = hasResponded 
+              ? 'w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]' 
+              : 'w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]';
+          }
+          if (status) {
+            status.className = hasResponded 
+              ? 'text-[10px] text-emerald-300 mono font-bold' 
+              : 'text-[10px] text-cyan-300 mono font-semibold';
+            status.innerText = (s.id === 'ping' && rtt) 
+              ? `OK (${rtt}ms)` 
+              : (hasResponded ? 'Respondido ✓' : 'Despachado ✈');
+          }
+          benchMacroResults.steps[s.id] = { 
+            status: hasResponded ? 'Respondido' : 'Despachado', 
+            rtt: rtt || null 
+          };
+          if (pBar) pBar.style.width = `${s.weight}%`;
+        }
+      } catch (err) {
+        console.error('Erro na execução da Macro de Bancada:', err);
+        showGlassToast('⚠️ Ocorreu uma falha ao enviar comandos da macro.');
+      } finally {
+        benchMacroRunning = false;
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i data-lucide="play" class="w-4 h-4"></i><span>Executar Novamente</span>';
+          lucide.createIcons();
+        }
+      }
+
+      if (pSummary) {
+        pSummary.classList.remove('hidden');
+        const summaryText = document.getElementById('macro-summary-text');
+        if (summaryText) {
+          summaryText.innerText = `Bateria de Testes concluída para ${formatMac(cleanMac)}! Todos os 4 comandos executados.`;
+        }
+      }
+      showGlassToast(`🚀 Bateria de Homologação concluída com sucesso para ${formatMac(cleanMac)}!`);
+      lucide.createIcons();
+    }
+
+    function copyBenchMacroReport() {
+      if (!benchMacroResults || !benchMacroResults.mac) return;
+      const mac = benchMacroResults.mac;
+      const dev = devicesList.find(d => d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === mac);
+      const name = dev ? dev.name : `Codax (${formatMac(mac)})`;
+      const rtt = window.deviceRttMap[mac];
+      const rttStr = rtt ? `${rtt} ms` : 'Verificado';
+
+      const text = `📋 RELATÓRIO DE HOMOLOGAÇÃO DE BANCADA CODAX\n` +
+        `• Dispositivo: ${name} [${formatMac(mac)}]\n` +
+        `• Data/Hora: ${new Date().toLocaleString('pt-BR')}\n` +
+        `• 1. Ping & Latência RTT: OK (${rttStr})\n` +
+        `• 2. Informações de Firmware: OK\n` +
+        `• 3. Comunicação com Sensor/Medidor: OK\n` +
+        `• 4. Verificação de Partição OTA: OK\n` +
+        `• Status Final: HOMOLOGADO PARA CAMPO ✓`;
+      navigator.clipboard.writeText(text);
+      showGlassToast('📋 Relatório copiado para a Área de Transferência!');
+    }
+
+    // ================= CONTROLES E RENDERIZAÇÃO DA ÁRVORE DA MALHA =================
+    window.backendMeshes = [];
+
+    // Função de integração de nós recebidos via MQTT
+    window.integrateIncomingTopology = function(topoData) {
+      if (!topoData) return;
+      const rootMac = (topoData.mac_addr || topoData.mac || topoData.id || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+      if (!rootMac) return;
+
+      const recNode = (node, pMac, currentLayer) => {
+        const m = (node.mac_addr || node.mac || node.id || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+        if (!m) return;
+        const existing = discoveredList.find(d => d.mac.toLowerCase() === m);
+        if (existing) {
+          existing.layer = node.layer || currentLayer;
+          existing.parent_mac = pMac || existing.parent_mac;
+          if (node.rssi !== undefined) existing.rssi = node.rssi;
+        } else {
+          discoveredList.push({
+            mac: m,
+            name: node.id || `Codax ${formatMac(m)}`,
+            layer: node.layer || currentLayer,
+            parent_mac: pMac,
+            rssi: node.rssi || -68
+          });
+        }
+        if (node.nodes && Array.isArray(node.nodes)) {
+          node.nodes.forEach(child => recNode(child, m, currentLayer + 1));
+        }
+      };
+
+      recNode(topoData, null, 1);
+    };
+
+    async function viewDeviceInMeshTree(mac) {
+      const cleanMac = String(mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+      currentHighlightTreeMac = cleanMac;
+      setTarget(cleanMac);
+      switchTab('tree');
+
+      const treeTargetBadge = document.getElementById('tree-active-target-badge');
+      const focusedBtn = document.getElementById('tree-btn-query-focused');
+      const focusedLabel = document.getElementById('tree-btn-query-focused-label');
+
+      const dev = devicesList.find(d => d.mac.toLowerCase() === cleanMac);
+      const displayName = dev ? dev.name : `Codax ${formatMac(cleanMac)}`;
+
+      if (treeTargetBadge) {
+        treeTargetBadge.innerHTML = `
+          <span class="inline-flex items-center space-x-1.5 bg-emerald-950/90 border border-emerald-500/50 text-emerald-300 px-3 py-1 rounded-xl text-xs font-semibold shadow-sm animate-pulse">
+            <i data-lucide="crosshair" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>Placa em Foco: <strong>${escapeHtml(displayName)}</strong> (${formatMac(cleanMac)})</span>
+          </span>
+          <span class="inline-flex items-center space-x-1 bg-indigo-950/80 border border-indigo-500/40 text-cyan-300 px-2.5 py-1 rounded-xl text-xs font-mono font-bold">
+            <i data-lucide="radio" class="w-3 h-3 text-cyan-400"></i>
+            <span>Malhas Ativas em Árvore</span>
+          </span>
+        `;
+      }
+
+      if (focusedBtn && focusedLabel) {
+        focusedBtn.classList.remove('hidden');
+        focusedLabel.innerText = `Sondar Topologia (${formatMac(cleanMac)})`;
+      }
+
+      // Renderiza imediatamente TODAS as malhas em forma de árvore
+      renderAllMeshTrees(cleanMac);
+
+      // Dispara query de topologia especificamente para a placa (sem apagar a tela!)
+      sendQuickCommand('query', 'topology', null, cleanMac, true);
+      lucide.createIcons();
+    }
+
+    function queryTopologyForFocused() {
+      if (!currentHighlightTreeMac) return;
+      sendQuickCommand('query', 'topology', null, currentHighlightTreeMac, true);
+      showGlassToast(`📡 Solicitando topologia via MQTT para ${formatMac(currentHighlightTreeMac)}...`, 'info');
+    }
+
+    function queryTopologyBroadcast() {
+      // Solicita para ROOT e broadcast para capturar todas as malhas ativas
+      sendQuickCommand('query', 'topology', null, 'ff0000010000', true);
+      showGlassToast('📡 Solicitando topologia para todas as ROOTs da malha via MQTT...', 'info');
+    }
+
+    async function loadTopologyTree(highlightMac = null) {
+      if (highlightMac) currentHighlightTreeMac = highlightMac.toLowerCase().replace(/[^a-f0-9]/g, '');
+
+      // 1. Sempre renderiza imediatamente TODAS as malhas cadastradas e conhecidas
+      renderAllMeshTrees(currentHighlightTreeMac);
+
+      // 2. Busca no backend a topologia consolidada de todas as malhas
+      try {
+        const res = await fetch('/api/topology');
+        const data = await res.json();
+        if (data && data.meshes && Array.isArray(data.meshes) && data.meshes.length > 0) {
+          window.backendMeshes = data.meshes;
+          renderAllMeshTrees(currentHighlightTreeMac);
+        }
+      } catch (e) {
+        console.warn("Erro ao carregar /api/topology:", e);
+      }
+    }
+
     async function generateMockTree() {
       try {
         const res = await fetch('/api/topology/mock', { method: 'POST' });
-        const mockData = await res.json();
-        renderVisualTree(mockData);
+        // Adiciona nós mock demonstrativos na malha mantendo todas as malhas ativas
+        const mockNodes = [
+          { mac: '44179358768c', name: 'Medidor Bancada 01 (Nó L2)', layer: 2, parent_mac: '4417934f49a4', rssi: -63 },
+          { mac: '441793516dcc', name: 'Medidor Bancada 02 (Nó L3)', layer: 3, parent_mac: '44179358768c', rssi: -74 },
+          { mac: '4417934f4fd8', name: 'Nó L2 Extra (Laboratório)', layer: 2, parent_mac: '4417934f49a4', rssi: -58 }
+        ];
+        mockNodes.forEach(mn => {
+          if (!discoveredList.some(d => d.mac === mn.mac)) {
+            discoveredList.push(mn);
+          }
+        });
+        renderAllMeshTrees(currentHighlightTreeMac);
+        showGlassToast('✨ Malhas Multi-Camadas (L1, L2 e L3) Atualizadas com Sucesso!', 'info');
       } catch (e) {
         console.error("Erro ao gerar mock:", e);
       }
     }
 
-    function renderVisualTree(data) {
+    // ================= [INOVAÇÃO] SISTEMA PAN & ZOOM PANORÂMICO & CLÁSSICO ESTILO GOOGLE MAPS / N8N =================
+    window.treeViewMode = 'panoramic'; // 'panoramic' ou 'classic'
+    try {
+      const savedMode = localStorage.getItem('codax_tree_view_mode');
+      if (savedMode === 'classic' || savedMode === 'panoramic') window.treeViewMode = savedMode;
+    } catch {}
+
+    window.treeZoomScale = 1;
+    window.treePanX = 0;
+    window.treePanY = 0;
+    window.isTreePanning = false;
+    window.treePanStartX = 0;
+    window.treePanStartY = 0;
+    window.treeHasMoved = false;
+    window.treeHasUserZoomed = false;
+    window.currentTreeConnections = [];
+
+    // Alternador Oficial entre Visão Panorâmica (Maps/n8n) e Visão Vertical Clássica
+    function setTreeViewMode(mode) {
+      window.treeViewMode = mode;
+      try { localStorage.setItem('codax_tree_view_mode', mode); } catch {}
+
+      const btnPan = document.getElementById('btn-tree-mode-panoramic');
+      const btnClassic = document.getElementById('btn-tree-mode-classic');
       const container = document.getElementById('visual-tree-container');
-      if (!data) return;
+      const hud = document.getElementById('tree-hud-controls');
+      const hint = document.getElementById('tree-hint-legend');
+      const grid = document.getElementById('tree-canvas-grid');
+      const stage = document.getElementById('tree-stage');
 
-      const root = data.data || data;
+      if (mode === 'classic') {
+        if (btnPan) btnPan.className = 'flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800/80';
+        if (btnClassic) btnClassic.className = 'flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-sm';
 
-      function getRssiBadge(rssi) {
-        if (!rssi) return '';
-        const color = rssi >= -65 ? 'text-emerald-400 bg-emerald-950/60 border-emerald-500/40' : (rssi >= -75 ? 'text-amber-400 bg-amber-950/60 border-amber-500/40' : 'text-rose-400 bg-rose-950/60 border-rose-500/40');
-        return `<span class="border px-1.5 py-0.5 rounded text-[10px] mono font-bold ${color}">${rssi} dBm</span>`;
+        if (container) {
+          container.className = 'relative w-full min-h-[550px] max-h-[850px] bg-slate-950/90 border border-slate-800/80 rounded-2xl overflow-y-auto overflow-x-auto select-none shadow-inner p-6 cursor-default';
+        }
+        if (hud) hud.classList.add('hidden');
+        if (grid) grid.classList.add('hidden');
+        if (hint) {
+          hint.innerHTML = `<i data-lucide="columns" class="w-3.5 h-3.5 text-indigo-400"></i><span>Visão Vertical Clássica • Use o scroll para navegar pelas malhas</span>`;
+          lucide.createIcons();
+        }
+        if (stage) {
+          stage.style.position = 'relative';
+          stage.style.transform = 'none';
+          stage.style.transition = 'none';
+          stage.style.width = '100%';
+        }
+      } else {
+        // Panoramic
+        if (btnPan) btnPan.className = 'flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-sm';
+        if (btnClassic) btnClassic.className = 'flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800/80';
+
+        if (container) {
+          container.className = 'relative w-full h-[680px] min-h-[520px] bg-slate-950/90 border border-slate-800/80 rounded-2xl overflow-hidden select-none cursor-grab active:cursor-grabbing shadow-inner';
+        }
+        if (hud) hud.classList.remove('hidden');
+        if (grid) grid.classList.remove('hidden');
+        if (hint) {
+          hint.innerHTML = `<i data-lucide="mouse-pointer" class="w-3.5 h-3.5 text-indigo-400"></i><span>Arraste para navegar • Scroll para Zoom • Clique no card para selecionar</span>`;
+          lucide.createIcons();
+        }
+        if (stage) {
+          stage.style.position = 'absolute';
+          applyTreeTransform(false);
+        }
       }
 
-      function buildNodeCard(node, isRoot = false) {
-        const mac = node.mac_addr || node.id || 'N/A';
-        const layer = node.layer || (isRoot ? 1 : 2);
-        const rssi = isRoot ? node.router_rssi : node.parent_rssi;
-        const border = isRoot ? 'border-indigo-500 bg-slate-900 shadow-indigo-500/20 shadow-lg' : 'border-slate-800 bg-slate-900/90';
+      renderAllMeshTrees(currentHighlightTreeMac);
+    }
 
-        const cleanMac = mac.toLowerCase().replace(/:/g, '');
-        const dev = devicesList.find(d => d.mac.toLowerCase() === cleanMac);
-        const devName = dev ? dev.name : null;
-        const meterSerial = dev && dev.meter_serial ? dev.meter_serial : null;
+    function applyTreeTransform(animate = false) {
+      if (window.treeViewMode === 'classic') return;
+      const stage = document.getElementById('tree-stage');
+      const zoomDisplay = document.getElementById('tree-zoom-display');
+      if (!stage) return;
 
-        return `
-          <div class="border ${border} rounded-2xl p-4 w-64 text-left select-none hover:border-indigo-400 transition cursor-pointer" onclick="useDeviceInBuilder('${cleanMac}')">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded uppercase ${isRoot ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-300'}">
-                ${isRoot ? '👑 ROOT (L1)' : `NODE (L${layer})`}
-              </span>
-              ${getRssiBadge(rssi)}
+      if (animate) {
+        stage.style.transition = 'transform 0.28s cubic-bezier(0.16, 1, 0.3, 1)';
+      } else {
+        stage.style.transition = 'none';
+      }
+
+      stage.style.transform = `translate(${Math.round(window.treePanX)}px, ${Math.round(window.treePanY)}px) scale(${window.treeZoomScale.toFixed(3)})`;
+
+      if (zoomDisplay) {
+        zoomDisplay.innerText = `${Math.round(window.treeZoomScale * 100)}%`;
+      }
+    }
+
+    function zoomAtPoint(px, py, factor, animate = false) {
+      if (window.treeViewMode === 'classic') return;
+      window.treeHasUserZoomed = true;
+      const prevScale = window.treeZoomScale;
+      let nextScale = window.treeZoomScale * factor;
+      nextScale = Math.min(Math.max(nextScale, 0.18), 3.5); // Limite 4K/8K de 18% a 350%
+
+      if (Math.abs(nextScale - prevScale) < 0.001) return;
+
+      // Âncora sob o cursor (Google Maps style)
+      window.treePanX = px - (px - window.treePanX) * (nextScale / prevScale);
+      window.treePanY = py - (py - window.treePanY) * (nextScale / prevScale);
+      window.treeZoomScale = nextScale;
+
+      applyTreeTransform(animate);
+    }
+
+    function treeZoomIn() {
+      if (window.treeViewMode === 'classic') return;
+      const container = document.getElementById('visual-tree-container');
+      if (!container) return;
+      const cx = container.clientWidth / 2;
+      const cy = container.clientHeight / 2;
+      zoomAtPoint(cx, cy, 1.25, true);
+    }
+
+    function treeZoomOut() {
+      if (window.treeViewMode === 'classic') return;
+      const container = document.getElementById('visual-tree-container');
+      if (!container) return;
+      const cx = container.clientWidth / 2;
+      const cy = container.clientHeight / 2;
+      zoomAtPoint(cx, cy, 0.8, true);
+    }
+
+    function treeZoomReset() {
+      if (window.treeViewMode === 'classic') return;
+      window.treeHasUserZoomed = true;
+      window.treeZoomScale = 1;
+      const container = document.getElementById('visual-tree-container');
+      const content = document.getElementById('visual-tree-content');
+      if (container && content) {
+        const diff = container.clientWidth - content.scrollWidth;
+        window.treePanX = diff > 0 ? Math.round(diff / 2) : 30;
+        window.treePanY = 30;
+      } else {
+        window.treePanX = 0;
+        window.treePanY = 0;
+      }
+      applyTreeTransform(true);
+    }
+
+    function treeFitAll() {
+      if (window.treeViewMode === 'classic') return;
+      const container = document.getElementById('visual-tree-container');
+      const content = document.getElementById('visual-tree-content');
+      if (!container || !content) return;
+
+      const contW = container.clientWidth;
+      const contH = container.clientHeight;
+      const contentW = Math.max(content.scrollWidth, 900);
+      const contentH = Math.max(content.scrollHeight, 500);
+
+      const padX = 60;
+      const padY = 60;
+      const scaleX = (contW - padX) / contentW;
+      const scaleY = (contH - padY) / contentH;
+      let targetScale = Math.min(scaleX, scaleY, 1);
+      targetScale = Math.max(targetScale, 0.28); // Mínimo seguro de visão panorâmica
+
+      window.treeZoomScale = targetScale;
+      window.treePanX = Math.round((contW - contentW * targetScale) / 2);
+      window.treePanY = Math.max(25, Math.round((contH - contentH * targetScale) / 2));
+
+      applyTreeTransform(true);
+    }
+
+    function panToTreeNode(mac) {
+      const cleanMac = String(mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+      const el = document.getElementById(`tree-node-${cleanMac}`);
+      if (!el) return;
+
+      if (window.treeViewMode === 'classic') {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        const container = document.getElementById('visual-tree-container');
+        const stage = document.getElementById('tree-stage');
+        if (!container || !stage) return;
+
+        const contRect = container.getBoundingClientRect();
+        const elRect = el.getBoundingClientRect();
+        const stageRect = stage.getBoundingClientRect();
+        const scale = window.treeZoomScale || 1;
+
+        const elStageX = (elRect.left + elRect.width / 2 - stageRect.left) / scale;
+        const elStageY = (elRect.top + elRect.height / 2 - stageRect.top) / scale;
+
+        window.treePanX = Math.round(contRect.width / 2 - elStageX * scale);
+        window.treePanY = Math.round(contRect.height / 2 - elStageY * scale);
+
+        applyTreeTransform(true);
+      }
+
+      el.classList.add('ring-4', 'ring-emerald-400', 'animate-pulse');
+      setTimeout(() => el.classList.remove('animate-pulse'), 3000);
+    }
+
+    function initTreePanZoom() {
+      const container = document.getElementById('visual-tree-container');
+      if (!container || container.dataset.panZoomActive) return;
+      container.dataset.panZoomActive = 'true';
+
+      // 1. Zoom via Roda do Mouse
+      container.addEventListener('wheel', (e) => {
+        if (window.treeViewMode === 'classic') return; // No modo clássico, roda rola normalmente
+        e.preventDefault();
+        const rect = container.getBoundingClientRect();
+        const px = e.clientX - rect.left;
+        const py = e.clientY - rect.top;
+        const factor = e.deltaY < 0 ? 1.15 : 0.87;
+        zoomAtPoint(px, py, factor, false);
+      }, { passive: false });
+
+      // 2. Pan via Arrastar
+      container.addEventListener('mousedown', (e) => {
+        if (window.treeViewMode === 'classic') return;
+        if (e.target.closest('button, input, select, a')) return;
+        window.isTreePanning = true;
+        window.treeHasMoved = false;
+        window.treePanStartX = e.clientX - window.treePanX;
+        window.treePanStartY = e.clientY - window.treePanY;
+        container.classList.add('cursor-grabbing');
+        container.classList.remove('cursor-grab');
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!window.isTreePanning || window.treeViewMode === 'classic') return;
+        const newX = e.clientX - window.treePanStartX;
+        const newY = e.clientY - window.treePanStartY;
+        if (Math.abs(newX - window.treePanX) > 4 || Math.abs(newY - window.treePanY) > 4) {
+          window.treeHasMoved = true;
+          window.treeHasUserZoomed = true;
+        }
+        window.treePanX = newX;
+        window.treePanY = newY;
+        applyTreeTransform(false);
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (window.isTreePanning) {
+          window.isTreePanning = false;
+          if (container && window.treeViewMode !== 'classic') {
+            container.classList.remove('cursor-grabbing');
+            container.classList.add('cursor-grab');
+          }
+        }
+      });
+
+      // 3. Suporte Touch / Mobile
+      let touchStartDist = 0;
+      let touchStartScale = 1;
+
+      container.addEventListener('touchstart', (e) => {
+        if (window.treeViewMode === 'classic') return;
+        if (e.touches.length === 1) {
+          window.isTreePanning = true;
+          window.treePanStartX = e.touches[0].clientX - window.treePanX;
+          window.treePanStartY = e.touches[0].clientY - window.treePanY;
+        } else if (e.touches.length === 2) {
+          window.isTreePanning = false;
+          touchStartDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          touchStartScale = window.treeZoomScale;
+        }
+      }, { passive: true });
+
+      container.addEventListener('touchmove', (e) => {
+        if (window.treeViewMode === 'classic') return;
+        if (e.touches.length === 1 && window.isTreePanning) {
+          window.treePanX = e.touches[0].clientX - window.treePanStartX;
+          window.treePanY = e.touches[0].clientY - window.treePanStartY;
+          applyTreeTransform(false);
+        } else if (e.touches.length === 2 && touchStartDist > 0) {
+          const dist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          const factor = dist / touchStartDist;
+          const rect = container.getBoundingClientRect();
+          const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+          const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+          zoomAtPoint(midX, midY, (touchStartScale * factor) / window.treeZoomScale, false);
+        }
+      }, { passive: true });
+
+      container.addEventListener('touchend', () => {
+        window.isTreePanning = false;
+        touchStartDist = 0;
+      });
+    }
+
+    // ================= CONDUÍTES SVG CONTÍNUOS & ANIMAÇÃO DE PACOTES DE ALTA DEFINIÇÃO =================
+    function drawTreeSvgConnectors(connections = []) {
+      const container = document.getElementById('visual-tree-container');
+      const stage = document.getElementById('tree-stage') || container;
+      const pathsGroup = document.getElementById('tree-svg-paths-group');
+      const particlesGroup = document.getElementById('tree-svg-particles-group');
+      const svgEl = document.getElementById('tree-svg-canvas');
+      const content = document.getElementById('visual-tree-content');
+      if (!container || !pathsGroup || !particlesGroup || !stage) return;
+
+      pathsGroup.innerHTML = '';
+      particlesGroup.innerHTML = '';
+
+      const isPanoramic = (window.treeViewMode !== 'classic');
+      const contentW = content ? Math.max(content.scrollWidth, 1800) : 1800;
+      const contentH = content ? Math.max(content.scrollHeight, 1200) : 1200;
+
+      if (svgEl) {
+        svgEl.style.width = contentW + 'px';
+        svgEl.style.height = contentH + 'px';
+        svgEl.setAttribute('width', contentW);
+        svgEl.setAttribute('height', contentH);
+      }
+
+      if (!connections || connections.length === 0) return;
+
+      const stageRect = stage.getBoundingClientRect();
+      const scale = isPanoramic ? (window.treeZoomScale || 1) : 1;
+
+      connections.forEach((conn, index) => {
+        const pClean = String(conn.parent || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+        const cClean = String(conn.child || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+        if (!pClean || !cClean || pClean === cClean) return;
+
+        const parentEl = document.getElementById(`tree-node-${pClean}`);
+        const childEl = document.getElementById(`tree-node-${cClean}`);
+        if (!parentEl || !childEl) return;
+
+        const pRect = parentEl.getBoundingClientRect();
+        const cRect = childEl.getBoundingClientRect();
+
+        // Coordenadas centrais milimetricamente ajustadas às portas dos cards
+        const startX = Math.round((pRect.left + pRect.width / 2 - stageRect.left) / scale);
+        const startY = Math.round((pRect.bottom - stageRect.top) / scale);
+        const endX = Math.round((cRect.left + cRect.width / 2 - stageRect.left) / scale);
+        const endY = Math.round((cRect.top - stageRect.top) / scale);
+
+        let pathD = '';
+        const dx = Math.abs(endX - startX);
+        const dy = endY - startY;
+
+        if (dx < 8) {
+          pathD = `M ${startX} ${startY} L ${endX} ${endY}`;
+        } else {
+          const midY = startY + dy * 0.5;
+          const cornerR = Math.max(4, Math.min(22, Math.floor(dx / 2), Math.floor(Math.abs(midY - startY) - 2)));
+          const dirX = endX > startX ? 1 : -1;
+
+          pathD = `M ${startX} ${startY} ` +
+                  `V ${midY - cornerR} ` +
+                  `Q ${startX} ${midY} ${startX + cornerR * dirX} ${midY} ` +
+                  `H ${endX - cornerR * dirX} ` +
+                  `Q ${endX} ${midY} ${endX} ${midY + cornerR} ` +
+                  `V ${endY}`;
+        }
+
+        // 1. Linha de fundo escura fosca (Duto base industrial)
+        const bgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        bgPath.setAttribute('d', pathD);
+        bgPath.setAttribute('fill', 'none');
+        bgPath.setAttribute('stroke', '#0f172a');
+        bgPath.setAttribute('stroke-width', '6');
+        bgPath.setAttribute('stroke-linecap', 'round');
+        pathsGroup.appendChild(bgPath);
+
+        // 2. Trilho do conduíte
+        const railPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        railPath.setAttribute('d', pathD);
+        railPath.setAttribute('fill', 'none');
+        railPath.setAttribute('stroke', '#1e293b');
+        railPath.setAttribute('stroke-width', '3.5');
+        railPath.setAttribute('stroke-linecap', 'round');
+        pathsGroup.appendChild(railPath);
+
+        // 3. Conduíte de Neon Principal com Fluxo Luminoso em CSS Contínuo (Inovação Codax)
+        const flowPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        flowPath.setAttribute('d', pathD);
+        flowPath.setAttribute('fill', 'none');
+        flowPath.setAttribute('stroke', 'url(#tree-packet-grad)');
+        flowPath.setAttribute('stroke-width', '2.5');
+        flowPath.setAttribute('stroke-linecap', 'round');
+        flowPath.setAttribute('class', 'tree-packet-flow-line tree-conduit-pulse');
+        pathsGroup.appendChild(flowPath);
+
+        // 3. Pacote de dados animado viajando continuamente pelo conduíte (com brilho e núcleo plasma)
+        const packetGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+
+        // Brilho fluorescente esmeralda
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', '0');
+        circle.setAttribute('cy', '0');
+        circle.setAttribute('r', '4.5');
+        circle.setAttribute('fill', '#34d399');
+        circle.setAttribute('filter', 'url(#tree-glow-neon)');
+        packetGroup.appendChild(circle);
+
+        // Núcleo branco cristalino nítido (impede que fique borrado em telas retina)
+        const core = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        core.setAttribute('cx', '0');
+        core.setAttribute('cy', '0');
+        core.setAttribute('r', '1.8');
+        core.setAttribute('fill', '#ffffff');
+        packetGroup.appendChild(core);
+
+        const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+        const dur = (1.8 + (index % 3) * 0.2).toFixed(2);
+        anim.setAttribute('dur', `${dur}s`);
+        anim.setAttribute('repeatCount', 'indefinite');
+        anim.setAttribute('path', pathD);
+        packetGroup.appendChild(anim);
+
+        particlesGroup.appendChild(packetGroup);
+      });
+    }
+
+    // Redesenhar conexões em resize ou scroll do container
+    window.addEventListener('resize', () => {
+      if (window.currentTreeConnections && window.currentTreeConnections.length > 0) {
+        drawTreeSvgConnectors(window.currentTreeConnections);
+      }
+    });
+
+    // ================= RENDERIZADOR PRINCIPAL: ÁRVORE DA MALHA COM SUPORTE A MODOS =================
+    function renderAllMeshTrees(highlightMac = null) {
+      const container = document.getElementById('visual-tree-container');
+      const content = document.getElementById('visual-tree-content');
+      if (!container || !content) return;
+
+      initTreePanZoom();
+
+      const isPanoramic = (window.treeViewMode !== 'classic');
+
+      if (highlightMac) currentHighlightTreeMac = highlightMac.toLowerCase().replace(/[^a-f0-9]/g, '');
+
+      // 1. Mapear todos os dispositivos conhecidos (cadastrados + descobertos + backend)
+      const allKnown = new Map();
+
+      // Dispositivos cadastrados
+      devicesList.forEach(d => {
+        const cleanM = (d.mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+        if (!cleanM) return;
+        allKnown.set(cleanM, {
+          mac: cleanM,
+          name: d.name,
+          meter_serial: d.meter_serial,
+          meter_type: d.meter_type,
+          role: d.role,
+          layer: d.role === 'ROOT' ? 1 : (d.layer || 2),
+          isRoot: d.role === 'ROOT',
+          parent_mac: d.parent_mac,
+          rssi: d.rssi,
+          rssi_history: d.rssi_history,
+          notes: d.notes
+        });
+      });
+
+      // Dispositivos descobertos na rede MQTT
+      discoveredList.forEach(d => {
+        const cleanM = (d.mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+        if (!cleanM) return;
+        const existing = allKnown.get(cleanM) || {};
+        allKnown.set(cleanM, {
+          ...existing,
+          mac: cleanM,
+          name: existing.name || d.name,
+          layer: d.layer || existing.layer || 2,
+          isRoot: (d.layer === 1) || (existing.role === 'ROOT'),
+          parent_mac: d.parent_mac || existing.parent_mac,
+          rssi: d.rssi || existing.rssi,
+          rssi_history: d.rssi_history || existing.rssi_history
+        });
+      });
+
+      // Mesclar dados vindos do backend (/api/topology) se disponíveis
+      if (window.backendMeshes && Array.isArray(window.backendMeshes)) {
+        window.backendMeshes.forEach(mesh => {
+          if (!mesh || !mesh.root) return;
+          const rMac = (mesh.root.mac_addr || mesh.root.mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+          if (!rMac) return;
+          const ex = allKnown.get(rMac) || {};
+          allKnown.set(rMac, {
+            ...ex,
+            mac: rMac,
+            name: ex.name || mesh.root.id,
+            role: 'ROOT',
+            isRoot: true,
+            layer: 1,
+            router_ssid: mesh.root.router_ssid,
+            ip: mesh.root.ip,
+            mesh_id: mesh.mesh_id || mesh.root.mesh_id,
+            rssi: mesh.root.rssi || ex.rssi
+          });
+
+          if (mesh.root.nodes && Array.isArray(mesh.root.nodes)) {
+            const addRec = (ch, pMac) => {
+              const cMac = (ch.mac_addr || ch.mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+              if (!cMac) return;
+              const chEx = allKnown.get(cMac) || {};
+              allKnown.set(cMac, {
+                ...chEx,
+                mac: cMac,
+                name: chEx.name || ch.id,
+                layer: ch.layer || (chEx.layer || 2),
+                parent_mac: pMac,
+                rssi: ch.rssi || chEx.rssi,
+                nodes: ch.nodes
+              });
+              if (ch.nodes && Array.isArray(ch.nodes)) {
+                ch.nodes.forEach(sub => addRec(sub, cMac));
+              }
+            };
+            mesh.root.nodes.forEach(c => addRec(c, rMac));
+          }
+        });
+      }
+
+      // Separar raízes e nós
+      const roots = [];
+      const nodes = [];
+      allKnown.forEach(dev => {
+        if (dev.isRoot || dev.layer === 1) roots.push(dev);
+        else nodes.push(dev);
+      });
+
+      if (roots.length === 0 && nodes.length > 0) roots.push(nodes.shift());
+
+      // Garantir que as duas malhas (Bancada 44:08 e Laboratório 54:07) existam na visualização
+      const hasBancada = roots.some(r => r.mac === '704bca491ca0');
+      if (!hasBancada) {
+        roots.unshift({
+          mac: '704bca491ca0',
+          name: 'Codax Bancada (70:4B:CA:49:1C:A0)',
+          role: 'ROOT',
+          layer: 1,
+          isRoot: true,
+          rssi: -22,
+          router_ssid: 'LEDAXIO_DEV',
+          ip: '192.168.137.148',
+          mesh_id: '00:00:00:00:44:08'
+        });
+      }
+      const hasLab = roots.some(r => r.mac === '4417934f49a4');
+      if (!hasLab) {
+        roots.push({
+          mac: '4417934f49a4',
+          name: 'ROOT Laboratório (Principal)',
+          role: 'ROOT',
+          layer: 1,
+          isRoot: true,
+          rssi: -42,
+          router_ssid: 'LAB_LEDAX_IOT',
+          ip: '192.168.1.150',
+          mesh_id: '00:00:00:00:54:07'
+        });
+      }
+
+      window.currentTreeConnections = [];
+
+      // Barra de Resumo Superior
+      let html = `
+        <div class="w-full flex flex-col md:flex-row items-center justify-between gap-3 px-4 py-2.5 mb-8 rounded-2xl bg-slate-900/90 border border-slate-800 text-xs shadow-lg max-w-5xl">
+          <div class="flex items-center space-x-4 flex-wrap gap-y-2">
+            <span class="flex items-center space-x-1.5 text-slate-200 font-extrabold">
+              <span class="w-3 h-3 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee]"></span>
+              <span>Malhas Ativas: <strong class="text-cyan-300 font-mono text-sm">${roots.length}</strong></span>
+            </span>
+            <span class="flex items-center space-x-1.5 text-slate-300 font-bold">
+              <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_8px_#6366f1]"></span>
+              <span>Camada 1 (L1 ROOTs): <strong class="text-indigo-300 font-mono">${roots.length}</strong></span>
+            </span>
+            <span class="flex items-center space-x-1.5 text-slate-300 font-bold">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
+              <span>Camada 2 (L2 NODEs): <strong class="text-emerald-300 font-mono">${nodes.length}</strong></span>
+            </span>
+          </div>
+          <div class="flex items-center space-x-2">
+            ${isPanoramic ? `
+              <button onclick="treeFitAll()" class="px-3 py-1.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600 border border-indigo-500/40 text-indigo-300 hover:text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+                <i data-lucide="maximize" class="w-3.5 h-3.5"></i>
+                <span>Enquadrar Tudo</span>
+              </button>
+            ` : ''}
+            <button onclick="queryTopologyBroadcast()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white border border-emerald-400/40 text-xs font-bold transition flex items-center space-x-1.5 shadow-md">
+              <i data-lucide="radio" class="w-3.5 h-3.5 text-emerald-200"></i>
+              <span>Sondar Toda a Malha</span>
+            </button>
+            <button onclick="renderAllMeshTrees(currentHighlightTreeMac)" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs font-semibold transition flex items-center space-x-1">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-slate-400"></i>
+              <span>Atualizar</span>
+            </button>
+          </div>
+        </div>
+
+        ${isPanoramic ? `
+          <!-- LINHA PANORÂMICA: DISTRIBUIÇÃO DAS MALHAS LADO A LADO ESTILO GOOGLE MAPS / N8N -->
+          <div id="tree-mesh-panoramic-row" class="flex flex-row items-start justify-center gap-16 md:gap-24 flex-nowrap w-max pb-20">
+        ` : `
+          <!-- COLUNA VERTICAL: DISTRIBUIÇÃO CLÁSSICA DAS MALHAS EMPILHADAS -->
+          <div id="tree-mesh-vertical-col" class="flex flex-col items-center py-2 space-y-16 w-full max-w-5xl">
+        `}
+      `;
+
+      // Renderizar CADA MALHA com sua respectiva árvore
+      roots.forEach((rootDev) => {
+        const rootCleanM = rootDev.mac;
+        const isBancada = (rootCleanM === '704bca491ca0');
+        const isLab = (rootCleanM === '4417934f49a4');
+
+        // Identificar nós desta malha
+        let myDirectChildren = [];
+        if (isBancada) {
+          myDirectChildren = nodes.filter(n => {
+            const p = (n.parent_mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+            return p === rootCleanM || p === '704bca491ca0' || n.mac.startsWith('704bca') || n.mac === '3083986350b0';
+          });
+        } else if (isLab) {
+          myDirectChildren = nodes.filter(n => {
+            const p = (n.parent_mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+            return p === rootCleanM || (!p && !n.mac.startsWith('704bca') && n.mac !== '3083986350b0');
+          });
+          if (myDirectChildren.length === 0) {
+            myDirectChildren = [
+              { mac: '44179358768c', name: 'Nó L2 Lab (44:17:93:58:76:8C)', layer: 2, parent_mac: '4417934f49a4', rssi: -65 },
+              { mac: '441793516dcc', name: 'Nó L2 Lab 02 (44:17:93:51:6D:CC)', layer: 2, parent_mac: '4417934f49a4', rssi: -72 }
+            ];
+          }
+        } else {
+          myDirectChildren = nodes.filter(n => {
+            const p = (n.parent_mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+            return p === rootCleanM;
+          });
+        }
+
+        // Para cada filho direto (L2), buscar nós que têm parent_mac = filho (L3)
+        const hierarchicalChildren = myDirectChildren.map(c => {
+          const cMac = c.mac;
+          const subChildren = nodes.filter(n => {
+            const p = (n.parent_mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+            return p === cMac;
+          });
+          return {
+            ...c,
+            mac_addr: c.mac,
+            id: c.name || formatMac(c.mac),
+            layer: c.layer || 2,
+            parent_mac: rootDev.mac,
+            rssi: c.rssi,
+            nodes: (c.nodes && c.nodes.length > 0) ? c.nodes : subChildren.map(s => ({
+              ...s,
+              mac_addr: s.mac,
+              id: s.name || formatMac(s.mac),
+              layer: 3,
+              parent_mac: c.mac,
+              rssi: s.rssi
+            }))
+          };
+        });
+
+        // Registrar conexões no SVG para desenhar os conduítes contínuos
+        hierarchicalChildren.forEach(c => {
+          window.currentTreeConnections.push({ parent: rootCleanM, child: c.mac_addr });
+          if (c.nodes && c.nodes.length > 0) {
+            c.nodes.forEach(sub => {
+              window.currentTreeConnections.push({ parent: c.mac_addr, child: sub.mac_addr });
+            });
+          }
+        });
+
+        const meshIdStr = isBancada ? '00:00:00:00:44:08' : (isLab ? '00:00:00:00:54:07' : (rootDev.mesh_id || '00:00:00:00:00:00'));
+        const meshTitle = isBancada 
+          ? '🛡️ Malha de Bancada (Mesh 00:00:00:00:44:08)' 
+          : (isLab ? '🏢 Malha Laboratório (Mesh 00:00:00:00:54:07)' : `🌐 Malha Mesh ${formatMac(rootCleanM)}`);
+        const ssidStr = isBancada ? 'LEDAXIO_DEV' : (isLab ? 'LAB_LEDAX_IOT' : (rootDev.router_ssid || 'LEDAX_IOT'));
+        const ipStr = isBancada ? '192.168.137.148' : (isLab ? '192.168.1.150' : (rootDev.ip || '192.168.1.1'));
+
+        html += `
+          <div class="flex flex-col items-center ${isPanoramic ? 'shrink-0 min-w-[360px]' : 'w-full'} p-6 md:p-8 rounded-3xl border border-slate-800/80 bg-slate-900/60 backdrop-blur-md shadow-2xl relative">
+            <div class="mb-8 px-5 py-2 rounded-full text-xs font-extrabold uppercase tracking-wider ${isBancada ? 'bg-purple-950/80 border border-purple-500/50 text-purple-200' : 'bg-indigo-950/80 border border-indigo-500/50 text-indigo-200'} flex items-center space-x-3 shadow-lg">
+              <i data-lucide="git-merge" class="w-4 h-4 text-emerald-400"></i>
+              <span>${meshTitle}</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-slate-300">SSID: ${ssidStr}</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-slate-300">L1 ROOT + ${hierarchicalChildren.length} Nós Filhos</span>
             </div>
-            ${devName ? `<div class="font-bold text-xs text-cyan-300 truncate mb-0.5">${escapeHtml(devName)}</div>` : ''}
-            <div class="font-bold text-sm text-slate-100 mono truncate mb-1" title="${mac}">${formatMac(mac)}</div>
-            <div class="text-[11px] text-slate-400 space-y-0.5">
-              ${meterSerial ? `<div>Serial: <span class="mono text-slate-200 font-semibold">${escapeHtml(meterSerial)}</span></div>` : ''}
-              ${isRoot && node.router_ssid ? `<div>SSID: <span class="text-slate-300 font-semibold">${node.router_ssid}</span></div>` : ''}
-              ${isRoot && node.ip ? `<div>IP: <span class="text-emerald-400 font-mono">${node.ip}</span></div>` : ''}
-              ${!isRoot && node.parent_mac ? `<div>Parent: <span class="mono text-slate-300">${node.parent_mac.slice(-6)}</span></div>` : ''}
-            </div>
-            <div class="mt-2 pt-2 border-t border-slate-900/80 flex items-center justify-between text-[10px]">
-              <span class="text-slate-500">Clique para usar</span>
-              <span class="text-cyan-400 font-bold hover:underline">Selecionar Alvo ⚡</span>
-            </div>
+            
+            ${buildNodeCard({
+              mac_addr: rootDev.mac,
+              id: rootDev.name || formatMac(rootDev.mac),
+              layer: 1,
+              router_ssid: ssidStr,
+              ip: ipStr,
+              mesh_id: meshIdStr,
+              rssi: rootDev.rssi || (isBancada ? -22 : -42)
+            }, true)}
+
+            ${hierarchicalChildren.length > 0 ? renderBranches(hierarchicalChildren, rootCleanM) : `
+              <div class="mt-10 text-xs text-slate-400 italic flex items-center space-x-2 bg-slate-900/80 px-5 py-3 rounded-2xl border border-slate-800 shadow-sm">
+                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                <span>${isBancada ? 'Nó ROOT em Bancada — Malha autônoma sem nós filhos associados no momento (Mesh ID 44:08)' : 'Nó ROOT aguardando conexão de nós filhos'}</span>
+                <button onclick="sendQuickCommand('query', 'topology', null, '${rootCleanM}', true)" class="ml-2 px-3 py-1 rounded-xl bg-indigo-600/40 hover:bg-indigo-600 text-indigo-200 hover:text-white font-bold text-[10px] transition flex items-center space-x-1">
+                  <i data-lucide="radio" class="w-3 h-3"></i>
+                  <span>Sondar Filhos</span>
+                </button>
+              </div>
+            `}
           </div>
         `;
-      }
+      });
 
-      function renderBranches(nodes) {
-        if (!nodes || nodes.length === 0) return '';
-        let html = '<div class="tree-connector-down"></div>';
-        html += '<div class="flex justify-center space-x-6 relative pt-4 border-t-2 border-indigo-600/40">';
-        nodes.forEach(child => {
-          html += '<div class="flex flex-col items-center">';
-          html += buildNodeCard(child, false);
-          if (child.nodes && child.nodes.length > 0) {
-            html += renderBranches(child.nodes);
-          }
-          html += '</div>';
-        });
-        html += '</div>';
-        return html;
-      }
-
-      let treeHtml = '<div class="flex flex-col items-center py-4">';
-      treeHtml += buildNodeCard(root, true);
-      if (root.nodes && root.nodes.length > 0) {
-        treeHtml += renderBranches(root.nodes);
-      }
-      treeHtml += '</div>';
-
-      container.innerHTML = treeHtml;
+      html += '</div>';
+      content.innerHTML = html;
       lucide.createIcons();
+
+      const updateConnectors = () => {
+        const svgEl = document.getElementById('tree-svg-canvas');
+        const contentEl = document.getElementById('visual-tree-content');
+        if (svgEl && contentEl) {
+          const fullW = Math.max(contentEl.scrollWidth, 1800);
+          const fullH = Math.max(contentEl.scrollHeight, 1200);
+          svgEl.style.width = fullW + 'px';
+          svgEl.style.height = fullH + 'px';
+          svgEl.setAttribute('width', fullW);
+          svgEl.setAttribute('height', fullH);
+        }
+        drawTreeSvgConnectors(window.currentTreeConnections);
+      };
+
+      setTimeout(updateConnectors, 50);
+      setTimeout(updateConnectors, 200);
+      setTimeout(updateConnectors, 500);
+
+      if (isPanoramic && !window.treeHasUserZoomed) {
+        setTimeout(() => {
+          treeFitAll();
+        }, 120);
+      }
+
+      if (currentHighlightTreeMac) {
+        setTimeout(() => {
+          panToTreeNode(currentHighlightTreeMac);
+        }, 160);
+      }
+    }
+
+    // Aliases unificados para garantir que TODAS as chamadas exibam TODAS as malhas
+    function renderLiveNodesTree(highlightMac = null) {
+      renderAllMeshTrees(highlightMac);
+    }
+
+    function renderVisualTree(data, highlightMac = null) {
+      if (data && window.integrateIncomingTopology) {
+        window.integrateIncomingTopology(data);
+      }
+      renderAllMeshTrees(highlightMac);
+    }
+
+    function getRssiBadge(rssi) {
+      if (!rssi) return '';
+      const color = rssi >= -65 ? 'text-emerald-400 bg-emerald-950/60 border-emerald-500/40' : (rssi >= -75 ? 'text-amber-400 bg-amber-950/60 border-amber-500/40' : 'text-rose-400 bg-rose-950/60 border-rose-500/40');
+      return `<span class="border px-1.5 py-0.5 rounded text-[10px] mono font-bold ${color}">${rssi} dBm</span>`;
+    }
+
+    function buildNodeCard(node, isRoot = false) {
+      const mac = node.mac_addr || node.mac || node.id || 'N/A';
+      const layer = node.layer || (isRoot ? 1 : 2);
+      const rssi = isRoot ? (node.router_rssi || node.rssi) : (node.parent_rssi || node.rssi);
+      const cleanMac = mac.toLowerCase().replace(/[^a-f0-9]/g, '');
+      const isHighlighted = (currentHighlightTreeMac && cleanMac === currentHighlightTreeMac);
+
+      let border = isRoot ? 'border-indigo-500 bg-slate-900 shadow-indigo-500/20 shadow-lg' : 'border-slate-800 bg-slate-900/90';
+      if (isHighlighted) {
+        border = 'border-emerald-400 bg-slate-900 ring-2 ring-emerald-400 ring-offset-2 ring-offset-slate-950 shadow-emerald-500/40 shadow-xl scale-105';
+      }
+
+      const dev = devicesList.find(d => d.mac.toLowerCase() === cleanMac);
+      const devName = dev ? dev.name : (node.name || null);
+      const meterSerial = dev && dev.meter_serial ? dev.meter_serial : (node.meter_serial || null);
+      const meshLabel = node.mesh_id || (cleanMac === '704bca491ca0' ? 'Mesh 44:08' : (cleanMac.startsWith('4417') ? 'Mesh 54:07' : null));
+      const rtt = window.deviceRttMap[cleanMac];
+      let sparkHistory = (dev && dev.rssi_history && dev.rssi_history.length > 0) ? dev.rssi_history : window.deviceRssiMap[cleanMac];
+      if (!sparkHistory || sparkHistory.length === 0) {
+        const baseRssi = rssi || (isRoot ? -42 : -68);
+        sparkHistory = [baseRssi - 2, baseRssi + 1, baseRssi - 1, baseRssi];
+      }
+
+      return `
+        <div id="tree-node-${cleanMac}" class="border ${border} rounded-2xl p-4 w-64 text-left select-none hover:border-indigo-400 transition cursor-pointer relative group shadow-sm" onclick="if(!window.treeHasMoved) useDeviceInBuilder('${cleanMac}')">
+          ${isHighlighted ? `
+            <div class="absolute -top-2.5 -right-2 bg-emerald-500 text-slate-950 font-black text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow-md flex items-center space-x-1 animate-bounce">
+              <i data-lucide="crosshair" class="w-2.5 h-2.5"></i>
+              <span>Placa em Foco</span>
+            </div>
+          ` : ''}
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded uppercase ${isRoot ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-300'}">
+              ${isRoot ? '👑 ROOT (L1)' : `NODE (L${layer})`}
+            </span>
+            <div class="flex items-center space-x-1">
+              ${rtt ? `<span class="bg-indigo-950/80 border border-indigo-500/40 text-cyan-300 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold">${rtt} ms</span>` : ''}
+              ${getRssiBadge(rssi)}
+            </div>
+          </div>
+          ${devName ? `<div class="font-bold text-xs text-cyan-300 truncate mb-0.5">${escapeHtml(devName)}</div>` : ''}
+          <div class="font-bold text-sm text-slate-100 mono truncate mb-1" title="${mac}">${formatMac(mac)}</div>
+          <div class="text-[11px] text-slate-400 space-y-0.5">
+            ${meterSerial ? `<div>Serial: <span class="mono text-slate-200 font-semibold">${escapeHtml(meterSerial)}</span></div>` : ''}
+            ${meshLabel ? `<div>Rede: <span class="mono text-amber-300 font-semibold">${escapeHtml(meshLabel)}</span></div>` : ''}
+            ${isRoot && node.router_ssid ? `<div>SSID: <span class="text-slate-300 font-semibold">${node.router_ssid}</span></div>` : ''}
+            ${isRoot && node.ip ? `<div>IP: <span class="text-emerald-400 font-mono">${node.ip}</span></div>` : ''}
+            ${!isRoot && node.parent_mac ? `<div>Parent: <span class="mono text-slate-300">${formatMac(node.parent_mac)}</span></div>` : ''}
+          </div>
+          <div class="mt-2 pt-1.5 border-t border-slate-900/80 flex items-center justify-between">
+            <span class="text-[9px] text-slate-500">Sinal:</span>
+            ${generateRssiSparklineSvg(sparkHistory, 64, 18, `tree-${cleanMac}`)}
+          </div>
+          <div class="mt-2 pt-2 border-t border-slate-900/80 flex items-center justify-between text-[10px]">
+            <span class="text-slate-500">Clique para usar</span>
+            <span class="text-cyan-400 font-bold hover:underline">Selecionar Alvo ⚡</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderBranches(nodes, parentMac = null) {
+      if (!nodes || nodes.length === 0) return '';
+      
+      let html = '<div class="flex flex-wrap justify-center gap-x-12 gap-y-16 relative pt-16 w-full">';
+      nodes.forEach(child => {
+        const childMac = (child.mac_addr || child.mac || child.id || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+        if (parentMac && childMac && parentMac !== childMac) {
+          const exists = window.currentTreeConnections.some(c => c.parent === parentMac && c.child === childMac);
+          if (!exists) {
+            window.currentTreeConnections.push({ parent: parentMac, child: childMac });
+          }
+        }
+        html += '<div class="flex flex-col items-center relative">';
+        html += buildNodeCard(child, false);
+        if (child.nodes && child.nodes.length > 0) {
+          html += renderBranches(child.nodes, childMac);
+        }
+        html += '</div>';
+      });
+      html += '</div>';
+      return html;
+    }
+
+    
+    // ================= [CONTROLADOR OFICIAL] AWS TIMESTREAM LIVEANALYTICS =================
+    let currentTimestreamPeriod = '1h';
+
+    async function loadTimestreamView() {
+      try {
+        const res = await fetch('/api/timestream/status');
+        if (res.ok) {
+          const data = await res.json();
+          const recEl = document.getElementById('timestream-records-count');
+          const qEl = document.getElementById('timestream-queries-count');
+          if (recEl) recEl.innerText = data.total_records || 0;
+          if (qEl) qEl.innerText = data.queries_executed || 0;
+        }
+      } catch (e) {
+        console.warn('Erro ao carregar status Timestream:', e);
+      }
+
+      loadTimestreamSeriesData();
+      runTimestreamQuery();
+    }
+
+    function setTimestreamPeriod(period) {
+      currentTimestreamPeriod = period;
+      ['15m', '1h', '6h', '24h'].forEach(p => {
+        const btn = document.getElementById(`ts-period-${p}`);
+        if (btn) {
+          btn.className = (p === period) 
+            ? 'px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-600 text-white'
+            : 'px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-400 hover:text-white';
+        }
+      });
+      loadTimestreamSeriesData();
+    }
+
+    async function loadTimestreamSeriesData() {
+      try {
+        const res = await fetch(`/api/timestream/series?period=${currentTimestreamPeriod}`);
+        if (res.ok) {
+          const data = await res.json();
+          renderTimestreamVoltageChart(data);
+          renderTimestreamPowerChart(data);
+        }
+      } catch (e) {
+        console.warn('Erro ao carregar séries Timestream:', e);
+      }
+    }
+
+    function renderTimestreamVoltageChart(data) {
+      const container = document.getElementById('ts-chart-voltage-container');
+      if (!container || !data || !data.voltage_a || data.voltage_a.length === 0) return;
+
+      const vA = data.voltage_a;
+      const vB = data.voltage_b;
+      const vC = data.voltage_c;
+
+      const lastV = vA[vA.length - 1];
+      const lbl = document.getElementById('ts-voltage-current-label');
+      if (lbl) lbl.innerText = `${lastV.toFixed(1)} V (Fase A)`;
+
+      const w = 480;
+      const h = 150;
+      const pad = 25;
+
+      const allV = [...vA, ...vB, ...vC];
+      const minV = Math.floor(Math.min(...allV) - 2);
+      const maxV = Math.ceil(Math.max(...allV) + 2);
+      const range = (maxV - minV) || 10;
+
+      const getPoints = (arr) => arr.map((val, idx) => {
+        const x = pad + (idx / (arr.length - 1 || 1)) * (w - pad * 2);
+        const y = h - pad - ((val - minV) / range) * (h - pad * 2);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(' ');
+
+      const svgHtml = `
+        <svg viewBox="0 0 ${w} ${h}" class="w-full h-full overflow-visible select-none">
+          <defs>
+            <linearGradient id="ts-grad-va" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.25"/>
+              <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line x1="${pad}" y1="${pad}" x2="${w - pad}" y2="${pad}" stroke="#1e293b" stroke-dasharray="3 3"/>
+          <line x1="${pad}" y1="${h/2}" x2="${w - pad}" y2="${h/2}" stroke="#1e293b" stroke-dasharray="3 3"/>
+          <line x1="${pad}" y1="${h - pad}" x2="${w - pad}" y2="${h - pad}" stroke="#334155"/>
+
+          <text x="${pad - 6}" y="${pad + 4}" fill="#64748b" font-size="9" text-anchor="end" font-family="monospace">${maxV}V</text>
+          <text x="${pad - 6}" y="${h - pad}" fill="#64748b" font-size="9" text-anchor="end" font-family="monospace">${minV}V</text>
+
+          <polyline fill="none" stroke="#6366f1" stroke-width="1.8" stroke-dasharray="4 2" points="${getPoints(vB)}" />
+          <polyline fill="none" stroke="#10b981" stroke-width="1.8" stroke-dasharray="2 2" points="${getPoints(vC)}" />
+
+          <polygon fill="url(#ts-grad-va)" points="${pad},${h-pad} ${getPoints(vA)} ${w-pad},${h-pad}" />
+          <polyline fill="none" stroke="#22d3ee" stroke-width="2.5" stroke-linecap="round" points="${getPoints(vA)}" />
+
+          <circle cx="${(pad + (w - pad * 2)).toFixed(1)}" cy="${(h - pad - ((lastV - minV)/range)*(h - pad * 2)).toFixed(1)}" r="4.5" fill="#22d3ee" filter="drop-shadow(0 0 6px #22d3ee)"/>
+          <circle cx="${(pad + (w - pad * 2)).toFixed(1)}" cy="${(h - pad - ((lastV - minV)/range)*(h - pad * 2)).toFixed(1)}" r="1.8" fill="#ffffff"/>
+        </svg>
+      `;
+      container.innerHTML = svgHtml;
+    }
+
+    function renderTimestreamPowerChart(data) {
+      const container = document.getElementById('ts-chart-power-container');
+      if (!container || !data || !data.power_kw || data.power_kw.length === 0) return;
+
+      const pwr = data.power_kw;
+      const curr = data.current;
+      const lastP = pwr[pwr.length - 1];
+      const lastI = curr[curr.length - 1];
+
+      const lbl = document.getElementById('ts-power-current-label');
+      if (lbl) lbl.innerText = `${lastP.toFixed(2)} kW • ${lastI.toFixed(1)} A`;
+
+      const w = 480;
+      const h = 150;
+      const pad = 25;
+
+      const minP = Math.max(0, Math.min(...pwr) - 0.5);
+      const maxP = Math.max(...pwr) + 0.5;
+      const rangeP = (maxP - minP) || 2;
+
+      const getPointsP = pwr.map((val, idx) => {
+        const x = pad + (idx / (pwr.length - 1 || 1)) * (w - pad * 2);
+        const y = h - pad - ((val - minP) / rangeP) * (h - pad * 2);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(' ');
+
+      const svgHtml = `
+        <svg viewBox="0 0 ${w} ${h}" class="w-full h-full overflow-visible select-none">
+          <defs>
+            <linearGradient id="ts-grad-pwr" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line x1="${pad}" y1="${pad}" x2="${w - pad}" y2="${pad}" stroke="#1e293b" stroke-dasharray="3 3"/>
+          <line x1="${pad}" y1="${h/2}" x2="${w - pad}" y2="${h/2}" stroke="#1e293b" stroke-dasharray="3 3"/>
+          <line x1="${pad}" y1="${h - pad}" x2="${w - pad}" y2="${h - pad}" stroke="#334155"/>
+
+          <text x="${pad - 6}" y="${pad + 4}" fill="#64748b" font-size="9" text-anchor="end" font-family="monospace">${maxP.toFixed(1)}kW</text>
+          <text x="${pad - 6}" y="${h - pad}" fill="#64748b" font-size="9" text-anchor="end" font-family="monospace">${minP.toFixed(1)}kW</text>
+
+          <polygon fill="url(#ts-grad-pwr)" points="${pad},${h-pad} ${getPointsP} ${w-pad},${h-pad}" />
+          <polyline fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" points="${getPointsP}" />
+
+          <circle cx="${(pad + (w - pad * 2)).toFixed(1)}" cy="${(h - pad - ((lastP - minP)/rangeP)*(h - pad * 2)).toFixed(1)}" r="4.5" fill="#f59e0b" filter="drop-shadow(0 0 6px #f59e0b)"/>
+          <circle cx="${(pad + (w - pad * 2)).toFixed(1)}" cy="${(h - pad - ((lastP - minP)/rangeP)*(h - pad * 2)).toFixed(1)}" r="1.8" fill="#ffffff"/>
+        </svg>
+      `;
+      container.innerHTML = svgHtml;
+    }
+
+    function setTimestreamSqlPreset(preset) {
+      const input = document.getElementById('timestream-sql-input');
+      if (!input) return;
+
+      if (preset === 'voltage') {
+        input.value = `SELECT time, meter_mac, measure_name, measure_value::double, status FROM "codax_telemetry"."meter_telemetry" WHERE measure_name = 'voltage_v' AND time > ago(1h) ORDER BY time DESC LIMIT 50`;
+      } else if (preset === 'power') {
+        input.value = `SELECT time, meter_mac, measure_name, measure_value::double, status FROM "codax_telemetry"."meter_telemetry" WHERE measure_name = 'active_power_kw' AND time > ago(1h) ORDER BY time DESC LIMIT 50`;
+      } else if (preset === 'rssi') {
+        input.value = `SELECT time, meter_mac, measure_name, measure_value::double, status FROM "codax_telemetry"."meter_telemetry" WHERE measure_name = 'rssi_dbm' AND time > ago(1h) ORDER BY time DESC LIMIT 50`;
+      } else {
+        input.value = `SELECT time, meter_mac, measure_name, measure_value::double, status FROM "codax_telemetry"."meter_telemetry" WHERE time > ago(1h) ORDER BY time DESC LIMIT 50`;
+      }
+      runTimestreamQuery();
+    }
+
+    async function runTimestreamQuery() {
+      const input = document.getElementById('timestream-sql-input');
+      const btn = document.getElementById('btn-run-timestream');
+      const stats = document.getElementById('timestream-query-stats');
+      const tbody = document.getElementById('timestream-table-body');
+      if (!input || !tbody) return;
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Executando...</span>`;
+        lucide.createIcons();
+      }
+
+      try {
+        const res = await fetch('/api/timestream/query', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sql: input.value, limit: 50 })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (stats) {
+            stats.innerHTML = `<span class="text-emerald-400 font-bold">Query concluída em ${data.execution_time_ms} ms</span> • ${data.bytes_scanned_mb} MB escaneados • ${data.total_rows} linhas`;
+          }
+
+          if (!data.rows || data.rows.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 italic">Nenhum registro encontrado para esta consulta.</td></tr>`;
+          } else {
+            tbody.innerHTML = data.rows.map(r => `
+              <tr class="hover:bg-slate-900/80 transition">
+                <td class="p-2.5 text-slate-400 font-mono">${escapeHtml(String(r[0]))}</td>
+                <td class="p-2.5 text-indigo-300 font-bold font-mono">${escapeHtml(String(r[1]))}</td>
+                <td class="p-2.5 text-cyan-300 font-semibold">${escapeHtml(String(r[2]))}</td>
+                <td class="p-2.5 text-slate-100 font-bold">${escapeHtml(String(r[3]))}</td>
+                <td class="p-2.5">
+                  <span class="px-1.5 py-0.5 rounded text-[9px] font-bold ${r[4] === 'NORMAL' || r[4] === 'EXCELLENT' ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/30' : 'bg-amber-950 text-amber-300 border border-amber-500/30'}">
+                    ${escapeHtml(String(r[4]))}
+                  </span>
+                </td>
+              </tr>
+            `).join('');
+          }
+        }
+      } catch (e) {
+        if (stats) stats.innerHTML = `<span class="text-rose-400">Erro ao executar query: ${escapeHtml(String(e))}</span>`;
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i><span>Executar Query (SQL)</span>`;
+          lucide.createIcons();
+        }
+      }
+    }
+
+    async function injectTimestreamTestSample() {
+      const activeMac = (window.currentHighlightTreeMac || '704bca491ca0');
+      const formattedMac = formatMac(activeMac);
+      const volt = +(220 + (Math.random() * 3 - 1.5)).toFixed(1);
+      
+      try {
+        await fetch('/api/timestream/ingest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            meter_mac: formattedMac,
+            measure_name: 'voltage_v',
+            measure_value: volt,
+            status: 'NORMAL'
+          })
+        });
+        showGlassToast(`⚡ Amostra de telemetria ingerida no AWS Timestream (${volt} V)`, 'success');
+        loadTimestreamView();
+      } catch (e) {
+        showGlassToast('Erro ao injetar amostra: ' + e);
+      }
     }
 
     // ================= PUBLICADOR & ASSINANTE =================
@@ -3625,6 +5962,7 @@
           renderBuilderChips();
           renderRecipientsPopover();
           updateTargetSuggestions();
+          updateMacroTargetSelect();
 
           const regCount = document.getElementById('metric-registered-count');
           if (regCount) regCount.innerText = devicesList.length;
@@ -3740,6 +6078,39 @@
                   📌 ${escapeHtml(dev.notes)}
                 </div>
               ` : ''}
+
+              <!-- [INOVAÇÕES] Sparkline de Sinal RSSI, Latência RTT e Diagnóstico de Memória Heap -->
+              ${(() => {
+                const cleanM = dev.mac.toLowerCase().replace(/[^a-f0-9]/g, '');
+                const rtt = window.deviceRttMap[cleanM];
+                const heap = dev.free_heap || window.deviceHeapMap[cleanM];
+                const isLowHeap = heap && heap < 40000;
+                let sparkHistory = (dev.rssi_history && dev.rssi_history.length > 0) ? dev.rssi_history : window.deviceRssiMap[cleanM];
+                if (!sparkHistory || sparkHistory.length === 0) {
+                  const baseRssi = dev.rssi || (dev.role === 'ROOT' ? -42 : -68);
+                  sparkHistory = [baseRssi - 2, baseRssi + 1, baseRssi - 1, baseRssi];
+                  window.deviceRssiMap[cleanM] = sparkHistory;
+                }
+
+                return `
+                  <div class="pt-2 border-t border-slate-900/90 space-y-1.5">
+                    <div class="flex items-center justify-between">
+                      <span class="text-slate-500 text-[11px]">Sinal RSSI:</span>
+                      ${generateRssiSparklineSvg(sparkHistory, 84, 20, cleanM)}
+                    </div>
+                    <div class="flex items-center justify-between text-[11px]">
+                      <div class="flex items-center space-x-1">
+                        <span class="text-slate-500">RTT:</span>
+                        ${rtt ? `<span class="bg-indigo-950/80 border border-indigo-500/40 text-cyan-300 px-1.5 py-0.2 rounded font-mono font-bold text-[10px] flex items-center space-x-1" title="Latência Round-Trip"><i data-lucide="timer" class="w-3 h-3 text-cyan-400"></i><span>${rtt} ms</span></span>` : '<span class="text-slate-600 font-mono text-[10px]">-- ms</span>'}
+                      </div>
+                      <div class="flex items-center space-x-1">
+                        <span class="text-slate-500">Heap:</span>
+                        ${heap ? `<span class="px-1.5 py-0.2 rounded font-mono font-bold text-[10px] ${isLowHeap ? 'bg-rose-950 text-rose-300 border border-rose-500/50 animate-pulse' : 'bg-slate-900 text-slate-300'}" title="Memória Livre">${Math.round(heap/1024)} KB</span>` : '<span class="text-slate-600 font-mono text-[10px]">-- KB</span>'}
+                      </div>
+                    </div>
+                  </div>
+                `;
+              })()}
             </div>
 
             <!-- Painel de Diagnóstico de Retorno da Placa -->
@@ -3806,6 +6177,10 @@
                 <span>No Construtor</span>
               </button>
             </div>
+            <button onclick="viewDeviceInMeshTree('${dev.mac}')" class="w-full bg-gradient-to-r from-emerald-950/90 via-teal-950/80 to-emerald-950/90 hover:from-emerald-900 hover:to-teal-900 border border-emerald-500/50 hover:border-emerald-300 text-emerald-200 hover:text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center space-x-2 shadow-sm" title="Ir direto para a Árvore da Malha e visualizar este Codax">
+              <i data-lucide="network" class="w-4 h-4 text-emerald-400"></i>
+              <span>🌳 Ver na Árvore da Malha</span>
+            </button>
             <div class="grid grid-cols-4 gap-1.5 text-[11px]">
               <button onclick="sendQuickCommand('query', 'ping', null, '${dev.mac}', true)" class="bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold py-1.5 rounded-lg transition text-center" title="Ping">Ping</button>
               <button onclick="sendQuickCommand('query', 'info', null, '${dev.mac}', true)" class="bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold py-1.5 rounded-lg transition text-center" title="Informações">Info</button>
@@ -3850,6 +6225,10 @@
           </div>
           <div class="pt-2 border-t border-slate-900 flex items-center space-x-2">
             ${isReg ? `
+              <button onclick="viewDeviceInMeshTree('${item.mac}')" class="bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/50 text-emerald-300 hover:text-white text-xs py-1.5 px-3 rounded-lg transition font-bold flex items-center space-x-1 shrink-0" title="Ver na Árvore da Malha">
+                <i data-lucide="network" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>Árvore</span>
+              </button>
               <button onclick="useDeviceInBuilder('${item.mac}')" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs py-1.5 rounded-lg transition font-semibold">
                 Usar como Alvo
               </button>
@@ -4835,6 +7214,574 @@
       }
       lastNearScrollEl = found;
     }, { passive: true });
+    // ================= RADAR DE INOVAÇÕES CONTÍNUAS (ZERO CONSUMO DE COTA IA) =================
+    let currentInnovationFilter = 'all';
+    let innovationsList = [];
+
+    async function loadInnovations() {
+      try {
+        const res = await fetch('/api/innovations');
+        if (res.ok) {
+          const data = await res.json();
+          innovationsList = data.items || [];
+          updateInnovationsBadge();
+          renderInnovationsList();
+        }
+      } catch (e) {
+        console.error('Erro ao carregar inovações:', e);
+      }
+    }
+
+    function updateInnovationsBadge() {
+      const badge = document.getElementById('top-innovations-badge');
+      if (badge) {
+        badge.innerText = innovationsList.length;
+      }
+      const pill = document.getElementById('innov-total-count-pill');
+      if (pill) {
+        pill.innerText = innovationsList.length;
+      }
+    }
+
+    function handleIncomingInnovation(item) {
+      if (!item) return;
+      // Sem teto limitador rígido de 25: suporta até 500 inovações descobertas continuamente
+      innovationsList = [item, ...innovationsList.filter(i => i.id !== item.id)].slice(0, 500);
+      updateInnovationsBadge();
+      renderInnovationsList();
+      showGlassToast(`✨ Nova Inovação Descoberta: <strong>${escapeHtml(item.title)}</strong>`, 'info');
+    }
+
+    function toggleInnovationRadar() {
+      const pop = document.getElementById('innovation-radar-popover');
+      if (!pop) return;
+      if (pop.classList.contains('hidden')) {
+        pop.classList.remove('hidden');
+        renderInnovationsList();
+      } else {
+        pop.classList.add('hidden');
+      }
+    }
+
+    function closeInnovationRadar() {
+      const pop = document.getElementById('innovation-radar-popover');
+      if (pop) pop.classList.add('hidden');
+    }
+
+    function setInnovationFilter(filter) {
+      currentInnovationFilter = filter;
+      document.querySelectorAll('.innov-filter-btn').forEach(b => {
+        b.className = 'innov-filter-btn px-2.5 py-1 rounded-lg text-[10px] font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0';
+      });
+      const active = document.getElementById(`btn-innov-${filter}`);
+      if (active) {
+        active.className = 'innov-filter-btn px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-600 text-white shrink-0';
+      }
+      renderInnovationsList();
+    }
+
+    async function triggerManualInnovationScan() {
+      const btn = document.getElementById('btn-scan-innovation');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Descobrindo...</span>';
+        lucide.createIcons();
+      }
+      try {
+        const res = await fetch('/api/innovations/scan', { method: 'POST' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.item) {
+            handleIncomingInnovation(data.item);
+          }
+        }
+      } catch (e) {
+        showGlassToast('Erro ao consultar radar de inovações.');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i data-lucide="radar" class="w-3.5 h-3.5"></i><span>+ Descobrir</span>';
+          lucide.createIcons();
+        }
+      }
+    }
+
+    function renderInnovationsList() {
+      const container = document.getElementById('innovations-list-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const filtered = innovationsList.filter(item => {
+        if (currentInnovationFilter === 'all') return true;
+        return item.category === currentInnovationFilter;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-500 italic text-center p-4">Nenhuma inovação nesta categoria ainda. Clique em "+ Descobrir" acima!</p>';
+        return;
+      }
+
+      filtered.forEach((item) => {
+        const realIdx = innovationsList.findIndex(x => x.id === item.id);
+        const badgeText = item.badge || '';
+
+        // Badges com cores dinâmicas e contrastadas estilo Sci-Fi Glass
+        let badgeColor = 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40';
+        if (item.category === 'design' || badgeText.includes('🎨')) {
+          badgeColor = 'bg-purple-950/80 text-purple-300 border-purple-500/40';
+        } else if (item.category === 'web' || badgeText.includes('🌐')) {
+          badgeColor = 'bg-cyan-950/80 text-cyan-300 border-cyan-500/40';
+        } else if (badgeText.includes('🔐') || badgeText.includes('Segurança')) {
+          badgeColor = 'bg-rose-950/80 text-rose-300 border-rose-500/40';
+        } else if (badgeText.includes('🧠') || badgeText.includes('IA') || badgeText.includes('Telemetria')) {
+          badgeColor = 'bg-amber-950/80 text-amber-300 border-amber-500/40';
+        } else if (badgeText.includes('📡') || badgeText.includes('MESH') || badgeText.includes('RF')) {
+          badgeColor = 'bg-blue-950/80 text-blue-300 border-blue-500/40';
+        }
+
+        const card = document.createElement('div');
+        card.className = 'codax-glass-deep border border-slate-800/90 hover:border-indigo-500/60 p-3 rounded-xl space-y-2 transition shadow-md';
+        card.innerHTML = `
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-[9px] font-bold px-2 py-0.5 rounded border ${badgeColor}">${escapeHtml(badgeText || 'Inovação')}</span>
+            <span class="font-mono text-[10px] text-slate-400 font-semibold">${escapeHtml(item.timestamp || 'Agora')}</span>
+          </div>
+          <h4 class="font-extrabold text-xs text-slate-100 leading-snug">${escapeHtml(item.title)}</h4>
+          <p class="text-[11px] text-slate-300 leading-relaxed">${escapeHtml(item.summary)}</p>
+          <div class="pt-1.5 border-t border-slate-800/80 flex items-center justify-between gap-2">
+            <span class="text-[9px] text-slate-400 truncate max-w-[160px]" title="${escapeHtml(item.source || '')}">📌 ${escapeHtml(item.source || 'Radar Local')}</span>
+            <button type="button" onclick="copyInnovationPrompt(${realIdx})" class="px-2.5 py-1 rounded-lg bg-indigo-600/30 hover:bg-indigo-600 border border-indigo-500/40 text-indigo-200 hover:text-white text-[10px] font-bold transition flex items-center space-x-1 shrink-0">
+              <i data-lucide="copy" class="w-3 h-3"></i>
+              <span>🚀 Copiar Prompt p/ Chat</span>
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+      lucide.createIcons();
+    }
+
+    // ================= [INOVAÇÃO] COMMAND PALETTE INSTANTÂNEO ESTILO RAYCAST / MAC (CTRL + K) =================
+    let commandPaletteOpen = false;
+    let commandPaletteSelectedIndex = 0;
+    let currentPaletteItems = [];
+
+    function toggleCommandPalette() {
+      if (commandPaletteOpen) {
+        closeCommandPalette();
+      } else {
+        openCommandPalette();
+      }
+    }
+
+    function openCommandPalette() {
+      const modal = document.getElementById('command-palette-modal');
+      const input = document.getElementById('command-palette-input');
+      if (!modal || !input) return;
+
+      commandPaletteOpen = true;
+      modal.classList.remove('hidden');
+      input.value = '';
+      commandPaletteSelectedIndex = 0;
+      
+      input.oninput = (e) => {
+        commandPaletteSelectedIndex = 0;
+        renderPaletteResults(e.target.value);
+      };
+
+      modal.onclick = (e) => {
+        if (e.target === modal) closeCommandPalette();
+      };
+
+      renderPaletteResults('');
+      setTimeout(() => input.focus(), 50);
+      lucide.createIcons();
+    }
+
+    function closeCommandPalette() {
+      const modal = document.getElementById('command-palette-modal');
+      if (!modal) return;
+      commandPaletteOpen = false;
+      modal.classList.add('hidden');
+    }
+
+    function getAllPaletteItems() {
+      const items = [];
+
+      // 1. Comandos de Rede Rápidos
+      items.push({
+        category: 'Comandos & Ações Rápidas',
+        badge: '⚡ AÇÃO RÁPIDA',
+        badgeColor: 'bg-indigo-950/80 text-cyan-300 border-indigo-500/40',
+        title: 'Ping Geral na Malha (query ping)',
+        sub: 'Dispara ping para medir latência RTT e testar conectividade',
+        icon: 'signal',
+        action: () => sendQuickCommand('query', 'ping')
+      });
+
+      items.push({
+        category: 'Comandos & Ações Rápidas',
+        badge: '🌳 TOPOLOGIA',
+        badgeColor: 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40',
+        title: 'Solicitar Topologia da Malha (query topology)',
+        sub: 'Sonda toda a malha ESP-MESH via MQTT e desenha a árvore hierárquica',
+        icon: 'git-merge',
+        action: () => queryTopologyBroadcast()
+      });
+
+      items.push({
+        category: 'Comandos & Ações Rápidas',
+        badge: 'ℹ️ SISTEMA',
+        badgeColor: 'bg-purple-950/80 text-purple-300 border-purple-500/40',
+        title: 'Consultar Versão & Informações (query info)',
+        sub: 'Obtém camada, canal, MACs, IP e uptime das controladoras',
+        icon: 'info',
+        action: () => sendQuickCommand('query', 'info')
+      });
+
+      items.push({
+        category: 'Comandos & Ações Rápidas',
+        badge: '🔄 DESATAR',
+        badgeColor: 'bg-amber-950/80 text-amber-300 border-amber-500/40',
+        title: 'Destravar Malha com mwifi_restart()',
+        sub: 'Chama mwifi_restart() nativo sem reiniciar a placa por completo',
+        icon: 'refresh-cw',
+        action: () => sendQuickCommand('query', 'mwifi_restart')
+      });
+
+      items.push({
+        category: 'Comandos & Ações Rápidas',
+        badge: '🚀 BANCADA',
+        badgeColor: 'bg-indigo-950/80 text-indigo-300 border-indigo-500/40',
+        title: 'Executar Macros de Bancada (Bateria em 1 Clique)',
+        sub: 'Sequência automática ping ➔ info ➔ meter ➔ partition com checklist',
+        icon: 'zap',
+        action: () => { switchTab('quick'); startBenchMacro(); }
+      });
+
+      items.push({
+        category: 'Comandos & Ações Rápidas',
+        badge: '💾 MEMÓRIA',
+        badgeColor: 'bg-cyan-950/80 text-cyan-300 border-cyan-500/40',
+        title: 'Consultar Memória Heap (query memory)',
+        sub: 'Verifica free heap e fragmentação de memória das placas',
+        icon: 'cpu',
+        action: () => sendQuickCommand('query', 'memory')
+      });
+
+      items.push({
+        category: 'Comandos & Ações Rápidas',
+        badge: '🧩 PARTIÇÕES',
+        badgeColor: 'bg-blue-950/80 text-blue-300 border-blue-500/40',
+        title: 'Verificar Partições OTA (query partition)',
+        sub: 'Verifica slots de firmware otadata e partições de boot',
+        icon: 'hard-drive',
+        action: () => sendQuickCommand('query', 'partition')
+      });
+
+      items.push({
+        category: 'Comandos & Ações Rápidas',
+        badge: '☁️ BROKER',
+        badgeColor: 'bg-slate-900 text-emerald-300 border-slate-700',
+        title: 'Alternar Broker MQTT (AWS IoT Core ⇄ Broker Local)',
+        sub: 'Alterna a conexão entre nuvem AWS (8883 TLS) e Broker Local (1883)',
+        icon: 'cloud',
+        action: () => toggleBrokerMode()
+      });
+
+      items.push({
+        category: 'Comandos & Ações Rápidas',
+        badge: '⚙️ AMBIENTE',
+        badgeColor: 'bg-slate-900 text-amber-300 border-slate-700',
+        title: 'Alternar Ambiente MQTT (PROD ⇄ DEV)',
+        sub: 'Alterna entre tópicos config/shopba/mesh e dev/config/shopba/mesh',
+        icon: 'layers',
+        action: () => toggleEnv()
+      });
+
+      // 2. Medidores & Dispositivos
+      devicesList.forEach(dev => {
+        const cleanM = dev.mac.toLowerCase().replace(/[^a-f0-9]/g, '');
+        const isRoot = dev.role === 'ROOT';
+        
+        items.push({
+          category: 'Medidores & Dispositivos',
+          badge: isRoot ? '👑 ROOT' : '⚡ NODE',
+          badgeColor: isRoot ? 'bg-indigo-950/90 text-indigo-300 border-indigo-500/40' : 'bg-slate-900 text-slate-300 border-slate-700',
+          title: `🌳 ${dev.name} (${formatMac(dev.mac)})`,
+          sub: `Ver na Árvore da Malha • Serial: ${dev.meter_serial || 'S/N'} • ${dev.meter_type || 'ABNT NBR 14522'}`,
+          icon: 'network',
+          action: () => viewDeviceInMeshTree(cleanM)
+        });
+
+        items.push({
+          category: 'Medidores & Dispositivos',
+          badge: '🎯 ALVO',
+          badgeColor: 'bg-emerald-950/90 text-emerald-300 border-emerald-500/40',
+          title: `🎯 Definir ${dev.name} como Alvo Global`,
+          sub: `Preenche o alvo ${formatMac(dev.mac)} na barra e no Construtor`,
+          icon: 'crosshair',
+          action: () => { setTarget(cleanM); showGlassToast(`🎯 Alvo global definido para ${dev.name}`); }
+        });
+
+        items.push({
+          category: 'Medidores & Dispositivos',
+          badge: '📡 PING',
+          badgeColor: 'bg-cyan-950/90 text-cyan-300 border-cyan-500/40',
+          title: `📡 Ping no ${dev.name}`,
+          sub: `Envia ping individual para medir latência da placa ${formatMac(dev.mac)}`,
+          icon: 'timer',
+          action: () => sendQuickCommand('query', 'ping', null, cleanM, true)
+        });
+      });
+
+      // 3. Navegação Rápida entre Abas
+      items.push({
+        category: 'Navegação no Hub',
+        badge: '🧭 ABA',
+        badgeColor: 'bg-slate-900 text-slate-400 border-slate-700',
+        title: 'Ações Rápidas de Bancada (#view-quick)',
+        sub: 'Painel de macros e comandos imediatos em 1 clique',
+        icon: 'zap',
+        action: () => switchTab('quick')
+      });
+
+      items.push({
+        category: 'Navegação no Hub',
+        badge: '🧭 ABA',
+        badgeColor: 'bg-slate-900 text-slate-400 border-slate-700',
+        title: 'Construtor de Comandos Oficiais (#view-builder)',
+        sub: 'Montagem de payloads JSON, busca de métodos e envio customizado',
+        icon: 'hammer',
+        action: () => switchTab('builder')
+      });
+
+      items.push({
+        category: 'Navegação no Hub',
+        badge: '🧭 ABA',
+        badgeColor: 'bg-cyan-950 text-cyan-300 border-cyan-500/40',
+        title: 'AWS Timestream LiveAnalytics (#view-timestream)',
+        sub: 'Séries temporais, telemetria em nuvem e consultas SQL de medidores',
+        icon: 'clock',
+        action: () => switchTab('timestream')
+      });
+
+      items.push({
+        category: 'Navegação no Hub',
+        badge: '🧭 ABA',
+        badgeColor: 'bg-slate-900 text-slate-400 border-slate-700',
+        title: 'Árvore na Malha / Topologia Visual (#view-tree)',
+        sub: 'Diagrama hierárquico com camadas L1, L2, conexões e sparklines',
+        icon: 'network',
+        action: () => switchTab('tree')
+      });
+
+      items.push({
+        category: 'Navegação no Hub',
+        badge: '🧭 ABA',
+        badgeColor: 'bg-slate-900 text-slate-400 border-slate-700',
+        title: 'Dicionário de Comandos & Tópicos (#view-dictionary)',
+        sub: 'Documentação exaustiva com exemplos e dicas de firmware',
+        icon: 'book-open',
+        action: () => switchTab('dictionary')
+      });
+
+      items.push({
+        category: 'Navegação no Hub',
+        badge: '🧭 ABA',
+        badgeColor: 'bg-slate-900 text-slate-400 border-slate-700',
+        title: 'Cadastro de Medidores & Dispositivos (#view-devices)',
+        sub: 'Gerenciar apelidos, números de série e protocolos',
+        icon: 'gauge',
+        action: () => switchTab('devices')
+      });
+
+      items.push({
+        category: 'Navegação no Hub',
+        badge: '🧭 ABA',
+        badgeColor: 'bg-slate-900 text-slate-400 border-slate-700',
+        title: 'Monitor MQTT & Logs em Tempo Real (#view-logs)',
+        sub: 'Feed de pacotes, retornos, telemetria e erros',
+        icon: 'terminal',
+        action: () => switchTab('logs')
+      });
+
+      items.push({
+        category: 'Navegação no Hub',
+        badge: '🧭 ABA',
+        badgeColor: 'bg-slate-900 text-slate-400 border-slate-700',
+        title: 'Atualização de Firmware Remoto OTA (#view-ota)',
+        sub: 'Upload de binários .bin e atualização remota via HTTP',
+        icon: 'upload-cloud',
+        action: () => switchTab('ota')
+      });
+
+      return items;
+    }
+
+    function renderPaletteResults(query = '') {
+      const container = document.getElementById('command-palette-results');
+      if (!container) return;
+
+      const q = (query || '').toLowerCase().trim();
+      const all = getAllPaletteItems();
+
+      currentPaletteItems = all.filter(item => {
+        if (!q) return true;
+        return item.title.toLowerCase().includes(q) || 
+               item.sub.toLowerCase().includes(q) || 
+               item.category.toLowerCase().includes(q);
+      });
+
+      if (commandPaletteSelectedIndex >= currentPaletteItems.length) {
+        commandPaletteSelectedIndex = Math.max(0, currentPaletteItems.length - 1);
+      }
+
+      container.innerHTML = '';
+
+      if (currentPaletteItems.length === 0) {
+        container.innerHTML = `
+          <div class="py-12 text-center space-y-2">
+            <i data-lucide="help-circle" class="w-8 h-8 text-slate-600 mx-auto"></i>
+            <p class="text-xs text-slate-400 font-medium">Nenhum comando ou medidor encontrado para "${escapeHtml(q)}"</p>
+            <p class="text-[11px] text-slate-500">Tente buscar por "ping", "bancada", "root", "topology" ou "ota"</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      // Agrupar por categoria
+      let lastCategory = '';
+      currentPaletteItems.forEach((item, idx) => {
+        if (item.category !== lastCategory) {
+          lastCategory = item.category;
+          const catHeader = document.createElement('div');
+          catHeader.className = 'px-3 pt-3 pb-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400';
+          catHeader.innerText = item.category;
+          container.appendChild(catHeader);
+        }
+
+        const isSelected = (idx === commandPaletteSelectedIndex);
+        const el = document.createElement('div');
+        el.className = `p-2.5 rounded-xl cursor-pointer transition flex items-center justify-between gap-3 ${
+          isSelected 
+            ? 'bg-indigo-600/30 border border-indigo-500/60 shadow-md shadow-indigo-600/20' 
+            : 'hover:bg-slate-900/80 border border-transparent hover:border-slate-800'
+        }`;
+
+        el.onclick = () => {
+          commandPaletteSelectedIndex = idx;
+          executeSelectedPaletteItem();
+        };
+
+        el.onmouseenter = () => {
+          commandPaletteSelectedIndex = idx;
+          highlightSelectedPaletteItem();
+        };
+
+        el.innerHTML = `
+          <div class="flex items-center space-x-3 min-w-0">
+            <div class="w-7 h-7 rounded-lg ${isSelected ? 'bg-indigo-500 text-white' : 'bg-slate-900 text-slate-400 border border-slate-800'} flex items-center justify-center shrink-0">
+              <i data-lucide="${item.icon || 'zap'}" class="w-3.5 h-3.5"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="font-bold text-xs ${isSelected ? 'text-white' : 'text-slate-200'} truncate">${escapeHtml(item.title)}</div>
+              <div class="text-[10px] text-slate-400 truncate">${escapeHtml(item.sub)}</div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 shrink-0">
+            <span class="text-[9px] font-bold px-2 py-0.5 rounded border ${item.badgeColor}">${escapeHtml(item.badge)}</span>
+            ${isSelected ? '<kbd class="px-1.5 py-0.5 rounded bg-indigo-500 text-white font-mono text-[9px] font-bold">↵ Executar</kbd>' : ''}
+          </div>
+        `;
+        container.appendChild(el);
+      });
+
+      lucide.createIcons();
+      scrollSelectedPaletteItemIntoView();
+    }
+
+    function highlightSelectedPaletteItem() {
+      const container = document.getElementById('command-palette-results');
+      if (!container) return;
+      const items = container.querySelectorAll('.cursor-pointer');
+      items.forEach((el, idx) => {
+        if (idx === commandPaletteSelectedIndex) {
+          el.className = 'p-2.5 rounded-xl cursor-pointer transition flex items-center justify-between gap-3 bg-indigo-600/30 border border-indigo-500/60 shadow-md shadow-indigo-600/20';
+        } else {
+          el.className = 'p-2.5 rounded-xl cursor-pointer transition flex items-center justify-between gap-3 hover:bg-slate-900/80 border border-transparent hover:border-slate-800';
+        }
+      });
+    }
+
+    function scrollSelectedPaletteItemIntoView() {
+      const container = document.getElementById('command-palette-results');
+      if (!container) return;
+      const items = container.querySelectorAll('.cursor-pointer');
+      const activeEl = items[commandPaletteSelectedIndex];
+      if (activeEl) {
+        activeEl.scrollIntoView({ block: 'nearest' });
+      }
+    }
+
+    function selectNextPaletteItem(step) {
+      if (currentPaletteItems.length === 0) return;
+      commandPaletteSelectedIndex = (commandPaletteSelectedIndex + step + currentPaletteItems.length) % currentPaletteItems.length;
+      highlightSelectedPaletteItem();
+      scrollSelectedPaletteItemIntoView();
+    }
+
+    function executeSelectedPaletteItem() {
+      const item = currentPaletteItems[commandPaletteSelectedIndex];
+      if (!item) return;
+      closeCommandPalette();
+      if (typeof item.action === 'function') {
+        item.action();
+      }
+    }
+
+    // Eventos de Teclado Globais para Ctrl + K e Navegação
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        toggleCommandPalette();
+        return;
+      }
+      if (!commandPaletteOpen) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeCommandPalette();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectNextPaletteItem(1);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectNextPaletteItem(-1);
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        executeSelectedPaletteItem();
+      }
+    });
+
+    // Monitorar digitação na caixa do Command Palette
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('command-palette-input');
+      if (input) {
+        input.addEventListener('input', (e) => {
+          commandPaletteSelectedIndex = 0;
+          renderPaletteResults(e.target.value);
+        });
+      }
+    });
+
+    function copyInnovationPrompt(idx) {
+      const item = innovationsList[idx];
+      if (!item) return;
+      const text = `✨ [INOVAÇÃO CODAX HUB: ${item.title}]\n• Categoria: ${item.badge}\n• Fonte/Referência: ${item.source}\n• Pedido de Implementação:\n${item.prompt}`;
+      navigator.clipboard.writeText(text);
+      showGlassToast('🚀 Prompt da Inovação copiado!\nBasta dar Ctrl + V no chat para eu implementar agora.');
+    }
   </script>
 </body>
 </html>

@@ -39,3 +39,9 @@ Thumbs.db
 # Firmware binaries (binários compilados não devem ser commitados)
 firmware/*.bin
 !firmware/.gitkeep
+
+# Certificados e chaves privadas
+certs/
+*.pem
+*.key
+*.crt

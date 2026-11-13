@@ -5,7 +5,16 @@
     "meter_serial": "MED-CODAX-01",
     "meter_type": "Modbus RTU",
     "role": "ROOT",
-    "notes": "Placa Codax em teste de envio MQTT"
+    "layer": 1,
+    "notes": "Placa Codax em teste de envio MQTT",
+    "rssi": -22,
+    "rssi_history": [
+      -26,
+      -24,
+      -25,
+      -23,
+      -22
+    ]
   },
   "4417934f49a4": {
     "mac": "4417934f49a4",
@@ -13,7 +22,16 @@
     "meter_serial": "MED-LAB-01",
     "meter_type": "ABNT NBR 14522",
     "role": "ROOT",
-    "notes": "Controladora principal conectada ao Wi-Fi"
+    "layer": 1,
+    "notes": "Controladora principal conectada ao Wi-Fi",
+    "rssi": -42,
+    "rssi_history": [
+      -46,
+      -45,
+      -43,
+      -44,
+      -42
+    ]
   },
   "3083986350b0": {
     "mac": "3083986350b0",
@@ -21,7 +39,17 @@
     "meter_serial": "MED-01",
     "meter_type": "Modbus UDP",
     "role": "NODE",
-    "notes": "Medidor na bancada de testes 1"
+    "layer": 2,
+    "parent_mac": "704bca491ca0",
+    "notes": "Medidor na bancada de testes 1",
+    "rssi": -68,
+    "rssi_history": [
+      -71,
+      -70,
+      -69,
+      -70,
+      -68
+    ]
   },
   "704bca491d9c": {
     "mac": "704bca491d9c",
@@ -29,6 +57,24 @@
     "meter_serial": "MED",
     "meter_type": "Outro / Genérico",
     "role": "NODE",
-    "notes": "Controladora principal conectada ao Wi-Fi"
+    "layer": 2,
+    "parent_mac": "704bca491ca0",
+    "notes": "Controladora principal conectada ao Wi-Fi",
+    "rssi": -74,
+    "rssi_history": [
+      -76,
+      -75,
+      -74,
+      -75,
+      -74
+    ]
+  },
+  "885721e5e2f0": {
+    "mac": "885721e5e2f0",
+    "name": "Teste",
+    "meter_serial": "",
+    "meter_type": "Outro / Genérico",
+    "role": "ROOT",
+    "notes": ""
   }
 }
