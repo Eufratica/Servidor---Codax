@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from typing import List, Optional, Any, Dict
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, UploadFile, File, Form, HTTPException
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, Response, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import paho.mqtt.client as mqtt
@@ -1820,6 +1820,188 @@ class TimestreamIngestRequest(BaseModel):
     measure_value: float
     status: Optional[str] = "NORMAL"
 
+class UnloadRequest(BaseModel):
+    table_name: str = "test_connections"
+    target_s3: str = "s3://ledax-ota-files/csv/test_ota_conn/2026-09-15_a_2026-09-17/"
+    ids: List[str] = ["30:83:98:63:50:50", "8c:94:df:b9:db:c8", "70:4b:ca:49:1d:b4", "70:4b:ca:49:1d:c0", "30:83:98:63:50:84"]
+    start_time: str = "2026-09-15 17:30:00"
+    end_time: str = "2026-09-17 00:00:00"
+    delimiter: Optional[str] = ";"
+    measure_name: Optional[str] = "informacao"
+
+TIMESTREAM_DATABASE_SCHEMA = {
+    "database": "ledaxio",
+    "region": "us-west-2",
+    "s3_default_bucket": "s3://ledax-ota-files/csv/",
+    "tables": {
+        "SHOPPBA-TESTE": {
+            "description": "Telemetria de medição de energia e totalizadores de bancada e produção",
+            "columns": [
+                {"name": "id", "type": "varchar", "desc": "Identificador do medidor (ex: 1228, Teste - idle)"},
+                {"name": "time", "type": "timestamp", "desc": "Carimbo de data/hora da medição"},
+                {"name": "measure_name", "type": "varchar", "desc": "Nome da grandeza (ex: total, voltage)"},
+                {"name": "measure_value::double", "type": "double", "desc": "Valor numérico medido"}
+            ]
+        },
+        "test_connections": {
+            "description": "Registros de testes de conexão, handshakes e status OTA dos nós",
+            "columns": [
+                {"name": "id", "type": "varchar", "desc": "MAC do dispositivo"},
+                {"name": "parent_mac", "type": "varchar", "desc": "MAC do nó pai na malha"},
+                {"name": "time", "type": "timestamp", "desc": "Carimbo de data/hora do evento"},
+                {"name": "measure_name", "type": "varchar", "desc": "Nome da métrica (ex: informacao)"},
+                {"name": "measure_value::varchar", "type": "varchar", "desc": "Carga de informação / status"}
+            ]
+        },
+        "connections_mesh": {
+            "description": "Histórico de conexões e saltos de camada da topologia ESP-MESH",
+            "columns": [
+                {"name": "id", "type": "varchar", "desc": "MAC do nó"},
+                {"name": "time", "type": "timestamp", "desc": "Timestamp"},
+                {"name": "measure_name", "type": "varchar", "desc": "Tipo de evento de malha"},
+                {"name": "measure_value::varchar", "type": "varchar", "desc": "Detalhes de conexão / canal"}
+            ]
+        },
+        "connections": {
+            "description": "Eventos de conexão Wi-Fi e sessões MQTT ativas no broker",
+            "columns": [
+                {"name": "id", "type": "varchar", "desc": "Identificador do cliente"},
+                {"name": "time", "type": "timestamp", "desc": "Horário"},
+                {"name": "measure_name", "type": "varchar", "desc": "Métrica de sessão"},
+                {"name": "measure_value::varchar", "type": "varchar", "desc": "Payload de status"},
+                {"name": "measure_value::bigint", "type": "bigint", "desc": "Uptime ou bytes trafegados"}
+            ]
+        },
+        "dev": {
+            "description": "Métricas de desenvolvimento e testes de laboratório",
+            "columns": [
+                {"name": "id", "type": "varchar", "desc": "ID do medidor em dev"},
+                {"name": "time", "type": "timestamp", "desc": "Data e hora"},
+                {"name": "measure_name", "type": "varchar", "desc": "Nome da medida"},
+                {"name": "measure_value::double", "type": "double", "desc": "Valor de telemetria"}
+            ]
+        },
+        "refrix": {
+            "description": "Monitoramento de refrigeração industrial e compressores",
+            "columns": [
+                {"name": "id", "type": "varchar", "desc": "ID da controladora"},
+                {"name": "equipment_id", "type": "varchar", "desc": "ID do equipamento refrigerador"},
+                {"name": "time", "type": "timestamp", "desc": "Horário de leitura"},
+                {"name": "measure_name", "type": "varchar", "desc": "Sensor térmico / pressão"},
+                {"name": "measure_value::double", "type": "double", "desc": "Temperatura / pressão"},
+                {"name": "measure_value::bigint", "type": "bigint", "desc": "Ciclos do compressor"},
+                {"name": "measure_value::varchar", "type": "varchar", "desc": "Estado operacional"}
+            ]
+        },
+        "water_gti": {
+            "description": "Telemetria de hidrômetros e sensores de vazão de água",
+            "columns": [
+                {"name": "id", "type": "varchar", "desc": "ID do hidrômetro"},
+                {"name": "time", "type": "timestamp", "desc": "Data/hora"},
+                {"name": "measure_name", "type": "varchar", "desc": "Vazão / volume acumulado"},
+                {"name": "measure_value::double", "type": "double", "desc": "Volume em m³ ou L/min"}
+            ]
+        }
+    }
+}
+
+TIMESTREAM_REAL_SAMPLES = [
+    {"id": "Teste - idle", "time": "2026-10-19 10:07:03.000000000", "measure_name": "total", "totalizador_ptBR": "1270", "numeric_val": 1270.0},
+    {"id": "Teste - idle", "time": "2026-10-19 10:21:55.000000000", "measure_name": "total", "totalizador_ptBR": "1403,5", "numeric_val": 1403.5},
+    {"id": "Teste - idle", "time": "2026-10-19 10:36:57.000000000", "measure_name": "total", "totalizador_ptBR": "1538,5", "numeric_val": 1538.5},
+    {"id": "Teste - idle", "time": "2026-10-19 10:51:59.000000000", "measure_name": "total", "totalizador_ptBR": "1673,5", "numeric_val": 1673.5},
+    {"id": "Teste - idle", "time": "2026-10-19 11:06:58.000000000", "measure_name": "total", "totalizador_ptBR": "1808,5", "numeric_val": 1808.5},
+    {"id": "Teste - idle", "time": "2026-10-19 11:21:59.000000000", "measure_name": "total", "totalizador_ptBR": "1943,5", "numeric_val": 1943.5},
+    {"id": "Teste - idle", "time": "2026-10-19 11:36:58.000000000", "measure_name": "total", "totalizador_ptBR": "2078,5", "numeric_val": 2078.5},
+    {"id": "Teste - idle", "time": "2026-10-19 11:52:02.000000000", "measure_name": "total", "totalizador_ptBR": "2213,5", "numeric_val": 2213.5},
+    {"id": "Teste - idle", "time": "2026-10-19 12:07:03.000000000", "measure_name": "total", "totalizador_ptBR": "2348,5", "numeric_val": 2348.5},
+    {"id": "Teste - idle", "time": "2026-10-19 12:22:02.000000000", "measure_name": "total", "totalizador_ptBR": "2483,5", "numeric_val": 2483.5},
+    {"id": "Teste - idle", "time": "2026-10-19 12:36:58.000000000", "measure_name": "total", "totalizador_ptBR": "2618,5", "numeric_val": 2618.5},
+    {"id": "Teste - idle", "time": "2026-10-19 12:51:58.000000000", "measure_name": "total", "totalizador_ptBR": "2753,5", "numeric_val": 2753.5},
+    {"id": "Teste - idle", "time": "2026-10-19 13:06:54.000000000", "measure_name": "total", "totalizador_ptBR": "2888,5", "numeric_val": 2888.5},
+    {"id": "Teste - idle", "time": "2026-10-19 13:22:01.000000000", "measure_name": "total", "totalizador_ptBR": "3025", "numeric_val": 3025.0},
+    {"id": "Teste - idle", "time": "2026-10-19 13:36:57.000000000", "measure_name": "total", "totalizador_ptBR": "3158,5", "numeric_val": 3158.5},
+    {"id": "Teste - idle", "time": "2026-10-19 13:51:56.000000000", "measure_name": "total", "totalizador_ptBR": "3293,5", "numeric_val": 3293.5},
+    {"id": "Teste - idle", "time": "2026-10-19 14:06:58.000000000", "measure_name": "total", "totalizador_ptBR": "3428,5", "numeric_val": 3428.5},
+    {"id": "Teste - idle", "time": "2026-10-19 14:21:55.000000000", "measure_name": "total", "totalizador_ptBR": "3563,5", "numeric_val": 3563.5},
+    {"id": "Teste - idle", "time": "2026-10-19 14:36:58.000000000", "measure_name": "total", "totalizador_ptBR": "3698,5", "numeric_val": 3698.5},
+    {"id": "Teste - idle", "time": "2026-10-19 14:52:03.000000000", "measure_name": "total", "totalizador_ptBR": "3833,5", "numeric_val": 3833.5},
+    {"id": "Teste - idle", "time": "2026-10-19 15:07:03.000000000", "measure_name": "total", "totalizador_ptBR": "3968,5", "numeric_val": 3968.5},
+    {"id": "Teste - idle", "time": "2026-10-19 15:21:55.000000000", "measure_name": "total", "totalizador_ptBR": "4102", "numeric_val": 4102.0},
+    {"id": "Teste - idle", "time": "2026-10-19 15:36:56.000000000", "measure_name": "total", "totalizador_ptBR": "4237", "numeric_val": 4237.0},
+    {"id": "Teste - idle", "time": "2026-10-19 15:51:54.000000000", "measure_name": "total", "totalizador_ptBR": "4372", "numeric_val": 4372.0},
+    {"id": "Teste - idle", "time": "2026-10-19 16:07:03.000000000", "measure_name": "total", "totalizador_ptBR": "4508,5", "numeric_val": 4508.5},
+    {"id": "Teste - idle", "time": "2026-10-19 16:21:54.000000000", "measure_name": "total", "totalizador_ptBR": "4642", "numeric_val": 4642.0},
+    {"id": "Teste - idle", "time": "2026-10-19 16:36:58.000000000", "measure_name": "total", "totalizador_ptBR": "4777", "numeric_val": 4777.0},
+    {"id": "Teste - idle", "time": "2026-10-19 16:51:58.000000000", "measure_name": "total", "totalizador_ptBR": "4912", "numeric_val": 4912.0},
+    {"id": "Teste - idle", "time": "2026-10-19 17:07:02.000000000", "measure_name": "total", "totalizador_ptBR": "5048,5", "numeric_val": 5048.5},
+    {"id": "Teste - idle", "time": "2026-10-19 17:22:02.000000000", "measure_name": "total", "totalizador_ptBR": "5183,5", "numeric_val": 5183.5},
+    {"id": "Teste - idle", "time": "2026-10-19 17:37:03.000000000", "measure_name": "total", "totalizador_ptBR": "5318,5", "numeric_val": 5318.5},
+    {"id": "Teste - idle", "time": "2026-10-19 17:52:03.000000000", "measure_name": "total", "totalizador_ptBR": "5453,5", "numeric_val": 5453.5},
+    {"id": "Teste - idle", "time": "2026-10-19 18:06:58.000000000", "measure_name": "total", "totalizador_ptBR": "5587", "numeric_val": 5587.0},
+    {"id": "Teste - idle", "time": "2026-10-19 18:22:00.000000000", "measure_name": "total", "totalizador_ptBR": "5722", "numeric_val": 5722.0},
+    {"id": "Teste - idle", "time": "2026-10-19 18:36:57.000000000", "measure_name": "total", "totalizador_ptBR": "5857", "numeric_val": 5857.0},
+    {"id": "Teste - idle", "time": "2026-10-19 18:52:02.000000000", "measure_name": "total", "totalizador_ptBR": "5992", "numeric_val": 5992.0},
+    {"id": "Teste - idle", "time": "2026-10-19 19:06:54.000000000", "measure_name": "total", "totalizador_ptBR": "6125,5", "numeric_val": 6125.5},
+    {"id": "Teste - idle", "time": "2026-10-19 19:21:53.000000000", "measure_name": "total", "totalizador_ptBR": "6260,5", "numeric_val": 6260.5},
+    {"id": "Teste - idle", "time": "2026-10-19 19:36:55.000000000", "measure_name": "total", "totalizador_ptBR": "6395,5", "numeric_val": 6395.5},
+    {"id": "Teste - idle", "time": "2026-10-19 19:51:56.000000000", "measure_name": "total", "totalizador_ptBR": "6530,5", "numeric_val": 6530.5},
+    {"id": "Teste - idle", "time": "2026-10-19 20:07:00.000000000", "measure_name": "total", "totalizador_ptBR": "6665,5", "numeric_val": 6665.5},
+    {"id": "Teste - idle", "time": "2026-10-19 20:22:01.000000000", "measure_name": "total", "totalizador_ptBR": "6800,5", "numeric_val": 6800.5},
+    {"id": "Teste - idle", "time": "2026-10-19 20:36:55.000000000", "measure_name": "total", "totalizador_ptBR": "6934", "numeric_val": 6934.0},
+    {"id": "Teste - idle", "time": "2026-10-19 20:52:03.000000000", "measure_name": "total", "totalizador_ptBR": "7070,5", "numeric_val": 7070.5},
+    {"id": "Teste - idle", "time": "2026-10-19 21:07:03.000000000", "measure_name": "total", "totalizador_ptBR": "7205,5", "numeric_val": 7205.5},
+    {"id": "Teste - idle", "time": "2026-10-19 21:21:55.000000000", "measure_name": "total", "totalizador_ptBR": "7339", "numeric_val": 7339.0},
+    {"id": "Teste - idle", "time": "2026-10-19 21:36:54.000000000", "measure_name": "total", "totalizador_ptBR": "7474", "numeric_val": 7474.0},
+    {"id": "Teste - idle", "time": "2026-10-19 21:52:01.000000000", "measure_name": "total", "totalizador_ptBR": "7610,5", "numeric_val": 7610.5},
+    {"id": "Teste - idle", "time": "2026-10-19 22:06:54.000000000", "measure_name": "total", "totalizador_ptBR": "7744", "numeric_val": 7744.0},
+    {"id": "Teste - idle", "time": "2026-10-19 22:22:03.000000000", "measure_name": "total", "totalizador_ptBR": "7880,5", "numeric_val": 7880.5},
+    {"id": "Teste - idle", "time": "2026-10-19 22:36:56.000000000", "measure_name": "total", "totalizador_ptBR": "8014", "numeric_val": 8014.0},
+    {"id": "Teste - idle", "time": "2026-10-19 22:52:03.000000000", "measure_name": "total", "totalizador_ptBR": "8150,5", "numeric_val": 8150.5},
+    {"id": "Teste - idle", "time": "2026-10-19 23:07:01.000000000", "measure_name": "total", "totalizador_ptBR": "8285,5", "numeric_val": 8285.5},
+    {"id": "Teste - idle", "time": "2026-10-19 23:21:58.000000000", "measure_name": "total", "totalizador_ptBR": "8419", "numeric_val": 8419.0},
+    {"id": "Teste - idle", "time": "2026-10-19 23:36:58.000000000", "measure_name": "total", "totalizador_ptBR": "8554", "numeric_val": 8554.0},
+    {"id": "Teste - idle", "time": "2026-10-19 23:51:58.000000000", "measure_name": "total", "totalizador_ptBR": "8689", "numeric_val": 8689.0},
+    {"id": "Teste - idle", "time": "2026-10-20 00:07:01.000000000", "measure_name": "total", "totalizador_ptBR": "8824", "numeric_val": 8824.0},
+    {"id": "Teste - idle", "time": "2026-10-20 00:21:57.000000000", "measure_name": "total", "totalizador_ptBR": "8959", "numeric_val": 8959.0},
+    {"id": "Teste - idle", "time": "2026-10-20 00:36:58.000000000", "measure_name": "total", "totalizador_ptBR": "9094", "numeric_val": 9094.0},
+    {"id": "Teste - idle", "time": "2026-10-20 00:51:58.000000000", "measure_name": "total", "totalizador_ptBR": "9229", "numeric_val": 9229.0},
+    {"id": "Teste - idle", "time": "2026-10-20 01:06:58.000000000", "measure_name": "total", "totalizador_ptBR": "9364", "numeric_val": 9364.0},
+    {"id": "Teste - idle", "time": "2026-10-20 01:22:00.000000000", "measure_name": "total", "totalizador_ptBR": "9499", "numeric_val": 9499.0},
+    {"id": "Teste - idle", "time": "2026-10-20 01:36:58.000000000", "measure_name": "total", "totalizador_ptBR": "9634", "numeric_val": 9634.0},
+    {"id": "Teste - idle", "time": "2026-10-20 01:52:03.000000000", "measure_name": "total", "totalizador_ptBR": "9770,5", "numeric_val": 9770.5},
+    {"id": "Teste - idle", "time": "2026-10-20 02:06:56.000000000", "measure_name": "total", "totalizador_ptBR": "9904", "numeric_val": 9904.0},
+    {"id": "Teste - idle", "time": "2026-10-20 02:22:03.000000000", "measure_name": "total", "totalizador_ptBR": "10040,5", "numeric_val": 10040.5},
+    {"id": "Teste - idle", "time": "2026-10-20 02:37:01.000000000", "measure_name": "total", "totalizador_ptBR": "10175,5", "numeric_val": 10175.5},
+    {"id": "Teste - idle", "time": "2026-10-20 02:52:02.000000000", "measure_name": "total", "totalizador_ptBR": "10310,5", "numeric_val": 10310.5},
+    {"id": "Teste - idle", "time": "2026-10-20 03:06:58.000000000", "measure_name": "total", "totalizador_ptBR": "10444", "numeric_val": 10444.0},
+    {"id": "Teste - idle", "time": "2026-10-20 03:21:58.000000000", "measure_name": "total", "totalizador_ptBR": "10579", "numeric_val": 10579.0},
+    {"id": "Teste - idle", "time": "2026-10-20 03:36:59.000000000", "measure_name": "total", "totalizador_ptBR": "10714", "numeric_val": 10714.0},
+    {"id": "Teste - idle", "time": "2026-10-20 03:51:54.000000000", "measure_name": "total", "totalizador_ptBR": "10847,5", "numeric_val": 10847.5},
+    {"id": "Teste - idle", "time": "2026-10-20 04:06:54.000000000", "measure_name": "total", "totalizador_ptBR": "10982,5", "numeric_val": 10982.5},
+    {"id": "Teste - idle", "time": "2026-10-20 04:21:58.000000000", "measure_name": "total", "totalizador_ptBR": "11117,5", "numeric_val": 11117.5},
+    {"id": "Teste - idle", "time": "2026-10-20 04:36:59.000000000", "measure_name": "total", "totalizador_ptBR": "11252,5", "numeric_val": 11252.5},
+    {"id": "Teste - idle", "time": "2026-10-20 04:52:02.000000000", "measure_name": "total", "totalizador_ptBR": "11387,5", "numeric_val": 11387.5},
+    {"id": "Teste - idle", "time": "2026-10-20 05:07:04.000000000", "measure_name": "total", "totalizador_ptBR": "11522,5", "numeric_val": 11522.5},
+    {"id": "Teste - idle", "time": "2026-10-20 05:21:57.000000000", "measure_name": "total", "totalizador_ptBR": "11656", "numeric_val": 11656.0},
+    {"id": "Teste - idle", "time": "2026-10-20 05:36:57.000000000", "measure_name": "total", "totalizador_ptBR": "11791", "numeric_val": 11791.0},
+    {"id": "Teste - idle", "time": "2026-10-20 05:52:03.000000000", "measure_name": "total", "totalizador_ptBR": "11927,5", "numeric_val": 11927.5},
+    {"id": "Teste - idle", "time": "2026-10-20 06:07:01.000000000", "measure_name": "total", "totalizador_ptBR": "12062,5", "numeric_val": 12062.5},
+    {"id": "Teste - idle", "time": "2026-10-20 06:22:03.000000000", "measure_name": "total", "totalizador_ptBR": "12197,5", "numeric_val": 12197.5},
+    {"id": "Teste - idle", "time": "2026-10-20 06:37:00.000000000", "measure_name": "total", "totalizador_ptBR": "12332,5", "numeric_val": 12332.5},
+    {"id": "Teste - idle", "time": "2026-10-20 06:52:01.000000000", "measure_name": "total", "totalizador_ptBR": "12467,5", "numeric_val": 12467.5},
+    {"id": "Teste - idle", "time": "2026-10-20 07:07:02.000000000", "measure_name": "total", "totalizador_ptBR": "12602,5", "numeric_val": 12602.5},
+    {"id": "Teste - idle", "time": "2026-10-20 07:22:01.000000000", "measure_name": "total", "totalizador_ptBR": "12737,5", "numeric_val": 12737.5},
+    {"id": "Teste - idle", "time": "2026-10-20 07:37:02.000000000", "measure_name": "total", "totalizador_ptBR": "12872,5", "numeric_val": 12872.5},
+    {"id": "Teste - idle", "time": "2026-10-20 07:51:57.000000000", "measure_name": "total", "totalizador_ptBR": "13006", "numeric_val": 13006.0},
+    {"id": "Teste - idle", "time": "2026-10-20 08:06:56.000000000", "measure_name": "total", "totalizador_ptBR": "13141", "numeric_val": 13141.0},
+    {"id": "Teste - idle", "time": "2026-10-20 08:21:58.000000000", "measure_name": "total", "totalizador_ptBR": "13276", "numeric_val": 13276.0},
+    {"id": "Teste - idle", "time": "2026-10-20 08:37:03.000000000", "measure_name": "total", "totalizador_ptBR": "13411", "numeric_val": 13411.0},
+    {"id": "Teste - idle", "time": "2026-10-20 08:51:55.000000000", "measure_name": "total", "totalizador_ptBR": "13544,5", "numeric_val": 13544.5},
+    {"id": "Teste - idle", "time": "2026-10-20 09:06:55.000000000", "measure_name": "total", "totalizador_ptBR": "13679,5", "numeric_val": 13679.5},
+    {"id": "Teste - idle", "time": "2026-10-20 09:22:03.000000000", "measure_name": "total", "totalizador_ptBR": "13816", "numeric_val": 13816.0}
+]
+
 app_state["timestream_records"] = []
 app_state["timestream_queries_count"] = 0
 
@@ -1928,20 +2110,118 @@ def get_timestream_series(period: str = "1h", mac: Optional[str] = None):
         "rssi_dbm": rssi_vals
     }
 
+@app.get("/api/timestream/schema")
+def get_timestream_schema():
+    return TIMESTREAM_DATABASE_SCHEMA
+
+@app.post("/api/timestream/unload")
+def generate_and_execute_unload(req: UnloadRequest):
+    id_list_str = ", ".join(f"'{i}'" for i in req.ids)
+    sql = f"""UNLOAD (
+    SELECT 
+        id,
+        measure_name,
+        time,
+        measure_value::varchar as informacao
+    FROM 
+        "{TIMESTREAM_DATABASE_SCHEMA['database']}"."{req.table_name}"
+    WHERE 
+        id in ({id_list_str})
+        AND time >= '{req.start_time}' 
+        AND time < '{req.end_time}'
+) 
+TO '{req.target_s3}' 
+WITH (
+    format = 'CSV',
+    field_delimiter = '{req.delimiter}',
+    compression = 'NONE',
+    include header = 'true'
+)"""
+    app_state["timestream_queries_count"] += 1
+    return {
+        "status": "ok",
+        "sql": sql,
+        "database": TIMESTREAM_DATABASE_SCHEMA['database'],
+        "table": req.table_name,
+        "target_s3": req.target_s3,
+        "exported_records": len(TIMESTREAM_REAL_SAMPLES),
+        "execution_time_ms": 48,
+        "download_url": f"/api/timestream/export-csv?table={req.table_name}&delimiter={req.delimiter}"
+    }
+
+@app.get("/api/timestream/export-csv")
+def download_timestream_csv(table: str = "test_connections", delimiter: str = ";"):
+    delim = delimiter if delimiter else ";"
+    lines = [f"id{delim}time{delim}measure_name{delim}totalizador_ptBR"]
+    for row in TIMESTREAM_REAL_SAMPLES:
+        lines.append(f"{row['id']}{delim}{row['time']}{delim}{row['measure_name']}{delim}{row['totalizador_ptBR']}")
+    csv_content = "\r\n".join(lines)
+    return Response(
+        content=csv_content,
+        media_type="text/csv",
+        headers={
+            "Content-Disposition": f"attachment; filename=timestream_export_{table}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        }
+    )
+
 @app.post("/api/timestream/query")
 def execute_timestream_query(req: TimestreamQueryRequest):
     app_state["timestream_queries_count"] += 1
     sql = req.sql.strip()
+    sql_low = sql.lower()
+
+    # Detectar se é consulta do Totalizador ou das tabelas reais (SHOPPBA-TESTE, test_connections, unload, idle, 1228)
+    is_real_sample = any(k in sql_low for k in ["totalizador", "total", "shoppba", "test_connections", "unload", "idle", "1228"])
     
+    if is_real_sample:
+        # Extrair LIMIT explícito do SQL se houver, caso contrário retornar todas as amostras
+        limit = len(TIMESTREAM_REAL_SAMPLES)
+        if "limit" in sql_low:
+            try:
+                parts = sql_low.split("limit")
+                limit = int(parts[-1].strip().split()[0])
+            except Exception:
+                limit = len(TIMESTREAM_REAL_SAMPLES)
+        samples = TIMESTREAM_REAL_SAMPLES[:limit]
+        rows = [[s["id"], s["time"], s["measure_name"], s["totalizador_ptBR"]] for s in samples]
+        
+        numeric_vals = [s["numeric_val"] for s in samples]
+        v_min = min(numeric_vals) if numeric_vals else 0.0
+        v_max = max(numeric_vals) if numeric_vals else 0.0
+        v_delta = round(v_max - v_min, 1)
+        v_avg_hour = round(v_delta / 23.25, 2)
+        
+        return {
+            "sql": sql,
+            "database": "ledaxio",
+            "table": "SHOPPBA-TESTE" if "shoppba" in sql_low else "test_connections",
+            "execution_time_ms": random.randint(32, 54),
+            "bytes_scanned_mb": round(random.uniform(0.12, 0.45), 2),
+            "columns": ["id", "time", "measure_name", "totalizador_ptBR"],
+            "rows": rows,
+            "total_rows": len(rows),
+            "analytics": {
+                "initial_value": v_min,
+                "final_value": v_max,
+                "delta_total": v_delta,
+                "avg_per_hour": v_avg_hour,
+                "duration_hours": 23.25,
+                "total_points": len(rows),
+                "sample_interval_min": 15,
+                "status": "NOMINAL_ESTAVEL",
+                "notes": "Série temporal contínua de 19/10/2026 10:07 a 20/10/2026 09:22 com subida de 1.270 até 13.816 sem gaps."
+            }
+        }
+
     records = list(reversed(app_state["timestream_records"]))[:req.limit]
     
-    if "voltage" in sql.lower():
+    if "voltage" in sql_low:
         records = [r for r in records if "voltage" in r["measure_name"]]
-    elif "current" in sql.lower() or "corrente" in sql.lower():
+    elif "current" in sql_low or "corrente" in sql_low:
         records = [r for r in records if "current" in r["measure_name"]]
-    elif "power" in sql.lower() or "potencia" in sql.lower():
+    elif "power" in sql_low or "potencia" in sql_low:
         records = [r for r in records if "power" in r["measure_name"]]
-    elif "rssi" in sql.lower():
+    elif "rssi" in sql_low:
         records = [r for r in records if "rssi" in r["measure_name"]]
         
     rows = []
@@ -1956,11 +2236,14 @@ def execute_timestream_query(req: TimestreamQueryRequest):
         
     return {
         "sql": sql,
+        "database": "ledaxio",
+        "table": "meter_telemetry",
         "execution_time_ms": random.randint(28, 65),
         "bytes_scanned_mb": round(random.uniform(0.18, 0.62), 2),
         "columns": ["time", "meter_mac", "measure_name", "measure_value::double", "status"],
         "rows": rows,
-        "total_rows": len(rows)
+        "total_rows": len(rows),
+        "analytics": None
     }
 
 @app.post("/api/timestream/ingest")
@@ -2210,7 +2493,38 @@ def get_scifi_metrics():
         "kalman_rssi": meter_kalman,
         "sleep_states": meter_sleep,
         "force_directed_snr": force_nodes,
-        "sankey_traffic": sankey
+        "sankey_traffic": sankey,
+        "modbus_registers": [
+            {"addr": "40001", "name": "Tensao_Fase_A", "val": 221.4, "raw_hex": "0x08A6", "unit": "V", "changed": True, "delta": "+0.6V", "timestamp": now_str},
+            {"addr": "40002", "name": "Tensao_Fase_B", "val": 219.8, "raw_hex": "0x0896", "unit": "V", "changed": False, "delta": "0.0V", "timestamp": now_str},
+            {"addr": "40003", "name": "Tensao_Fase_C", "val": 220.9, "raw_hex": "0x08A1", "unit": "V", "changed": True, "delta": "-0.3V", "timestamp": now_str},
+            {"addr": "40004", "name": "Corrente_Fase_A", "val": 12.35, "raw_hex": "0x04D3", "unit": "A", "changed": True, "delta": "+0.45A", "timestamp": now_str},
+            {"addr": "40005", "name": "Corrente_Fase_B", "val": 11.90, "raw_hex": "0x04A6", "unit": "A", "changed": False, "delta": "0.0A", "timestamp": now_str},
+            {"addr": "40006", "name": "Corrente_Fase_C", "val": 12.12, "raw_hex": "0x04BC", "unit": "A", "changed": False, "delta": "0.0A", "timestamp": now_str},
+            {"addr": "40007", "name": "Potencia_Ativa", "val": 7.98, "raw_hex": "0x1F2C", "unit": "kW", "changed": True, "delta": "+0.12kW", "timestamp": now_str},
+            {"addr": "40008", "name": "Fator_Potencia", "val": 0.956, "raw_hex": "0x03BC", "unit": "", "changed": False, "delta": "0.0", "timestamp": now_str},
+            {"addr": "40009", "name": "Frequencia", "val": 60.01, "raw_hex": "0x1771", "unit": "Hz", "changed": False, "delta": "0.0Hz", "timestamp": now_str},
+            {"addr": "40010", "name": "Totalizador_Acumulado", "val": 13816.0, "raw_hex": "0x35F8", "unit": "kWh", "changed": True, "delta": "+13.5kWh", "timestamp": now_str},
+            {"addr": "40011", "name": "Status_Disjuntor_Coil", "val": 1, "raw_hex": "0x0001", "unit": "COIL", "changed": False, "delta": "FECHADO", "timestamp": now_str},
+            {"addr": "40012", "name": "Alarmes_Bancada", "val": 0, "raw_hex": "0x0000", "unit": "FLAG", "changed": False, "delta": "NOMINAL", "timestamp": now_str}
+        ],
+        "rf_channels": [
+            {"channel": 1, "freq_mhz": 2412, "noise_dbm": -68, "utilization_pct": 78, "quality": "SATURADO", "color": "#f43f5e"},
+            {"channel": 2, "freq_mhz": 2417, "noise_dbm": -71, "utilization_pct": 62, "quality": "INTERFERÊNCIA", "color": "#f97316"},
+            {"channel": 3, "freq_mhz": 2422, "noise_dbm": -76, "utilization_pct": 45, "quality": "MODERADO", "color": "#eab308"},
+            {"channel": 4, "freq_mhz": 2427, "noise_dbm": -82, "utilization_pct": 32, "quality": "BOM", "color": "#84cc16"},
+            {"channel": 5, "freq_mhz": 2432, "noise_dbm": -88, "utilization_pct": 18, "quality": "MUITO BOM", "color": "#10b981"},
+            {"channel": 6, "freq_mhz": 2437, "noise_dbm": -92, "utilization_pct": 11, "quality": "RECOMENDADO", "color": "#06b6d4"},
+            {"channel": 7, "freq_mhz": 2442, "noise_dbm": -87, "utilization_pct": 21, "quality": "BOM", "color": "#10b981"},
+            {"channel": 8, "freq_mhz": 2447, "noise_dbm": -81, "utilization_pct": 36, "quality": "MODERADO", "color": "#84cc16"},
+            {"channel": 9, "freq_mhz": 2452, "noise_dbm": -75, "utilization_pct": 54, "quality": "MODERADO", "color": "#eab308"},
+            {"channel": 10, "freq_mhz": 2457, "noise_dbm": -70, "utilization_pct": 69, "quality": "INTERFERÊNCIA", "color": "#f97316"},
+            {"channel": 11, "freq_mhz": 2462, "noise_dbm": -66, "utilization_pct": 82, "quality": "SATURADO", "color": "#f43f5e"},
+            {"channel": 12, "freq_mhz": 2467, "noise_dbm": -74, "utilization_pct": 42, "quality": "MODERADO", "color": "#eab308"},
+            {"channel": 13, "freq_mhz": 2472, "noise_dbm": -85, "utilization_pct": 24, "quality": "BOM", "color": "#10b981"},
+            {"channel": 14, "freq_mhz": 2484, "noise_dbm": -94, "utilization_pct": 8, "quality": "LIMPO", "color": "#06b6d4"}
+        ],
+        "rf_recommended_channel": 6
     }
 
 @app.post("/api/scifi/csma-toggle")
@@ -2275,6 +2589,18 @@ async def simulate_scifi_event(req: ScifiSimulateRequest):
             "from_layer": 2,
             "to_layer": 2,
             "badge_color": "purple"
+        }
+    elif req.event_type == "modbus_diff":
+        evt = {
+            "id": f"evt-{int(datetime.now().timestamp()*1000)}",
+            "timestamp": now_str,
+            "mac": req.mac,
+            "name": dev_name,
+            "event": "MODBUS_REGISTER_DIFF",
+            "desc": "Vigilante SCADA detectou variação de carga no registrador 40010 (Totalizador: +13.5 kWh)",
+            "from_layer": 2,
+            "to_layer": 2,
+            "badge_color": "emerald"
         }
     else:
         evt = {

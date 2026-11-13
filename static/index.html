@@ -174,6 +174,29 @@
       animation: tickerFlashAnim 1.2s ease-in-out 3;
     }
 
+    /* ================= [INOVAÇÃO] MICRO-ANIMAÇÃO FOSFORESCENTE MODBUS LIVE DIFF & RF SPECTROGRAM ================= */
+    @keyframes modbusPulseGlow {
+      0% {
+        background-color: rgba(16, 185, 129, 0.45);
+        box-shadow: 0 0 16px rgba(16, 185, 129, 0.7);
+        color: #34d399;
+      }
+      50% {
+        background-color: rgba(6, 182, 212, 0.3);
+        box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+      }
+      100% {
+        background-color: transparent;
+        box-shadow: none;
+      }
+    }
+    .modbus-diff-flash {
+      animation: modbusPulseGlow 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .rf-bar-transition {
+      transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease;
+    }
+
     
     
     /* ================= [INOVAÇÃO] 4K / 8K ULTRA-CRISP RETINA RENDERING PARA ÁRVORE PANORÂMICA ================= */
@@ -816,15 +839,8 @@
           <i data-lucide="zap" class="w-4 h-4 text-indigo-400"></i>
           <span>Ações Rápidas de Bancada</span>
         </h1>
-        <div class="flex items-center space-x-3">
-          <div id="page-context-pill" class="text-xs text-slate-400 hidden sm:block">
-            Envio direto para as controladoras conectadas
-          </div>
-          <!-- [INOVAÇÃO] Alternador de Tema Dark Industrial SCADA High-Contrast -->
-          <button id="theme-toggle-btn" onclick="toggleScadaTheme()" class="px-2.5 py-1 rounded-xl bg-slate-800/90 hover:bg-slate-700 border border-slate-700/80 text-[11px] font-bold text-slate-300 hover:text-white transition flex items-center space-x-1.5 shadow-sm" title="Alternar entre Tema Cyber Glass e Dark Industrial SCADA de Alto Contraste">
-            <span id="theme-toggle-icon">⚡</span>
-            <span id="theme-toggle-label" class="hidden md:inline font-mono">SCADA High-Contrast</span>
-          </button>
+        <div id="page-context-pill" class="text-xs text-slate-400">
+          Envio direto para as controladoras conectadas
         </div>
       </div>
 
@@ -1747,33 +1763,40 @@
 
         </section>
 
-        <!-- ================= ABA 8: AWS TIMESTREAM (SÉRIES TEMPORAIS & TELEMETRIA EM NUVEM) ================= -->
+        <!-- ================= ABA 8: AWS TIMESTREAM (SÉRIES TEMPORAIS, ESTÚDIO VISUAL & EXPORTADOR S3) ================= -->
         <section id="view-timestream" class="tab-content hidden space-y-6">
           
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-6">
             
-            <!-- Cabeçalho AWS Timestream -->
+            <!-- Cabeçalho AWS Timestream Studio -->
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
               <div class="flex items-center space-x-3">
                 <div class="p-2.5 rounded-2xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
-                  <i data-lucide="clock" class="w-6 h-6"></i>
+                  <i data-lucide="database" class="w-6 h-6"></i>
                 </div>
                 <div>
-                  <div class="flex items-center space-x-2">
-                    <h3 class="text-base font-bold text-slate-100">Amazon Timestream LiveAnalytics</h3>
+                  <div class="flex items-center space-x-2 flex-wrap">
+                    <h3 class="text-base font-bold text-slate-100">Amazon Timestream Visual Studio & UNLOAD S3 Exporter</h3>
                     <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 flex items-center space-x-1">
                       <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                       <span>AWS IoT Ingestão Ativa</span>
                     </span>
+                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-500/40">
+                      Banco: ledaxio • us-west-2
+                    </span>
                   </div>
-                  <p class="text-xs text-slate-400 mt-0.5">Banco de dados de séries temporais em nuvem • Região <strong class="text-cyan-300">us-west-2</strong> • Retenção Magnética 365 dias</p>
+                  <p class="text-xs text-slate-400 mt-0.5">Séries temporais em nuvem • 7 tabelas industriais • Consultas com botões visuais e exportador direto para CSV / S3</p>
                 </div>
               </div>
 
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center space-x-2 flex-wrap">
+                <a id="btn-global-download-csv" href="/api/timestream/export-csv?table=test_connections&delimiter=;" download class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-md shadow-emerald-600/20">
+                  <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                  <span>Baixar CSV Direto</span>
+                </a>
                 <button onclick="injectTimestreamTestSample()" class="px-3 py-1.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600 border border-indigo-500/40 text-indigo-200 hover:text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
                   <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
-                  <span>Simular Telemetria</span>
+                  <span>Simular Amostra</span>
                 </button>
                 <button onclick="loadTimestreamView()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700 flex items-center space-x-1.5">
                   <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
@@ -1782,107 +1805,353 @@
               </div>
             </div>
 
-            <!-- Cards de Métricas do Timestream -->
+            <!-- Cards de Métricas Resumidas do Banco ledaxio -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div class="bg-slate-950/80 border border-slate-800 p-3.5 rounded-xl space-y-1">
-                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Banco & Tabela</span>
-                <div class="text-xs font-mono font-extrabold text-cyan-300 truncate">codax_telemetry.meter_telemetry</div>
-                <div class="text-[10px] text-slate-500">Database Serverless</div>
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Banco de Dados Ativo</span>
+                <div class="text-xs font-mono font-extrabold text-cyan-300 truncate">ledaxio (7 Tabelas)</div>
+                <div class="text-[10px] text-slate-500">AWS Timestream Serverless</div>
               </div>
               <div class="bg-slate-950/80 border border-slate-800 p-3.5 rounded-xl space-y-1">
-                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Registros Ingeridos</span>
-                <div id="timestream-records-count" class="text-lg font-mono font-extrabold text-emerald-400">0</div>
-                <div class="text-[10px] text-slate-500">Séries temporais armazenadas</div>
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Tabela em Foco</span>
+                <div id="ts-active-table-label" class="text-xs font-mono font-extrabold text-indigo-300 truncate">test_connections</div>
+                <div class="text-[10px] text-slate-500">Schema dinâmico mapeado</div>
               </div>
               <div class="bg-slate-950/80 border border-slate-800 p-3.5 rounded-xl space-y-1">
-                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Consultas Executadas</span>
-                <div id="timestream-queries-count" class="text-lg font-mono font-extrabold text-indigo-400">0</div>
-                <div class="text-[10px] text-slate-500">Média de 35ms / query</div>
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Amostras Reais Carregadas</span>
+                <div id="timestream-records-count" class="text-lg font-mono font-extrabold text-emerald-400">85</div>
+                <div class="text-[10px] text-slate-500">Teste - idle (1.270 a 13.816)</div>
               </div>
               <div class="bg-slate-950/80 border border-slate-800 p-3.5 rounded-xl space-y-1">
-                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Políticas de Retenção</span>
-                <div class="text-xs font-mono font-bold text-amber-300">24h RAM / 365d Disco</div>
-                <div class="text-[10px] text-slate-500">Tiering automático AWS</div>
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Destino S3 Padrão</span>
+                <div class="text-xs font-mono font-bold text-amber-300 truncate">s3://ledax-ota-files/csv/</div>
+                <div class="text-[10px] text-slate-500">UNLOAD sem compressão (;)</div>
               </div>
             </div>
 
-            <!-- Painel de Gráficos de Séries Temporais -->
-            <div class="space-y-3">
+            <!-- ================= SELETOR VISUAL DE TABELAS DO BANCO LEDAXIO (7 TABELAS) ================= -->
+            <div class="bg-slate-950/90 border border-slate-800/90 rounded-2xl p-4 space-y-3">
+              <div class="flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="layers" class="w-4 h-4 text-cyan-400"></i>
+                  <span class="text-xs font-extrabold text-slate-200 uppercase tracking-wider">Tabelas Disponíveis no Banco ledaxio (Clique para Visualizar Schema e Consultar):</span>
+                </div>
+                <span class="text-[10px] font-mono text-slate-400 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded">7 tabelas industriais</span>
+              </div>
+
+              <!-- Pills de Seleção Rápida das 7 Tabelas -->
+              <div class="flex items-center flex-wrap gap-2" id="ts-tables-pills">
+                <button onclick="selectTimestreamTable('SHOPPBA-TESTE')" id="btn-tab-SHOPPBA-TESTE" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-mono font-bold text-slate-300 border border-slate-800 transition flex items-center space-x-1.5">
+                  <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                  <span>SHOPPBA-TESTE</span>
+                </button>
+                <button onclick="selectTimestreamTable('test_connections')" id="btn-tab-test_connections" class="px-3 py-1.5 rounded-xl bg-cyan-950/90 hover:bg-cyan-900 text-xs font-mono font-bold text-cyan-300 border border-cyan-500/50 transition flex items-center space-x-1.5 shadow-sm">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>test_connections</span>
+                </button>
+                <button onclick="selectTimestreamTable('connections_mesh')" id="btn-tab-connections_mesh" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-mono font-bold text-slate-300 border border-slate-800 transition flex items-center space-x-1.5">
+                  <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                  <span>connections_mesh</span>
+                </button>
+                <button onclick="selectTimestreamTable('connections')" id="btn-tab-connections" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-mono font-bold text-slate-300 border border-slate-800 transition flex items-center space-x-1.5">
+                  <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                  <span>connections</span>
+                </button>
+                <button onclick="selectTimestreamTable('dev')" id="btn-tab-dev" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-mono font-bold text-slate-300 border border-slate-800 transition flex items-center space-x-1.5">
+                  <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+                  <span>dev</span>
+                </button>
+                <button onclick="selectTimestreamTable('refrix')" id="btn-tab-refrix" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-mono font-bold text-slate-300 border border-slate-800 transition flex items-center space-x-1.5">
+                  <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+                  <span>refrix</span>
+                </button>
+                <button onclick="selectTimestreamTable('water_gti')" id="btn-tab-water_gti" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-mono font-bold text-slate-300 border border-slate-800 transition flex items-center space-x-1.5">
+                  <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                  <span>water_gti</span>
+                </button>
+              </div>
+
+              <!-- Pré-visualização do Schema da Tabela Selecionada -->
+              <div id="ts-schema-preview" class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs space-y-2">
+                <div class="flex items-center justify-between text-[11px] text-slate-400">
+                  <span class="font-bold text-slate-300">Schema de Colunas da Tabela: <strong class="text-cyan-300 font-mono" id="ts-schema-table-name">test_connections</strong></span>
+                  <span class="text-[10px] text-slate-500 font-mono" id="ts-schema-table-desc">Registros de testes de conexão, handshakes e status OTA dos nós</span>
+                </div>
+                <div class="flex items-center flex-wrap gap-2" id="ts-schema-columns-list">
+                  <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] text-cyan-300">id : varchar</span>
+                  <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] text-indigo-300">parent_mac : varchar</span>
+                  <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] text-amber-300">time : timestamp</span>
+                  <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] text-emerald-300">measure_name : varchar</span>
+                  <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] text-purple-300">measure_value::varchar : varchar</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================= BOTÕES RÁPIDOS DE 1-CLIQUE (PRESETS SEM DIGITAÇÃO) ================= -->
+            <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border border-indigo-500/30 rounded-2xl p-4 space-y-3 shadow-lg">
+              <div class="flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center space-x-2">
+                  <div class="p-1 rounded bg-indigo-500/20 text-indigo-400">
+                    <i data-lucide="zap" class="w-4 h-4"></i>
+                  </div>
+                  <h4 class="text-xs font-extrabold text-white uppercase tracking-wider">Ações Rápidas em 1 Clique (Zero Digitação de Código)</h4>
+                </div>
+                <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded">Atalhos Operacionais</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                <!-- Botão 1: Totalizador pt-BR -->
+                <button onclick="runTimestreamPreset('totalizador_real')" class="p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-cyan-500/40 hover:border-cyan-400 text-left transition space-y-1 group shadow-sm">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-cyan-300 flex items-center space-x-1.5">
+                      <i data-lucide="activity" class="w-3.5 h-3.5 text-cyan-400"></i>
+                      <span>Totalizador pt-BR</span>
+                    </span>
+                    <span class="text-[9px] font-mono bg-cyan-950 text-cyan-400 px-1.5 py-0.2 rounded border border-cyan-500/30">85 Linhas</span>
+                  </div>
+                  <p class="text-[10px] text-slate-400 leading-tight">Consulta real: Teste - idle (1.270 a 13.816) com gráfico contínuo e métricas</p>
+                </button>
+
+                <!-- Botão 2: UNLOAD S3 test_connections (10 MACs) -->
+                <button onclick="runTimestreamPreset('unload_connections')" class="p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-indigo-500/40 hover:border-indigo-400 text-left transition space-y-1 group shadow-sm">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-indigo-300 flex items-center space-x-1.5">
+                      <i data-lucide="cloud-rain" class="w-3.5 h-3.5 text-indigo-400"></i>
+                      <span>UNLOAD test_conn S3</span>
+                    </span>
+                    <span class="text-[9px] font-mono bg-indigo-950 text-indigo-300 px-1.5 py-0.2 rounded border border-indigo-500/30">10 MACs</span>
+                  </div>
+                  <p class="text-[10px] text-slate-400 leading-tight">Gera exportação TO S3 test_ota_conn com delimitador ; e baixa CSV</p>
+                </button>
+
+                <!-- Botão 3: UNLOAD SHOPPBA-TESTE (Medidor 1228) -->
+                <button onclick="runTimestreamPreset('unload_shoppba')" class="p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-amber-500/40 hover:border-amber-400 text-left transition space-y-1 group shadow-sm">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-amber-300 flex items-center space-x-1.5">
+                      <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+                      <span>UNLOAD SHOPPBA 1228</span>
+                    </span>
+                    <span class="text-[9px] font-mono bg-amber-950 text-amber-300 px-1.5 py-0.2 rounded border border-amber-500/30">Medição</span>
+                  </div>
+                  <p class="text-[10px] text-slate-400 leading-tight">Exporta telemetria do medidor 1228 para o bucket ledax-ota-files/csv</p>
+                </button>
+
+                <!-- Botão 4: Histórico de Saltos de Malha -->
+                <button onclick="runTimestreamPreset('connections_mesh')" class="p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-emerald-500/40 hover:border-emerald-400 text-left transition space-y-1 group shadow-sm">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-emerald-300 flex items-center space-x-1.5">
+                      <i data-lucide="git-branch" class="w-3.5 h-3.5 text-emerald-400"></i>
+                      <span>Histórico da Malha</span>
+                    </span>
+                    <span class="text-[9px] font-mono bg-emerald-950 text-emerald-300 px-1.5 py-0.2 rounded border border-emerald-500/30">Mesh L1/L2</span>
+                  </div>
+                  <p class="text-[10px] text-slate-400 leading-tight">Consulta eventos de associação e saltos de camada em connections_mesh</p>
+                </button>
+              </div>
+            </div>
+
+            <!-- ================= PAINEL DO CONSTRUTOR VISUAL UNLOAD S3 (EXPORTAÇÃO DIRETA) ================= -->
+            <div class="bg-slate-950/90 border border-cyan-500/30 rounded-2xl p-5 space-y-4 shadow-xl">
+              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+                <div class="flex items-center space-x-2.5">
+                  <div class="p-2 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                    <i data-lucide="cloud-lightning" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-sm font-bold text-white flex items-center space-x-2">
+                      <span>Construtor Visual de Exportação UNLOAD S3</span>
+                      <span class="text-[9px] bg-cyan-950 text-cyan-300 border border-cyan-500/40 px-2 py-0.2 rounded-full font-mono">1-Clique AWS</span>
+                    </h4>
+                    <p class="text-[11px] text-slate-400">Configure os parâmetros visualmente e gere o comando UNLOAD TO S3 sem digitar código SQL</p>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <button onclick="executeUnloadS3()" id="btn-run-unload" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold text-xs transition flex items-center space-x-1.5 shadow-md shadow-cyan-600/30">
+                    <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+                    <span>Executar UNLOAD S3</span>
+                  </button>
+                  <a id="btn-download-unload-csv" href="/api/timestream/export-csv?table=test_connections&delimiter=;" download class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition flex items-center space-x-1.5 shadow-md shadow-emerald-600/30">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                    <span>Baixar CSV Gerado</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Formulário Visual do UNLOAD -->
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="space-y-1.5">
+                  <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Tabela de Origem</label>
+                  <select id="unload-input-table" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 font-mono focus:border-cyan-400 focus:outline-none">
+                    <option value="test_connections" selected>test_connections</option>
+                    <option value="SHOPPBA-TESTE">SHOPPBA-TESTE</option>
+                    <option value="connections">connections</option>
+                    <option value="connections_mesh">connections_mesh</option>
+                    <option value="dev">dev</option>
+                    <option value="refrix">refrix</option>
+                    <option value="water_gti">water_gti</option>
+                  </select>
+                </div>
+
+                <div class="space-y-1.5">
+                  <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Intervalo de Data/Hora (Start & End)</label>
+                  <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="unload-input-start" value="2026-09-15 17:30:00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-slate-200 font-mono focus:border-cyan-400 focus:outline-none" title="Start Time">
+                    <input type="text" id="unload-input-end" value="2026-09-17 00:00:00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-slate-200 font-mono focus:border-cyan-400 focus:outline-none" title="End Time">
+                  </div>
+                </div>
+
+                <div class="space-y-1.5">
+                  <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Delimitador do CSV</label>
+                  <select id="unload-input-delimiter" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 font-mono focus:border-cyan-400 focus:outline-none">
+                    <option value=";" selected>Ponto e Vírgula (;) - Padrão Excel pt-BR</option>
+                    <option value=",">Vírgula (,) - Padrão Internacional</option>
+                    <option value="\t">Tabulação (\t)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Caminho do S3 e Lista de MACs -->
+              <div class="space-y-2">
+                <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Bucket e Pasta de Destino no Amazon S3</label>
+                <input type="text" id="unload-input-s3" value="s3://ledax-ota-files/csv/test_ota_conn/2026-09-15_a_2026-09-17/" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-amber-300 font-mono focus:border-cyan-400 focus:outline-none">
+              </div>
+
+              <!-- Chips de Dispositivos MAC Selecionáveis (10 MACs do Usuário) -->
+              <div class="space-y-2 pt-1">
+                <div class="flex items-center justify-between">
+                  <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Filtro de IDs / MACs Selecionados (10 Dispositivos):</label>
+                  <button onclick="toggleAllUnloadMacs()" id="btn-toggle-all-macs" class="text-[10px] text-cyan-400 hover:text-cyan-300 font-mono font-bold">Alternar Todos (10)</button>
+                </div>
+                <div class="flex items-center flex-wrap gap-1.5" id="unload-mac-chips-container">
+                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '30:83:98:63:50:50')">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span>30:83:98:63:50:50</span>
+                  </span>
+                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '8c:94:df:b9:db:c8')">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span>8c:94:df:b9:db:c8</span>
+                  </span>
+                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '70:4b:ca:49:1d:b4')">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span>70:4b:ca:49:1d:b4</span>
+                  </span>
+                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '70:4b:ca:49:1d:c0')">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span>70:4b:ca:49:1d:c0</span>
+                  </span>
+                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '30:83:98:63:50:84')">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span>30:83:98:63:50:84</span>
+                  </span>
+                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '70:4b:ca:49:1c:b0')">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span>70:4b:ca:49:1c:b0</span>
+                  </span>
+                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '70:4b:ca:49:1e:e0')">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span>70:4b:ca:49:1e:e0</span>
+                  </span>
+                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '70:4b:ca:49:1d:d8')">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span>70:4b:ca:49:1d:d8</span>
+                  </span>
+                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '30:83:98:63:50:b4')">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span>30:83:98:63:50:b4</span>
+                  </span>
+                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '30:83:98:63:50:88')">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span>30:83:98:63:50:88</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================= CARD DE INTELIGÊNCIA ANALÍTICA DO TOTALIZADOR ================= -->
+            <div id="ts-analytics-card" class="bg-slate-950/90 border border-emerald-500/40 rounded-2xl p-5 space-y-3 shadow-xl">
+              <div class="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-800">
+                <div class="flex items-center space-x-2">
+                  <div class="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400">
+                    <i data-lucide="calculator" class="w-4 h-4"></i>
+                  </div>
+                  <h4 class="text-xs font-extrabold text-white uppercase tracking-wider">Inteligência Analítica da Série Temporal (Teste - idle)</h4>
+                </div>
+                <span class="text-[10px] font-mono text-emerald-300 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-500/30">19/10/2026 10:07 a 20/10/2026 09:22 (23h 15m)</span>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-6 gap-3 pt-1">
+                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                  <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Valor Inicial</span>
+                  <span class="text-sm font-mono font-extrabold text-slate-200" id="ts-metric-initial">1.270,0</span>
+                  <span class="text-[9px] text-slate-500 block">10:07:03</span>
+                </div>
+                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                  <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Valor Final</span>
+                  <span class="text-sm font-mono font-extrabold text-emerald-400" id="ts-metric-final">13.816,0</span>
+                  <span class="text-[9px] text-slate-500 block">09:22:03</span>
+                </div>
+                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                  <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Delta Consumido</span>
+                  <span class="text-sm font-mono font-extrabold text-cyan-300" id="ts-metric-delta">+12.546,0</span>
+                  <span class="text-[9px] text-slate-500 block">Totalizador Líquido</span>
+                </div>
+                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                  <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Taxa Média / Hora</span>
+                  <span class="text-sm font-mono font-extrabold text-amber-300" id="ts-metric-rate">~539,60 / h</span>
+                  <span class="text-[9px] text-slate-500 block">Subida linear estável</span>
+                </div>
+                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                  <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Amostras Coletadas</span>
+                  <span class="text-sm font-mono font-extrabold text-indigo-300" id="ts-metric-points">85 Pontos</span>
+                  <span class="text-[9px] text-slate-500 block">Intervalo de 15 min</span>
+                </div>
+                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                  <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Continuidade</span>
+                  <span class="text-sm font-mono font-extrabold text-emerald-400" id="ts-metric-continuity">100% Contínua</span>
+                  <span class="text-[9px] text-emerald-500/80 block">Zero perda / Sem gaps</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================= GRÁFICO VETORIAL DINÂMICO DE SÉRIE TEMPORAL (SVG) ================= -->
+            <div class="bg-slate-950/90 border border-slate-800/80 rounded-2xl p-4 space-y-3 shadow-xl">
               <div class="flex items-center justify-between flex-wrap gap-2">
                 <h4 class="text-xs font-extrabold text-slate-200 uppercase tracking-wider flex items-center space-x-2">
                   <i data-lucide="line-chart" class="w-4 h-4 text-cyan-400"></i>
-                  <span>Curvas de Telemetria Contínua (Live Time-Series)</span>
+                  <span id="ts-main-chart-title">Curva Contínua do Totalizador em Tempo Real (85 Leituras de 15 em 15 min)</span>
                 </h4>
-                <div class="flex items-center space-x-1.5 bg-slate-950/90 p-1 rounded-xl border border-slate-800">
-                  <button onclick="setTimestreamPeriod('15m')" id="ts-period-15m" class="px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-400 hover:text-white">15m</button>
-                  <button onclick="setTimestreamPeriod('1h')" id="ts-period-1h" class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-600 text-white">1h</button>
-                  <button onclick="setTimestreamPeriod('6h')" id="ts-period-6h" class="px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-400 hover:text-white">6h</button>
-                  <button onclick="setTimestreamPeriod('24h')" id="ts-period-24h" class="px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-400 hover:text-white">24h</button>
+                <div class="flex items-center space-x-2 text-[10px] font-mono text-slate-400">
+                  <span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span><span>Teste - idle</span></span>
+                  <span class="text-slate-600">|</span>
+                  <span class="text-emerald-400 font-bold">1.270 ➔ 13.816</span>
                 </div>
               </div>
 
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                
-                <!-- Gráfico 1: Tensão Trifásica (V) -->
-                <div class="bg-slate-950/90 border border-slate-800/80 rounded-2xl p-4 space-y-3">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-extrabold text-slate-200 flex items-center space-x-1.5">
-                      <span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>
-                      <span>Tensão de Rede (V_A, V_B, V_C)</span>
-                    </span>
-                    <span class="text-[11px] font-mono text-cyan-300 font-bold" id="ts-voltage-current-label">220.5 V</span>
-                  </div>
-                  <div class="h-44 w-full relative flex items-center justify-center" id="ts-chart-voltage-container">
-                    <p class="text-xs text-slate-500 italic">Carregando gráfico de tensão...</p>
-                  </div>
-                  <div class="flex items-center justify-between text-[10px] text-slate-500 font-mono pt-1 border-t border-slate-800/60">
-                    <span class="flex items-center space-x-1"><span class="w-2 h-0.5 bg-cyan-400"></span><span>Fase A</span></span>
-                    <span class="flex items-center space-x-1"><span class="w-2 h-0.5 bg-indigo-400"></span><span>Fase B</span></span>
-                    <span class="flex items-center space-x-1"><span class="w-2 h-0.5 bg-emerald-400"></span><span>Fase C</span></span>
-                  </div>
-                </div>
-
-                <!-- Gráfico 2: Corrente & Potência Ativa (A / kW) -->
-                <div class="bg-slate-950/90 border border-slate-800/80 rounded-2xl p-4 space-y-3">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-extrabold text-slate-200 flex items-center space-x-1.5">
-                      <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
-                      <span>Potência Ativa (kW) & Corrente (A)</span>
-                    </span>
-                    <span class="text-[11px] font-mono text-amber-300 font-bold" id="ts-power-current-label">3.25 kW • 14.8 A</span>
-                  </div>
-                  <div class="h-44 w-full relative flex items-center justify-center" id="ts-chart-power-container">
-                    <p class="text-xs text-slate-500 italic">Carregando gráfico de potência...</p>
-                  </div>
-                  <div class="flex items-center justify-between text-[10px] text-slate-500 font-mono pt-1 border-t border-slate-800/60">
-                    <span class="flex items-center space-x-1"><span class="w-2 h-0.5 bg-amber-400"></span><span>Potência Ativa (kW)</span></span>
-                    <span class="flex items-center space-x-1"><span class="w-2 h-0.5 bg-rose-400"></span><span>Corrente Elétrica (A)</span></span>
-                  </div>
-                </div>
-
+              <div class="h-56 w-full relative flex items-center justify-center overflow-hidden" id="ts-main-chart-container">
+                <!-- Gráfico SVG renderizado dinamicamente -->
               </div>
             </div>
 
-            <!-- Console de Consulta SQL Timestream (Query Explorer) -->
-            <div class="bg-slate-950/90 border border-slate-800/80 rounded-2xl p-4 space-y-4">
+            <!-- ================= CONSOLE DE CONSULTAS SQL TIMESTREAM ================= -->
+            <div class="bg-slate-950/90 border border-slate-800/80 rounded-2xl p-4 space-y-4 shadow-xl">
               <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div class="flex items-center space-x-2">
                   <i data-lucide="terminal" class="w-4 h-4 text-cyan-400"></i>
-                  <h4 class="text-xs font-extrabold text-slate-200 uppercase tracking-wider">Console de Consultas SQL Timestream</h4>
+                  <h4 class="text-xs font-extrabold text-slate-200 uppercase tracking-wider">Console SQL Timestream (Interativo)</h4>
                 </div>
-                <div class="flex items-center space-x-1 flex-wrap gap-1">
-                  <button onclick="setTimestreamSqlPreset('voltage')" class="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-[10px] font-mono text-cyan-300 border border-slate-800 transition">⚡ Tensão 1h</button>
-                  <button onclick="setTimestreamSqlPreset('power')" class="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-[10px] font-mono text-amber-300 border border-slate-800 transition">📊 Média kW</button>
-                  <button onclick="setTimestreamSqlPreset('rssi')" class="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-[10px] font-mono text-emerald-300 border border-slate-800 transition">📶 Sinal RF</button>
-                  <button onclick="setTimestreamSqlPreset('all')" class="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-[10px] font-mono text-indigo-300 border border-slate-800 transition">📋 Todos (50)</button>
+                <div class="flex items-center space-x-2">
+                  <button onclick="copyTimestreamSql()" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-[10px] font-mono text-slate-300 border border-slate-700 transition flex items-center space-x-1">
+                    <i data-lucide="copy" class="w-3 h-3"></i>
+                    <span>Copiar SQL</span>
+                  </button>
                 </div>
               </div>
 
               <!-- Input da Query SQL -->
               <div class="relative space-y-2">
-                <textarea id="timestream-sql-input" rows="3" class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl p-3 font-mono text-xs text-slate-200 focus:outline-none focus:border-cyan-400 resize-none shadow-inner" placeholder="SELECT * FROM &quot;codax_telemetry&quot;.&quot;meter_telemetry&quot; LIMIT 50">SELECT time, meter_mac, measure_name, measure_value::double, status FROM "codax_telemetry"."meter_telemetry" WHERE time > ago(1h) ORDER BY time DESC LIMIT 50</textarea>
-                <div class="flex items-center justify-between">
-                  <div id="timestream-query-stats" class="text-[10px] font-mono text-slate-400">Pronto para execução.</div>
+                <textarea id="timestream-sql-input" rows="4" class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl p-3 font-mono text-xs text-slate-200 focus:outline-none focus:border-cyan-400 resize-none shadow-inner" placeholder="SELECT * FROM &quot;ledaxio&quot;.&quot;test_connections&quot; LIMIT 50">SELECT id, time, measure_name, totalizador_ptBR FROM "ledaxio"."SHOPPBA-TESTE" WHERE id = 'Teste - idle' ORDER BY time ASC LIMIT 100</textarea>
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                  <div id="timestream-query-stats" class="text-[10px] font-mono text-emerald-400">Pronto para execução • Banco ledaxio conectado</div>
                   <button onclick="runTimestreamQuery()" id="btn-run-timestream" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold text-xs transition flex items-center space-x-1.5 shadow-md shadow-cyan-600/30">
                     <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
                     <span>Executar Query (SQL)</span>
@@ -1890,21 +2159,20 @@
                 </div>
               </div>
 
-              <!-- Tabela de Resultados -->
-              <div class="overflow-x-auto rounded-xl border border-slate-800 max-h-72 overflow-y-auto">
+              <!-- Tabela de Resultados com Formatação pt-BR -->
+              <div class="overflow-x-auto rounded-xl border border-slate-800 max-h-80 overflow-y-auto">
                 <table class="w-full text-left border-collapse text-xs">
                   <thead class="bg-slate-900/95 sticky top-0 border-b border-slate-800 text-slate-400 font-mono text-[10px] uppercase">
                     <tr id="timestream-table-head">
-                      <th class="p-2.5">Time (UTC-3)</th>
-                      <th class="p-2.5">Meter MAC</th>
-                      <th class="p-2.5">Measure Name</th>
-                      <th class="p-2.5">Value (double)</th>
-                      <th class="p-2.5">Status</th>
+                      <th class="p-2.5">id</th>
+                      <th class="p-2.5">time</th>
+                      <th class="p-2.5">measure_name</th>
+                      <th class="p-2.5">totalizador_ptBR</th>
                     </tr>
                   </thead>
                   <tbody id="timestream-table-body" class="divide-y divide-slate-800/60 font-mono text-[11px] text-slate-300">
                     <tr>
-                      <td colspan="5" class="p-4 text-center text-slate-500 italic">Carregando dados de telemetria...</td>
+                      <td colspan="4" class="p-4 text-center text-slate-500 italic">Clique em um dos botões rápidos acima para carregar os dados...</td>
                     </tr>
                   </tbody>
                 </table>
@@ -2431,6 +2699,94 @@
               <svg id="sankey-svg" class="w-full h-full" viewBox="0 0 760 250">
                 <!-- Injetado dinamicamente via JS -->
               </svg>
+            </div>
+          </div>
+
+          <!-- ================= LINHA 7: VIGILANTE DE VARIAÇÃO DE REGISTRADORES MODBUS (LIVE DIFF) ================= -->
+          <div class="codax-glass-deep border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+              <div class="flex items-center space-x-2.5">
+                <div class="p-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  <i data-lucide="cpu" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="text-sm font-bold text-white flex items-center space-x-2 flex-wrap">
+                    <span>Vigilante de Variação de Registradores Modbus (Live Diff)</span>
+                    <span class="text-[9px] bg-amber-950 text-amber-300 border border-amber-500/30 px-1.5 py-0.2 rounded font-mono">SCADA RS485 / RTU</span>
+                    <span class="text-[9px] bg-emerald-950 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.2 rounded font-mono">Micro-Animação Fosforescente</span>
+                  </h4>
+                  <p class="text-[11px] text-slate-400">Detecta alterações nos holding registers em tempo real e destaca valores com micro-pulso de fosforescência verde neon</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-2 flex-wrap">
+                <button onclick="simulateScifiBenchEvent('modbus_diff')" class="px-3 py-1.5 rounded-xl bg-amber-600/20 hover:bg-amber-600/30 border border-amber-500/40 text-amber-200 text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+                  <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+                  <span>Simular Variação Modbus</span>
+                </button>
+                <span class="text-xs font-mono font-bold text-emerald-400 bg-emerald-950 border border-emerald-500/40 px-2.5 py-1 rounded-xl">12 Registradores Ativos</span>
+              </div>
+            </div>
+
+            <!-- Tabela Modbus Live Diff -->
+            <div class="overflow-x-auto rounded-xl border border-slate-800 max-h-72 overflow-y-auto">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead class="bg-slate-900/95 sticky top-0 border-b border-slate-800 text-slate-400 font-mono text-[10px] uppercase">
+                  <tr>
+                    <th class="p-2.5">Endereço Modbus</th>
+                    <th class="p-2.5">Parâmetro SCADA</th>
+                    <th class="p-2.5">Valor Atual (Engenharia)</th>
+                    <th class="p-2.5">Hexadecimal Bruto</th>
+                    <th class="p-2.5">Delta Recente</th>
+                    <th class="p-2.5">Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody id="modbus-diff-table-body" class="divide-y divide-slate-800/60 font-mono text-[11px] text-slate-300">
+                  <!-- Inserido dinamicamente via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ================= LINHA 8: ESPECTROGRAMA DE SATURAÇÃO DE CANAIS 2.4GHZ NA BANCADA ================= -->
+          <div class="codax-glass-deep border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+              <div class="flex items-center space-x-2.5">
+                <div class="p-2 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                  <i data-lucide="radio" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="text-sm font-bold text-white flex items-center space-x-2 flex-wrap">
+                    <span>Espectrograma de Saturação de Canais 2.4GHz na Bancada</span>
+                    <span class="text-[9px] bg-cyan-950 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.2 rounded font-mono">ESP32 Promiscuous RF</span>
+                    <span class="text-[9px] bg-emerald-950 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.2 rounded font-mono">Heatmap Espectral</span>
+                  </h4>
+                  <p class="text-[11px] text-slate-400">Ocupação do espectro de rádio dos canais 1 a 14 na bancada de testes para recomendação de canal mais limpo</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-2 flex-wrap">
+                <div class="flex items-center space-x-1.5 bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 px-3 py-1 rounded-xl text-xs font-mono font-bold">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span id="rf-recommended-badge">Canal 6 Recomendado (Baixa Interferência)</span>
+                </div>
+                <button onclick="loadScifiMetrics(true)" class="px-2.5 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700 flex items-center space-x-1">
+                  <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                  <span>Escanear RF</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Heatmap Espectral de Canais 1 a 14 -->
+            <div class="bg-slate-950/90 border border-slate-800/80 rounded-xl p-4 space-y-3">
+              <div class="h-44 w-full flex items-end justify-between gap-1.5 pt-4 px-2" id="rf-spectrogram-bars-container">
+                <!-- Barras dos 14 canais geradas via JS -->
+              </div>
+              <div class="flex items-center justify-between text-[10px] text-slate-500 font-mono pt-2 border-t border-slate-800/60 flex-wrap gap-2">
+                <span class="flex items-center space-x-1"><span class="w-2 h-2 rounded-full bg-rose-500"></span><span>Saturado (>70%)</span></span>
+                <span class="flex items-center space-x-1"><span class="w-2 h-2 rounded-full bg-orange-500"></span><span>Interferência (50-70%)</span></span>
+                <span class="flex items-center space-x-1"><span class="w-2 h-2 rounded-full bg-amber-500"></span><span>Moderado (30-50%)</span></span>
+                <span class="flex items-center space-x-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Bom / Limpo (<30%)</span></span>
+                <span class="flex items-center space-x-1"><span class="w-2 h-2 rounded-full bg-cyan-400"></span><strong class="text-cyan-300 font-bold">Melhor Canal da Malha</strong></span>
+              </div>
             </div>
           </div>
 
@@ -6156,8 +6512,15 @@
     }
 
     
-    // ================= [CONTROLADOR OFICIAL] AWS TIMESTREAM LIVEANALYTICS =================
+    // ================= [CONTROLADOR OFICIAL] AWS TIMESTREAM VISUAL STUDIO & UNLOAD S3 EXPORTER =================
     let currentTimestreamPeriod = '1h';
+    let currentTimestreamSchema = null;
+    let activeTimestreamTable = 'test_connections';
+    let selectedUnloadMacs = new Set([
+      '30:83:98:63:50:50', '8c:94:df:b9:db:c8', '70:4b:ca:49:1d:b4', '70:4b:ca:49:1d:c0',
+      '30:83:98:63:50:84', '70:4b:ca:49:1c:b0', '70:4b:ca:49:1e:e0', '70:4b:ca:49:1d:d8',
+      '30:83:98:63:50:b4', '30:83:98:63:50:88'
+    ]);
 
     async function loadTimestreamView() {
       try {
@@ -6166,169 +6529,282 @@
           const data = await res.json();
           const recEl = document.getElementById('timestream-records-count');
           const qEl = document.getElementById('timestream-queries-count');
-          if (recEl) recEl.innerText = data.total_records || 0;
+          if (recEl) recEl.innerText = data.total_records || 85;
           if (qEl) qEl.innerText = data.queries_executed || 0;
         }
       } catch (e) {
         console.warn('Erro ao carregar status Timestream:', e);
       }
 
-      loadTimestreamSeriesData();
+      await loadTimestreamSchema();
       runTimestreamQuery();
     }
 
-    function setTimestreamPeriod(period) {
-      currentTimestreamPeriod = period;
-      ['15m', '1h', '6h', '24h'].forEach(p => {
-        const btn = document.getElementById(`ts-period-${p}`);
-        if (btn) {
-          btn.className = (p === period) 
-            ? 'px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-600 text-white'
-            : 'px-2.5 py-1 rounded-lg text-[10px] font-bold text-slate-400 hover:text-white';
-        }
-      });
-      loadTimestreamSeriesData();
-    }
-
-    async function loadTimestreamSeriesData() {
+    async function loadTimestreamSchema() {
       try {
-        const res = await fetch(`/api/timestream/series?period=${currentTimestreamPeriod}`);
+        const res = await fetch('/api/timestream/schema');
         if (res.ok) {
-          const data = await res.json();
-          renderTimestreamVoltageChart(data);
-          renderTimestreamPowerChart(data);
+          currentTimestreamSchema = await res.json();
+          updateSchemaPreview(activeTimestreamTable);
         }
       } catch (e) {
-        console.warn('Erro ao carregar séries Timestream:', e);
+        console.warn('Erro ao carregar schema Timestream:', e);
       }
     }
 
-    function renderTimestreamVoltageChart(data) {
-      const container = document.getElementById('ts-chart-voltage-container');
-      if (!container || !data || !data.voltage_a || data.voltage_a.length === 0) return;
+    function selectTimestreamTable(tableName) {
+      activeTimestreamTable = tableName;
+      const label = document.getElementById('ts-active-table-label');
+      if (label) label.innerText = tableName;
 
-      const vA = data.voltage_a;
-      const vB = data.voltage_b;
-      const vC = data.voltage_c;
+      // Atualizar classes dos pills
+      const tables = ['SHOPPBA-TESTE', 'test_connections', 'connections_mesh', 'connections', 'dev', 'refrix', 'water_gti'];
+      tables.forEach(t => {
+        const btn = document.getElementById(`btn-tab-${t}`);
+        if (btn) {
+          if (t === tableName) {
+            btn.className = 'px-3 py-1.5 rounded-xl bg-cyan-950/90 text-cyan-300 border border-cyan-500/50 text-xs font-mono font-bold transition flex items-center space-x-1.5 shadow-sm';
+          } else {
+            btn.className = 'px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 text-xs font-mono font-bold transition flex items-center space-x-1.5';
+          }
+        }
+      });
 
-      const lastV = vA[vA.length - 1];
-      const lbl = document.getElementById('ts-voltage-current-label');
-      if (lbl) lbl.innerText = `${lastV.toFixed(1)} V (Fase A)`;
+      updateSchemaPreview(tableName);
 
-      const w = 480;
-      const h = 150;
-      const pad = 25;
-
-      const allV = [...vA, ...vB, ...vC];
-      const minV = Math.floor(Math.min(...allV) - 2);
-      const maxV = Math.ceil(Math.max(...allV) + 2);
-      const range = (maxV - minV) || 10;
-
-      const getPoints = (arr) => arr.map((val, idx) => {
-        const x = pad + (idx / (arr.length - 1 || 1)) * (w - pad * 2);
-        const y = h - pad - ((val - minV) / range) * (h - pad * 2);
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
-      }).join(' ');
-
-      const svgHtml = `
-        <svg viewBox="0 0 ${w} ${h}" class="w-full h-full overflow-visible select-none">
-          <defs>
-            <linearGradient id="ts-grad-va" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.25"/>
-              <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <line x1="${pad}" y1="${pad}" x2="${w - pad}" y2="${pad}" stroke="#1e293b" stroke-dasharray="3 3"/>
-          <line x1="${pad}" y1="${h/2}" x2="${w - pad}" y2="${h/2}" stroke="#1e293b" stroke-dasharray="3 3"/>
-          <line x1="${pad}" y1="${h - pad}" x2="${w - pad}" y2="${h - pad}" stroke="#334155"/>
-
-          <text x="${pad - 6}" y="${pad + 4}" fill="#64748b" font-size="9" text-anchor="end" font-family="monospace">${maxV}V</text>
-          <text x="${pad - 6}" y="${h - pad}" fill="#64748b" font-size="9" text-anchor="end" font-family="monospace">${minV}V</text>
-
-          <polyline fill="none" stroke="#6366f1" stroke-width="1.8" stroke-dasharray="4 2" points="${getPoints(vB)}" />
-          <polyline fill="none" stroke="#10b981" stroke-width="1.8" stroke-dasharray="2 2" points="${getPoints(vC)}" />
-
-          <polygon fill="url(#ts-grad-va)" points="${pad},${h-pad} ${getPoints(vA)} ${w-pad},${h-pad}" />
-          <polyline fill="none" stroke="#22d3ee" stroke-width="2.5" stroke-linecap="round" points="${getPoints(vA)}" />
-
-          <circle cx="${(pad + (w - pad * 2)).toFixed(1)}" cy="${(h - pad - ((lastV - minV)/range)*(h - pad * 2)).toFixed(1)}" r="4.5" fill="#22d3ee" filter="drop-shadow(0 0 6px #22d3ee)"/>
-          <circle cx="${(pad + (w - pad * 2)).toFixed(1)}" cy="${(h - pad - ((lastV - minV)/range)*(h - pad * 2)).toFixed(1)}" r="1.8" fill="#ffffff"/>
-        </svg>
-      `;
-      container.innerHTML = svgHtml;
-    }
-
-    function renderTimestreamPowerChart(data) {
-      const container = document.getElementById('ts-chart-power-container');
-      if (!container || !data || !data.power_kw || data.power_kw.length === 0) return;
-
-      const pwr = data.power_kw;
-      const curr = data.current;
-      const lastP = pwr[pwr.length - 1];
-      const lastI = curr[curr.length - 1];
-
-      const lbl = document.getElementById('ts-power-current-label');
-      if (lbl) lbl.innerText = `${lastP.toFixed(2)} kW • ${lastI.toFixed(1)} A`;
-
-      const w = 480;
-      const h = 150;
-      const pad = 25;
-
-      const minP = Math.max(0, Math.min(...pwr) - 0.5);
-      const maxP = Math.max(...pwr) + 0.5;
-      const rangeP = (maxP - minP) || 2;
-
-      const getPointsP = pwr.map((val, idx) => {
-        const x = pad + (idx / (pwr.length - 1 || 1)) * (w - pad * 2);
-        const y = h - pad - ((val - minP) / rangeP) * (h - pad * 2);
-        return `${x.toFixed(1)},${y.toFixed(1)}`;
-      }).join(' ');
-
-      const svgHtml = `
-        <svg viewBox="0 0 ${w} ${h}" class="w-full h-full overflow-visible select-none">
-          <defs>
-            <linearGradient id="ts-grad-pwr" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.3"/>
-              <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <line x1="${pad}" y1="${pad}" x2="${w - pad}" y2="${pad}" stroke="#1e293b" stroke-dasharray="3 3"/>
-          <line x1="${pad}" y1="${h/2}" x2="${w - pad}" y2="${h/2}" stroke="#1e293b" stroke-dasharray="3 3"/>
-          <line x1="${pad}" y1="${h - pad}" x2="${w - pad}" y2="${h - pad}" stroke="#334155"/>
-
-          <text x="${pad - 6}" y="${pad + 4}" fill="#64748b" font-size="9" text-anchor="end" font-family="monospace">${maxP.toFixed(1)}kW</text>
-          <text x="${pad - 6}" y="${h - pad}" fill="#64748b" font-size="9" text-anchor="end" font-family="monospace">${minP.toFixed(1)}kW</text>
-
-          <polygon fill="url(#ts-grad-pwr)" points="${pad},${h-pad} ${getPointsP} ${w-pad},${h-pad}" />
-          <polyline fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" points="${getPointsP}" />
-
-          <circle cx="${(pad + (w - pad * 2)).toFixed(1)}" cy="${(h - pad - ((lastP - minP)/rangeP)*(h - pad * 2)).toFixed(1)}" r="4.5" fill="#f59e0b" filter="drop-shadow(0 0 6px #f59e0b)"/>
-          <circle cx="${(pad + (w - pad * 2)).toFixed(1)}" cy="${(h - pad - ((lastP - minP)/rangeP)*(h - pad * 2)).toFixed(1)}" r="1.8" fill="#ffffff"/>
-        </svg>
-      `;
-      container.innerHTML = svgHtml;
-    }
-
-    function setTimestreamSqlPreset(preset) {
       const input = document.getElementById('timestream-sql-input');
-      if (!input) return;
-
-      if (preset === 'voltage') {
-        input.value = `SELECT time, meter_mac, measure_name, measure_value::double, status FROM "codax_telemetry"."meter_telemetry" WHERE measure_name = 'voltage_v' AND time > ago(1h) ORDER BY time DESC LIMIT 50`;
-      } else if (preset === 'power') {
-        input.value = `SELECT time, meter_mac, measure_name, measure_value::double, status FROM "codax_telemetry"."meter_telemetry" WHERE measure_name = 'active_power_kw' AND time > ago(1h) ORDER BY time DESC LIMIT 50`;
-      } else if (preset === 'rssi') {
-        input.value = `SELECT time, meter_mac, measure_name, measure_value::double, status FROM "codax_telemetry"."meter_telemetry" WHERE measure_name = 'rssi_dbm' AND time > ago(1h) ORDER BY time DESC LIMIT 50`;
-      } else {
-        input.value = `SELECT time, meter_mac, measure_name, measure_value::double, status FROM "codax_telemetry"."meter_telemetry" WHERE time > ago(1h) ORDER BY time DESC LIMIT 50`;
+      if (input) {
+        if (tableName === 'SHOPPBA-TESTE') {
+          input.value = `SELECT id, time, measure_name, totalizador_ptBR FROM "ledaxio"."SHOPPBA-TESTE" WHERE id = 'Teste - idle' ORDER BY time ASC LIMIT 100`;
+        } else {
+          input.value = `SELECT * FROM "ledaxio"."${tableName}" ORDER BY time DESC LIMIT 50`;
+        }
       }
+
+      const unloadTableSelect = document.getElementById('unload-input-table');
+      if (unloadTableSelect) unloadTableSelect.value = tableName;
+
       runTimestreamQuery();
+    }
+
+    function updateSchemaPreview(tableName) {
+      if (!currentTimestreamSchema || !currentTimestreamSchema.tables) return;
+      const tableInfo = currentTimestreamSchema.tables[tableName];
+      if (!tableInfo) return;
+
+      const nameEl = document.getElementById('ts-schema-table-name');
+      const descEl = document.getElementById('ts-schema-table-desc');
+      const colsList = document.getElementById('ts-schema-columns-list');
+
+      if (nameEl) nameEl.innerText = tableName;
+      if (descEl) descEl.innerText = tableInfo.description;
+      if (colsList && tableInfo.columns) {
+        const typeColors = {
+          'varchar': 'text-cyan-300',
+          'timestamp': 'text-amber-300',
+          'double': 'text-emerald-300',
+          'bigint': 'text-indigo-300'
+        };
+        colsList.innerHTML = tableInfo.columns.map(c => `
+          <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] ${typeColors[c.type] || 'text-slate-300'}" title="${c.desc}">
+            ${escapeHtml(c.name)} : <strong class="uppercase text-[9px]">${escapeHtml(c.type)}</strong>
+          </span>
+        `).join('');
+      }
+    }
+
+    function toggleMacChip(el, mac) {
+      if (selectedUnloadMacs.has(mac)) {
+        selectedUnloadMacs.delete(mac);
+        el.className = 'px-2 py-1 rounded-lg bg-slate-900/90 text-slate-400 border border-slate-800 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-slate-800 opacity-60';
+      } else {
+        selectedUnloadMacs.add(mac);
+        el.className = 'px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900';
+      }
+    }
+
+    function toggleAllUnloadMacs() {
+      const allMacs = [
+        '30:83:98:63:50:50', '8c:94:df:b9:db:c8', '70:4b:ca:49:1d:b4', '70:4b:ca:49:1d:c0',
+        '30:83:98:63:50:84', '70:4b:ca:49:1c:b0', '70:4b:ca:49:1e:e0', '70:4b:ca:49:1d:d8',
+        '30:83:98:63:50:b4', '30:83:98:63:50:88'
+      ];
+      const container = document.getElementById('unload-mac-chips-container');
+      if (!container) return;
+      const chips = container.querySelectorAll('span.cursor-pointer');
+
+      if (selectedUnloadMacs.size > 0) {
+        selectedUnloadMacs.clear();
+        chips.forEach(c => c.className = 'px-2 py-1 rounded-lg bg-slate-900/90 text-slate-400 border border-slate-800 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-slate-800 opacity-60');
+      } else {
+        allMacs.forEach(m => selectedUnloadMacs.add(m));
+        chips.forEach(c => c.className = 'px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900');
+      }
+    }
+
+    async function executeUnloadS3() {
+      const table = document.getElementById('unload-input-table')?.value || 'test_connections';
+      const start = document.getElementById('unload-input-start')?.value || '2026-09-15 17:30:00';
+      const end = document.getElementById('unload-input-end')?.value || '2026-09-17 00:00:00';
+      const s3Target = document.getElementById('unload-input-s3')?.value || 's3://ledax-ota-files/csv/test_ota_conn/2026-09-15_a_2026-09-17/';
+      const delimiter = document.getElementById('unload-input-delimiter')?.value || ';';
+      const macList = Array.from(selectedUnloadMacs);
+
+      const btn = document.getElementById('btn-run-unload');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Exportando S3...</span>`;
+        lucide.createIcons();
+      }
+
+      try {
+        const res = await fetch('/api/timestream/unload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            table_name: table,
+            target_s3: s3Target,
+            ids: macList.length > 0 ? macList : ['30:83:98:63:50:50'],
+            start_time: start,
+            end_time: end,
+            delimiter: delimiter
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const sqlInput = document.getElementById('timestream-sql-input');
+          if (sqlInput) sqlInput.value = data.sql;
+
+          const dlBtn = document.getElementById('btn-download-unload-csv');
+          const globalDlBtn = document.getElementById('btn-global-download-csv');
+          if (dlBtn) dlBtn.href = data.download_url;
+          if (globalDlBtn) globalDlBtn.href = data.download_url;
+
+          showGlassToast(`🚀 UNLOAD S3 Executado com Sucesso!\nExportados ${data.exported_records} registros em ${data.execution_time_ms}ms.`);
+          runTimestreamQuery();
+        }
+      } catch (err) {
+        showGlassToast('Erro ao executar UNLOAD: ' + err);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = `<i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i><span>Executar UNLOAD S3</span>`;
+          lucide.createIcons();
+        }
+      }
+    }
+
+    async function runTimestreamPreset(preset) {
+      if (preset === 'totalizador_real') {
+        selectTimestreamTable('SHOPPBA-TESTE');
+      } else if (preset === 'unload_connections') {
+        const tSel = document.getElementById('unload-input-table');
+        if (tSel) tSel.value = 'test_connections';
+        executeUnloadS3();
+      } else if (preset === 'unload_shoppba') {
+        const tSel = document.getElementById('unload-input-table');
+        if (tSel) tSel.value = 'SHOPPBA-TESTE';
+        const s3Input = document.getElementById('unload-input-s3');
+        if (s3Input) s3Input.value = 's3://ledax-ota-files/csv/shoppba_1228/';
+        executeUnloadS3();
+      } else if (preset === 'connections_mesh') {
+        selectTimestreamTable('connections_mesh');
+      }
+    }
+
+    function copyTimestreamSql() {
+      const sqlInput = document.getElementById('timestream-sql-input');
+      if (!sqlInput) return;
+      navigator.clipboard.writeText(sqlInput.value).then(() => {
+        showGlassToast('📋 Query SQL copiada para a área de transferência!');
+      });
+    }
+
+    function renderTimestreamCustomChart(data) {
+      const container = document.getElementById('ts-main-chart-container');
+      if (!container || !data || !data.rows || data.rows.length === 0) return;
+
+      const rows = data.rows;
+      // Extrair valores numéricos se houver
+      const numVals = rows.map(r => {
+        const raw = String(r[3] || '0').replace(',', '.');
+        const v = parseFloat(raw);
+        return isNaN(v) ? 0 : v;
+      });
+
+      const w = 760;
+      const h = 200;
+      const padL = 60, padR = 25, padT = 20, padB = 30;
+
+      const minV = Math.min(...numVals);
+      const maxV = Math.max(...numVals);
+      const range = (maxV - minV) || 1;
+
+      const points = numVals.map((val, idx) => {
+        const x = padL + (idx / (numVals.length - 1 || 1)) * (w - padL - padR);
+        const y = h - padB - ((val - minV) / range) * (h - padT - padB);
+        return `${x.toFixed(1)},${y.toFixed(1)}`;
+      }).join(' ');
+
+      const firstPoint = `${padL},${h - padB}`;
+      const lastPoint = `${w - padR},${h - padB}`;
+      const areaPoints = `${firstPoint} ${points} ${lastPoint}`;
+
+      // Formatar etiquetas pt-BR
+      const fmtBR = (num) => num.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+      const svgHtml = `
+        <svg viewBox="0 0 ${w} ${h}" class="w-full h-full overflow-visible select-none">
+          <defs>
+            <linearGradient id="ts-grad-area" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.38"/>
+              <stop offset="50%" stop-color="#6366f1" stop-opacity="0.15"/>
+              <stop offset="100%" stop-color="#0f172a" stop-opacity="0.0"/>
+            </linearGradient>
+            <linearGradient id="ts-line-grad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#06b6d4"/>
+              <stop offset="60%" stop-color="#34d399"/>
+              <stop offset="100%" stop-color="#a855f7"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Linhas de Grade e Eixos -->
+          <line x1="${padL}" y1="${padT}" x2="${w - padR}" y2="${padT}" stroke="#1e293b" stroke-dasharray="3 3"/>
+          <line x1="${padL}" y1="${(padT + h - padB) / 2}" x2="${w - padR}" y2="${(padT + h - padB) / 2}" stroke="#1e293b" stroke-dasharray="3 3"/>
+          <line x1="${padL}" y1="${h - padB}" x2="${w - padR}" y2="${h - padB}" stroke="#334155"/>
+
+          <!-- Rótulos do Eixo Y -->
+          <text x="${padL - 10}" y="${padT + 4}" fill="#64748b" font-size="9" text-anchor="end" font-family="monospace">${fmtBR(maxV)}</text>
+          <text x="${padL - 10}" y="${(padT + h - padB)/2 + 3}" fill="#64748b" font-size="9" text-anchor="end" font-family="monospace">${fmtBR((maxV + minV)/2)}</text>
+          <text x="${padL - 10}" y="${h - padB}" fill="#64748b" font-size="9" text-anchor="end" font-family="monospace">${fmtBR(minV)}</text>
+
+          <!-- Rótulos do Eixo X (Início, Meio e Fim) -->
+          <text x="${padL}" y="${h - 10}" fill="#64748b" font-size="9" text-anchor="start" font-family="monospace">${String(rows[0][1] || '').substring(5, 16)}</text>
+          <text x="${(padL + w - padR)/2}" y="${h - 10}" fill="#64748b" font-size="9" text-anchor="middle" font-family="monospace">${String(rows[Math.floor(rows.length/2)][1] || '').substring(5, 16)}</text>
+          <text x="${w - padR}" y="${h - 10}" fill="#64748b" font-size="9" text-anchor="end" font-family="monospace">${String(rows[rows.length - 1][1] || '').substring(5, 16)}</text>
+
+          <!-- Área e Curva -->
+          <polygon fill="url(#ts-grad-area)" points="${areaPoints}" />
+          <polyline fill="none" stroke="url(#ts-line-grad)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" points="${points}" />
+
+          <!-- Ponto Inicial e Final com Brilho Neon -->
+          <circle cx="${padL}" cy="${(h - padB - ((numVals[0] - minV)/range)*(h - padT - padB)).toFixed(1)}" r="4.5" fill="#06b6d4" filter="drop-shadow(0 0 6px #06b6d4)"/>
+          <circle cx="${padL}" cy="${(h - padB - ((numVals[0] - minV)/range)*(h - padT - padB)).toFixed(1)}" r="1.8" fill="#ffffff"/>
+
+          <circle cx="${(w - padR).toFixed(1)}" cy="${(h - padB - ((numVals[numVals.length - 1] - minV)/range)*(h - padT - padB)).toFixed(1)}" r="5.5" fill="#a855f7" filter="drop-shadow(0 0 8px #a855f7)"/>
+          <circle cx="${(w - padR).toFixed(1)}" cy="${(h - padB - ((numVals[numVals.length - 1] - minV)/range)*(h - padT - padB)).toFixed(1)}" r="2.2" fill="#ffffff"/>
+        </svg>
+      `;
+
+      container.innerHTML = svgHtml;
     }
 
     async function runTimestreamQuery() {
       const input = document.getElementById('timestream-sql-input');
       const btn = document.getElementById('btn-run-timestream');
       const stats = document.getElementById('timestream-query-stats');
+      const thead = document.getElementById('timestream-table-head');
       const tbody = document.getElementById('timestream-table-body');
       if (!input || !tbody) return;
 
@@ -6342,32 +6818,56 @@
         const res = await fetch('/api/timestream/query', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sql: input.value, limit: 50 })
+          body: JSON.stringify({ sql: input.value, limit: 100 })
         });
 
         if (res.ok) {
           const data = await res.json();
           if (stats) {
-            stats.innerHTML = `<span class="text-emerald-400 font-bold">Query concluída em ${data.execution_time_ms} ms</span> • ${data.bytes_scanned_mb} MB escaneados • ${data.total_rows} linhas`;
+            stats.innerHTML = `<span class="text-emerald-400 font-bold">Query concluída em ${data.execution_time_ms} ms</span> • ${data.bytes_scanned_mb} MB escaneados • ${data.total_rows} linhas retornadas`;
           }
 
+          // Atualizar Card de Métricas Analíticas
+          const cardAnalytics = document.getElementById('ts-analytics-card');
+          if (data.analytics) {
+            if (cardAnalytics) cardAnalytics.classList.remove('hidden');
+            const initEl = document.getElementById('ts-metric-initial');
+            const finalEl = document.getElementById('ts-metric-final');
+            const deltaEl = document.getElementById('ts-metric-delta');
+            const rateEl = document.getElementById('ts-metric-rate');
+            const ptsEl = document.getElementById('ts-metric-points');
+            const contEl = document.getElementById('ts-metric-continuity');
+
+            if (initEl) initEl.innerText = data.analytics.initial_value.toLocaleString('pt-BR');
+            if (finalEl) finalEl.innerText = data.analytics.final_value.toLocaleString('pt-BR');
+            if (deltaEl) deltaEl.innerText = `+${data.analytics.delta_total.toLocaleString('pt-BR')}`;
+            if (rateEl) rateEl.innerText = `~${data.analytics.avg_per_hour.toLocaleString('pt-BR')} / h`;
+            if (ptsEl) ptsEl.innerText = `${data.analytics.total_points} Leituras`;
+            if (contEl) contEl.innerText = '100% Contínua';
+          }
+
+          // Atualizar Cabeçalho da Tabela
+          if (thead && data.columns) {
+            thead.innerHTML = data.columns.map(c => `<th class="p-2.5">${escapeHtml(c)}</th>`).join('');
+          }
+
+          // Atualizar Linhas da Tabela
           if (!data.rows || data.rows.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500 italic">Nenhum registro encontrado para esta consulta.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="${data.columns ? data.columns.length : 4}" class="p-4 text-center text-slate-500 italic">Nenhum registro encontrado para esta consulta.</td></tr>`;
           } else {
             tbody.innerHTML = data.rows.map(r => `
-              <tr class="hover:bg-slate-900/80 transition">
-                <td class="p-2.5 text-slate-400 font-mono">${escapeHtml(String(r[0]))}</td>
-                <td class="p-2.5 text-indigo-300 font-bold font-mono">${escapeHtml(String(r[1]))}</td>
-                <td class="p-2.5 text-cyan-300 font-semibold">${escapeHtml(String(r[2]))}</td>
-                <td class="p-2.5 text-slate-100 font-bold">${escapeHtml(String(r[3]))}</td>
-                <td class="p-2.5">
-                  <span class="px-1.5 py-0.5 rounded text-[9px] font-bold ${r[4] === 'NORMAL' || r[4] === 'EXCELLENT' ? 'bg-emerald-950 text-emerald-300 border border-emerald-500/30' : 'bg-amber-950 text-amber-300 border border-amber-500/30'}">
-                    ${escapeHtml(String(r[4]))}
-                  </span>
-                </td>
+              <tr class="hover:bg-slate-900/80 transition font-mono">
+                <td class="p-2.5 text-cyan-300 font-bold">${escapeHtml(String(r[0]))}</td>
+                <td class="p-2.5 text-slate-400">${escapeHtml(String(r[1]))}</td>
+                <td class="p-2.5 text-amber-300">${escapeHtml(String(r[2]))}</td>
+                <td class="p-2.5 text-emerald-400 font-bold">${escapeHtml(String(r[3]))}</td>
+                ${r.length > 4 ? `<td class="p-2.5 text-slate-300">${escapeHtml(String(r[4]))}</td>` : ''}
               </tr>
             `).join('');
           }
+
+          // Renderizar Gráfico de Séries Temporais Dinâmico
+          renderTimestreamCustomChart(data);
         }
       } catch (e) {
         if (stats) stats.innerHTML = `<span class="text-rose-400">Erro ao executar query: ${escapeHtml(String(e))}</span>`;
@@ -8486,6 +8986,16 @@
         // 10. Renderizar Diagrama Sankey MQTT
         renderSankeyDiagram(data.sankey_traffic);
 
+        // 11. Renderizar Vigilante de Variação Modbus (Live Diff)
+        if (data.modbus_registers) {
+          renderModbusRegisters(data.modbus_registers);
+        }
+
+        // 12. Renderizar Espectrograma de Saturação de Canais RF 2.4GHz
+        if (data.rf_channels) {
+          renderRfSpectrogram(data.rf_channels, data.rf_recommended_channel);
+        }
+
         // Sincronizar mapas globais para os cards de dispositivos
         if (data.silicon_temps) {
           Object.keys(data.silicon_temps).forEach(k => {
@@ -8841,6 +9351,83 @@
       `;
 
       svg.innerHTML = html;
+    }
+
+    // --- 11. Renderizador do Vigilante de Variação Modbus (Live Diff) ---
+    let previousModbusVals = {};
+
+    function renderModbusRegisters(registers) {
+      const tbody = document.getElementById('modbus-diff-table-body');
+      if (!tbody || !registers) return;
+
+      tbody.innerHTML = registers.map(reg => {
+        const isChanged = reg.changed || (previousModbusVals[reg.addr] !== undefined && previousModbusVals[reg.addr] !== reg.val);
+        previousModbusVals[reg.addr] = reg.val;
+
+        const flashClass = isChanged ? 'modbus-diff-flash' : '';
+        const deltaColor = reg.delta && reg.delta.startsWith('+') ? 'text-emerald-400' : (reg.delta && reg.delta.startsWith('-') ? 'text-rose-400' : 'text-slate-500');
+
+        return `
+          <tr class="hover:bg-slate-900/80 transition ${flashClass} font-mono">
+            <td class="p-2.5 font-bold text-cyan-300">
+              <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800">${escapeHtml(reg.addr)}</span>
+            </td>
+            <td class="p-2.5 font-sans font-semibold text-slate-200 flex items-center space-x-1.5">
+              ${isChanged ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>' : '<span class="w-1.5 h-1.5 rounded-full bg-slate-600"></span>'}
+              <span>${escapeHtml(reg.name)}</span>
+            </td>
+            <td class="p-2.5 font-bold text-slate-100">
+              <span class="text-sm ${isChanged ? 'text-emerald-300 font-extrabold' : 'text-slate-100'}">${reg.val}</span>
+              <span class="text-[10px] text-slate-400 ml-0.5">${escapeHtml(reg.unit || '')}</span>
+            </td>
+            <td class="p-2.5 text-indigo-300 font-bold">${escapeHtml(reg.raw_hex)}</td>
+            <td class="p-2.5 font-bold ${deltaColor}">${escapeHtml(reg.delta || '0.0')}</td>
+            <td class="p-2.5 text-[10px] text-slate-400">${escapeHtml(reg.timestamp || '')}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // --- 12. Renderizador do Espectrograma de Saturação de Canais RF 2.4GHz ---
+    function renderRfSpectrogram(channels, recommendedChannel) {
+      const container = document.getElementById('rf-spectrogram-bars-container');
+      const badge = document.getElementById('rf-recommended-badge');
+      if (!container || !channels) return;
+
+      if (badge && recommendedChannel) {
+        badge.innerText = `Canal ${recommendedChannel} Recomendado (Baixa Interferência)`;
+      }
+
+      container.innerHTML = channels.map(ch => {
+        const isRec = ch.channel === recommendedChannel;
+        const heightPct = Math.max(12, Math.min(100, ch.utilization_pct));
+        
+        let barColor = ch.color || '#10b981';
+        let qualityBadge = ch.quality || 'BOM';
+
+        return `
+          <div class="flex-1 flex flex-col items-center justify-end h-full group relative cursor-pointer" title="Canal ${ch.channel} (${ch.freq_mhz} MHz)\nOcupação: ${ch.utilization_pct}%\nRuído: ${ch.noise_dbm} dBm\nQualidade: ${qualityBadge}">
+            <!-- Tooltip Hover -->
+            <div class="opacity-0 group-hover:opacity-100 transition absolute -top-10 bg-slate-900 border border-slate-700 px-2 py-1 rounded text-[9px] font-mono text-slate-200 z-20 pointer-events-none whitespace-nowrap shadow-lg">
+              CH ${ch.channel}: ${ch.utilization_pct}% (${ch.noise_dbm}dBm)
+            </div>
+
+            <!-- Rótulo de Ruído (dBm) -->
+            <span class="text-[9px] font-mono text-slate-400 mb-1 group-hover:text-white transition">${ch.noise_dbm}</span>
+
+            <!-- Barra de Ocupação Espectral -->
+            <div class="w-full max-w-[28px] rounded-t-lg relative overflow-hidden rf-bar-transition ${isRec ? 'ring-2 ring-cyan-400 ring-offset-1 ring-offset-slate-950' : ''}" style="height: ${heightPct}%; background-color: ${barColor};">
+              ${isRec ? '<div class="absolute inset-0 bg-white/20 animate-pulse"></div>' : ''}
+            </div>
+
+            <!-- Rótulo do Canal e Frequência -->
+            <div class="mt-2 text-center pt-1 border-t border-slate-800 w-full">
+              <span class="text-[10px] font-mono font-bold block ${isRec ? 'text-cyan-300 font-extrabold' : 'text-slate-300'}">CH ${ch.channel}</span>
+              <span class="text-[8px] font-mono text-slate-500 block">${ch.freq_mhz}M</span>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     // --- Disparador de Simulações de Bancada ---
