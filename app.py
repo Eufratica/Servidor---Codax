@@ -18,6 +18,7 @@ from commands_data import CODAX_COMMANDS
 import ssl
 import random
 import math
+import time
 
 CERTS_DIR = os.path.abspath("./certs")
 AWS_ENDPOINT = os.getenv("AWS_ENDPOINT", "a15sonvcesw5o-ats.iot.us-west-2.amazonaws.com")
@@ -3039,6 +3040,272 @@ async def simulate_scifi_event(req: ScifiSimulateRequest):
         "event": evt
     })
     return {"status": "ok", "event": evt}
+
+# =========================================================================
+# [INOVAÇÃO] TOMOGRAFIA DE RÁDIO PASSIVA & RADAR WI-FI CSI (OFDM 64-SUBCARRIERS)
+# =========================================================================
+
+app_state.setdefault("csi_bench_state", {
+    "baseline_calibrated": True,
+    "last_calibration_time": None,
+    "active_burst": None,  # { "type": "human_walking", "expire_at": timestamp, "magnitude": 0.85 }
+    "target_mac": "704bca491ca0",
+    "sensitivity": 50
+})
+
+class CsiCalibrateRequest(BaseModel):
+    mac: Optional[str] = "704bca491ca0"
+
+class CsiBurstRequest(BaseModel):
+    event_type: str = "human_walking"  # "human_walking", "wire_touch", "breathing_micro", "panel_vibration"
+    magnitude: Optional[float] = 0.85
+    duration_s: Optional[float] = 12.0
+    mac: Optional[str] = "704bca491ca0"
+
+# Funções puras de processamento espectral CSI (Regra 2 do AGENTS.md)
+def calculate_ofdm_subcarrier_spectrum(center_freq_mhz=2412, perturbation=0.0, burst_mode=None):
+    """
+    Função pura: Gera e calcula o estado de dispersão das 64 subportadoras OFDM do canal Wi-Fi 20 MHz.
+    Subportadoras indexadas de -32 a +31 (espaçamento 312.5 kHz).
+    Subportadoras nulas: -32, 0 (DC), +31.
+    Subportadoras piloto: -21, -7, +7, +21.
+    """
+    subcarriers = []
+    pilot_indices = {-21, -7, 7, 21}
+    null_indices = {-32, 0, 31}
+    
+    # Parâmetros físicos de desvio conforme tipo de perturbação
+    burst_amp_boost = 0.0
+    phase_jitter = 0.0
+    if burst_mode == "wire_touch":
+        burst_amp_boost = 18.5  # Toque ou aproximação direta na antena causa forte atenuação/ressonância nas altas
+        phase_jitter = 2.4
+    elif burst_mode == "human_walking":
+        burst_amp_boost = 9.8   # Espalhamento por corpo humano em movimento (Doppler 2-6 Hz)
+        phase_jitter = 1.3
+    elif burst_mode == "breathing_micro":
+        burst_amp_boost = 3.2   # Micromovimento torácico / respiração (0.2-0.5 Hz)
+        phase_jitter = 0.4
+    elif burst_mode == "panel_vibration":
+        burst_amp_boost = 6.4   # Vibração mecânica harmônica de transformador/painel
+        phase_jitter = 0.9
+
+    total_pert = max(0.0, min(1.0, perturbation + (burst_amp_boost / 25.0)))
+
+    for idx in range(-32, 32):
+        freq_mhz = center_freq_mhz + (idx * 0.3125)
+        is_null = idx in null_indices
+        is_pilot = idx in pilot_indices
+        
+        if is_null:
+            subcarriers.append({
+                "index": idx,
+                "freq_mhz": round(freq_mhz, 4),
+                "type": "NULL",
+                "amp_db": -95.0,
+                "variance_db": 0.05,
+                "phase_rad": 0.0,
+                "perturbed": False
+            })
+            continue
+
+        # Amplitude base nominal de canal Rician (~26 a 34 dB com fading de frequência)
+        base_amp = 28.0 + 4.0 * math.cos(idx * 0.18) + (1.5 if is_pilot else 0.0)
+        # Ruído aleatório térmico basal (0.1 a 0.3 dB)
+        noise_var = random.uniform(0.12, 0.35)
+        
+        # Perturbação de subportadora: espalhamento por reflexão multipercurso
+        subcarrier_weight = math.sin((idx + 32) / 64.0 * math.pi)
+        if burst_mode == "wire_touch" and idx > 8:
+            subcarrier_weight *= 2.2
+            
+        added_var = total_pert * (burst_amp_boost * subcarrier_weight + random.uniform(0.8, 3.2))
+        curr_var = round(noise_var + added_var, 2)
+        curr_amp = round(base_amp + (random.uniform(-1.0, 1.0) * curr_var * 0.5), 1)
+        phase_val = round((idx * 0.09) + (total_pert * phase_jitter * random.uniform(-1.0, 1.0)), 2)
+
+        is_sub_perturbed = curr_var > 1.2
+
+        subcarriers.append({
+            "index": idx,
+            "freq_mhz": round(freq_mhz, 4),
+            "type": "PILOT" if is_pilot else "DATA",
+            "amp_db": curr_amp,
+            "variance_db": curr_var,
+            "phase_rad": phase_val,
+            "perturbed": is_sub_perturbed
+        })
+
+    return subcarriers
+
+def compute_csi_disturbance_entropy(subcarriers):
+    """
+    Função pura: Calcula a entropia de Shannon e índice percentual de perturbação geral da sala (0-100%).
+    """
+    valid = [s for s in subcarriers if s["type"] != "NULL"]
+    if not valid:
+        return 0.0, 0.0, "REPOUSO", "Bancada em Repouso (Sala Vazia)", "#10b981", 0
+    
+    variances = [s["variance_db"] for s in valid]
+    mean_var = sum(variances) / len(variances)
+    perturbed_count = sum(1 for s in valid if s["perturbed"])
+    
+    # Entropia de Shannon normalizada dos vetores de perturbação
+    total_var = sum(variances)
+    entropy = 0.0
+    if total_var > 0:
+        for v in variances:
+            p = v / total_var
+            if p > 0:
+                entropy -= p * math.log2(p)
+                
+    # Índice de perturbação de 0 a 100%
+    dist_index = round(min(100.0, max(0.0, ((mean_var - 0.25) / 4.5) * 100.0)), 1)
+    
+    if dist_index < 15.0:
+        threat_level = "REPOUSO"
+        threat_label = "Bancada em Repouso (Sala Vazia)"
+        threat_color = "#10b981"
+    elif dist_index < 45.0:
+        threat_level = "MICROMOVIMENTO"
+        threat_label = "Micromovimento / Respiração Humana"
+        threat_color = "#eab308"
+    elif dist_index < 85.0:
+        threat_level = "MOVIMENTO_HUMANO"
+        threat_label = "Movimento Humano Ativo na Sala"
+        threat_color = "#f97316"
+    else:
+        threat_level = "APROXIMACAO_FIAÇÃO"
+        threat_label = "Aproximação Imediata / Toque na Fiação"
+        threat_color = "#ef4444"
+
+    return dist_index, round(entropy, 2), threat_level, threat_label, threat_color, perturbed_count
+
+@app.get("/api/csi/status")
+def get_csi_status(mac: Optional[str] = None):
+    now = time.time()
+    burst_info = app_state["csi_bench_state"].get("active_burst")
+    burst_mode = None
+    burst_remaining_s = 0.0
+    if burst_info:
+        if now < burst_info.get("expire_at", 0):
+            burst_mode = burst_info.get("type")
+            burst_remaining_s = round(burst_info.get("expire_at", 0) - now, 1)
+        else:
+            app_state["csi_bench_state"]["active_burst"] = None
+
+    target_mac = mac or app_state["csi_bench_state"].get("target_mac", "704bca491ca0")
+    devices = load_devices()
+    dev = devices.get(target_mac, {})
+    dev_name = dev.get("name", f"Codax {target_mac[-4:]}")
+    raw_rssi = dev.get("rssi", -65)
+
+    subcarriers = calculate_ofdm_subcarrier_spectrum(center_freq_mhz=2412, perturbation=0.0, burst_mode=burst_mode)
+    dist_index, entropy, threat_level, threat_label, threat_color, perturbed_count = compute_csi_disturbance_entropy(subcarriers)
+
+    if threat_level == "REPOUSO":
+        detected_targets = [
+            {"id": "tgt-wall-1", "distance_m": 4.2, "azimuth_deg": 135.0, "intensity": 0.18, "type": "REFLEXAO_ESTATICA"},
+            {"id": "tgt-rack-2", "distance_m": 2.8, "azimuth_deg": 310.0, "intensity": 0.22, "type": "ESTRUTURA_METALICA"}
+        ]
+        doppler_hz = round(random.uniform(0.05, 0.25), 2)
+    elif threat_level == "MICROMOVIMENTO":
+        detected_targets = [
+            {"id": "tgt-human-micro", "distance_m": 2.1, "azimuth_deg": 75.0, "intensity": 0.55, "type": "RESPIRACAO_TORACICA"},
+            {"id": "tgt-wall-1", "distance_m": 4.2, "azimuth_deg": 135.0, "intensity": 0.20, "type": "REFLEXAO_ESTATICA"}
+        ]
+        doppler_hz = round(random.uniform(0.4, 0.9), 2)
+    elif threat_level == "MOVIMENTO_HUMANO":
+        detected_targets = [
+            {"id": "tgt-person-1", "distance_m": round(random.uniform(1.4, 2.8), 2), "azimuth_deg": round(random.uniform(40.0, 110.0), 1), "intensity": 0.88, "type": "CORPO_HUMANO_MOVIMENTO"},
+            {"id": "tgt-scatter-2", "distance_m": 3.6, "azimuth_deg": 220.0, "intensity": 0.45, "type": "DISPERSAO_MULTIPERCURSO"}
+        ]
+        doppler_hz = round(random.uniform(2.8, 5.4), 2)
+    else:  # APROXIMACAO_FIAÇÃO
+        detected_targets = [
+            {"id": "tgt-hand-immediate", "distance_m": 0.45, "azimuth_deg": 25.0, "intensity": 0.98, "type": "CONTATO_PROXIMO_ANTENA"},
+            {"id": "tgt-person-1", "distance_m": 1.1, "azimuth_deg": 45.0, "intensity": 0.92, "type": "OPERADOR_BANCADA"}
+        ]
+        doppler_hz = round(random.uniform(6.1, 9.2), 2)
+
+    return {
+        "timestamp": datetime.now().strftime("%H:%M:%S"),
+        "epoch_ms": int(time.time() * 1000),
+        "target_mac": target_mac,
+        "device_name": dev_name,
+        "rssi": raw_rssi,
+        "channel_mhz": 2412,
+        "protocol": "802.11n 20MHz",
+        "subcarrier_count": 64,
+        "perturbed_subcarriers": perturbed_count,
+        "disturbance_pct": dist_index,
+        "threat_level": threat_level,
+        "threat_label": threat_label,
+        "threat_color": threat_color,
+        "doppler_hz": doppler_hz,
+        "shannon_entropy_bits": entropy,
+        "burst_active": burst_mode is not None,
+        "burst_mode": burst_mode,
+        "burst_remaining_s": burst_remaining_s,
+        "detected_targets": detected_targets,
+        "subcarriers": subcarriers
+    }
+
+@app.get("/api/csi/{mac}")
+def get_csi_for_mac(mac: str):
+    return get_csi_status(mac=mac)
+
+@app.post("/api/csi/calibrate")
+async def calibrate_csi_baseline(req: CsiCalibrateRequest):
+    app_state["csi_bench_state"]["baseline_calibrated"] = True
+    app_state["csi_bench_state"]["last_calibration_time"] = datetime.now().strftime("%H:%M:%S")
+    app_state["csi_bench_state"]["active_burst"] = None
+    app_state["csi_bench_state"]["target_mac"] = req.mac
+    
+    await ws_manager.broadcast({
+        "type": "csi_calibrated",
+        "mac": req.mac,
+        "time": app_state["csi_bench_state"]["last_calibration_time"]
+    })
+    return {
+        "status": "ok",
+        "message": f"Baseline de ruído de canal CSI calibrado com sucesso para o nó {req.mac}",
+        "timestamp": app_state["csi_bench_state"]["last_calibration_time"]
+    }
+
+@app.post("/api/csi/burst")
+async def trigger_csi_burst(req: CsiBurstRequest):
+    now = time.time()
+    dur = req.duration_s or 12.0
+    app_state["csi_bench_state"]["active_burst"] = {
+        "type": req.event_type,
+        "expire_at": now + dur,
+        "magnitude": req.magnitude or 0.85
+    }
+    app_state["csi_bench_state"]["target_mac"] = req.mac or "704bca491ca0"
+    
+    label_map = {
+        "human_walking": "Passos / Deslocamento de Pessoa na Sala",
+        "wire_touch": "Aproximação Imediata / Toque na Fiação da Bancada",
+        "breathing_micro": "Micromovimento Torácico / Respiração",
+        "panel_vibration": "Vibração Mecânica de Transformador / Painel"
+    }
+    event_label = label_map.get(req.event_type, req.event_type)
+    
+    await ws_manager.broadcast({
+        "type": "csi_burst_triggered",
+        "event_type": req.event_type,
+        "label": event_label,
+        "duration_s": dur,
+        "mac": req.mac
+    })
+    return {
+        "status": "ok",
+        "event": req.event_type,
+        "label": event_label,
+        "duration_s": dur,
+        "message": f"Rajada de perturbação RF injetada: {event_label} ({dur}s)"
+    }
 
 # ================= WEBSOCKET =================
 @app.websocket("/ws")

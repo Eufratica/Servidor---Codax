@@ -525,6 +525,17 @@
         <span class="text-[11px]">Gêmeo 3D</span>
       </button>
 
+      <!-- [INOVAÇÃO] Radar Wi-Fi CSI & Tomografia Passiva de RF (Detecção sem Câmeras por OFDM 64) -->
+      <button onclick="toggleRadarCsiModal()" id="top-btn-radar-csi" title="Radar Wi-Fi CSI & Tomografia Passiva de RF (Detecção de Movimento sem Câmeras por Dispersão de Sinal nas 64 Subportadoras OFDM do ESP32)" class="flex items-center space-x-1.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/60 text-slate-300 hover:text-emerald-300 px-2.5 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
+        <span class="relative flex h-2 w-2">
+          <span id="top-csi-ping-dot" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span id="top-csi-static-dot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        </span>
+        <i data-lucide="radio" class="w-3.5 h-3.5 text-emerald-400"></i>
+        <span class="text-[11px]">Radar CSI</span>
+        <span id="top-csi-badge" class="text-[9px] font-mono font-extrabold px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30">0%</span>
+      </button>
+
       <!-- Modo Inspetor Visual para IA (F2 ou Alt+Clique) -->
       <button onclick="toggleUiInspector()" id="top-btn-ui-inspector" title="Ativar/Desativar Modo Seleção Visual para IA (Atalho: F2 ou Alt+Clique)" class="flex items-center space-x-1 bg-slate-950/80 hover:bg-indigo-950/70 border border-slate-800 hover:border-indigo-500/60 text-slate-300 hover:text-indigo-200 px-2 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
         <i data-lucide="crosshair" class="w-3.5 h-3.5 text-indigo-400"></i>
@@ -3158,6 +3169,10 @@
             <i data-lucide="box" class="w-3.5 h-3.5 text-cyan-400"></i>
             <span>🛰️ Gêmeo Digital 3D</span>
           </button>
+          <button onclick="switchCockpitSubTab('csi')" id="cockpit-tab-csi" class="cockpit-sub-tab px-3.5 py-2 text-xs font-medium border-b-2 border-transparent text-slate-400 hover:text-emerald-300 flex items-center space-x-2">
+            <i data-lucide="radio" class="w-3.5 h-3.5 text-emerald-400"></i>
+            <span>📡 Radar Wi-Fi CSI</span>
+          </button>
         </div>
 
         <!-- Conteúdo Rolável das Abas do Cockpit -->
@@ -3599,6 +3614,112 @@
 
           </div>
 
+          <!-- SUB-ABA 7: TOMOGRAFIA DE RÁDIO PASSIVA & RADAR WI-FI CSI -->
+          <div id="cockpit-view-csi" class="cockpit-content-section space-y-4 hidden">
+            <!-- Barra Superior de Ferramentas CSI do Cockpit -->
+            <div class="flex items-center justify-between bg-slate-950 border border-slate-800 rounded-xl p-3 flex-wrap gap-2">
+              <div class="flex items-center space-x-3">
+                <div class="p-2 rounded-lg bg-emerald-950 text-emerald-400 border border-emerald-500/40">
+                  <i data-lucide="radio" class="w-5 h-5 animate-pulse"></i>
+                </div>
+                <div>
+                  <h4 class="font-extrabold text-sm text-slate-100 flex items-center space-x-2">
+                    <span>Tomografia Passiva de RF & Wi-Fi CSI</span>
+                    <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/50">OFDM 64</span>
+                  </h4>
+                  <p class="text-[11px] text-slate-400">Detecção de perturbação e movimento sem câmeras via dispersão multipercurso</p>
+                </div>
+              </div>
+
+              <div class="flex items-center space-x-2">
+                <button onclick="openRadarCsiModalForCockpit()" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-mono text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+                  <i data-lucide="maximize-2" class="w-3.5 h-3.5"></i>
+                  <span>Abrir Tela Tática Militar 360°</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Resumo Integrado da Tomografia do Nó -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2">
+                <div class="flex items-center justify-between text-xs text-slate-400">
+                  <span class="font-bold flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                    <span>Índice de Perturbação da Sala</span>
+                  </span>
+                  <span id="cp-csi-threat-pill" class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40">REPOUSO</span>
+                </div>
+                <div class="flex items-baseline space-x-2 pt-1 font-mono">
+                  <span id="cp-csi-pert-val" class="text-3xl font-black text-emerald-300">0.0%</span>
+                  <span class="text-xs text-slate-500">var. de amplitude</span>
+                </div>
+                <div class="w-full h-2 rounded-full bg-slate-900 border border-slate-800 overflow-hidden">
+                  <div id="cp-csi-pert-bar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 5%;"></div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2">
+                <div class="flex items-center justify-between text-xs text-slate-400">
+                  <span class="font-bold flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                    <span>Desvio Doppler Estimado</span>
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-500">2.412 GHz</span>
+                </div>
+                <div class="flex items-baseline space-x-2 pt-1 font-mono">
+                  <span id="cp-csi-doppler-val" class="text-3xl font-black text-cyan-300">0.15 Hz</span>
+                  <span class="text-xs text-slate-500">deslocamento</span>
+                </div>
+                <p class="text-[10px] text-slate-400 font-mono">Sem alvos humanos em deslocamento ativo</p>
+              </div>
+
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2">
+                <div class="flex items-center justify-between text-xs text-slate-400">
+                  <span class="font-bold flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+                    <span>Entropia de Canal (Shannon)</span>
+                  </span>
+                  <span class="text-[9px] font-mono text-slate-500">64 SC</span>
+                </div>
+                <div class="flex items-baseline space-x-2 pt-1 font-mono">
+                  <span id="cp-csi-entropy-val" class="text-3xl font-black text-purple-300">5.20 bits</span>
+                  <span class="text-xs text-slate-500">estabilidade</span>
+                </div>
+                <p class="text-[10px] text-slate-400 font-mono">Canal Rician estável com fading nominal</p>
+              </div>
+            </div>
+
+            <!-- Mini Espectro de 64 Subportadoras no Cockpit -->
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-2">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-bold text-slate-200 font-mono">Espectro OFDM 64 Subportadoras (Este Codax)</span>
+                <span class="text-[10px] text-slate-500 font-mono">Espaçamento: 312.5 kHz</span>
+              </div>
+              <div class="w-full h-24 bg-[#020b08] rounded-xl border border-slate-800 p-1.5">
+                <canvas id="cp-csi-spectrum-canvas" class="w-full h-full"></canvas>
+              </div>
+            </div>
+
+            <!-- Ações de Teste Rápido no Cockpit -->
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between flex-wrap gap-2">
+              <div class="text-xs font-mono text-slate-400">
+                <span>Disparo de teste de bancada:</span>
+              </div>
+              <div class="flex items-center space-x-2 text-xs font-mono">
+                <button onclick="triggerCsiBurstSimulation('human_walking')" class="px-2.5 py-1 rounded-lg bg-amber-950 hover:bg-amber-900 text-amber-300 border border-amber-500/40 transition">
+                  🚶 Passos
+                </button>
+                <button onclick="triggerCsiBurstSimulation('wire_touch')" class="px-2.5 py-1 rounded-lg bg-rose-950 hover:bg-rose-900 text-rose-300 border border-rose-500/40 transition">
+                  ⚡ Toque
+                </button>
+                <button onclick="calibrateRadarCsiBaseline()" class="px-2.5 py-1 rounded-lg bg-emerald-950 hover:bg-emerald-900 text-emerald-300 border border-emerald-500/40 transition">
+                  🎯 Calibrar Baseline
+                </button>
+              </div>
+            </div>
+
+          </div>
+
         </div>
 
         <!-- FAIXA INFERIOR FIXA (DOCKED): CARROSSEL HORIZONTAL DE CODAX DA BANCADA -->
@@ -3878,6 +3999,271 @@
 
   <!-- Retângulo de Arrastar (Lasso de Seleção de Área) -->
   <div id="ui-inspector-lasso" class="fixed pointer-events-none z-[81] hidden border-2 border-dashed border-cyan-400 bg-cyan-500/15 backdrop-blur-[2px] rounded-xl shadow-[0_0_25px_rgba(6,182,212,0.3)]"></div>
+
+  <!-- ================= MODAL TÁTICO: RADAR WI-FI CSI & TOMOGRAFIA DE RÁDIO PASSIVA (OFDM 64-SUBCARRIERS) ================= -->
+  <div id="radar-csi-modal" class="fixed inset-0 z-[85] overflow-y-auto hidden" role="dialog" aria-modal="true">
+    <!-- Backdrop Dark Carbon industrial sólido -->
+    <div class="fixed inset-0 bg-black/85 transition-opacity" onclick="closeRadarCsiModal()"></div>
+
+    <div class="flex min-h-screen items-center justify-center p-3 sm:p-6 text-center">
+      <div class="relative w-full max-w-6xl rounded-2xl bg-[#070b14] border border-[#334155] text-slate-200 shadow-[0_0_60px_rgba(0,0,0,0.95)] text-left flex flex-col overflow-hidden">
+        
+        <!-- CABEÇALHO TÁTICO SCADA -->
+        <div class="p-4 sm:p-5 border-b border-[#1e293b] bg-[#0b1120] flex items-center justify-between gap-3 shrink-0">
+          <div class="flex items-center space-x-3.5">
+            <div class="relative p-2.5 rounded-xl bg-emerald-950/80 border border-emerald-500/50 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+              <i data-lucide="radio" class="w-6 h-6 animate-pulse"></i>
+              <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+            </div>
+            <div>
+              <div class="flex items-center space-x-2.5 flex-wrap">
+                <h3 class="font-black text-base sm:text-lg text-slate-100 tracking-wide font-mono flex items-center gap-2">
+                  <span>RADAR WI-FI CSI & TOMOGRAFIA DE RF</span>
+                </h3>
+                <span class="text-[10px] font-mono font-extrabold px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/50">TRL-8 AVANÇADO</span>
+                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/40">OFDM 64-SUBCARRIERS</span>
+                <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-500/40">DOPPLER 1-10 Hz</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5">
+                Tomografia de Rádio Passiva sem Câmeras • Rastreamento de Movimento e Reflexões Multipercurso na Bancada
+              </p>
+            </div>
+          </div>
+
+          <!-- Seletores e Fechar -->
+          <div class="flex items-center space-x-3">
+            <div class="hidden sm:flex items-center space-x-2 bg-[#020b08] border border-slate-700 rounded-xl px-2.5 py-1 text-xs">
+              <span class="text-[10px] text-slate-500 uppercase font-mono">Codax:</span>
+              <select id="radar-csi-mac-select" onchange="changeRadarCsiTargetMac(this.value)" class="bg-transparent text-emerald-300 font-mono font-bold text-xs outline-none cursor-pointer">
+                <!-- Populado dinamicamente -->
+              </select>
+            </div>
+            <button onclick="toggleRadarAudioBeep()" id="btn-radar-audio-toggle" title="Ativar/Desativar Bipe Sonoro de Proximidade (Web Audio API)" class="px-2.5 py-1.5 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-mono font-bold flex items-center space-x-1 transition">
+              <span id="radar-audio-icon">🔇</span>
+              <span class="hidden md:inline text-[11px]" id="radar-audio-label">Bipe Mudo</span>
+            </button>
+            <button onclick="closeRadarCsiModal()" title="Fechar Radar (Esc)" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800/80 transition">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- CORPO PRINCIPAL: TELA DE RADAR MILITAR + ESPECTRO OFDM -->
+        <div class="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-5 overflow-y-auto max-h-[calc(88vh-80px)] bg-[#070b14]">
+          
+          <!-- COLUNA ESQUERDA: VISOR DE RADAR MILITAR / SONAR CIRCULAR (CANVAS 2D) -->
+          <div class="lg:col-span-5 flex flex-col space-y-3">
+            <div class="relative bg-[#020b08] rounded-2xl border-2 border-emerald-900/60 p-3 flex flex-col items-center justify-center shadow-[inset_0_0_40px_rgba(6,78,59,0.3)] overflow-hidden">
+              
+              <!-- Cantos táticos militares -->
+              <div class="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-emerald-500/80"></div>
+              <div class="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-emerald-500/80"></div>
+              <div class="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-emerald-500/80"></div>
+              <div class="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-emerald-500/80"></div>
+
+              <!-- Canvas de Radar Circular Tático -->
+              <canvas id="csi-radar-canvas" width="380" height="380" class="w-full max-w-[380px] aspect-square rounded-full cursor-crosshair"></canvas>
+
+              <!-- HUD Overlay Tático sobre o Canvas -->
+              <div class="w-full flex items-center justify-between text-[10px] font-mono text-emerald-400/90 px-2 pt-2 border-t border-emerald-950/80">
+                <div>
+                  <span>VARREDURA: <strong id="hud-radar-angle" class="text-emerald-300">000°</strong></span>
+                  <span class="mx-1.5 text-slate-600">|</span>
+                  <span>ALCANCE: <strong class="text-emerald-300">5.0m</strong></span>
+                </div>
+                <div>
+                  <span>ALVOS: <strong id="hud-radar-targets-count" class="text-amber-400">0</strong></span>
+                  <span class="mx-1.5 text-slate-600">|</span>
+                  <span id="hud-radar-fps" class="text-cyan-400">60 FPS</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Legenda Tática de Classificação de Alvos do Radar -->
+            <div class="bg-[#0b1120] border border-[#1e293b] rounded-xl p-2.5 text-[11px] font-mono grid grid-cols-3 gap-2 text-center">
+              <div class="flex items-center justify-center space-x-1.5 text-emerald-400">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span>Paredes / Estático</span>
+              </div>
+              <div class="flex items-center justify-center space-x-1.5 text-amber-400">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+                <span>Corpo / Doppler</span>
+              </div>
+              <div class="flex items-center justify-center space-x-1.5 text-rose-400">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping"></span>
+                <span>Toque / Fiação</span>
+              </div>
+            </div>
+
+            <!-- Botões de Controle Rápido do Radar -->
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="calibrateRadarCsiBaseline()" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-emerald-950 text-slate-200 hover:text-emerald-300 border border-slate-700 hover:border-emerald-500/60 font-mono text-xs font-bold transition flex items-center justify-center space-x-1.5 shadow-sm">
+                <i data-lucide="target" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>Calibrar Baseline</span>
+              </button>
+              <button onclick="toggleRadarPause()" id="btn-radar-pause" class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700 font-mono text-xs font-bold transition flex items-center justify-center space-x-1.5 shadow-sm">
+                <span id="radar-pause-icon">⏸️</span>
+                <span id="radar-pause-label">Pausar Varredura</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- COLUNA DIREITA: ESPECTRO DE 64 SUBPORTADORAS OFDM + INDICADORES HUD -->
+          <div class="lg:col-span-7 flex flex-col space-y-4">
+            
+            <!-- CARD DO INDICADOR DE PERTURBAÇÃO DE SINAL (0 a 100%) -->
+            <div class="bg-[#0b1120] border border-[#1e293b] rounded-2xl p-4 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="activity" class="w-4 h-4 text-emerald-400"></i>
+                  <span class="text-xs font-bold font-mono tracking-wide text-slate-300 uppercase">Índice de Perturbação de RF (Tomografia)</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <span id="csi-threat-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-extrabold bg-emerald-950 text-emerald-300 border border-emerald-500/50">
+                    BANCADA EM REPOUSO
+                  </span>
+                </div>
+              </div>
+
+              <!-- Valor Gigante e Barra Dinâmica -->
+              <div class="flex items-baseline space-x-3">
+                <span id="csi-disturbance-val" class="text-3xl sm:text-4xl font-black font-mono text-emerald-400">0.0%</span>
+                <span id="csi-threat-desc" class="text-xs text-slate-400 font-mono">Sala vazia • Variação de fase dentro do piso térmico nominal (0.24 dB)</span>
+              </div>
+
+              <!-- Barra de Progresso com 4 Zonas Estilizadas -->
+              <div class="space-y-1">
+                <div class="w-full h-3 rounded-full bg-slate-950 border border-slate-800 overflow-hidden relative">
+                  <div id="csi-disturbance-bar" class="h-full rounded-full bg-gradient-to-r from-emerald-500 via-yellow-400 to-rose-500 transition-all duration-300" style="width: 4%;"></div>
+                  <!-- Marcadores de threshold -->
+                  <div class="absolute inset-0 flex justify-between px-1 pointer-events-none text-[8px] font-mono text-slate-600">
+                    <span class="border-r border-slate-700 h-full pl-0.5">15%</span>
+                    <span class="border-r border-slate-700 h-full pl-0.5">45%</span>
+                    <span class="border-r border-slate-700 h-full pl-0.5">85%</span>
+                  </div>
+                </div>
+                <div class="flex justify-between text-[9px] font-mono text-slate-500 px-1">
+                  <span>0% Repouso</span>
+                  <span>15% Micromovimento</span>
+                  <span>45% Movimento Humano</span>
+                  <span>85% Toque na Fiação</span>
+                  <span>100%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- ESPECTRO DE 64 SUBPORTADORAS OFDM (CANAL WI-FI 20 MHz) -->
+            <div class="bg-[#0b1120] border border-[#1e293b] rounded-2xl p-4 space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="bar-chart-2" class="w-4 h-4 text-cyan-400"></i>
+                  <span class="text-xs font-bold font-mono tracking-wide text-slate-300 uppercase">Espectro OFDM das 64 Subportadoras (Canal 1 - 2412 MHz)</span>
+                </div>
+                <div class="flex items-center space-x-2 text-[10px] font-mono text-slate-400">
+                  <span class="flex items-center space-x-1"><span class="w-2 h-2 rounded bg-cyan-400"></span><span>Pilotos (-21,-7,+7,+21)</span></span>
+                  <span class="mx-1">•</span>
+                  <span class="flex items-center space-x-1"><span class="w-2 h-2 rounded bg-emerald-500"></span><span>Dados</span></span>
+                </div>
+              </div>
+
+              <!-- Canvas das 64 Barras de Subportadoras -->
+              <div class="relative w-full h-32 bg-[#020b08] rounded-xl border border-slate-800 p-2">
+                <canvas id="csi-spectrum-canvas" class="w-full h-full"></canvas>
+              </div>
+
+              <div class="flex justify-between text-[9px] font-mono text-slate-500 px-1">
+                <span>SC -32 (2402 MHz)</span>
+                <span>SC -16</span>
+                <span>SC 0 (DC / 2412 MHz)</span>
+                <span>SC +16</span>
+                <span>SC +31 (2422 MHz)</span>
+              </div>
+            </div>
+
+            <!-- CARDS DE ENGENHARIA & MÉTRICAS DE TOMOGRAFIA RF -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs font-mono">
+              <div class="bg-[#0b1120] border border-[#1e293b] rounded-xl p-3 space-y-1">
+                <span class="text-slate-500 block text-[10px] uppercase">Desvio Doppler</span>
+                <span id="csi-metric-doppler" class="font-extrabold text-cyan-300 block text-sm">0.18 Hz</span>
+                <span class="text-[9px] text-slate-500">Filtro 1 a 10 Hz</span>
+              </div>
+              <div class="bg-[#0b1120] border border-[#1e293b] rounded-xl p-3 space-y-1">
+                <span class="text-slate-500 block text-[10px] uppercase">Entropia Shannon</span>
+                <span id="csi-metric-entropy" class="font-extrabold text-purple-300 block text-sm">5.22 bits</span>
+                <span class="text-[9px] text-slate-500">Dispersão do Canal</span>
+              </div>
+              <div class="bg-[#0b1120] border border-[#1e293b] rounded-xl p-3 space-y-1">
+                <span class="text-slate-500 block text-[10px] uppercase">Subportadoras Afetadas</span>
+                <span id="csi-metric-subcarriers" class="font-extrabold text-amber-300 block text-sm">0 / 64</span>
+                <span class="text-[9px] text-slate-500">Limiar &gt; 1.2 dB var</span>
+              </div>
+              <div class="bg-[#0b1120] border border-[#1e293b] rounded-xl p-3 space-y-1">
+                <span class="text-slate-500 block text-[10px] uppercase">Taxa de CSI Frames</span>
+                <span id="csi-metric-rate" class="font-extrabold text-emerald-300 block text-sm">50 Hz</span>
+                <span class="text-[9px] text-slate-500">ESP32 Buffer Ring</span>
+              </div>
+            </div>
+
+            <!-- SISMÓGRAFO TEMPORAL DE RF (ÚLTIMOS 60 SEGUNDOS) -->
+            <div class="bg-[#0b1120] border border-[#1e293b] rounded-2xl p-3.5 space-y-2">
+              <div class="flex items-center justify-between text-xs font-mono">
+                <span class="font-bold text-slate-300 flex items-center space-x-1.5">
+                  <i data-lucide="waves" class="w-3.5 h-3.5 text-indigo-400"></i>
+                  <span>Sismógrafo Espectral Contínuo (Últimos 60 Segundos)</span>
+                </span>
+                <span class="text-[10px] text-slate-500">Taxa 1s/ponto</span>
+              </div>
+              <div class="relative w-full h-16 bg-[#020b08] rounded-xl border border-slate-800 p-1">
+                <canvas id="csi-history-canvas" class="w-full h-full"></canvas>
+              </div>
+            </div>
+
+            <!-- DISPARADOR DE TESTES E RAJADAS FÍSICAS DE PERTURBAÇÃO -->
+            <div class="bg-[#0b1120] border border-[#1e293b] rounded-2xl p-3.5 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold font-mono text-slate-300 flex items-center space-x-1.5">
+                  <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
+                  <span>Injeção de Teste de Bancada (Simular Perturbação Física em Tempo Real)</span>
+                </span>
+                <span id="csi-burst-status-pill" class="hidden text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/50 animate-pulse">
+                  RAJADA ATIVA (8s)
+                </span>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
+                <button onclick="triggerCsiBurstSimulation('human_walking')" class="px-2.5 py-2 rounded-xl bg-slate-900 hover:bg-amber-950/80 text-amber-200 border border-slate-800 hover:border-amber-500/50 transition flex items-center justify-center space-x-1.5" title="Simula pessoa caminhando e se movimentando na bancada">
+                  <span>🚶 Passos na Sala</span>
+                </button>
+                <button onclick="triggerCsiBurstSimulation('wire_touch')" class="px-2.5 py-2 rounded-xl bg-slate-900 hover:bg-rose-950/80 text-rose-200 border border-slate-800 hover:border-rose-500/50 transition flex items-center justify-center space-x-1.5" title="Simula aproximação imediata ou toque na fiação/antena do ESP32">
+                  <span>⚡ Toque na Fiação</span>
+                </button>
+                <button onclick="triggerCsiBurstSimulation('breathing_micro')" class="px-2.5 py-2 rounded-xl bg-slate-900 hover:bg-cyan-950/80 text-cyan-200 border border-slate-800 hover:border-cyan-500/50 transition flex items-center justify-center space-x-1.5" title="Simula presença humana estática com respiração e micromovimento">
+                  <span>🫁 Respiração / Micro</span>
+                </button>
+                <button onclick="triggerCsiBurstSimulation('panel_vibration')" class="px-2.5 py-2 rounded-xl bg-slate-900 hover:bg-purple-950/80 text-purple-200 border border-slate-800 hover:border-purple-500/50 transition flex items-center justify-center space-x-1.5" title="Simula vibração mecânica de transformador ou painel elétrico">
+                  <span>📳 Vibração Painel</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- RODAPÉ: EXPLICAÇÃO DO PRINCÍPIO FÍSICO DE ENGENHARIA -->
+        <div class="p-3 sm:p-4 bg-[#0b1120] border-t border-[#1e293b] text-[11px] text-slate-400 font-mono flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center space-x-2">
+            <span class="text-emerald-400 font-bold">🧪 Princípio Físico Aplicado:</span>
+            <span>Matriz de Espalhamento H(f,t) = &Sigma; a_k(t) e^(-j 2&pi; f &tau;_k(t)) • Permissividade da Água do Corpo Humano (&epsilon;_r &approx; 50) • Zero Câmeras Óticas</span>
+          </div>
+          <div class="text-[10px] text-slate-500">
+            <span>Pressione <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">Esc</kbd> para fechar</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
 
   <!-- ================= GAVETA LATERAL: CODAX INNOVATION STUDIO 3.0 (OPÇÃO B - SLIDE-OVER DRAWER) ================= -->
   <div id="innovation-drawer" class="fixed inset-0 z-[82] overflow-hidden hidden" role="dialog" aria-modal="true">
@@ -8601,14 +8987,18 @@
                 <span>No Construtor</span>
               </button>
             </div>
-            <div class="grid grid-cols-2 gap-1.5">
-              <button onclick="openDeviceCockpit('${dev.mac}')" class="w-full bg-gradient-to-r from-cyan-950/90 via-indigo-950/80 to-cyan-950/90 hover:from-cyan-900 hover:to-indigo-900 border border-cyan-500/50 hover:border-cyan-300 text-cyan-200 hover:text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center space-x-1.5 shadow-sm" title="Abrir Cockpit 360° deste Codax">
-                <i data-lucide="scan" class="w-4 h-4 text-cyan-400"></i>
-                <span>Cockpit 360°</span>
+            <div class="grid grid-cols-3 gap-1.5">
+              <button onclick="openDeviceCockpit('${dev.mac}')" class="w-full bg-gradient-to-r from-cyan-950/90 via-indigo-950/80 to-cyan-950/90 hover:from-cyan-900 hover:to-indigo-900 border border-cyan-500/50 hover:border-cyan-300 text-cyan-200 hover:text-white font-bold text-[11px] py-2 rounded-xl transition flex items-center justify-center space-x-1 shadow-sm" title="Abrir Cockpit 360° deste Codax">
+                <i data-lucide="scan" class="w-3.5 h-3.5 text-cyan-400"></i>
+                <span>Cockpit</span>
               </button>
-              <button onclick="openDigitalTwinForMac('${dev.mac}')" class="w-full bg-gradient-to-r from-purple-950/90 via-slate-900 to-purple-950/90 hover:from-purple-900 hover:to-slate-800 border border-purple-500/50 hover:border-purple-300 text-purple-200 hover:text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center space-x-1.5 shadow-sm" title="Ver Gêmeo Digital 3D Holográfico deste Codax">
-                <i data-lucide="box" class="w-4 h-4 text-purple-400"></i>
+              <button onclick="openDigitalTwinForMac('${dev.mac}')" class="w-full bg-gradient-to-r from-purple-950/90 via-slate-900 to-purple-950/90 hover:from-purple-900 hover:to-slate-800 border border-purple-500/50 hover:border-purple-300 text-purple-200 hover:text-white font-bold text-[11px] py-2 rounded-xl transition flex items-center justify-center space-x-1 shadow-sm" title="Ver Gêmeo Digital 3D Holográfico deste Codax">
+                <i data-lucide="box" class="w-3.5 h-3.5 text-purple-400"></i>
                 <span>Gêmeo 3D</span>
+              </button>
+              <button onclick="openRadarCsiForMac('${dev.mac}')" class="w-full bg-gradient-to-r from-emerald-950/90 via-slate-900 to-emerald-950/90 hover:from-emerald-900 hover:to-slate-800 border border-emerald-500/50 hover:border-emerald-300 text-emerald-200 hover:text-white font-bold text-[11px] py-2 rounded-xl transition flex items-center justify-center space-x-1 shadow-sm" title="Abrir Radar Wi-Fi CSI deste Codax (Tomografia de RF e detecção de movimento)">
+                <i data-lucide="radio" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>Radar CSI</span>
               </button>
             </div>
             <button onclick="viewDeviceInMeshTree('${dev.mac}')" class="w-full bg-gradient-to-r from-emerald-950/90 via-teal-950/80 to-emerald-950/90 hover:from-emerald-900 hover:to-teal-900 border border-emerald-500/50 hover:border-emerald-300 text-emerald-200 hover:text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center space-x-2 shadow-sm" title="Ir direto para a Árvore da Malha e visualizar este Codax">
@@ -9206,13 +9596,13 @@
     }
 
     function switchCockpitSubTab(tabName) {
-      const tabs = ['telemetry', 'mesh', 'timestream', 'terminal', 'ota', 'twin'];
+      const tabs = ['telemetry', 'mesh', 'timestream', 'terminal', 'ota', 'twin', 'csi'];
       tabs.forEach(t => {
         const btn = document.getElementById(`cockpit-tab-${t}`);
         const view = document.getElementById(`cockpit-view-${t}`);
         if (t === tabName) {
           if (btn) {
-            btn.className = 'cockpit-sub-tab px-3.5 py-2 text-xs font-bold border-b-2 border-cyan-400 text-white flex items-center space-x-2';
+            btn.className = 'cockpit-sub-tab px-3.5 py-2 text-xs font-bold border-b-2 border-emerald-400 text-white flex items-center space-x-2';
           }
           if (view) view.classList.remove('hidden');
         } else {
@@ -9226,6 +9616,10 @@
       if (tabName === 'twin') {
         setTimeout(() => {
           if (window.initOrUpdateDigitalTwin3D) window.initOrUpdateDigitalTwin3D();
+        }, 50);
+      } else if (tabName === 'csi') {
+        setTimeout(() => {
+          if (window.initOrUpdateCockpitCsiView) window.initOrUpdateCockpitCsiView();
         }, 50);
       }
     }
@@ -9828,6 +10222,713 @@
           renderer.setSize(w, h);
         }
       });
+    }
+
+    // =========================================================================
+    // [INOVAÇÃO] RADAR WI-FI CSI & TOMOGRAFIA DE RÁDIO PASSIVA (OFDM 64-SUBCARRIERS)
+    // =========================================================================
+    window.csiRadar = {
+      isOpen: false,
+      isPaused: false,
+      audioBeepEnabled: false,
+      audioCtx: null,
+      targetMac: '704bca491ca0',
+      sweepAngle: 0.0,
+      sweepSpeed: 0.038,
+      fps: 60,
+      lastFrameTime: performance.now(),
+      subcarriers: [],
+      historyPoints: [],
+      detectedTargets: [
+        { id: 'tgt-wall-1', distance_m: 4.2, azimuth_deg: 135, intensity: 0.25, currentGlow: 0.25, type: 'REFLEXAO_ESTATICA' },
+        { id: 'tgt-rack-2', distance_m: 2.8, azimuth_deg: 310, intensity: 0.28, currentGlow: 0.28, type: 'ESTRUTURA_METALICA' }
+      ],
+      currentPerturbation: 0.0,
+      threatLevel: 'REPOUSO',
+      threatLabel: 'Bancada em Repouso (Sala Vazia)',
+      threatColor: '#10b981',
+      dopplerHz: 0.15,
+      entropyBits: 5.2,
+      perturbedCount: 0,
+      pollInterval: null,
+      animFrameId: null
+    };
+
+    // Inicializa o buffer com 60 pontos neutros
+    for (let i = 0; i < 60; i++) {
+      window.csiRadar.historyPoints.push(0.5 + Math.random() * 0.8);
+    }
+
+    function playRadarSonarBeep(freq = 920, duration = 0.08) {
+      if (!window.csiRadar.audioBeepEnabled) return;
+      try {
+        if (!window.csiRadar.audioCtx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) window.csiRadar.audioCtx = new AudioContext();
+        }
+        if (!window.csiRadar.audioCtx) return;
+        if (window.csiRadar.audioCtx.state === 'suspended') {
+          window.csiRadar.audioCtx.resume();
+        }
+        const osc = window.csiRadar.audioCtx.createOscillator();
+        const gain = window.csiRadar.audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, window.csiRadar.audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.045, window.csiRadar.audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, window.csiRadar.audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(window.csiRadar.audioCtx.destination);
+        osc.start();
+        osc.stop(window.csiRadar.audioCtx.currentTime + duration);
+      } catch (e) {
+        // Áudio opcional ignorado
+      }
+    }
+
+    function toggleRadarAudioBeep() {
+      window.csiRadar.audioBeepEnabled = !window.csiRadar.audioBeepEnabled;
+      const icon = document.getElementById('radar-audio-icon');
+      const label = document.getElementById('radar-audio-label');
+      if (icon) icon.innerText = window.csiRadar.audioBeepEnabled ? '🔊' : '🔇';
+      if (label) label.innerText = window.csiRadar.audioBeepEnabled ? 'Bipe Ativo' : 'Bipe Mudo';
+      if (window.csiRadar.audioBeepEnabled) {
+        playRadarSonarBeep(1200, 0.12);
+        showGlassToast('🔊 Alarme Sonoro de Proximidade CSI Ativado (Web Audio API)', 'info');
+      } else {
+        showGlassToast('🔇 Alarme Sonoro CSI Mutado', 'info');
+      }
+    }
+
+    function toggleRadarPause() {
+      window.csiRadar.isPaused = !window.csiRadar.isPaused;
+      const icon = document.getElementById('radar-pause-icon');
+      const label = document.getElementById('radar-pause-label');
+      if (icon) icon.innerText = window.csiRadar.isPaused ? '▶️' : '⏸️';
+      if (label) label.innerText = window.csiRadar.isPaused ? 'Continuar Varredura' : 'Pausar Varredura';
+      showGlassToast(window.csiRadar.isPaused ? '⏸️ Varredura de Radar CSI Pausada' : '▶️ Varredura de Radar CSI Retomada', 'info');
+    }
+
+    function populateRadarCsiDeviceSelect() {
+      const select = document.getElementById('radar-csi-mac-select');
+      if (!select) return;
+      select.innerHTML = '';
+      if (devicesList && devicesList.length > 0) {
+        devicesList.forEach(dev => {
+          const opt = document.createElement('option');
+          opt.value = dev.mac;
+          opt.innerText = `${dev.name || 'Codax'} [${formatMac(dev.mac)}]`;
+          if (dev.mac === window.csiRadar.targetMac) opt.selected = true;
+          select.appendChild(opt);
+        });
+      } else {
+        const opt = document.createElement('option');
+        opt.value = '704bca491ca0';
+        opt.innerText = 'Codax Root [70:4b:ca:49:1c:a0]';
+        select.appendChild(opt);
+      }
+    }
+
+    function changeRadarCsiTargetMac(mac) {
+      if (!mac) return;
+      window.csiRadar.targetMac = mac;
+      showGlassToast(`📡 Radar CSI sintonizado no nó: <strong>${formatMac(mac)}</strong>`, 'info');
+      fetchCsiData(true);
+    }
+
+    function openRadarCsiForMac(mac) {
+      if (mac) window.csiRadar.targetMac = mac;
+      toggleRadarCsiModal(true);
+    }
+
+    function openRadarCsiModalForCockpit() {
+      if (currentCockpitMac) window.csiRadar.targetMac = currentCockpitMac;
+      toggleRadarCsiModal(true);
+    }
+
+    function toggleRadarCsiModal(forceState) {
+      const modal = document.getElementById('radar-csi-modal');
+      if (!modal) return;
+      const isHidden = modal.classList.contains('hidden');
+      const shouldOpen = typeof forceState === 'boolean' ? forceState : isHidden;
+
+      if (shouldOpen) {
+        modal.classList.remove('hidden');
+        window.csiRadar.isOpen = true;
+        populateRadarCsiDeviceSelect();
+        initRadarCsiCanvasLoops();
+        fetchCsiData(true);
+        if (!window.csiRadar.pollInterval) {
+          window.csiRadar.pollInterval = setInterval(fetchCsiData, 1200);
+        }
+        lucide.createIcons();
+      } else {
+        closeRadarCsiModal();
+      }
+    }
+
+    function closeRadarCsiModal() {
+      const modal = document.getElementById('radar-csi-modal');
+      if (modal) modal.classList.add('hidden');
+      window.csiRadar.isOpen = false;
+      if (window.csiRadar.pollInterval) {
+        clearInterval(window.csiRadar.pollInterval);
+        window.csiRadar.pollInterval = null;
+      }
+      if (window.csiRadar.animFrameId) {
+        cancelAnimationFrame(window.csiRadar.animFrameId);
+        window.csiRadar.animFrameId = null;
+      }
+    }
+
+    // Tecla ESC fecha o modal
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && window.csiRadar && window.csiRadar.isOpen) {
+        closeRadarCsiModal();
+      }
+    });
+
+    async function fetchCsiData(immediate = false) {
+      try {
+        const mac = window.csiRadar.targetMac || '704bca491ca0';
+        const res = await fetch(`/api/csi/status?mac=${encodeURIComponent(mac)}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        
+        window.csiRadar.currentPerturbation = data.disturbance_pct || 0.0;
+        window.csiRadar.threatLevel = data.threat_level || 'REPOUSO';
+        window.csiRadar.threatLabel = data.threat_label || 'Bancada em Repouso';
+        window.csiRadar.threatColor = data.threat_color || '#10b981';
+        window.csiRadar.dopplerHz = data.doppler_hz || 0.15;
+        window.csiRadar.entropyBits = data.shannon_entropy_bits || 5.2;
+        window.csiRadar.perturbedCount = data.perturbed_subcarriers || 0;
+        if (data.subcarriers && data.subcarriers.length) {
+          window.csiRadar.subcarriers = data.subcarriers;
+        }
+        if (data.detected_targets) {
+          // Atualiza lista de alvos preservando glow
+          window.csiRadar.detectedTargets = data.detected_targets.map(t => {
+            const existing = window.csiRadar.detectedTargets.find(e => e.id === t.id);
+            return {
+              ...t,
+              currentGlow: existing ? existing.currentGlow : t.intensity
+            };
+          });
+        }
+
+        // Adiciona ponto no sismógrafo histórico
+        window.csiRadar.historyPoints.push(window.csiRadar.currentPerturbation);
+        if (window.csiRadar.historyPoints.length > 60) {
+          window.csiRadar.historyPoints.shift();
+        }
+
+        // Atualiza elementos de texto e badges
+        updateCsiHudElements(data);
+
+        // Se o Cockpit CSI estiver aberto, atualiza também
+        updateCockpitCsiHud(data);
+
+      } catch (err) {
+        console.warn('Erro ao consultar /api/csi/status:', err);
+      }
+    }
+
+    function updateCsiHudElements(data) {
+      // Top Header Badge
+      const topBadge = document.getElementById('top-csi-badge');
+      if (topBadge) {
+        topBadge.innerText = `${Math.round(window.csiRadar.currentPerturbation)}%`;
+        if (window.csiRadar.currentPerturbation > 45) {
+          topBadge.className = 'text-[9px] font-mono font-extrabold px-1.5 py-0.2 rounded bg-rose-950 text-rose-300 border border-rose-500/50 animate-pulse';
+        } else if (window.csiRadar.currentPerturbation > 15) {
+          topBadge.className = 'text-[9px] font-mono font-extrabold px-1.5 py-0.2 rounded bg-amber-950 text-amber-300 border border-amber-500/50';
+        } else {
+          topBadge.className = 'text-[9px] font-mono font-extrabold px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/30';
+        }
+      }
+
+      // Modal HUD
+      const valEl = document.getElementById('csi-disturbance-val');
+      const badgeEl = document.getElementById('csi-threat-badge');
+      const descEl = document.getElementById('csi-threat-desc');
+      const barEl = document.getElementById('csi-disturbance-bar');
+      const targetsCountEl = document.getElementById('hud-radar-targets-count');
+      const burstPill = document.getElementById('csi-burst-status-pill');
+
+      if (valEl) {
+        valEl.innerText = `${window.csiRadar.currentPerturbation.toFixed(1)}%`;
+        valEl.style.color = window.csiRadar.threatColor;
+      }
+      if (badgeEl) {
+        badgeEl.innerText = window.csiRadar.threatLabel.toUpperCase();
+        badgeEl.style.color = window.csiRadar.threatColor;
+        badgeEl.style.borderColor = window.csiRadar.threatColor;
+      }
+      if (descEl) {
+        if (window.csiRadar.threatLevel === 'REPOUSO') {
+          descEl.innerText = 'Sala vazia • Variação de fase dentro do piso térmico nominal (0.24 dB)';
+        } else if (window.csiRadar.threatLevel === 'MICROMOVIMENTO') {
+          descEl.innerText = 'Presença estática • Movimento respiratório torácico detectado nas subportadoras centrais';
+        } else if (window.csiRadar.threatLevel === 'MOVIMENTO_HUMANO') {
+          descEl.innerText = 'Pessoa em movimento na sala • Dispersão Doppler ativa em 34 subportadoras';
+        } else {
+          descEl.innerText = 'ALERTA DE PROXIMIDADE • Operador muito próximo da antena ou tocando na fiação!';
+        }
+      }
+      if (barEl) {
+        barEl.style.width = `${Math.max(4, Math.min(100, window.csiRadar.currentPerturbation))}%`;
+      }
+      if (targetsCountEl) {
+        targetsCountEl.innerText = (window.csiRadar.detectedTargets || []).length;
+      }
+      if (burstPill) {
+        if (data.burst_active) {
+          burstPill.classList.remove('hidden');
+          burstPill.innerText = `RAJADA: ${data.burst_mode} (${data.burst_remaining_s}s)`;
+        } else {
+          burstPill.classList.add('hidden');
+        }
+      }
+
+      const dopEl = document.getElementById('csi-metric-doppler');
+      const entEl = document.getElementById('csi-metric-entropy');
+      const subEl = document.getElementById('csi-metric-subcarriers');
+      if (dopEl) dopEl.innerText = `${window.csiRadar.dopplerHz.toFixed(2)} Hz`;
+      if (entEl) entEl.innerText = `${window.csiRadar.entropyBits.toFixed(2)} bits`;
+      if (subEl) subEl.innerText = `${window.csiRadar.perturbedCount} / 64`;
+    }
+
+    function updateCockpitCsiHud(data) {
+      const pertVal = document.getElementById('cp-csi-pert-val');
+      const pertBar = document.getElementById('cp-csi-pert-bar');
+      const threatPill = document.getElementById('cp-csi-threat-pill');
+      const dopVal = document.getElementById('cp-csi-doppler-val');
+      const entVal = document.getElementById('cp-csi-entropy-val');
+
+      if (pertVal) pertVal.innerText = `${window.csiRadar.currentPerturbation.toFixed(1)}%`;
+      if (pertBar) {
+        pertBar.style.width = `${Math.max(5, Math.min(100, window.csiRadar.currentPerturbation))}%`;
+        pertBar.style.backgroundColor = window.csiRadar.threatColor;
+      }
+      if (threatPill) {
+        threatPill.innerText = window.csiRadar.threatLevel;
+        threatPill.style.color = window.csiRadar.threatColor;
+        threatPill.style.borderColor = window.csiRadar.threatColor;
+      }
+      if (dopVal) dopVal.innerText = `${window.csiRadar.dopplerHz.toFixed(2)} Hz`;
+      if (entVal) entVal.innerText = `${window.csiRadar.entropyBits.toFixed(2)} bits`;
+
+      drawCockpitCsiSpectrum();
+    }
+
+    async function triggerCsiBurstSimulation(eventType) {
+      try {
+        const mac = window.csiRadar.targetMac || '704bca491ca0';
+        const res = await fetch('/api/csi/burst', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event_type: eventType, mac: mac, duration_s: 10.0 })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          showGlassToast(`⚡ ${data.message}`, 'success');
+          if (window.csiRadar.audioBeepEnabled) {
+            playRadarSonarBeep(1400, 0.2);
+          }
+          fetchCsiData(true);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function calibrateRadarCsiBaseline() {
+      try {
+        const mac = window.csiRadar.targetMac || '704bca491ca0';
+        const res = await fetch('/api/csi/calibrate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mac: mac })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          showGlassToast(`🎯 ${data.message}`, 'success');
+          // Limpa histórico
+          window.csiRadar.historyPoints = window.csiRadar.historyPoints.map(() => 0.2 + Math.random() * 0.4);
+          if (window.csiRadar.audioBeepEnabled) {
+            playRadarSonarBeep(800, 0.15);
+          }
+          fetchCsiData(true);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function initRadarCsiCanvasLoops() {
+      if (window.csiRadar.animFrameId) {
+        cancelAnimationFrame(window.csiRadar.animFrameId);
+      }
+
+      function renderLoop(now) {
+        if (!window.csiRadar.isOpen) return;
+        const delta = (now - window.csiRadar.lastFrameTime) / 1000.0;
+        window.csiRadar.lastFrameTime = now;
+        window.csiRadar.fps = Math.round(1.0 / Math.max(delta, 0.001));
+
+        const fpsEl = document.getElementById('hud-radar-fps');
+        if (fpsEl && Math.random() < 0.05) fpsEl.innerText = `${Math.min(60, window.csiRadar.fps)} FPS`;
+
+        if (!window.csiRadar.isPaused) {
+          window.csiRadar.sweepAngle = (window.csiRadar.sweepAngle + window.csiRadar.sweepSpeed) % (Math.PI * 2);
+          const angleDeg = Math.round((window.csiRadar.sweepAngle * 180 / Math.PI));
+          const angleEl = document.getElementById('hud-radar-angle');
+          if (angleEl) angleEl.innerText = `${String(angleDeg).padStart(3, '0')}°`;
+        }
+
+        drawRadarPpiScope();
+        drawCsiSpectrumBars();
+        drawCsiHistorySeismograph();
+
+        window.csiRadar.animFrameId = requestAnimationFrame(renderLoop);
+      }
+
+      window.csiRadar.animFrameId = requestAnimationFrame(renderLoop);
+    }
+
+    function drawRadarPpiScope() {
+      const canvas = document.getElementById('csi-radar-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+      const maxRadius = cx - 18;
+
+      // Fundo fosco industrial SCADA
+      ctx.fillStyle = '#020b08';
+      ctx.fillRect(0, 0, w, h);
+
+      // Círculos concêntricos de alcance métrico (1m a 5m)
+      ctx.lineWidth = 1;
+      const rings = [0.2, 0.4, 0.6, 0.8, 1.0];
+      const ringMeters = ['1.0m', '2.0m', '3.0m', '4.0m', '5.0m'];
+
+      rings.forEach((ratio, idx) => {
+        const r = maxRadius * ratio;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.strokeStyle = (idx === 4) ? 'rgba(16, 185, 129, 0.6)' : 'rgba(16, 185, 129, 0.18)';
+        ctx.setLineDash(idx === 4 ? [] : [3, 4]);
+        ctx.stroke();
+
+        // Rótulo da distância métrica
+        ctx.fillStyle = 'rgba(52, 211, 153, 0.55)';
+        ctx.font = '8px monospace';
+        ctx.fillText(ringMeters[idx], cx + 4, cy - r + 9);
+      });
+      ctx.setLineDash([]);
+
+      // Eixos azimutais angulares (a cada 45°)
+      for (let deg = 0; deg < 360; deg += 45) {
+        const rad = (deg * Math.PI) / 180;
+        const x2 = cx + maxRadius * Math.cos(rad);
+        const y2 = cy + maxRadius * Math.sin(rad);
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x2, y2);
+        ctx.strokeStyle = (deg % 90 === 0) ? 'rgba(16, 185, 129, 0.35)' : 'rgba(16, 185, 129, 0.15)';
+        ctx.stroke();
+
+        // Texto do azimute na borda externa
+        const labelR = maxRadius + 11;
+        const lx = cx + labelR * Math.cos(rad);
+        const ly = cy + labelR * Math.sin(rad);
+        ctx.fillStyle = 'rgba(52, 211, 153, 0.75)';
+        ctx.font = '8px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`${deg}°`, lx, ly);
+      }
+
+      // Setor de persistência de fósforo do feixe radial (decaimento angular)
+      const currentAngle = window.csiRadar.sweepAngle;
+      const trailAngle = Math.PI / 4.5; // ~40 graus de rastro
+      const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxRadius);
+      gradient.addColorStop(0, 'rgba(16, 185, 129, 0.25)');
+      gradient.addColorStop(1, 'rgba(16, 185, 129, 0.05)');
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, maxRadius, currentAngle - trailAngle, currentAngle, false);
+      ctx.closePath();
+      ctx.fillStyle = gradient;
+      ctx.fill();
+      ctx.restore();
+
+      // Linha brilhante do feixe radial (Sweep Beam)
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + maxRadius * Math.cos(currentAngle), cy + maxRadius * Math.sin(currentAngle));
+      ctx.strokeStyle = 'rgba(52, 211, 153, 0.95)';
+      ctx.lineWidth = 1.8;
+      ctx.shadowColor = '#10b981';
+      ctx.shadowBlur = 8;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Renderização dos alvos / ecos multipercurso de RF
+      const targets = window.csiRadar.detectedTargets || [];
+      targets.forEach(tgt => {
+        const distRatio = Math.min(1.0, tgt.distance_m / 5.0);
+        const r = distRatio * maxRadius;
+        const tgtRad = (tgt.azimuth_deg * Math.PI) / 180;
+        const tx = cx + r * Math.cos(tgtRad);
+        const ty = cy + r * Math.sin(tgtRad);
+
+        // Verifica se o feixe de varredura passou pelo alvo recentemente
+        let diff = Math.abs(currentAngle - tgtRad);
+        if (diff > Math.PI) diff = (Math.PI * 2) - diff;
+
+        if (diff < 0.08) {
+          tgt.currentGlow = 1.0;
+          if (tgt.type !== 'REFLEXAO_ESTATICA' && window.csiRadar.currentPerturbation > 40) {
+            playRadarSonarBeep(1100 + (1.0 - distRatio) * 600, 0.06);
+          }
+        } else {
+          // Decaimento de fósforo do alvo
+          tgt.currentGlow = Math.max(0.15, tgt.currentGlow * 0.985);
+        }
+
+        // Cor do alvo baseada no tipo
+        let baseColor = 'rgba(16, 185, 129, ';
+        if (tgt.type === 'CORPO_HUMANO_MOVIMENTO' || tgt.type === 'DISPERSAO_MULTIPERCURSO') {
+          baseColor = 'rgba(245, 158, 11, ';
+        } else if (tgt.type === 'CONTATO_PROXIMO_ANTENA' || tgt.type === 'OPERADOR_BANCADA') {
+          baseColor = 'rgba(239, 68, 68, ';
+        } else if (tgt.type === 'RESPIRACAO_TORACICA') {
+          baseColor = 'rgba(6, 182, 212, ';
+        }
+
+        const alpha = Math.min(1.0, tgt.currentGlow);
+
+        // Halo concêntrico
+        if (alpha > 0.4) {
+          ctx.beginPath();
+          ctx.arc(tx, ty, 8 * alpha, 0, Math.PI * 2);
+          ctx.strokeStyle = `${baseColor}${alpha * 0.5})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        // Ponto central do alvo (blip)
+        ctx.beginPath();
+        ctx.arc(tx, ty, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = `${baseColor}${alpha})`;
+        ctx.shadowColor = alpha > 0.5 ? '#10b981' : 'transparent';
+        ctx.shadowBlur = 6;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Rótulo do alvo ao acender
+        if (alpha > 0.5) {
+          ctx.fillStyle = `${baseColor}0.9)`;
+          ctx.font = '8px monospace';
+          ctx.textAlign = 'left';
+          ctx.fillText(`${tgt.distance_m}m`, tx + 6, ty - 3);
+        }
+      });
+
+      // Marcador central do ESP32 Transceiver (Antena na Bancada)
+      ctx.beginPath();
+      ctx.arc(cx, cy, 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#06b6d4';
+      ctx.shadowColor = '#06b6d4';
+      ctx.shadowBlur = 8;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      ctx.fillStyle = 'rgba(6, 182, 212, 0.8)';
+      ctx.font = '8px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('ESP32 TX/RX', cx, cy + 14);
+    }
+
+    function drawCsiSpectrumBars() {
+      const canvas = document.getElementById('csi-spectrum-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.clientWidth || 600;
+      const h = canvas.clientHeight || 120;
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+
+      ctx.fillStyle = '#020b08';
+      ctx.fillRect(0, 0, w, h);
+
+      // Linha de base e eixos
+      ctx.strokeStyle = 'rgba(51, 65, 85, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, h - 14);
+      ctx.lineTo(w, h - 14);
+      ctx.stroke();
+
+      const subcarriers = window.csiRadar.subcarriers || [];
+      const count = subcarriers.length || 64;
+      const barWidth = Math.max(2, (w / count) - 1.5);
+      const pilotIndices = new Set([-21, -7, 7, 21]);
+
+      for (let i = 0; i < count; i++) {
+        const sc = subcarriers[i] || {
+          index: i - 32,
+          variance_db: 0.2 + Math.random() * 0.15,
+          type: (pilotIndices.has(i - 32)) ? 'PILOT' : 'DATA',
+          perturbed: false
+        };
+
+        const x = i * (w / count) + 1;
+        const varVal = Math.min(10.0, Math.max(0.1, sc.variance_db || 0.2));
+        const maxH = h - 24;
+        const barH = Math.max(3, (varVal / 5.5) * maxH);
+        const y = h - 14 - barH;
+
+        // Determina cor da barra
+        let color = '#10b981'; // nominal verde
+        if (sc.type === 'PILOT') {
+          color = '#06b6d4'; // piloto ciano
+        }
+        if (sc.variance_db > 2.5) {
+          color = '#ef4444'; // perturbação severa vermelho
+        } else if (sc.variance_db > 1.2) {
+          color = '#f59e0b'; // perturbação moderada âmbar
+        }
+
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, barWidth, barH);
+
+        // Losango no topo das subportadoras piloto
+        if (sc.type === 'PILOT') {
+          ctx.fillStyle = '#22d3ee';
+          ctx.beginPath();
+          ctx.moveTo(x + barWidth / 2, y - 4);
+          ctx.lineTo(x + barWidth + 1, y - 1);
+          ctx.lineTo(x + barWidth / 2, y + 2);
+          ctx.lineTo(x - 1, y - 1);
+          ctx.closePath();
+          ctx.fill();
+        }
+      }
+    }
+
+    function drawCsiHistorySeismograph() {
+      const canvas = document.getElementById('csi-history-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.clientWidth || 600;
+      const h = canvas.clientHeight || 60;
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+
+      ctx.fillStyle = '#020b08';
+      ctx.fillRect(0, 0, w, h);
+
+      // Linha de threshold em 45% (linha tracejada amarela)
+      const thY = h - (0.45 * (h - 8)) - 4;
+      ctx.strokeStyle = 'rgba(234, 179, 8, 0.4)';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(0, thY);
+      ctx.lineTo(w, thY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      const pts = window.csiRadar.historyPoints || [];
+      if (pts.length < 2) return;
+
+      const step = w / (pts.length - 1);
+
+      // Gradiente da curva
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, 'rgba(239, 68, 68, 0.35)');
+      grad.addColorStop(0.5, 'rgba(245, 158, 11, 0.2)');
+      grad.addColorStop(1, 'rgba(16, 185, 129, 0.05)');
+
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+
+      pts.forEach((val, idx) => {
+        const px = idx * step;
+        const norm = Math.min(1.0, val / 100.0);
+        const py = h - (norm * (h - 10)) - 4;
+        if (idx === 0) ctx.lineTo(px, py);
+        else ctx.lineTo(px, py);
+      });
+
+      ctx.lineTo(w, h);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Traçado superior
+      ctx.beginPath();
+      pts.forEach((val, idx) => {
+        const px = idx * step;
+        const norm = Math.min(1.0, val / 100.0);
+        const py = h - (norm * (h - 10)) - 4;
+        if (idx === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      });
+      ctx.strokeStyle = window.csiRadar.threatColor || '#10b981';
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+    }
+
+    function initOrUpdateCockpitCsiView() {
+      if (currentCockpitMac) window.csiRadar.targetMac = currentCockpitMac;
+      fetchCsiData(true);
+      drawCockpitCsiSpectrum();
+    }
+
+    function drawCockpitCsiSpectrum() {
+      const canvas = document.getElementById('cp-csi-spectrum-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.clientWidth || 400;
+      const h = canvas.clientHeight || 80;
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+
+      ctx.fillStyle = '#020b08';
+      ctx.fillRect(0, 0, w, h);
+
+      const subcarriers = window.csiRadar.subcarriers || [];
+      const count = subcarriers.length || 64;
+      const barW = Math.max(2, (w / count) - 1);
+
+      for (let i = 0; i < count; i++) {
+        const sc = subcarriers[i] || { variance_db: 0.2 + Math.random() * 0.2, type: 'DATA' };
+        const x = i * (w / count);
+        const varVal = Math.min(8.0, Math.max(0.1, sc.variance_db || 0.2));
+        const barH = Math.max(2, (varVal / 5.0) * (h - 10));
+        const y = h - barH;
+
+        let col = '#10b981';
+        if (sc.type === 'PILOT') col = '#06b6d4';
+        if (sc.variance_db > 2.0) col = '#ef4444';
+        else if (sc.variance_db > 1.1) col = '#f59e0b';
+
+        ctx.fillStyle = col;
+        ctx.fillRect(x, y, barW, barH);
+      }
     }
 
     function openDeviceModal(mac = '', name = '', serial = '', type = 'ABNT NBR 14522', role = 'NODE', notes = '') {
