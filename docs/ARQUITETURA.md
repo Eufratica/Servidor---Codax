@@ -51,12 +51,17 @@ flowchart TD
   - Vigilante FreeRTOS de inversão de prioridade.
   - Vigilante Live Diff de Registradores Modbus (`40001` a `40012`).
   - Espectrograma RF de 14 canais 2.4GHz com recomendador dinâmico.
+  - **Tomografia RF & Radar Wi-Fi CSI (Channel State Information)**:
+    - Endpoints `/api/csi/status`, `/api/csi/{mac}`, `/api/csi/calibrate`, `/api/csi/burst`.
+    - Algoritmo de entropia espectral e extração das 64 subportadoras OFDM para detecção de perturbação e movimento sem câmeras.
+  - **Engine de Linha do Tempo Sci-Fi de Topologia**:
+    - Endpoints `/api/scifi/metrics` e `/api/scifi/simulate-event`.
+    - Registro cronológico de transições de camada (`L1 ROOT ⇄ L2/L3 NODE`), handovers e reconexões ESP-MESH.
 
 ### 2.2 Frontend SPA (`static/index.html`)
-- **Estética Corporativa Industrial**:
-  - Superfícies principais sólidas em Slate escuro (`#0b0f19`, `#0f172a`, `#070b14`) com alto contraste para uso contínuo em turnos industriais.
+- **Estética Corporativa Industrial (Zero Glassmorphism)**:
+  - Design estritamente Dark Carbon Industrial SCADA (`#070b14`, `#0b1120`, `#0f172a`) com bordas sólidas Slate (`#1e293b`, `#334155`), tipografia de alto contraste e zero desfoque (`backdrop-filter: none !important`).
   - **Tema SCADA Dark High-Contrast**: Modo alternativo de alto contraste para bancadas industriais (paleta âmbar fosforescente `#ffb000` e ciano laser `#00f0ff` sobre preto profundo `#06090e`, ativável no cabeçalho em 1 clique).
-  - **Vidro Fosco (*Glassmorphism*) Exclusivo nas Setinhas**: Menus flutuantes, seletores de funções, destinatários e caixas de diálogo modais utilizam desfoque cristalino com sombra suspensa.
 - **Abas do Sistema**:
   1. `view-quick`: Ações rápidas de bancada em 1 clique.
   2. `view-builder`: Construtor de comandos MQTT (funções ABNT NBR 14522 e JSON).
@@ -66,7 +71,7 @@ flowchart TD
   6. `view-pubsub`: Publicador e assinante de tópicos MQTT em tempo real.
   7. `view-ota`: Gerenciador de atualizações de firmware Over-the-Air.
   8. `view-timestream`: Estúdio visual Amazon Timestream com 7 tabelas e UNLOAD S3.
-  9. `view-scifi`: Radar de observabilidade avançada, **Diagrama Sankey de Fluxo MQTT por Tópico**, **Detector de Gaiola de Faraday & Desvanecimento por Multipath RF (&lambda;=12.5cm)** e fasores elétricos.
+  9. `view-scifi`: Radar de observabilidade avançada, **Diagrama Sankey de Fluxo MQTT por Tópico** (com curvas de Bézier animadas e modos volume vs largura de banda), **Detector de Gaiola de Faraday & Desvanecimento por Multipath RF (&lambda;=12.5cm)** e fasores elétricos.
   10. `device-cockpit-drawer`: Gaveta Lateral Deslizante (Slide-over Drawer / Tela Cheia) do Cockpit 360° de Codax Específico:
       - **Endpoint Backend**: `GET /api/devices/{mac}/cockpit` (Telemetria, Topologia, Power Reasons, Timestream, Logs e OTA em < 20ms).
       - **Telemetria Completa**: Va, Vb, Vc, Ia, Ib, Ic, Potência Ativa (kW), Reativa (kvar), cos φ, Frequência, THD-V/I, Temperatura do silício (°C) e RSSI/RTT.
@@ -74,8 +79,14 @@ flowchart TD
       - **AWS Timestream & Power Reasons**: Histórico de códigos de reset do ESP32 (`POWERON_RESET`, `SW_CPU_RESET`, `BROWNOUT_RESET`, `TG0WDT`) e tabela das últimas 20 leituras da placa.
       - **Terminal Filtrado**: Console ao vivo e envio de comandos estritamente para o MAC em foco.
       - **Central OTA**: Status de partição ativa (`ota_0`/`ota_1`) e disparo de firmware (.bin) para a placa selecionada.
-      - **Menu Setinha MQTT (Glassmorphism)**: Dropdown em vidro fosco com comandos agrupados em `Query`, `Change` e `Settings`.
+      - **Gêmeo Digital Holográfico 3D (Sub-aba 6)**: Renderização Three.js/WebGL em tempo real da placa ESP32 com LEDs dinâmicos vinculados ao MQTT e mapa térmico dinâmico da CPU.
+      - **Radar Wi-Fi CSI & Tomografia RF (Sub-aba 7 & Modal)**: Sonar polar com varredura contínua de feixe, decaimento fosforescente, 64 subportadoras OFDM e detecção de movimento volumétrico.
+      - **Menu Corporativo MQTT**: Dropdown em Solid Dark Carbon com comandos agrupados em `Query`, `Change` e `Settings`.
       - **Faixa Docked Inferior (Carrossel Horizontal de Codax)**: Barra fixa ancorada no rodapé da gaveta com carrossel deslizante suave dos outros Codax da bancada, anel luminoso no dispositivo ativo (`ATIVO`), métricas de RSSI, RTT e protocolo de medidor, permitindo alternância instantânea sem fechar o Cockpit.
+  11. **Módulos Globais de Bancada**:
+      - **Caixa Preta de Telemetria com Replay Instantâneo (Time-Travel Debugger)**: Ring buffer circular em RAM com os últimos 10 minutos de telemetria da bancada e scrubbing temporal instantâneo.
+      - **Inspetor Ciberpunk de Linha do Tempo de Topologia**: Modal interativo em tela cheia com régua cronológica de migrações de camada (`L1/L2/L3`), handovers e reconexões ESP-MESH.
+      - **Cofre de Inovações Codax Hub**: Catálogo pesquisável com filtros por categoria, busca textual em tempo real e ficha técnica TRL-9 completa.
 
 ---
 
