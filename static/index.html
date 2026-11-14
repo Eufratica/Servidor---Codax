@@ -8601,10 +8601,16 @@
                 <span>No Construtor</span>
               </button>
             </div>
-            <button onclick="openDeviceCockpit('${dev.mac}')" class="w-full bg-gradient-to-r from-cyan-950/90 via-indigo-950/80 to-cyan-950/90 hover:from-cyan-900 hover:to-indigo-900 border border-cyan-500/50 hover:border-cyan-300 text-cyan-200 hover:text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center space-x-2 shadow-sm" title="Abrir Cockpit 360° deste Codax">
-              <i data-lucide="scan" class="w-4 h-4 text-cyan-400"></i>
-              <span>⚡ Cockpit 360° do Codax</span>
-            </button>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button onclick="openDeviceCockpit('${dev.mac}')" class="w-full bg-gradient-to-r from-cyan-950/90 via-indigo-950/80 to-cyan-950/90 hover:from-cyan-900 hover:to-indigo-900 border border-cyan-500/50 hover:border-cyan-300 text-cyan-200 hover:text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center space-x-1.5 shadow-sm" title="Abrir Cockpit 360° deste Codax">
+                <i data-lucide="scan" class="w-4 h-4 text-cyan-400"></i>
+                <span>Cockpit 360°</span>
+              </button>
+              <button onclick="openDigitalTwinForMac('${dev.mac}')" class="w-full bg-gradient-to-r from-purple-950/90 via-slate-900 to-purple-950/90 hover:from-purple-900 hover:to-slate-800 border border-purple-500/50 hover:border-purple-300 text-purple-200 hover:text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center space-x-1.5 shadow-sm" title="Ver Gêmeo Digital 3D Holográfico deste Codax">
+                <i data-lucide="box" class="w-4 h-4 text-purple-400"></i>
+                <span>Gêmeo 3D</span>
+              </button>
+            </div>
             <button onclick="viewDeviceInMeshTree('${dev.mac}')" class="w-full bg-gradient-to-r from-emerald-950/90 via-teal-950/80 to-emerald-950/90 hover:from-emerald-900 hover:to-teal-900 border border-emerald-500/50 hover:border-emerald-300 text-emerald-200 hover:text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center space-x-2 shadow-sm" title="Ir direto para a Árvore da Malha e visualizar este Codax">
               <i data-lucide="network" class="w-4 h-4 text-emerald-400"></i>
               <span>🌳 Ver na Árvore da Malha</span>
@@ -9405,15 +9411,15 @@
     };
 
     function openDigitalTwinFromTop() {
-      let targetMac = window.currentCockpitMac;
-      if (!targetMac && window.configuredDevicesList && window.configuredDevicesList.length > 0) {
-        targetMac = window.configuredDevicesList[0].mac;
+      let targetMac = currentCockpitMac;
+      if (!targetMac && Array.isArray(devicesList) && devicesList.length > 0) {
+        targetMac = devicesList[0].mac;
       }
-      if (!targetMac && window.allDiscoveredNodes && window.allDiscoveredNodes.length > 0) {
-        targetMac = window.allDiscoveredNodes[0].mac;
+      if (!targetMac && Array.isArray(discoveredList) && discoveredList.length > 0) {
+        targetMac = discoveredList[0].mac;
       }
       if (!targetMac) {
-        targetMac = 'ff0000010000';
+        targetMac = '704bca491ca0';
       }
       openDeviceCockpit(targetMac);
       switchCockpitSubTab('twin');

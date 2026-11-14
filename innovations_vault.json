@@ -1,5 +1,65 @@
 [
   {
+    "id": "gh-43509302",
+    "category": "app",
+    "badge": "🌐 Protocol Analyzer (★ 12691)",
+    "title": "Referência Open-Source: secdev/scapy",
+    "source": "https://github.com/secdev/scapy",
+    "summary": "Scapy: the Python-based interactive packet manipulation program & library. — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'secdev/scapy' (Scapy: the Python-based interactive packet manipulation program & library.) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "10:03:27"
+  },
+  {
+    "id": "iot-latency-radar",
+    "category": "app",
+    "badge": "⚡ Aplicação Mesh",
+    "title": "Cronômetro de Latência Round-Trip (RTT em ms) no Ping",
+    "source": "Engenharia de Redes ESP-MESH",
+    "summary": "Mede automaticamente quantos milissegundos cada placa leva entre o disparo do comando MQTT e a chegada do pacote em retorno/shopba/mesh.",
+    "prompt": "Quero implementar o 'Cronômetro de Latência Round-Trip (RTT em ms)': meça o tempo exato em milissegundos entre o envio de um comando para um MAC e a chegada do retorno no WebSocket, exibindo um badge de latência (ex: '42 ms') nos Últimos Retornos e no card do medidor.",
+    "timestamp": "10:02:12"
+  },
+  {
+    "id": "gh-997737944",
+    "category": "web",
+    "badge": "🌐 Ecossistema ESPHome (★ 104263)",
+    "title": "Referência Open-Source: ruvnet/RuView",
+    "source": "https://github.com/ruvnet/RuView",
+    "summary": "π RuView turns commodity WiFi signals into real-time spatial intelligence, vital sign monitoring, and presence detection — all without a sin — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'ruvnet/RuView' (π RuView turns commodity WiFi signals into real-time spatial intelligence, vital sign monitoring, and presence detection — all without a single pixel of video.) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "10:00:56"
+  },
+  {
+    "id": "ui-export-interactive-html",
+    "category": "design",
+    "badge": "🎨 Relatórios & Exportação",
+    "title": "Exportador de Dossiê Técnico da Malha em Arquivo Único HTML",
+    "source": "Documentação Técnica Automática",
+    "summary": "Gera um relatório completo em HTML autônomo com topologia, gráficos de latência e laudo de todos os medidores para envio ao cliente.",
+    "prompt": "Quero implementar o 'Exportador de Dossiê Técnico': adicione um botão para exportar um relatório técnico completo da bancada em formato HTML interativo em arquivo único, pronto para impressão ou envio.",
+    "timestamp": "09:59:41"
+  },
+  {
+    "id": "app-thermal-cpu-guard",
+    "category": "app",
+    "badge": "⚡ Hardware & Confiabilidade",
+    "title": "Termômetro Interno do Silício ESP32 com Curva de Estresse",
+    "source": "Sensor Térmico On-Chip ESP32",
+    "summary": "Lê a temperatura interna do processador e avisa se o rádio Wi-Fi contínuo estiver elevando o chip acima dos 75°C de segurança.",
+    "prompt": "Quero implementar o 'Termômetro Interno do Silício': consulte periodicamente a temperatura da CPU das placas conectadas e mostre um indicador de calor nos cards dos medidores com alerta de sobreaquecimento.",
+    "timestamp": "09:58:26"
+  },
+  {
+    "id": "app-failover-multi-root",
+    "category": "app",
+    "badge": "⚡ Resiliência de Malha",
+    "title": "Sentinel de Eleição de ROOT Secundária (Failover Dinâmico)",
+    "source": "Protocolo ESP-WIFI-MESH Autônomo",
+    "summary": "Monitora o nó ROOT e simula a eleição rápida do melhor nó L2 como nova ROOT caso o sinal com o roteador seja interrompido.",
+    "prompt": "Quero implementar o 'Sentinel de Failover Multi-ROOT': mostre na aba Árvore qual nó L2 seria eleito a nova ROOT em caso de queda, exibindo o ranking de elegibilidade por sinal e memória.",
+    "timestamp": "09:57:10"
+  },
+  {
     "id": "ui-command-palette",
     "category": "design",
     "badge": "🎨 Design & Produtividade",
