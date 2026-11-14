@@ -2786,6 +2786,18 @@ async def simulate_scifi_event(req: ScifiSimulateRequest):
             "to_layer": 2,
             "badge_color": "emerald"
         }
+    elif req.event_type == "faraday_cage":
+        evt = {
+            "id": f"evt-{int(datetime.now().timestamp()*1000)}",
+            "timestamp": now_str,
+            "mac": req.mac,
+            "name": dev_name,
+            "event": "FARADAY_MULTIPATH_ATTENUATION",
+            "desc": "Alerta RF: Queda abrupta de sinal (-38.5 dBm) e interferência destrutiva por reflexão metálica (ondas em oposição de fase a λ/2 = 6.25cm)",
+            "from_layer": 2,
+            "to_layer": 2,
+            "badge_color": "rose"
+        }
     else:
         evt = {
             "id": f"evt-{int(datetime.now().timestamp()*1000)}",

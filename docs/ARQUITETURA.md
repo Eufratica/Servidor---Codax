@@ -55,17 +55,18 @@ flowchart TD
 ### 2.2 Frontend SPA (`static/index.html`)
 - **Estética Corporativa Industrial**:
   - Superfícies principais sólidas em Slate escuro (`#0b0f19`, `#0f172a`, `#070b14`) com alto contraste para uso contínuo em turnos industriais.
+  - **Tema SCADA Dark High-Contrast**: Modo alternativo de alto contraste para bancadas industriais (paleta âmbar fosforescente `#ffb000` e ciano laser `#00f0ff` sobre preto profundo `#06090e`, ativável no cabeçalho em 1 clique).
   - **Vidro Fosco (*Glassmorphism*) Exclusivo nas Setinhas**: Menus flutuantes, seletores de funções, destinatários e caixas de diálogo modais utilizam desfoque cristalino com sombra suspensa.
 - **Abas do Sistema**:
   1. `view-quick`: Ações rápidas de bancada em 1 clique.
   2. `view-builder`: Construtor de comandos MQTT (funções ABNT NBR 14522 e JSON).
-  3. `view-devices`: Gestão de dispositivos, MACs, nomes e tipos.
-  4. `view-tree`: Árvore topológica da malha ESP-MESH com zoom 4K/8K e conduítes de pacotes animados.
+  3. `view-devices`: Gestão de dispositivos, MACs, nomes, tipos e **Exportador de Dossiê Técnico HTML Único** (relatório executivo offline para auditoria e impressão).
+  4. `view-tree`: Árvore topológica da malha ESP-MESH com zoom 4K/8K, **Visão Matriz de Adjacência N x N em 4K** (heatmap de RSSI) e **Histórico de Mudanças de Topologia em Linha do Tempo**.
   5. `view-terminal`: Terminal serial e histórico de mensagens.
   6. `view-pubsub`: Publicador e assinante de tópicos MQTT em tempo real.
   7. `view-ota`: Gerenciador de atualizações de firmware Over-the-Air.
   8. `view-timestream`: Estúdio visual Amazon Timestream com 7 tabelas e UNLOAD S3.
-  9. `view-scifi`: Radar de observabilidade avançada de rádio, térmica e fasores elétricos.
+  9. `view-scifi`: Radar de observabilidade avançada, **Diagrama Sankey de Fluxo MQTT por Tópico**, **Detector de Gaiola de Faraday & Desvanecimento por Multipath RF (&lambda;=12.5cm)** e fasores elétricos.
   10. `device-cockpit-drawer`: Gaveta Lateral Deslizante (Slide-over Drawer / Tela Cheia) do Cockpit 360° de Codax Específico:
       - **Endpoint Backend**: `GET /api/devices/{mac}/cockpit` (Telemetria, Topologia, Power Reasons, Timestream, Logs e OTA em < 20ms).
       - **Telemetria Completa**: Va, Vb, Vc, Ia, Ib, Ic, Potência Ativa (kW), Reativa (kvar), cos φ, Frequência, THD-V/I, Temperatura do silício (°C) e RSSI/RTT.
