@@ -217,7 +217,7 @@
     }
 
     /* Elimina o embaçado do backdrop-filter da GPU ao aplicar Zoom no Canvas */
-    #tree-stage .codax-glass,
+    #tree-stage .bg-slate-900 border border-slate-800,
     #tree-stage .bg-slate-900,
     #tree-stage .bg-slate-900\/90,
     #tree-stage .bg-slate-900\/80,
@@ -264,7 +264,7 @@
     }
 
     /* Superfícies principais Corporativas SÓLIDAS (Clean, opacas e com alto contraste para ambiente sério) */
-    .codax-glass,
+    .bg-slate-900 border border-slate-800,
     .bg-slate-900,
     .bg-slate-900\/95,
     .bg-slate-900\/90,
@@ -276,7 +276,7 @@
     }
 
     /* Sub-containers internos, inputs e consoles corporativos sólidos */
-    .codax-glass-deep,
+    .bg-slate-900 border border-slate-800,
     .bg-slate-950,
     .bg-slate-950\/90,
     .bg-slate-950\/80,
@@ -385,7 +385,7 @@
     body.theme-scada-industrial::before {
       background-image: radial-gradient(rgba(255, 176, 0, 0.12) 1px, transparent 1px) !important;
     }
-    body.theme-scada-industrial .codax-glass,
+    body.theme-scada-industrial .bg-slate-900 border border-slate-800,
     body.theme-scada-industrial .bg-slate-900,
     body.theme-scada-industrial .bg-slate-900\/95,
     body.theme-scada-industrial .bg-slate-900\/90,
@@ -908,7 +908,7 @@
     <main id="main-scroll-view" class="flex-1 flex flex-col h-full overflow-y-auto min-h-0 bg-slate-950 relative">
 
       <!-- Subheader da Página Atual (Fixado no topo durante a rolagem) -->
-      <div class="h-12 border-b border-slate-800/80 bg-slate-900/90 backdrop-blur px-6 flex items-center justify-between shrink-0 sticky top-0 z-20 shadow-sm">
+      <div class="h-12 border-b border-slate-800/80 bg-slate-900/90 px-6 flex items-center justify-between shrink-0 sticky top-0 z-20 shadow-sm">
         <h1 id="page-title" class="font-bold text-sm text-slate-100 flex items-center space-x-2">
           <i data-lucide="zap" class="w-4 h-4 text-indigo-400"></i>
           <span>Ações Rápidas de Bancada</span>
@@ -925,7 +925,7 @@
         <section id="view-quick" class="tab-content space-y-6">
 
           <!-- [INOVAÇÃO] Painel de Diagnóstico Preventivo de Memória Heap & Quedas LWT -->
-          <div id="heap-lwt-diagnostic-panel" class="codax-glass-deep border border-emerald-500/40 rounded-2xl p-5 shadow-xl relative overflow-hidden transition-all duration-300">
+          <div id="heap-lwt-diagnostic-panel" class="bg-slate-900 border border-slate-800 border border-emerald-500/40 rounded-2xl p-5 shadow-xl relative overflow-hidden transition-all duration-300">
             <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-800/80">
               <div class="flex items-center space-x-3">
                 <div id="diag-panel-icon-box" class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
@@ -974,7 +974,7 @@
           </div>
 
           <!-- Inovação: Macros de Bancada (Bateria de Homologação em 1 Clique) -->
-          <div class="codax-glass-deep border border-indigo-500/40 rounded-2xl p-5 shadow-xl relative overflow-hidden">
+          <div class="bg-slate-900 border border-slate-800 border border-indigo-500/40 rounded-2xl p-5 shadow-xl relative overflow-hidden">
             <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
             
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-800/80">
@@ -1265,7 +1265,7 @@
                     </div>
 
                     <!-- Dropdown Flutuante de Functions com Filtros de Categoria -->
-                    <div id="function-autocomplete-dropdown" class="absolute z-30 left-0 right-0 mt-2 bg-slate-900/98 backdrop-blur border border-slate-700/90 rounded-2xl shadow-2xl hidden flex flex-col max-h-80 overflow-hidden">
+                    <div id="function-autocomplete-dropdown" class="absolute z-30 left-0 right-0 mt-2 bg-slate-900/98 border border-slate-700/90 rounded-2xl shadow-2xl hidden flex flex-col max-h-80 overflow-hidden">
                       
                       <!-- Barra de Filtros por Categoria -->
                       <div class="p-2 bg-slate-950/90 border-b border-slate-800 flex items-center space-x-1 overflow-x-auto shrink-0">
@@ -1321,7 +1321,7 @@
                     </div>
 
                     <!-- Dropdown Popover de Destinatários (Alvos Globais + Medidores com Checkbox + Chips Rápidos) -->
-                    <div id="recipients-dropdown-popover" class="absolute z-30 left-0 right-0 mt-1 bg-slate-900/98 backdrop-blur border border-slate-700/90 rounded-2xl shadow-2xl hidden p-3.5 space-y-3 max-h-96 overflow-y-auto">
+                    <div id="recipients-dropdown-popover" class="absolute z-30 left-0 right-0 mt-1 bg-slate-900/98 border border-slate-700/90 rounded-2xl shadow-2xl hidden p-3.5 space-y-3 max-h-96 overflow-y-auto">
                       
                       <!-- Seção Alvos Globais -->
                       <div>
@@ -1673,13 +1673,13 @@
               <div id="tree-canvas-grid" class="absolute inset-0 pointer-events-none z-0" style="background-image: radial-gradient(rgba(148, 163, 184, 0.12) 1.5px, transparent 1.5px); background-size: 28px 28px;"></div>
 
               <!-- FLOATING MINI LEGEND / HINT (ESTILO MAPS) -->
-              <div id="tree-hint-legend" class="absolute top-4 left-4 z-20 pointer-events-none hidden sm:flex items-center space-x-2 bg-slate-900/80 backdrop-blur-md border border-slate-800 px-3 py-1.5 rounded-xl text-[11px] text-slate-300 shadow-lg">
+              <div id="tree-hint-legend" class="absolute top-4 left-4 z-20 pointer-events-none hidden sm:flex items-center space-x-2 bg-slate-900/80 border border-slate-800 px-3 py-1.5 rounded-xl text-[11px] text-slate-300 shadow-lg">
                 <i data-lucide="mouse-pointer" class="w-3.5 h-3.5 text-indigo-400"></i>
                 <span>Arraste para navegar • Scroll para Zoom • Clique no card para selecionar</span>
               </div>
 
               <!-- FLOATING HUD CONTROLS (ESTILO GOOGLE MAPS / N8N) -->
-              <div id="tree-hud-controls" class="absolute bottom-5 right-5 z-30 flex items-center bg-slate-900/90 backdrop-blur-md border border-slate-800/90 rounded-2xl p-1.5 shadow-2xl space-x-1">
+              <div id="tree-hud-controls" class="absolute bottom-5 right-5 z-30 flex items-center bg-slate-900/90 border border-slate-800/90 rounded-2xl p-1.5 shadow-2xl space-x-1">
                 <button onclick="treeZoomIn()" title="Aproximar (Zoom In - Scroll do mouse para cima)" class="w-8 h-8 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white flex items-center justify-center transition shadow-sm">
                   <i data-lucide="plus" class="w-4 h-4"></i>
                 </button>
@@ -1897,12 +1897,12 @@
         </section>
 
         <!-- ================= ABA 8: AWS TIMESTREAM (SÉRIES TEMPORAIS, ESTÚDIO VISUAL & EXPORTADOR S3) ================= -->
-        <section id="view-timestream" class="tab-content hidden space-y-6">
+        <section id="view-timestream" class="tab-content hidden space-y-4">
           
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm space-y-6">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-sm space-y-4">
             
-            <!-- Cabeçalho AWS Timestream Studio -->
-            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+            <!-- Cabeçalho AWS Timestream Industrial SCADA -->
+            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-3 border-b border-slate-800">
               <div class="flex items-center space-x-3">
                 <div class="p-2.5 rounded-2xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
                   <i data-lucide="database" class="w-6 h-6"></i>
@@ -1910,24 +1910,28 @@
                 <div>
                   <div class="flex items-center space-x-2 flex-wrap">
                     <h3 class="text-base font-bold text-slate-100">Amazon Timestream Visual Studio & UNLOAD S3 Exporter</h3>
-                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 flex items-center space-x-1">
+                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 flex items-center space-x-1">
                       <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                       <span>AWS IoT Ingestão Ativa</span>
                     </span>
-                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-500/40">
+                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-950/90 text-cyan-300 border border-cyan-500/40">
                       Banco: ledaxio • us-west-2
                     </span>
+                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                      LiveAnalytics Serverless
+                    </span>
                   </div>
-                  <p class="text-xs text-slate-400 mt-0.5">Séries temporais em nuvem • 7 tabelas industriais • Consultas com botões visuais e exportador direto para CSV / S3</p>
+                  <p class="text-xs text-slate-400 mt-0.5">Séries temporais industriais • 7 tabelas mapeadas • Telemetria trifásica, UNLOAD S3 sem compressão e análise de qualidade de energia</p>
                 </div>
               </div>
 
+              <!-- Ações Rápidas de Topo -->
               <div class="flex items-center space-x-2 flex-wrap">
                 <a id="btn-global-download-csv" href="/api/timestream/export-csv?table=test_connections&delimiter=;" download class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-md shadow-emerald-600/20">
                   <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                  <span>Baixar CSV Direto</span>
+                  <span>Baixar CSV Direto (;)</span>
                 </a>
-                <button onclick="injectTimestreamTestSample()" class="px-3 py-1.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600 border border-indigo-500/40 text-indigo-200 hover:text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+                <button onclick="injectTimestreamTestSample()" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
                   <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
                   <span>Simular Amostra</span>
                 </button>
@@ -1938,378 +1942,557 @@
               </div>
             </div>
 
-            <!-- Cards de Métricas Resumidas do Banco ledaxio -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div class="bg-slate-950/80 border border-slate-800 p-3.5 rounded-xl space-y-1">
-                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Banco de Dados Ativo</span>
-                <div class="text-xs font-mono font-extrabold text-cyan-300 truncate">ledaxio (7 Tabelas)</div>
-                <div class="text-[10px] text-slate-500">AWS Timestream Serverless</div>
-              </div>
-              <div class="bg-slate-950/80 border border-slate-800 p-3.5 rounded-xl space-y-1">
-                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Tabela em Foco</span>
-                <div id="ts-active-table-label" class="text-xs font-mono font-extrabold text-indigo-300 truncate">test_connections</div>
-                <div class="text-[10px] text-slate-500">Schema dinâmico mapeado</div>
-              </div>
-              <div class="bg-slate-950/80 border border-slate-800 p-3.5 rounded-xl space-y-1">
-                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Amostras Reais Carregadas</span>
-                <div id="timestream-records-count" class="text-lg font-mono font-extrabold text-emerald-400">85</div>
-                <div class="text-[10px] text-slate-500">Teste - idle (1.270 a 13.816)</div>
-              </div>
-              <div class="bg-slate-950/80 border border-slate-800 p-3.5 rounded-xl space-y-1">
-                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Destino S3 Padrão</span>
-                <div class="text-xs font-mono font-bold text-amber-300 truncate">s3://ledax-ota-files/csv/</div>
-                <div class="text-[10px] text-slate-500">UNLOAD sem compressão (;)</div>
-              </div>
+            <!-- Navegação Interna em 5 Sub-Abas Operacionais -->
+            <div class="flex items-center space-x-1.5 border-b border-slate-800 pb-2 flex-wrap gap-y-1.5 text-xs font-medium">
+              <button onclick="switchTimestreamSubTab('telemetry')" id="ts-subtab-btn-telemetry" class="ts-subtab-btn px-3 py-1.5 rounded-xl bg-cyan-600 text-white font-bold transition flex items-center space-x-1.5 shadow-sm">
+                <i data-lucide="line-chart" class="w-3.5 h-3.5"></i>
+                <span>Séries & Curvas Elétricas</span>
+              </button>
+              <button onclick="switchTimestreamSubTab('catalog')" id="ts-subtab-btn-catalog" class="ts-subtab-btn px-3 py-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition flex items-center space-x-1.5">
+                <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                <span>Catálogo das 7 Tabelas</span>
+              </button>
+              <button onclick="switchTimestreamSubTab('unload')" id="ts-subtab-btn-unload" class="ts-subtab-btn px-3 py-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition flex items-center space-x-1.5">
+                <i data-lucide="cloud-lightning" class="w-3.5 h-3.5 text-amber-400"></i>
+                <span>Construtor UNLOAD S3</span>
+              </button>
+              <button onclick="switchTimestreamSubTab('sql')" id="ts-subtab-btn-sql" class="ts-subtab-btn px-3 py-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition flex items-center space-x-1.5">
+                <i data-lucide="terminal" class="w-3.5 h-3.5 text-indigo-400"></i>
+                <span>Console SQL & Queries</span>
+              </button>
+              <button onclick="switchTimestreamSubTab('pqi')" id="ts-subtab-btn-pqi" class="ts-subtab-btn px-3 py-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition flex items-center space-x-1.5">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>Qualidade de Energia (PQI)</span>
+              </button>
             </div>
 
-            <!-- ================= SELETOR VISUAL DE TABELAS DO BANCO LEDAXIO (7 TABELAS) ================= -->
-            <div class="bg-slate-950/90 border border-slate-800/90 rounded-2xl p-4 space-y-3">
-              <div class="flex items-center justify-between flex-wrap gap-2">
-                <div class="flex items-center space-x-2">
-                  <i data-lucide="layers" class="w-4 h-4 text-cyan-400"></i>
-                  <span class="text-xs font-extrabold text-slate-200 uppercase tracking-wider">Tabelas Disponíveis no Banco ledaxio (Clique para Visualizar Schema e Consultar):</span>
-                </div>
-                <span class="text-[10px] font-mono text-slate-400 bg-slate-900 border border-slate-800 px-2 py-0.5 rounded">7 tabelas industriais</span>
-              </div>
-
-              <!-- Pills de Seleção Rápida das 7 Tabelas -->
-              <div class="flex items-center flex-wrap gap-2" id="ts-tables-pills">
-                <button onclick="selectTimestreamTable('SHOPPBA-TESTE')" id="btn-tab-SHOPPBA-TESTE" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-mono font-bold text-slate-300 border border-slate-800 transition flex items-center space-x-1.5">
-                  <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
-                  <span>SHOPPBA-TESTE</span>
-                </button>
-                <button onclick="selectTimestreamTable('test_connections')" id="btn-tab-test_connections" class="px-3 py-1.5 rounded-xl bg-cyan-950/90 hover:bg-cyan-900 text-xs font-mono font-bold text-cyan-300 border border-cyan-500/50 transition flex items-center space-x-1.5 shadow-sm">
-                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span>test_connections</span>
-                </button>
-                <button onclick="selectTimestreamTable('connections_mesh')" id="btn-tab-connections_mesh" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-mono font-bold text-slate-300 border border-slate-800 transition flex items-center space-x-1.5">
-                  <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
-                  <span>connections_mesh</span>
-                </button>
-                <button onclick="selectTimestreamTable('connections')" id="btn-tab-connections" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-mono font-bold text-slate-300 border border-slate-800 transition flex items-center space-x-1.5">
-                  <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                  <span>connections</span>
-                </button>
-                <button onclick="selectTimestreamTable('dev')" id="btn-tab-dev" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-mono font-bold text-slate-300 border border-slate-800 transition flex items-center space-x-1.5">
-                  <span class="w-2 h-2 rounded-full bg-rose-400"></span>
-                  <span>dev</span>
-                </button>
-                <button onclick="selectTimestreamTable('refrix')" id="btn-tab-refrix" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-mono font-bold text-slate-300 border border-slate-800 transition flex items-center space-x-1.5">
-                  <span class="w-2 h-2 rounded-full bg-teal-400"></span>
-                  <span>refrix</span>
-                </button>
-                <button onclick="selectTimestreamTable('water_gti')" id="btn-tab-water_gti" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-mono font-bold text-slate-300 border border-slate-800 transition flex items-center space-x-1.5">
-                  <span class="w-2 h-2 rounded-full bg-blue-400"></span>
-                  <span>water_gti</span>
-                </button>
-              </div>
-
-              <!-- Pré-visualização do Schema da Tabela Selecionada -->
-              <div id="ts-schema-preview" class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs space-y-2">
-                <div class="flex items-center justify-between text-[11px] text-slate-400">
-                  <span class="font-bold text-slate-300">Schema de Colunas da Tabela: <strong class="text-cyan-300 font-mono" id="ts-schema-table-name">test_connections</strong></span>
-                  <span class="text-[10px] text-slate-500 font-mono" id="ts-schema-table-desc">Registros de testes de conexão, handshakes e status OTA dos nós</span>
-                </div>
-                <div class="flex items-center flex-wrap gap-2" id="ts-schema-columns-list">
-                  <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] text-cyan-300">id : varchar</span>
-                  <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] text-indigo-300">parent_mac : varchar</span>
-                  <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] text-amber-300">time : timestamp</span>
-                  <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] text-emerald-300">measure_name : varchar</span>
-                  <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] text-purple-300">measure_value::varchar : varchar</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- ================= BOTÕES RÁPIDOS DE 1-CLIQUE (PRESETS SEM DIGITAÇÃO) ================= -->
-            <div class="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border border-indigo-500/30 rounded-2xl p-4 space-y-3 shadow-lg">
-              <div class="flex items-center justify-between flex-wrap gap-2">
-                <div class="flex items-center space-x-2">
-                  <div class="p-1 rounded bg-indigo-500/20 text-indigo-400">
-                    <i data-lucide="zap" class="w-4 h-4"></i>
-                  </div>
-                  <h4 class="text-xs font-extrabold text-white uppercase tracking-wider">Ações Rápidas em 1 Clique (Zero Digitação de Código)</h4>
-                </div>
-                <span class="text-[10px] font-mono text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded">Atalhos Operacionais</span>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-                <!-- Botão 1: Totalizador pt-BR -->
-                <button onclick="runTimestreamPreset('totalizador_real')" class="p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-cyan-500/40 hover:border-cyan-400 text-left transition space-y-1 group shadow-sm">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-cyan-300 flex items-center space-x-1.5">
-                      <i data-lucide="activity" class="w-3.5 h-3.5 text-cyan-400"></i>
-                      <span>Totalizador pt-BR</span>
-                    </span>
-                    <span class="text-[9px] font-mono bg-cyan-950 text-cyan-400 px-1.5 py-0.2 rounded border border-cyan-500/30">85 Linhas</span>
-                  </div>
-                  <p class="text-[10px] text-slate-400 leading-tight">Consulta real: Teste - idle (1.270 a 13.816) com gráfico contínuo e métricas</p>
-                </button>
-
-                <!-- Botão 2: UNLOAD S3 test_connections (10 MACs) -->
-                <button onclick="runTimestreamPreset('unload_connections')" class="p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-indigo-500/40 hover:border-indigo-400 text-left transition space-y-1 group shadow-sm">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-indigo-300 flex items-center space-x-1.5">
-                      <i data-lucide="cloud-rain" class="w-3.5 h-3.5 text-indigo-400"></i>
-                      <span>UNLOAD test_conn S3</span>
-                    </span>
-                    <span class="text-[9px] font-mono bg-indigo-950 text-indigo-300 px-1.5 py-0.2 rounded border border-indigo-500/30">10 MACs</span>
-                  </div>
-                  <p class="text-[10px] text-slate-400 leading-tight">Gera exportação TO S3 test_ota_conn com delimitador ; e baixa CSV</p>
-                </button>
-
-                <!-- Botão 3: UNLOAD SHOPPBA-TESTE (Medidor 1228) -->
-                <button onclick="runTimestreamPreset('unload_shoppba')" class="p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-amber-500/40 hover:border-amber-400 text-left transition space-y-1 group shadow-sm">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-amber-300 flex items-center space-x-1.5">
-                      <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-400"></i>
-                      <span>UNLOAD SHOPPBA 1228</span>
-                    </span>
-                    <span class="text-[9px] font-mono bg-amber-950 text-amber-300 px-1.5 py-0.2 rounded border border-amber-500/30">Medição</span>
-                  </div>
-                  <p class="text-[10px] text-slate-400 leading-tight">Exporta telemetria do medidor 1228 para o bucket ledax-ota-files/csv</p>
-                </button>
-
-                <!-- Botão 4: Histórico de Saltos de Malha -->
-                <button onclick="runTimestreamPreset('connections_mesh')" class="p-3 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-emerald-500/40 hover:border-emerald-400 text-left transition space-y-1 group shadow-sm">
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-emerald-300 flex items-center space-x-1.5">
-                      <i data-lucide="git-branch" class="w-3.5 h-3.5 text-emerald-400"></i>
-                      <span>Histórico da Malha</span>
-                    </span>
-                    <span class="text-[9px] font-mono bg-emerald-950 text-emerald-300 px-1.5 py-0.2 rounded border border-emerald-500/30">Mesh L1/L2</span>
-                  </div>
-                  <p class="text-[10px] text-slate-400 leading-tight">Consulta eventos de associação e saltos de camada em connections_mesh</p>
-                </button>
-              </div>
-            </div>
-
-            <!-- ================= PAINEL DO CONSTRUTOR VISUAL UNLOAD S3 (EXPORTAÇÃO DIRETA) ================= -->
-            <div class="bg-slate-950/90 border border-cyan-500/30 rounded-2xl p-5 space-y-4 shadow-xl">
-              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
-                <div class="flex items-center space-x-2.5">
-                  <div class="p-2 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
-                    <i data-lucide="cloud-lightning" class="w-5 h-5"></i>
-                  </div>
-                  <div>
-                    <h4 class="text-sm font-bold text-white flex items-center space-x-2">
-                      <span>Construtor Visual de Exportação UNLOAD S3</span>
-                      <span class="text-[9px] bg-cyan-950 text-cyan-300 border border-cyan-500/40 px-2 py-0.2 rounded-full font-mono">1-Clique AWS</span>
-                    </h4>
-                    <p class="text-[11px] text-slate-400">Configure os parâmetros visualmente e gere o comando UNLOAD TO S3 sem digitar código SQL</p>
-                  </div>
-                </div>
-                <div class="flex items-center space-x-2">
-                  <button onclick="executeUnloadS3()" id="btn-run-unload" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold text-xs transition flex items-center space-x-1.5 shadow-md shadow-cyan-600/30">
-                    <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
-                    <span>Executar UNLOAD S3</span>
+            <!-- ================= SUB-ABA 1: SÉRIES TEMPORAIS & TELEMETRIA MULTI-MÉTRICA ================= -->
+            <div id="ts-subview-telemetry" class="ts-subcontent-section space-y-4">
+              
+              <!-- Barra de Controles da Série: Grandeza + Janela Temporal + Filtro de MAC -->
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+                
+                <!-- Seletor de Grandeza Elétrica -->
+                <div class="flex items-center space-x-1 flex-wrap">
+                  <span class="text-[10px] uppercase font-bold text-slate-400 mr-1">Métrica:</span>
+                  <button onclick="setTimestreamMetricView('voltage')" id="btn-ts-metric-voltage" class="ts-metric-btn px-2.5 py-1 rounded-lg bg-cyan-600 text-white font-bold transition flex items-center space-x-1">
+                    <i data-lucide="zap" class="w-3 h-3 text-cyan-200"></i>
+                    <span>Tensões (Va/Vb/Vc)</span>
                   </button>
-                  <a id="btn-download-unload-csv" href="/api/timestream/export-csv?table=test_connections&delimiter=;" download class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition flex items-center space-x-1.5 shadow-md shadow-emerald-600/30">
-                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                    <span>Baixar CSV Gerado</span>
-                  </a>
+                  <button onclick="setTimestreamMetricView('current_power')" id="btn-ts-metric-current" class="ts-metric-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition flex items-center space-x-1">
+                    <i data-lucide="activity" class="w-3 h-3 text-amber-400"></i>
+                    <span>Corrente (A) & Potência (kW)</span>
+                  </button>
+                  <button onclick="setTimestreamMetricView('totalizer')" id="btn-ts-metric-totalizer" class="ts-metric-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition flex items-center space-x-1">
+                    <i data-lucide="calculator" class="w-3 h-3 text-emerald-400"></i>
+                    <span>Totalizador (kWh)</span>
+                  </button>
+                  <button onclick="setTimestreamMetricView('rssi')" id="btn-ts-metric-rssi" class="ts-metric-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition flex items-center space-x-1">
+                    <i data-lucide="wifi" class="w-3 h-3 text-purple-400"></i>
+                    <span>Sinal MESH (RSSI)</span>
+                  </button>
                 </div>
-              </div>
 
-              <!-- Formulário Visual do UNLOAD -->
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="space-y-1.5">
-                  <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Tabela de Origem</label>
-                  <select id="unload-input-table" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 font-mono focus:border-cyan-400 focus:outline-none">
-                    <option value="test_connections" selected>test_connections</option>
-                    <option value="SHOPPBA-TESTE">SHOPPBA-TESTE</option>
-                    <option value="connections">connections</option>
-                    <option value="connections_mesh">connections_mesh</option>
-                    <option value="dev">dev</option>
-                    <option value="refrix">refrix</option>
-                    <option value="water_gti">water_gti</option>
+                <!-- Janela de Tempo & Filtro de Dispositivo -->
+                <div class="flex items-center space-x-2 flex-wrap">
+                  <div class="flex items-center space-x-1 bg-slate-900 border border-slate-800 rounded-lg p-0.5 text-[11px] font-mono">
+                    <button onclick="setTimestreamTimeWindow('15m')" id="btn-ts-win-15m" class="ts-win-btn px-2 py-0.5 rounded text-slate-400 hover:text-white">15m</button>
+                    <button onclick="setTimestreamTimeWindow('1h')" id="btn-ts-win-1h" class="ts-win-btn px-2 py-0.5 rounded bg-cyan-600 text-white font-bold">1h</button>
+                    <button onclick="setTimestreamTimeWindow('6h')" id="btn-ts-win-6h" class="ts-win-btn px-2 py-0.5 rounded text-slate-400 hover:text-white">6h</button>
+                    <button onclick="setTimestreamTimeWindow('24h')" id="btn-ts-win-24h" class="ts-win-btn px-2 py-0.5 rounded text-slate-400 hover:text-white">24h</button>
+                    <button onclick="setTimestreamTimeWindow('7d')" id="btn-ts-win-7d" class="ts-win-btn px-2 py-0.5 rounded text-slate-400 hover:text-white">7d</button>
+                  </div>
+
+                  <select id="ts-filter-mac" onchange="renderTimestreamActiveChart()" class="bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1 text-slate-200 text-xs font-mono focus:outline-none focus:border-cyan-500">
+                    <option value="" selected>Todos os Medidores</option>
+                    <option value="704bca491ca0">Codax Bancada (70:4B:CA:49:1C:A0)</option>
+                    <option value="308398635050">Medidor 01 (30:83:98:63:50:50)</option>
+                    <option value="8c94dfb9dbc8">Medidor 02 (8C:94:DF:B9:DB:C8)</option>
+                    <option value="4417934f49a4">ROOT Gateway (44:17:93:4F:49:A4)</option>
                   </select>
                 </div>
 
-                <div class="space-y-1.5">
-                  <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Intervalo de Data/Hora (Start & End)</label>
-                  <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="unload-input-start" value="2026-09-15 17:30:00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-slate-200 font-mono focus:border-cyan-400 focus:outline-none" title="Start Time">
-                    <input type="text" id="unload-input-end" value="2026-09-17 00:00:00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-xs text-slate-200 font-mono focus:border-cyan-400 focus:outline-none" title="End Time">
+              </div>
+
+              <!-- Área do Gráfico Vetorial SVG de Alta Resolução -->
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+                <div class="flex items-center justify-between flex-wrap gap-2 text-xs">
+                  <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+                    <h4 id="ts-chart-header-title" class="font-bold text-slate-200 font-mono">Tensões Trifásicas de Linha (Va, Vb, Vc) • Limites ANEEL PRODIST Módulo 8</h4>
+                  </div>
+                  <div id="ts-chart-legend" class="flex items-center space-x-3 text-[10px] font-mono">
+                    <span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span><span class="text-cyan-300">Fase A</span></span>
+                    <span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span><span class="text-emerald-300">Fase B</span></span>
+                    <span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span><span class="text-purple-300">Fase C</span></span>
+                    <span class="flex items-center space-x-1 border-l border-slate-800 pl-2 text-slate-500"><span>Limites 201V / 231V</span></span>
                   </div>
                 </div>
 
-                <div class="space-y-1.5">
-                  <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Delimitador do CSV</label>
-                  <select id="unload-input-delimiter" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 font-mono focus:border-cyan-400 focus:outline-none">
-                    <option value=";" selected>Ponto e Vírgula (;) - Padrão Excel pt-BR</option>
-                    <option value=",">Vírgula (,) - Padrão Internacional</option>
-                    <option value="\t">Tabulação (\t)</option>
-                  </select>
+                <!-- Container Gráfico SVG -->
+                <div class="h-64 w-full relative flex items-center justify-center overflow-hidden" id="ts-main-chart-container">
+                  <!-- Gerado via JS -->
                 </div>
               </div>
 
-              <!-- Caminho do S3 e Lista de MACs -->
-              <div class="space-y-2">
-                <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Bucket e Pasta de Destino no Amazon S3</label>
-                <input type="text" id="unload-input-s3" value="s3://ledax-ota-files/csv/test_ota_conn/2026-09-15_a_2026-09-17/" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-amber-300 font-mono focus:border-cyan-400 focus:outline-none">
-              </div>
-
-              <!-- Chips de Dispositivos MAC Selecionáveis (10 MACs do Usuário) -->
-              <div class="space-y-2 pt-1">
-                <div class="flex items-center justify-between">
-                  <label class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Filtro de IDs / MACs Selecionados (10 Dispositivos):</label>
-                  <button onclick="toggleAllUnloadMacs()" id="btn-toggle-all-macs" class="text-[10px] text-cyan-400 hover:text-cyan-300 font-mono font-bold">Alternar Todos (10)</button>
-                </div>
-                <div class="flex items-center flex-wrap gap-1.5" id="unload-mac-chips-container">
-                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '30:83:98:63:50:50')">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span>30:83:98:63:50:50</span>
-                  </span>
-                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '8c:94:df:b9:db:c8')">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span>8c:94:df:b9:db:c8</span>
-                  </span>
-                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '70:4b:ca:49:1d:b4')">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span>70:4b:ca:49:1d:b4</span>
-                  </span>
-                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '70:4b:ca:49:1d:c0')">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span>70:4b:ca:49:1d:c0</span>
-                  </span>
-                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '30:83:98:63:50:84')">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span>30:83:98:63:50:84</span>
-                  </span>
-                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '70:4b:ca:49:1c:b0')">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span>70:4b:ca:49:1c:b0</span>
-                  </span>
-                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '70:4b:ca:49:1e:e0')">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span>70:4b:ca:49:1e:e0</span>
-                  </span>
-                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '70:4b:ca:49:1d:d8')">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span>70:4b:ca:49:1d:d8</span>
-                  </span>
-                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '30:83:98:63:50:b4')">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span>30:83:98:63:50:b4</span>
-                  </span>
-                  <span class="px-2 py-1 rounded-lg bg-indigo-950/90 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '30:83:98:63:50:88')">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                    <span>30:83:98:63:50:88</span>
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <!-- ================= CARD DE INTELIGÊNCIA ANALÍTICA DO TOTALIZADOR ================= -->
-            <div id="ts-analytics-card" class="bg-slate-950/90 border border-emerald-500/40 rounded-2xl p-5 space-y-3 shadow-xl">
-              <div class="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-800">
-                <div class="flex items-center space-x-2">
-                  <div class="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400">
-                    <i data-lucide="calculator" class="w-4 h-4"></i>
+              <!-- 4 Cards de Métricas Elétricas da Série Atual -->
+              <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-1">
+                  <div class="flex items-center justify-between text-slate-400 text-[10px] uppercase font-bold">
+                    <span>Tensão Média Eficaz</span>
+                    <i data-lucide="zap" class="w-3.5 h-3.5 text-cyan-400"></i>
                   </div>
-                  <h4 class="text-xs font-extrabold text-white uppercase tracking-wider">Inteligência Analítica da Série Temporal (Teste - idle)</h4>
+                  <div class="text-lg font-mono font-extrabold text-cyan-300" id="ts-stat-voltage">220,4 V</div>
+                  <span class="text-[10px] text-emerald-400 font-medium">Faixa Adequada (PRODIST)</span>
                 </div>
-                <span class="text-[10px] font-mono text-emerald-300 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-500/30">19/10/2026 10:07 a 20/10/2026 09:22 (23h 15m)</span>
+                <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-1">
+                  <div class="flex items-center justify-between text-slate-400 text-[10px] uppercase font-bold">
+                    <span>Corrente de Pico</span>
+                    <i data-lucide="activity" class="w-3.5 h-3.5 text-amber-400"></i>
+                  </div>
+                  <div class="text-lg font-mono font-extrabold text-amber-300" id="ts-stat-current">14,82 A</div>
+                  <span class="text-[10px] text-slate-500">Demanda Max: 3,26 kW</span>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-1">
+                  <div class="flex items-center justify-between text-slate-400 text-[10px] uppercase font-bold">
+                    <span>Delta Totalizador</span>
+                    <i data-lucide="calculator" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  </div>
+                  <div class="text-lg font-mono font-extrabold text-emerald-300" id="ts-stat-totalizer">+12.546,0</div>
+                  <span class="text-[10px] text-slate-500">Leituras contínuas sem gap</span>
+                </div>
+                <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-1">
+                  <div class="flex items-center justify-between text-slate-400 text-[10px] uppercase font-bold">
+                    <span>Sinal Médio RF</span>
+                    <i data-lucide="wifi" class="w-3.5 h-3.5 text-purple-400"></i>
+                  </div>
+                  <div class="text-lg font-mono font-extrabold text-purple-300" id="ts-stat-rssi">-68 dBm</div>
+                  <span class="text-[10px] text-emerald-400 font-medium">Enlace Forte / Estável</span>
+                </div>
               </div>
 
-              <div class="grid grid-cols-2 sm:grid-cols-6 gap-3 pt-1">
-                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
-                  <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Valor Inicial</span>
-                  <span class="text-sm font-mono font-extrabold text-slate-200" id="ts-metric-initial">1.270,0</span>
-                  <span class="text-[9px] text-slate-500 block">10:07:03</span>
-                </div>
-                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
-                  <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Valor Final</span>
-                  <span class="text-sm font-mono font-extrabold text-emerald-400" id="ts-metric-final">13.816,0</span>
-                  <span class="text-[9px] text-slate-500 block">09:22:03</span>
-                </div>
-                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
-                  <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Delta Consumido</span>
-                  <span class="text-sm font-mono font-extrabold text-cyan-300" id="ts-metric-delta">+12.546,0</span>
-                  <span class="text-[9px] text-slate-500 block">Totalizador Líquido</span>
-                </div>
-                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
-                  <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Taxa Média / Hora</span>
-                  <span class="text-sm font-mono font-extrabold text-amber-300" id="ts-metric-rate">~539,60 / h</span>
-                  <span class="text-[9px] text-slate-500 block">Subida linear estável</span>
-                </div>
-                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
-                  <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Amostras Coletadas</span>
-                  <span class="text-sm font-mono font-extrabold text-indigo-300" id="ts-metric-points">85 Pontos</span>
-                  <span class="text-[9px] text-slate-500 block">Intervalo de 15 min</span>
-                </div>
-                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
-                  <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Continuidade</span>
-                  <span class="text-sm font-mono font-extrabold text-emerald-400" id="ts-metric-continuity">100% Contínua</span>
-                  <span class="text-[9px] text-emerald-500/80 block">Zero perda / Sem gaps</span>
-                </div>
-              </div>
             </div>
 
-            <!-- ================= GRÁFICO VETORIAL DINÂMICO DE SÉRIE TEMPORAL (SVG) ================= -->
-            <div class="bg-slate-950/90 border border-slate-800/80 rounded-2xl p-4 space-y-3 shadow-xl">
-              <div class="flex items-center justify-between flex-wrap gap-2">
-                <h4 class="text-xs font-extrabold text-slate-200 uppercase tracking-wider flex items-center space-x-2">
-                  <i data-lucide="line-chart" class="w-4 h-4 text-cyan-400"></i>
-                  <span id="ts-main-chart-title">Curva Contínua do Totalizador em Tempo Real (85 Leituras de 15 em 15 min)</span>
-                </h4>
-                <div class="flex items-center space-x-2 text-[10px] font-mono text-slate-400">
-                  <span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span><span>Teste - idle</span></span>
-                  <span class="text-slate-600">|</span>
-                  <span class="text-emerald-400 font-bold">1.270 ➔ 13.816</span>
+            <!-- ================= SUB-ABA 2: CATÁLOGO DAS 7 TABELAS & SCHEMAS ================= -->
+            <div id="ts-subview-catalog" class="ts-subcontent-section space-y-4 hidden">
+              
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+                <div class="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-800">
+                  <div class="flex items-center space-x-2">
+                    <i data-lucide="layers" class="w-4 h-4 text-cyan-400"></i>
+                    <h4 class="text-xs font-extrabold text-white uppercase tracking-wider">Tabelas Industriais Mapeadas no Banco ledaxio (7 Tabelas)</h4>
+                  </div>
+                  <span class="text-[10px] font-mono text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 px-2 py-0.5 rounded">Região: us-west-2</span>
                 </div>
+
+                <!-- Grid com as 7 Tabelas -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2.5" id="ts-catalog-tables-grid">
+                  <!-- Tabela 1: SHOPPBA-TESTE -->
+                  <div onclick="selectTimestreamTable('SHOPPBA-TESTE')" class="cursor-pointer bg-slate-900 border border-cyan-500/40 hover:border-cyan-400 rounded-xl p-3 space-y-1.5 transition">
+                    <div class="flex items-center justify-between">
+                      <span class="font-mono font-bold text-xs text-cyan-300">SHOPPBA-TESTE</span>
+                      <span class="text-[9px] bg-cyan-950 text-cyan-400 px-1.5 py-0.2 rounded border border-cyan-500/30">Medição</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 leading-tight">Telemetria de medição de energia e totalizadores de bancada e produção</p>
+                    <div class="text-[9px] font-mono text-slate-500 pt-1 flex items-center justify-between">
+                      <span>4 Colunas</span>
+                      <span class="text-emerald-400">● Ativa</span>
+                    </div>
+                  </div>
+
+                  <!-- Tabela 2: test_connections -->
+                  <div onclick="selectTimestreamTable('test_connections')" class="cursor-pointer bg-slate-900 border border-slate-800 hover:border-cyan-400 rounded-xl p-3 space-y-1.5 transition">
+                    <div class="flex items-center justify-between">
+                      <span class="font-mono font-bold text-xs text-indigo-300">test_connections</span>
+                      <span class="text-[9px] bg-indigo-950 text-indigo-400 px-1.5 py-0.2 rounded border border-indigo-500/30">OTA & Conexão</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 leading-tight">Testes de conexão, handshakes e status de firmware OTA dos nós</p>
+                    <div class="text-[9px] font-mono text-slate-500 pt-1 flex items-center justify-between">
+                      <span>5 Colunas</span>
+                      <span class="text-emerald-400">● Ativa</span>
+                    </div>
+                  </div>
+
+                  <!-- Tabela 3: connections_mesh -->
+                  <div onclick="selectTimestreamTable('connections_mesh')" class="cursor-pointer bg-slate-900 border border-slate-800 hover:border-cyan-400 rounded-xl p-3 space-y-1.5 transition">
+                    <div class="flex items-center justify-between">
+                      <span class="font-mono font-bold text-xs text-emerald-300">connections_mesh</span>
+                      <span class="text-[9px] bg-emerald-950 text-emerald-400 px-1.5 py-0.2 rounded border border-emerald-500/30">Topologia</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 leading-tight">Eventos de associação, saltos de camada e handovers da malha MESH</p>
+                    <div class="text-[9px] font-mono text-slate-500 pt-1 flex items-center justify-between">
+                      <span>4 Colunas</span>
+                      <span class="text-emerald-400">● Ativa</span>
+                    </div>
+                  </div>
+
+                  <!-- Tabela 4: connections -->
+                  <div onclick="selectTimestreamTable('connections')" class="cursor-pointer bg-slate-900 border border-slate-800 hover:border-cyan-400 rounded-xl p-3 space-y-1.5 transition">
+                    <div class="flex items-center justify-between">
+                      <span class="font-mono font-bold text-xs text-amber-300">connections</span>
+                      <span class="text-[9px] bg-amber-950 text-amber-400 px-1.5 py-0.2 rounded border border-amber-500/30">Socket</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 leading-tight">Histórico de conexões diretas cliente-servidor e status de conectividade</p>
+                    <div class="text-[9px] font-mono text-slate-500 pt-1 flex items-center justify-between">
+                      <span>5 Colunas</span>
+                      <span class="text-emerald-400">● Ativa</span>
+                    </div>
+                  </div>
+
+                  <!-- Tabela 5: dev -->
+                  <div onclick="selectTimestreamTable('dev')" class="cursor-pointer bg-slate-900 border border-slate-800 hover:border-cyan-400 rounded-xl p-3 space-y-1.5 transition">
+                    <div class="flex items-center justify-between">
+                      <span class="font-mono font-bold text-xs text-rose-300">dev</span>
+                      <span class="text-[9px] bg-rose-950 text-rose-400 px-1.5 py-0.2 rounded border border-rose-500/30">Depuração</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 leading-tight">Registros de telemetria e testes de bancada de novas versões de firmware</p>
+                    <div class="text-[9px] font-mono text-slate-500 pt-1 flex items-center justify-between">
+                      <span>4 Colunas</span>
+                      <span class="text-slate-400">○ Sandbox</span>
+                    </div>
+                  </div>
+
+                  <!-- Tabela 6: refrix -->
+                  <div onclick="selectTimestreamTable('refrix')" class="cursor-pointer bg-slate-900 border border-slate-800 hover:border-cyan-400 rounded-xl p-3 space-y-1.5 transition">
+                    <div class="flex items-center justify-between">
+                      <span class="font-mono font-bold text-xs text-teal-300">refrix</span>
+                      <span class="text-[9px] bg-teal-950 text-teal-400 px-1.5 py-0.2 rounded border border-teal-500/30">Refrigeração</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 leading-tight">Mapeamento térmico de compressores e atuadores de ar condicionado</p>
+                    <div class="text-[9px] font-mono text-slate-500 pt-1 flex items-center justify-between">
+                      <span>7 Colunas</span>
+                      <span class="text-emerald-400">● Ativa</span>
+                    </div>
+                  </div>
+
+                  <!-- Tabela 7: water_gti -->
+                  <div onclick="selectTimestreamTable('water_gti')" class="cursor-pointer bg-slate-900 border border-slate-800 hover:border-cyan-400 rounded-xl p-3 space-y-1.5 transition">
+                    <div class="flex items-center justify-between">
+                      <span class="font-mono font-bold text-xs text-blue-300">water_gti</span>
+                      <span class="text-[9px] bg-blue-950 text-blue-400 px-1.5 py-0.2 rounded border border-blue-500/30">Água & Gás</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 leading-tight">Pulsos volumétricos de hidrômetros e telemetria de consumo hídrico</p>
+                    <div class="text-[9px] font-mono text-slate-500 pt-1 flex items-center justify-between">
+                      <span>4 Colunas</span>
+                      <span class="text-emerald-400">● Ativa</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Detalhes do Schema da Tabela em Foco -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 space-y-2 mt-3">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-200">Schema de Colunas: <strong class="text-cyan-400 font-mono" id="ts-schema-table-name">test_connections</strong></span>
+                    <span class="text-[10px] font-mono text-slate-500" id="ts-schema-table-desc">Registros de testes de conexão, handshakes e status OTA dos nós</span>
+                  </div>
+                  <div class="flex items-center flex-wrap gap-2" id="ts-schema-columns-list">
+                    <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] text-cyan-300">id : varchar</span>
+                    <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] text-indigo-300">parent_mac : varchar</span>
+                    <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] text-amber-300">time : timestamp</span>
+                    <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] text-emerald-300">measure_name : varchar</span>
+                    <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 font-mono text-[10px] text-purple-300">measure_value::varchar : varchar</span>
+                  </div>
+                </div>
+
               </div>
 
-              <div class="h-56 w-full relative flex items-center justify-center overflow-hidden" id="ts-main-chart-container">
-                <!-- Gráfico SVG renderizado dinamicamente -->
-              </div>
             </div>
 
-            <!-- ================= CONSOLE DE CONSULTAS SQL TIMESTREAM ================= -->
-            <div class="bg-slate-950/90 border border-slate-800/80 rounded-2xl p-4 space-y-4 shadow-xl">
-              <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div class="flex items-center space-x-2">
-                  <i data-lucide="terminal" class="w-4 h-4 text-cyan-400"></i>
-                  <h4 class="text-xs font-extrabold text-slate-200 uppercase tracking-wider">Console SQL Timestream (Interativo)</h4>
+            <!-- ================= SUB-ABA 3: CONSTRUTOR VISUAL UNLOAD S3 ================= -->
+            <div id="ts-subview-unload" class="ts-subcontent-section space-y-4 hidden">
+              
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-4">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+                  <div class="flex items-center space-x-2.5">
+                    <div class="p-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                      <i data-lucide="cloud-lightning" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                      <h4 class="text-xs font-bold text-white flex items-center space-x-2">
+                        <span>Gerador de UNLOAD TO S3 (Sem Compressão, Delimitador ;)</span>
+                        <span class="text-[9px] bg-amber-950 text-amber-300 border border-amber-500/40 px-2 py-0.2 rounded font-mono font-bold">Oficial AWS</span>
+                      </h4>
+                      <p class="text-[11px] text-slate-400">Exporta grandes volumes de séries temporais diretamente para o bucket S3 sem sobrecarregar a memória</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <button onclick="executeUnloadS3()" id="btn-run-unload" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-indigo-600 hover:from-amber-500 hover:to-indigo-500 text-white font-bold text-xs transition flex items-center space-x-1.5 shadow-md shadow-amber-600/30">
+                      <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+                      <span>Executar UNLOAD S3</span>
+                    </button>
+                    <a id="btn-download-unload-csv" href="/api/timestream/export-csv?table=test_connections&delimiter=;" download class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition flex items-center space-x-1.5 shadow-md shadow-emerald-600/30">
+                      <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                      <span>Baixar CSV</span>
+                    </a>
+                  </div>
                 </div>
-                <div class="flex items-center space-x-2">
-                  <button onclick="copyTimestreamSql()" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-[10px] font-mono text-slate-300 border border-slate-700 transition flex items-center space-x-1">
-                    <i data-lucide="copy" class="w-3 h-3"></i>
-                    <span>Copiar SQL</span>
+
+                <!-- Formulário de Parâmetros -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                  <div class="space-y-1">
+                    <label class="text-[10px] uppercase font-bold text-slate-400">Tabela de Origem</label>
+                    <select id="unload-input-table" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 font-mono focus:border-cyan-400 focus:outline-none">
+                      <option value="test_connections" selected>test_connections</option>
+                      <option value="SHOPPBA-TESTE">SHOPPBA-TESTE</option>
+                      <option value="connections">connections</option>
+                      <option value="connections_mesh">connections_mesh</option>
+                      <option value="dev">dev</option>
+                      <option value="refrix">refrix</option>
+                      <option value="water_gti">water_gti</option>
+                    </select>
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="text-[10px] uppercase font-bold text-slate-400">Janela Temporal (Início & Fim)</label>
+                    <div class="grid grid-cols-2 gap-2">
+                      <input type="text" id="unload-input-start" value="2026-09-15 17:30:00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-slate-200 font-mono text-[11px] focus:border-cyan-400 focus:outline-none" title="Start Time">
+                      <input type="text" id="unload-input-end" value="2026-09-17 00:00:00" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2 text-slate-200 font-mono text-[11px] focus:border-cyan-400 focus:outline-none" title="End Time">
+                    </div>
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="text-[10px] uppercase font-bold text-slate-400">Delimitador do CSV</label>
+                    <select id="unload-input-delimiter" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 font-mono focus:border-cyan-400 focus:outline-none">
+                      <option value=";" selected>Ponto e Vírgula (;) - Padrão Excel pt-BR</option>
+                      <option value=",">Vírgula (,) - Internacional</option>
+                      <option value="\t">Tabulação (\t)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Destino S3 -->
+                <div class="space-y-1 text-xs">
+                  <label class="text-[10px] uppercase font-bold text-slate-400">Caminho S3 de Destino</label>
+                  <input type="text" id="unload-input-s3" value="s3://ledax-ota-files/csv/test_ota_conn/2026-09-15_a_2026-09-17/" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-amber-300 font-mono focus:border-cyan-400 focus:outline-none">
+                </div>
+
+                <!-- Chips dos MACs da Bancada -->
+                <div class="space-y-2 pt-1">
+                  <div class="flex items-center justify-between text-xs">
+                    <label class="text-[10px] uppercase font-bold text-slate-400">Dispositivos Filtrados (10 MACs):</label>
+                    <button onclick="toggleAllUnloadMacs()" id="btn-toggle-all-macs" class="text-[10px] text-cyan-400 hover:text-cyan-300 font-mono font-bold">Alternar Todos (10)</button>
+                  </div>
+                  <div class="flex items-center flex-wrap gap-1.5" id="unload-mac-chips-container">
+                    <span class="px-2 py-1 rounded-lg bg-indigo-950 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '30:83:98:63:50:50')">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      <span>30:83:98:63:50:50</span>
+                    </span>
+                    <span class="px-2 py-1 rounded-lg bg-indigo-950 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '8c:94:df:b9:db:c8')">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      <span>8c:94:df:b9:db:c8</span>
+                    </span>
+                    <span class="px-2 py-1 rounded-lg bg-indigo-950 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '70:4b:ca:49:1d:b4')">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      <span>70:4b:ca:49:1d:b4</span>
+                    </span>
+                    <span class="px-2 py-1 rounded-lg bg-indigo-950 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '70:4b:ca:49:1d:c0')">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      <span>70:4b:ca:49:1d:c0</span>
+                    </span>
+                    <span class="px-2 py-1 rounded-lg bg-indigo-950 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '30:83:98:63:50:84')">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      <span>30:83:98:63:50:84</span>
+                    </span>
+                    <span class="px-2 py-1 rounded-lg bg-indigo-950 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '70:4b:ca:49:1c:b0')">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      <span>70:4b:ca:49:1c:b0</span>
+                    </span>
+                    <span class="px-2 py-1 rounded-lg bg-indigo-950 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '70:4b:ca:49:1e:e0')">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      <span>70:4b:ca:49:1e:e0</span>
+                    </span>
+                    <span class="px-2 py-1 rounded-lg bg-indigo-950 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '70:4b:ca:49:1d:d8')">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      <span>70:4b:ca:49:1d:d8</span>
+                    </span>
+                    <span class="px-2 py-1 rounded-lg bg-indigo-950 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '30:83:98:63:50:b4')">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      <span>30:83:98:63:50:b4</span>
+                    </span>
+                    <span class="px-2 py-1 rounded-lg bg-indigo-950 text-indigo-200 border border-indigo-500/40 text-[10px] font-mono font-bold flex items-center space-x-1 cursor-pointer hover:bg-indigo-900" onclick="toggleMacChip(this, '30:83:98:63:50:88')">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      <span>30:83:98:63:50:88</span>
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+            <!-- ================= SUB-ABA 4: CONSOLE SQL & BIBLIOTECA DE QUERIES ================= -->
+            <div id="ts-subview-sql" class="ts-subcontent-section space-y-4 hidden">
+              
+              <!-- 6 Presets Industriais de 1-Clique -->
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-bold text-white uppercase tracking-wider flex items-center space-x-1.5">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5 text-cyan-400"></i>
+                    <span>Biblioteca de Queries Industriais (1-Clique)</span>
+                  </span>
+                  <span class="text-[10px] text-slate-500 font-mono">6 Modelos Prontos</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+                  <button onclick="loadSqlPreset('totalizer')" class="p-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/50 text-left transition space-y-0.5">
+                    <div class="font-bold text-cyan-300">1. Totalizador pt-BR Contínuo</div>
+                    <div class="text-[10px] text-slate-400">Série temporal SHOPPBA-TESTE (85 pontos)</div>
+                  </button>
+                  <button onclick="loadSqlPreset('vtcd')" class="p-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/50 text-left transition space-y-0.5">
+                    <div class="font-bold text-amber-300">2. Anomalias de Tensão (VTCD)</div>
+                    <div class="text-[10px] text-slate-400">Identifica quedas &lt;200V ou picos &gt;235V</div>
+                  </button>
+                  <button onclick="loadSqlPreset('peak_power')" class="p-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/50 text-left transition space-y-0.5">
+                    <div class="font-bold text-emerald-300">3. Ranking de Pico de Demanda</div>
+                    <div class="text-[10px] text-slate-400">Maior potência ativa (kW) por MAC</div>
+                  </button>
+                  <button onclick="loadSqlPreset('mesh_hops')" class="p-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/50 text-left transition space-y-0.5">
+                    <div class="font-bold text-indigo-300">4. Saltos de Camada da Malha</div>
+                    <div class="text-[10px] text-slate-400">Migrações L1/L2 em connections_mesh</div>
+                  </button>
+                  <button onclick="loadSqlPreset('disconnect_audit')" class="p-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/50 text-left transition space-y-0.5">
+                    <div class="font-bold text-rose-300">5. Auditoria de Desconexões</div>
+                    <div class="text-[10px] text-slate-400">Eventos de timeout e LWT na bancada</div>
+                  </button>
+                  <button onclick="loadSqlPreset('gaps')" class="p-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-cyan-500/50 text-left transition space-y-0.5">
+                    <div class="font-bold text-purple-300">6. Verificação de Gaps de Telemetria</div>
+                    <div class="text-[10px] text-slate-400">Valida integridade da ingestão temporal</div>
                   </button>
                 </div>
               </div>
 
-              <!-- Input da Query SQL -->
-              <div class="relative space-y-2">
-                <textarea id="timestream-sql-input" rows="4" class="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl p-3 font-mono text-xs text-slate-200 focus:outline-none focus:border-cyan-400 resize-none shadow-inner" placeholder="SELECT * FROM &quot;ledaxio&quot;.&quot;test_connections&quot; LIMIT 50">SELECT id, time, measure_name, totalizador_ptBR FROM "ledaxio"."SHOPPBA-TESTE" WHERE id = 'Teste - idle' ORDER BY time ASC LIMIT 100</textarea>
-                <div class="flex items-center justify-between flex-wrap gap-2">
-                  <div id="timestream-query-stats" class="text-[10px] font-mono text-emerald-400">Pronto para execução • Banco ledaxio conectado</div>
-                  <button onclick="runTimestreamQuery()" id="btn-run-timestream" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white font-bold text-xs transition flex items-center space-x-1.5 shadow-md shadow-cyan-600/30">
-                    <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
-                    <span>Executar Query (SQL)</span>
-                  </button>
+              <!-- Editor SQL & Execução -->
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+                <div class="flex items-center justify-between text-xs">
+                  <div class="flex items-center space-x-2">
+                    <i data-lucide="terminal" class="w-4 h-4 text-cyan-400"></i>
+                    <h4 class="font-bold text-white uppercase tracking-wider">Console SQL Timestream Interativo</h4>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <button onclick="copyTimestreamSql()" class="px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-[11px] transition flex items-center space-x-1">
+                      <i data-lucide="copy" class="w-3 h-3"></i>
+                      <span>Copiar SQL</span>
+                    </button>
+                    <button onclick="runTimestreamQuery()" id="btn-run-timestream" class="px-4 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs transition flex items-center space-x-1.5 shadow-md shadow-cyan-600/30">
+                      <i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i>
+                      <span>Executar Query</span>
+                    </button>
+                  </div>
                 </div>
+
+                <textarea id="timestream-sql-input" rows="3" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl p-3 font-mono text-xs text-slate-200 focus:outline-none focus:border-cyan-400 resize-none" placeholder="SELECT * FROM &quot;ledaxio&quot;.&quot;SHOPPBA-TESTE&quot; LIMIT 50">SELECT id, time, measure_name, totalizador_ptBR FROM "ledaxio"."SHOPPBA-TESTE" WHERE id = 'Teste - idle' ORDER BY time ASC LIMIT 100</textarea>
+
+                <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 pt-0.5">
+                  <span id="timestream-query-stats" class="text-emerald-400">Pronto para execução • Banco ledaxio conectado</span>
+                  <div class="flex items-center space-x-2">
+                    <button onclick="exportTableToCsv()" class="text-cyan-400 hover:underline flex items-center space-x-1">
+                      <i data-lucide="file-spreadsheet" class="w-3 h-3"></i>
+                      <span>Exportar Resultado (CSV pt-BR)</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Tabela de Resultados da Consulta -->
+                <div class="overflow-x-auto rounded-xl border border-slate-800 max-h-72 overflow-y-auto">
+                  <table class="w-full text-left border-collapse text-xs">
+                    <thead class="bg-slate-900 sticky top-0 border-b border-slate-800 text-slate-400 font-mono text-[10px] uppercase">
+                      <tr id="timestream-table-head">
+                        <th class="p-2.5">id</th>
+                        <th class="p-2.5">time</th>
+                        <th class="p-2.5">measure_name</th>
+                        <th class="p-2.5">totalizador_ptBR</th>
+                      </tr>
+                    </thead>
+                    <tbody id="timestream-table-body" class="divide-y divide-slate-800/60 font-mono text-[11px] text-slate-300">
+                      <tr>
+                        <td colspan="4" class="p-4 text-center text-slate-500 italic">Clique em Executar Query ou escolha um preset acima...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
               </div>
 
-              <!-- Tabela de Resultados com Formatação pt-BR -->
-              <div class="overflow-x-auto rounded-xl border border-slate-800 max-h-80 overflow-y-auto">
-                <table class="w-full text-left border-collapse text-xs">
-                  <thead class="bg-slate-900/95 sticky top-0 border-b border-slate-800 text-slate-400 font-mono text-[10px] uppercase">
-                    <tr id="timestream-table-head">
-                      <th class="p-2.5">id</th>
-                      <th class="p-2.5">time</th>
-                      <th class="p-2.5">measure_name</th>
-                      <th class="p-2.5">totalizador_ptBR</th>
-                    </tr>
-                  </thead>
-                  <tbody id="timestream-table-body" class="divide-y divide-slate-800/60 font-mono text-[11px] text-slate-300">
-                    <tr>
-                      <td colspan="4" class="p-4 text-center text-slate-500 italic">Clique em um dos botões rápidos acima para carregar os dados...</td>
-                    </tr>
-                  </tbody>
-                </table>
+            </div>
+
+            <!-- ================= SUB-ABA 5: INDICADORES DE QUALIDADE DE ENERGIA (PQI) ================= -->
+            <div id="ts-subview-pqi" class="ts-subcontent-section space-y-4 hidden">
+              
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-4">
+                <div class="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-slate-800">
+                  <div class="flex items-center space-x-2">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                    <h4 class="text-xs font-extrabold text-white uppercase tracking-wider">Painel de Conformidade PRODIST ANEEL • Módulo 8 (Qualidade de Energia)</h4>
+                  </div>
+                  <span class="text-[10px] font-mono text-emerald-300 bg-emerald-950/80 border border-emerald-500/40 px-2 py-0.5 rounded">100% Conforme</span>
+                </div>
+
+                <!-- 6 Indicadores de Qualidade -->
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
+                  <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Tensão Média Eficaz</span>
+                    <span class="text-sm font-mono font-extrabold text-cyan-300">220,4 V</span>
+                    <span class="text-[9px] text-emerald-400 block">Adequada (201V - 231V)</span>
+                  </div>
+                  <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Desbalanço de Fases</span>
+                    <span class="text-sm font-mono font-extrabold text-emerald-400">0,38%</span>
+                    <span class="text-[9px] text-slate-400 block">Limite Normativo: &lt; 2,0%</span>
+                  </div>
+                  <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Fator de Potência</span>
+                    <span class="text-sm font-mono font-extrabold text-amber-300">0,94 ind</span>
+                    <span class="text-[9px] text-emerald-400 block">Meta &gt; 0,92 (Sem multa)</span>
+                  </div>
+                  <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Frequência da Rede</span>
+                    <span class="text-sm font-mono font-extrabold text-slate-200">60,01 Hz</span>
+                    <span class="text-[9px] text-slate-400 block">Faixa: 59,9 a 60,1 Hz</span>
+                  </div>
+                  <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Amostras Ingeridas</span>
+                    <span class="text-sm font-mono font-extrabold text-indigo-300">160 Registros</span>
+                    <span class="text-[9px] text-slate-400 block">Buffer de 24h em RAM</span>
+                  </div>
+                  <div class="bg-slate-900 p-3 rounded-xl border border-slate-800 space-y-1">
+                    <span class="text-[9px] uppercase tracking-wider text-slate-400 font-bold block">Continuidade Ingestão</span>
+                    <span class="text-sm font-mono font-extrabold text-emerald-400">100% Contínua</span>
+                    <span class="text-[9px] text-emerald-400 block">Zero Perda / Sem Gaps</span>
+                  </div>
+                </div>
+
+                <!-- Resumo Analítico do Totalizador (Teste - idle) -->
+                <div id="ts-analytics-card" class="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3">
+                  <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold text-white flex items-center space-x-1.5">
+                      <i data-lucide="calculator" class="w-3.5 h-3.5 text-cyan-400"></i>
+                      <span>Auditoria do Totalizador pt-BR (Teste - idle)</span>
+                    </span>
+                    <span class="text-[10px] font-mono text-cyan-300">19/10/2026 a 20/10/2026 (23h 15m)</span>
+                  </div>
+
+                  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs pt-1">
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                      <span class="text-[9px] uppercase font-bold text-slate-400 block">Valor Inicial</span>
+                      <span class="text-sm font-mono font-bold text-slate-200" id="ts-metric-initial">1.270,0</span>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                      <span class="text-[9px] uppercase font-bold text-slate-400 block">Valor Final</span>
+                      <span class="text-sm font-mono font-bold text-emerald-400" id="ts-metric-final">13.816,0</span>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                      <span class="text-[9px] uppercase font-bold text-slate-400 block">Delta Consumido</span>
+                      <span class="text-sm font-mono font-bold text-cyan-300" id="ts-metric-delta">+12.546,0</span>
+                    </div>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                      <span class="text-[9px] uppercase font-bold text-slate-400 block">Taxa Média / Hora</span>
+                      <span class="text-sm font-mono font-bold text-amber-300" id="ts-metric-rate">~539,60 / h</span>
+                    </div>
+                  </div>
+                </div>
+
               </div>
+
             </div>
 
           </div>
@@ -2320,7 +2503,7 @@
         <section id="view-scifi" class="tab-content hidden space-y-6">
 
           <!-- Cabeçalho Principal do Radar Sci-Fi -->
-          <div class="codax-glass-deep border border-emerald-500/40 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+          <div class="bg-slate-900 border border-slate-800 border border-emerald-500/40 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
             <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
               <div class="flex items-center space-x-3.5">
                 <div class="p-3 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 text-emerald-400 border border-emerald-500/30 shadow-lg shadow-emerald-500/10">
@@ -2397,7 +2580,7 @@
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             <!-- Card 1: Micro-Osciloscópio Fasorial Polar -->
-            <div class="codax-glass-deep border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
+            <div class="bg-slate-900 border border-slate-800 border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
               <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
                 <div class="flex items-center space-x-2.5">
                   <div class="p-2 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
@@ -2469,7 +2652,7 @@
             </div>
 
             <!-- Card 2: Matriz Interativa de Distribuição Harmônica de Tensão e Corrente -->
-            <div class="codax-glass-deep border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
+            <div class="bg-slate-900 border border-slate-800 border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
               <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
                 <div class="flex items-center space-x-2.5">
                   <div class="p-2 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
@@ -2517,7 +2700,7 @@
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             <!-- Card 3: Sincronizador Heurístico de CSMA/CA & Backoff Aleatório para Bancada -->
-            <div class="codax-glass-deep border border-emerald-500/40 rounded-2xl p-5 space-y-4 shadow-xl">
+            <div class="bg-slate-900 border border-slate-800 border border-emerald-500/40 rounded-2xl p-5 space-y-4 shadow-xl">
               <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
                 <div class="flex items-center space-x-2.5">
                   <div class="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
@@ -2575,7 +2758,7 @@
             </div>
 
             <!-- Card 4: Vigilante Heurístico de Inversão de Prioridade em Tasks FreeRTOS -->
-            <div class="codax-glass-deep border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
+            <div class="bg-slate-900 border border-slate-800 border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
               <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
                 <div class="flex items-center space-x-2.5">
                   <div class="p-2 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30">
@@ -2621,7 +2804,7 @@
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             <!-- Card 5: Auditor Térmico do Silício ESP32 & Curva de Estresse -->
-            <div class="codax-glass-deep border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
+            <div class="bg-slate-900 border border-slate-800 border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
               <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
                 <div class="flex items-center space-x-2.5">
                   <div class="p-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
@@ -2645,7 +2828,7 @@
             </div>
 
             <!-- Card 6: Painel Holográfico de Estados de Sono (Light Sleep vs Active) com ECG Luminoso -->
-            <div class="codax-glass-deep border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
+            <div class="bg-slate-900 border border-slate-800 border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
               <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
                 <div class="flex items-center space-x-2.5">
                   <div class="p-2 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
@@ -2702,7 +2885,7 @@
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
             <!-- Card 7: Visualizador Force-Directed de SNR e Densidade de Tráfego -->
-            <div class="codax-glass-deep border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
+            <div class="bg-slate-900 border border-slate-800 border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
               <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
                 <div class="flex items-center space-x-2.5">
                   <div class="p-2 rounded-xl bg-teal-500/20 text-teal-400 border border-teal-500/30">
@@ -2735,7 +2918,7 @@
             </div>
 
             <!-- Card 8: Filtro de Kalman para Estabilização de RSSI nos Medidores -->
-            <div class="codax-glass-deep border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
+            <div class="bg-slate-900 border border-slate-800 border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
               <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
                 <div class="flex items-center space-x-2.5">
                   <div class="p-2 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
@@ -2781,7 +2964,7 @@
           </div>
 
           <!-- ================= [INOVAÇÃO] DETECTOR DE GAIOLA DE FARADAY & DESVANECIMENTO POR MULTIPATH RF ================= -->
-          <div class="codax-glass-deep border border-amber-500/40 rounded-2xl p-5 space-y-4 shadow-xl">
+          <div class="bg-slate-900 border border-slate-800 border border-amber-500/40 rounded-2xl p-5 space-y-4 shadow-xl">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
               <div class="flex items-center space-x-2.5">
                 <div class="p-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
@@ -2937,7 +3120,7 @@
           </div>
 
           <!-- ================= LINHA 7: VIGILANTE DE VARIAÇÃO DE REGISTRADORES MODBUS (LIVE DIFF) ================= -->
-          <div class="codax-glass-deep border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
+          <div class="bg-slate-900 border border-slate-800 border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
               <div class="flex items-center space-x-2.5">
                 <div class="p-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
@@ -2982,7 +3165,7 @@
           </div>
 
           <!-- ================= LINHA 8: ESPECTROGRAMA DE SATURAÇÃO DE CANAIS 2.4GHZ NA BANCADA ================= -->
-          <div class="codax-glass-deep border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
+          <div class="bg-slate-900 border border-slate-800 border border-slate-800/80 rounded-2xl p-5 space-y-4 shadow-xl">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
               <div class="flex items-center space-x-2.5">
                 <div class="p-2 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
@@ -3378,7 +3561,7 @@
   </div>
 
   <!-- ================= MODAL DE CONFIRMAÇÃO DE OTA ================= -->
-  <div id="modal-ota" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+  <div id="modal-ota" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center p-4 z-50">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl">
       <div class="flex items-center space-x-3 mb-4">
         <div class="bg-indigo-600/20 text-indigo-400 p-2.5 rounded-xl border border-indigo-500/30">
@@ -3944,7 +4127,7 @@
 
               <!-- HUD Holográfico de Telemetria Flutuante no Canto Superior Esquerdo -->
               <div class="absolute top-4 left-4 pointer-events-none space-y-2 font-mono">
-                <div class="bg-slate-900/95 border border-slate-700/80 rounded-xl p-3 space-y-1.5 shadow-xl text-xs backdrop-blur-none">
+                <div class="bg-slate-900/95 border border-slate-700/80 rounded-xl p-3 space-y-1.5 shadow-xl text-xs">
                   <div class="flex items-center space-x-2 text-cyan-400 font-bold text-[11px] uppercase tracking-wider">
                     <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
                     <span>Status de Borda ESP32</span>
@@ -4129,7 +4312,7 @@
         </div>
 
         <!-- FAIXA INFERIOR FIXA (DOCKED): CARROSSEL HORIZONTAL DE CODAX DA BANCADA -->
-        <div id="cockpit-bottom-devices-dock" class="shrink-0 border-t border-slate-800 bg-slate-950/95 p-3 sm:p-4 space-y-2 backdrop-blur-md">
+        <div id="cockpit-bottom-devices-dock" class="shrink-0 border-t border-slate-800 bg-slate-950/95 p-3 sm:p-4 space-y-2">
           <div class="flex items-center justify-between">
             <div class="flex items-center space-x-2 text-xs font-bold text-slate-300">
               <i data-lucide="cpu" class="w-4 h-4 text-cyan-400"></i>
@@ -4152,7 +4335,7 @@
   </div>
 
   <!-- ================= MODAL DE CADASTRO DE MEDIDOR / DISPOSITIVO ================= -->
-  <div id="device-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm hidden p-4">
+  <div id="device-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 hidden p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-5">
       
       <div class="flex items-center justify-between border-b border-slate-800 pb-4">
@@ -4223,7 +4406,7 @@
   </div>
 
   <!-- ================= MODAL DE INSPEÇÃO RÁPIDA DE RETORNO MQTT ================= -->
-  <div id="modal-return-inspector" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden select-none">
+  <div id="modal-return-inspector" class="fixed inset-0 bg-slate-950/80 flex items-center justify-center p-4 z-50 hidden select-none">
     <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150">
       
       <!-- Header do Modal -->
@@ -4303,7 +4486,7 @@
   </div>
 
   <!-- ================= MODAL DE CONFIRMAÇÃO DE RISCO (GLASSMORPHISM) ================= -->
-  <div id="modal-glass-confirm" class="fixed inset-0 bg-slate-950/65 backdrop-blur-md flex items-center justify-center p-4 z-[60] hidden select-none">
+  <div id="modal-glass-confirm" class="fixed inset-0 bg-slate-950/65 flex items-center justify-center p-4 z-[60] hidden select-none">
     <div class="bg-slate-900 border border-slate-700/90 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col">
       
       <!-- Cabeçalho com Ícone de Alerta -->
@@ -4347,8 +4530,8 @@
   </div>
 
   <!-- ================= [INOVAÇÃO] COMMAND PALETTE INSTANTÂNEO ESTILO RAYCAST / MAC (CTRL + K) ================= -->
-  <div id="command-palette-modal" class="fixed inset-0 z-[95] hidden bg-slate-950/75 backdrop-blur-md flex items-start justify-center pt-24 px-4 transition-all duration-200">
-    <div class="codax-glass-deep border border-indigo-500/40 rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[75vh] animate-in fade-in zoom-in-95 duration-150">
+  <div id="command-palette-modal" class="fixed inset-0 z-[95] hidden bg-slate-950/75 flex items-start justify-center pt-24 px-4 transition-all duration-200">
+    <div class="bg-slate-900 border border-slate-800 border border-indigo-500/40 rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[75vh] animate-in fade-in zoom-in-95 duration-150">
       
       <!-- Barra de Pesquisa Superior -->
       <div class="p-3.5 border-b border-slate-700/80 bg-slate-950/70 flex items-center space-x-3">
@@ -4398,13 +4581,13 @@
   <!-- ================= INSPETOR VISUAL IA (CONTORNO + CAIXA FLUTUANTE EM VIDRO FOSCO) ================= -->
   <!-- Contorno Luminoso do Elemento Sob o Mouse / Selecionado -->
   <div id="ui-inspector-highlight" class="fixed pointer-events-none z-[80] hidden border-2 border-indigo-400 bg-indigo-500/10 rounded-xl transition-all duration-75 shadow-[0_0_20px_rgba(99,102,241,0.35)]">
-    <div id="ui-inspector-badge" class="absolute -top-6 left-0 bg-indigo-600/95 backdrop-blur-md text-white text-[10px] font-mono font-bold px-2 py-0.5 rounded-md shadow-lg whitespace-nowrap border border-indigo-300/50">
+    <div id="ui-inspector-badge" class="absolute -top-6 left-0 bg-indigo-600/95 text-white text-[10px] font-mono font-bold px-2 py-0.5 rounded-md shadow-lg whitespace-nowrap border border-indigo-300/50">
       elemento
     </div>
   </div>
 
   <!-- Retângulo de Arrastar (Lasso de Seleção de Área) -->
-  <div id="ui-inspector-lasso" class="fixed pointer-events-none z-[81] hidden border-2 border-dashed border-cyan-400 bg-cyan-500/15 backdrop-blur-[2px] rounded-xl shadow-[0_0_25px_rgba(6,182,212,0.3)]"></div>
+  <div id="ui-inspector-lasso" class="fixed pointer-events-none z-[81] hidden border-2 border-dashed border-cyan-400 bg-cyan-500/15-[2px] rounded-xl shadow-[0_0_25px_rgba(6,182,212,0.3)]"></div>
 
   <!-- ================= MODAL TÁTICO: RADAR WI-FI CSI & TOMOGRAFIA DE RÁDIO PASSIVA (OFDM 64-SUBCARRIERS) ================= -->
   <div id="radar-csi-modal" class="fixed inset-0 z-[85] overflow-y-auto hidden" role="dialog" aria-modal="true">
@@ -5850,7 +6033,7 @@
         ` : '';
 
         const card = document.createElement('div');
-        card.className = 'group codax-glass-deep hover:bg-slate-800/45 border border-slate-800/80 hover:border-slate-600/80 px-2.5 py-2 rounded-xl text-left cursor-pointer transition-all space-y-1.5 relative overflow-hidden';
+        card.className = 'group bg-slate-900 border border-slate-800 hover:bg-slate-800/45 border border-slate-800/80 hover:border-slate-600/80 px-2.5 py-2 rounded-xl text-left cursor-pointer transition-all space-y-1.5 relative overflow-hidden';
 
         card.innerHTML = `
           <!-- Linha 1: Ponto Luminoso + Nome da Placa + Sufixo MAC | Horário (ou Ações Rápidas no Hover) -->
@@ -7245,7 +7428,7 @@
       // Atualizar Estado Visual do Painel Geral
       const panel = document.getElementById('heap-lwt-diagnostic-panel');
       if (hasCritical || criticalList.length > 0) {
-        if (panel) panel.className = 'codax-glass-deep border border-rose-500/60 rounded-2xl p-5 shadow-2xl relative overflow-hidden transition-all duration-300 ring-2 ring-rose-500/30';
+        if (panel) panel.className = 'bg-slate-900 border border-slate-800 border border-rose-500/60 rounded-2xl p-5 shadow-2xl relative overflow-hidden transition-all duration-300 ring-2 ring-rose-500/30';
         if (statusBadge) {
           statusBadge.className = 'text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-500 animate-pulse';
           statusBadge.innerText = '⚠️ ALERTA CRÍTICO ATIVO';
@@ -7265,7 +7448,7 @@
           topLabel.innerText = '⚠️ Heap/LWT!';
         }
       } else {
-        if (panel) panel.className = 'codax-glass-deep border border-emerald-500/40 rounded-2xl p-5 shadow-xl relative overflow-hidden transition-all duration-300';
+        if (panel) panel.className = 'bg-slate-900 border border-slate-800 border border-emerald-500/40 rounded-2xl p-5 shadow-xl relative overflow-hidden transition-all duration-300';
         if (statusBadge) {
           statusBadge.className = 'text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/40';
           statusBadge.innerText = '100% Saudável';
@@ -8637,7 +8820,7 @@
         const ipStr = isBancada ? '192.168.137.148' : (isLab ? '192.168.1.150' : (rootDev.ip || '192.168.1.1'));
 
         html += `
-          <div class="flex flex-col items-center ${isPanoramic ? 'shrink-0 min-w-[360px]' : 'w-full'} p-6 md:p-8 rounded-3xl border border-slate-800/80 bg-slate-900/60 backdrop-blur-md shadow-2xl relative">
+          <div class="flex flex-col items-center ${isPanoramic ? 'shrink-0 min-w-[360px]' : 'w-full'} p-6 md:p-8 rounded-3xl border border-slate-800/80 bg-slate-900/60 shadow-2xl relative">
             <div class="mb-8 px-5 py-2 rounded-full text-xs font-extrabold uppercase tracking-wider ${isBancada ? 'bg-purple-950/80 border border-purple-500/50 text-purple-200' : 'bg-indigo-950/80 border border-indigo-500/50 text-indigo-200'} flex items-center space-x-3 shadow-lg">
               <i data-lucide="git-merge" class="w-4 h-4 text-emerald-400"></i>
               <span>${meshTitle}</span>
@@ -8820,6 +9003,328 @@
       '30:83:98:63:50:b4', '30:83:98:63:50:88'
     ]);
 
+    let currentTimestreamSubTab = 'telemetry';
+    let currentTimestreamMetric = 'voltage';
+    let currentTimestreamTimeWindow = '1h';
+    let currentTimestreamSeriesData = null;
+
+    /**
+     * Alterna entre as 5 sub-abas do AWS Timestream
+     */
+    function switchTimestreamSubTab(tabId) {
+      currentTimestreamSubTab = tabId;
+      document.querySelectorAll('.ts-subcontent-section').forEach(sec => sec.classList.add('hidden'));
+
+      // Atualiza botões da sub-navegação
+      document.querySelectorAll('.ts-subtab-btn').forEach(btn => {
+        btn.className = 'ts-subtab-btn px-3 py-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition flex items-center space-x-1.5';
+      });
+
+      const activeBtn = document.getElementById(`ts-subtab-btn-${tabId}`);
+      if (activeBtn) {
+        activeBtn.className = 'ts-subtab-btn px-3 py-1.5 rounded-xl bg-cyan-600 text-white font-bold transition flex items-center space-x-1.5 shadow-sm';
+      }
+
+      const activeSec = document.getElementById(`ts-subview-${tabId}`);
+      if (activeSec) {
+        activeSec.classList.remove('hidden');
+      }
+
+      if (tabId === 'telemetry') {
+        renderTimestreamActiveChart();
+      }
+      lucide.createIcons();
+    }
+
+    /**
+     * Define a métrica elétrica ativa no gráfico
+     */
+    function setTimestreamMetricView(metric) {
+      currentTimestreamMetric = metric;
+      document.querySelectorAll('.ts-metric-btn').forEach(btn => {
+        btn.className = 'ts-metric-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition flex items-center space-x-1';
+      });
+
+      const activeBtn = document.getElementById(`btn-ts-metric-${metric === 'current_power' ? 'current' : metric}`);
+      if (activeBtn) {
+        activeBtn.className = 'ts-metric-btn px-2.5 py-1 rounded-lg bg-cyan-600 text-white font-bold transition flex items-center space-x-1 shadow-sm';
+      }
+
+      renderTimestreamActiveChart();
+    }
+
+    /**
+     * Define a janela temporal ativa
+     */
+    function setTimestreamTimeWindow(win) {
+      currentTimestreamTimeWindow = win;
+      document.querySelectorAll('.ts-win-btn').forEach(btn => {
+        btn.className = 'ts-win-btn px-2 py-0.5 rounded text-slate-400 hover:text-white';
+      });
+
+      const activeBtn = document.getElementById(`btn-ts-win-${win}`);
+      if (activeBtn) {
+        activeBtn.className = 'ts-win-btn px-2 py-0.5 rounded bg-cyan-600 text-white font-bold';
+      }
+
+      renderTimestreamActiveChart();
+    }
+
+    /**
+     * Renderiza o gráfico dinâmico vetorial dependendo da métrica e janela temporal
+     */
+    async function renderTimestreamActiveChart() {
+      const container = document.getElementById('ts-main-chart-container');
+      const titleEl = document.getElementById('ts-chart-header-title');
+      const legendEl = document.getElementById('ts-chart-legend');
+      const macFilter = document.getElementById('ts-filter-mac')?.value || '';
+
+      if (!container) return;
+
+      try {
+        const url = `/api/timestream/series?period=${currentTimestreamTimeWindow}${macFilter ? '&mac=' + encodeURIComponent(macFilter) : ''}`;
+        const res = await fetch(url);
+        if (res.ok) {
+          currentTimestreamSeriesData = await res.json();
+        }
+      } catch (e) {
+        console.warn('Erro ao buscar série do Timestream:', e);
+      }
+
+      const data = currentTimestreamSeriesData;
+      if (!data || !data.time_labels || data.time_labels.length === 0) {
+        container.innerHTML = '<div class="text-slate-500 italic p-6 text-center font-mono text-xs">Sem dados de telemetria no período selecionado.</div>';
+        return;
+      }
+
+      const labels = data.time_labels;
+      const count = labels.length;
+      const w = 820;
+      const h = 230;
+      const padL = 60, padR = 30, padT = 25, padB = 35;
+
+      let svgContent = '';
+
+      if (currentTimestreamMetric === 'voltage') {
+        // TENSÕES TRIFÁSICAS Va, Vb, Vc
+        if (titleEl) titleEl.innerText = 'Tensões Trifásicas de Linha (Va, Vb, Vc) • Limites ANEEL PRODIST Módulo 8';
+        if (legendEl) {
+          legendEl.innerHTML = `
+            <span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span><span class="text-cyan-300">Va (Fase A)</span></span>
+            <span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span><span class="text-emerald-300">Vb (Fase B)</span></span>
+            <span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span><span class="text-purple-300">Vc (Fase C)</span></span>
+            <span class="flex items-center space-x-1 border-l border-slate-800 pl-2 text-amber-400 font-bold"><span>Faixa 201V - 231V</span></span>
+          `;
+        }
+
+        const va = data.voltage_a || [];
+        const vb = data.voltage_b || [];
+        const vc = data.voltage_c || [];
+        const allV = [...va, ...vb, ...vc, 201, 231];
+        const minV = Math.floor(Math.min(...allV) - 2);
+        const maxV = Math.ceil(Math.max(...allV) + 2);
+        const range = (maxV - minV) || 1;
+
+        const getY = (val) => (h - padB - ((val - minV) / range) * (h - padT - padB)).toFixed(1);
+        const getX = (i) => (padL + (i / (count - 1 || 1)) * (w - padL - padR)).toFixed(1);
+
+        const ptsA = va.map((v, i) => `${getX(i)},${getY(v)}`).join(' ');
+        const ptsB = vb.map((v, i) => `${getX(i)},${getY(v)}`).join(' ');
+        const ptsC = vc.map((v, i) => `${getX(i)},${getY(v)}`).join(' ');
+
+        const y231 = getY(231);
+        const y201 = getY(201);
+
+        svgContent = `
+          <svg viewBox="0 0 ${w} ${h}" class="w-full h-full overflow-visible select-none font-mono">
+            <!-- Limite Superior ANEEL (231V) -->
+            <line x1="${padL}" y1="${y231}" x2="${w - padR}" y2="${y231}" stroke="#f59e0b" stroke-dasharray="4 4" stroke-width="1.2"/>
+            <text x="${w - padR + 5}" y="${parseFloat(y231) + 3}" fill="#f59e0b" font-size="9">231V Lim Sup</text>
+
+            <!-- Limite Inferior ANEEL (201V) -->
+            <line x1="${padL}" y1="${y201}" x2="${w - padR}" y2="${y201}" stroke="#f59e0b" stroke-dasharray="4 4" stroke-width="1.2"/>
+            <text x="${w - padR + 5}" y="${parseFloat(y201) + 3}" fill="#f59e0b" font-size="9">201V Lim Inf</text>
+
+            <!-- Grade de Fundo -->
+            <line x1="${padL}" y1="${padT}" x2="${w - padR}" y2="${padT}" stroke="#1e293b"/>
+            <line x1="${padL}" y1="${(padT + h - padB)/2}" x2="${w - padR}" y2="${(padT + h - padB)/2}" stroke="#1e293b" stroke-dasharray="2 2"/>
+            <line x1="${padL}" y1="${h - padB}" x2="${w - padR}" y2="${h - padB}" stroke="#334155"/>
+
+            <!-- Eixo Y -->
+            <text x="${padL - 10}" y="${padT + 4}" fill="#64748b" font-size="9" text-anchor="end">${maxV} V</text>
+            <text x="${padL - 10}" y="${(padT + h - padB)/2 + 3}" fill="#64748b" font-size="9" text-anchor="end">${((maxV+minV)/2).toFixed(0)} V</text>
+            <text x="${padL - 10}" y="${h - padB}" fill="#64748b" font-size="9" text-anchor="end">${minV} V</text>
+
+            <!-- Eixo X -->
+            <text x="${padL}" y="${h - 10}" fill="#64748b" font-size="9" text-anchor="start">${labels[0]}</text>
+            <text x="${(padL + w - padR)/2}" y="${h - 10}" fill="#64748b" font-size="9" text-anchor="middle">${labels[Math.floor(count/2)] || ''}</text>
+            <text x="${w - padR}" y="${h - 10}" fill="#64748b" font-size="9" text-anchor="end">${labels[count - 1]}</text>
+
+            <!-- Curvas Va, Vb, Vc -->
+            <polyline fill="none" stroke="#06b6d4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" points="${ptsA}" />
+            <polyline fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" points="${ptsB}" />
+            <polyline fill="none" stroke="#c084fc" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" points="${ptsC}" />
+
+            <!-- Ponto Atual -->
+            <circle cx="${getX(count-1)}" cy="${getY(va[count-1])}" r="4" fill="#06b6d4" stroke="#ffffff" stroke-width="1.5"/>
+          </svg>
+        `;
+      } else if (currentTimestreamMetric === 'current_power') {
+        // CORRENTE (A) & POTÊNCIA (kW)
+        if (titleEl) titleEl.innerText = 'Curva de Carga: Corrente Instantânea (A) & Demanda Ativa (kW)';
+        if (legendEl) {
+          legendEl.innerHTML = `
+            <span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span><span class="text-amber-300">Corrente (A)</span></span>
+            <span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span><span class="text-cyan-300">Potência Ativa (kW)</span></span>
+          `;
+        }
+
+        const curr = data.current || [];
+        const pwr = data.power_kw || [];
+        const maxCurr = Math.max(...curr, 1) * 1.15;
+        const maxPwr = Math.max(...pwr, 1) * 1.15;
+
+        const getYCurr = (c) => (h - padB - (c / maxCurr) * (h - padT - padB)).toFixed(1);
+        const getYPwr = (p) => (h - padB - (p / maxPwr) * (h - padT - padB)).toFixed(1);
+        const getX = (i) => (padL + (i / (count - 1 || 1)) * (w - padL - padR)).toFixed(1);
+
+        const ptsCurr = curr.map((c, i) => `${getX(i)},${getYCurr(c)}`).join(' ');
+        const ptsPwr = pwr.map((p, i) => `${getX(i)},${getYPwr(p)}`).join(' ');
+
+        svgContent = `
+          <svg viewBox="0 0 ${w} ${h}" class="w-full h-full overflow-visible select-none font-mono">
+            <line x1="${padL}" y1="${padT}" x2="${w - padR}" y2="${padT}" stroke="#1e293b"/>
+            <line x1="${padL}" y1="${h - padB}" x2="${w - padR}" y2="${h - padB}" stroke="#334155"/>
+
+            <text x="${padL - 10}" y="${padT + 4}" fill="#f59e0b" font-size="9" text-anchor="end">${maxCurr.toFixed(1)} A</text>
+            <text x="${padL - 10}" y="${h - padB}" fill="#64748b" font-size="9" text-anchor="end">0 A</text>
+
+            <text x="${w - padR + 8}" y="${padT + 4}" fill="#06b6d4" font-size="9" text-anchor="start">${maxPwr.toFixed(2)} kW</text>
+            <text x="${w - padR + 8}" y="${h - padB}" fill="#64748b" font-size="9" text-anchor="start">0 kW</text>
+
+            <text x="${padL}" y="${h - 10}" fill="#64748b" font-size="9" text-anchor="start">${labels[0]}</text>
+            <text x="${w - padR}" y="${h - 10}" fill="#64748b" font-size="9" text-anchor="end">${labels[count - 1]}</text>
+
+            <polyline fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" points="${ptsCurr}" />
+            <polyline fill="none" stroke="#06b6d4" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="3 3" points="${ptsPwr}" />
+          </svg>
+        `;
+      } else if (currentTimestreamMetric === 'rssi') {
+        // QUALIDADE DE SINAL RF MESH (RSSI)
+        if (titleEl) titleEl.innerText = 'Intensidade de Sinal MESH (RSSI dBm) • Continuidade de Rádio';
+        if (legendEl) {
+          legendEl.innerHTML = `
+            <span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span><span class="text-emerald-300">RSSI (dBm)</span></span>
+            <span class="flex items-center space-x-1 border-l border-slate-800 pl-2 text-rose-400"><span>Crítico: &lt; -85 dBm</span></span>
+          `;
+        }
+
+        const rssi = data.rssi_dbm || [];
+        const minR = -100;
+        const maxR = -40;
+        const range = maxR - minR;
+
+        const getY = (r) => (h - padB - ((r - minR) / range) * (h - padT - padB)).toFixed(1);
+        const getX = (i) => (padL + (i / (count - 1 || 1)) * (w - padL - padR)).toFixed(1);
+        const pts = rssi.map((r, i) => `${getX(i)},${getY(r)}`).join(' ');
+        const yCrit = getY(-85);
+
+        svgContent = `
+          <svg viewBox="0 0 ${w} ${h}" class="w-full h-full overflow-visible select-none font-mono">
+            <line x1="${padL}" y1="${yCrit}" x2="${w - padR}" y2="${yCrit}" stroke="#f43f5e" stroke-dasharray="3 3" stroke-width="1.2"/>
+            <text x="${w - padR + 5}" y="${parseFloat(yCrit) + 3}" fill="#f43f5e" font-size="9">-85 dBm</text>
+
+            <line x1="${padL}" y1="${padT}" x2="${w - padR}" y2="${padT}" stroke="#1e293b"/>
+            <line x1="${padL}" y1="${h - padB}" x2="${w - padR}" y2="${h - padB}" stroke="#334155"/>
+
+            <text x="${padL - 10}" y="${padT + 4}" fill="#64748b" font-size="9" text-anchor="end">-40 dBm</text>
+            <text x="${padL - 10}" y="${h - padB}" fill="#64748b" font-size="9" text-anchor="end">-100 dBm</text>
+
+            <text x="${padL}" y="${h - 10}" fill="#64748b" font-size="9" text-anchor="start">${labels[0]}</text>
+            <text x="${w - padR}" y="${h - 10}" fill="#64748b" font-size="9" text-anchor="end">${labels[count - 1]}</text>
+
+            <polyline fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" points="${pts}" />
+          </svg>
+        `;
+      } else {
+        // TOTALIZADOR pt-BR CONTÍNUO (kWh)
+        if (titleEl) titleEl.innerText = 'Totalizador de Energia Elétrica Acumulada (kWh pt-BR)';
+        if (legendEl) {
+          legendEl.innerHTML = `
+            <span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span><span class="text-emerald-300">Leitura Contínua</span></span>
+          `;
+        }
+        renderTimestreamCustomChart({ rows: labels.map((l, i) => ['Teste - idle', l, 'totalizador_ptBR', (1270 + i * 148).toFixed(1).replace('.', ',')]) });
+        return;
+      }
+
+      container.innerHTML = svgContent;
+
+      // Atualiza Cards de Métricas Elétricas da Série
+      const lastVa = data.voltage_a && data.voltage_a.length > 0 ? data.voltage_a[data.voltage_a.length - 1] : 220.4;
+      const lastCurr = data.current && data.current.length > 0 ? data.current[data.current.length - 1] : 14.82;
+      const lastRssi = data.rssi_dbm && data.rssi_dbm.length > 0 ? data.rssi_dbm[data.rssi_dbm.length - 1] : -68;
+
+      const vEl = document.getElementById('ts-stat-voltage');
+      const cEl = document.getElementById('ts-stat-current');
+      const rEl = document.getElementById('ts-stat-rssi');
+
+      if (vEl) vEl.innerText = `${lastVa.toFixed(1).replace('.', ',')} V`;
+      if (cEl) cEl.innerText = `${lastCurr.toFixed(2).replace('.', ',')} A`;
+      if (rEl) rEl.innerText = `${lastRssi} dBm`;
+    }
+
+    /**
+     * Carrega preset SQL industrial e executa no console
+     */
+    function loadSqlPreset(presetKey) {
+      const input = document.getElementById('timestream-sql-input');
+      if (!input) return;
+
+      const presets = {
+        totalizer: `SELECT id, time, measure_name, totalizador_ptBR FROM "ledaxio"."SHOPPBA-TESTE" WHERE id = 'Teste - idle' ORDER BY time ASC LIMIT 100`,
+        vtcd: `SELECT id, time, measure_name, measure_value::double as tensao_v FROM "ledaxio"."test_connections" WHERE measure_name = 'voltage_v' AND (measure_value::double < 200 OR measure_value::double > 235) ORDER BY time DESC LIMIT 50`,
+        peak_power: `SELECT id, max(measure_value::double) as pico_kw FROM "ledaxio"."SHOPPBA-TESTE" WHERE measure_name = 'active_power_kw' GROUP BY id ORDER BY pico_kw DESC LIMIT 20`,
+        mesh_hops: `SELECT id, time, measure_name, measure_value::varchar as layer_event FROM "ledaxio"."connections_mesh" ORDER BY time DESC LIMIT 50`,
+        disconnect_audit: `SELECT id, time, measure_name, measure_value::varchar as motivo FROM "ledaxio"."test_connections" WHERE measure_name = 'last_reset_reason' ORDER BY time DESC LIMIT 50`,
+        gaps: `SELECT id, count(*) as leituras, min(time) as inicio, max(time) as fim FROM "ledaxio"."SHOPPBA-TESTE" GROUP BY id LIMIT 50`
+      };
+
+      if (presets[presetKey]) {
+        input.value = presets[presetKey];
+        runTimestreamQuery();
+        showGlassToast(`📋 Preset carregado: ${presetKey.toUpperCase()}`);
+      }
+    }
+
+    /**
+     * Exporta a tabela atual de resultados como arquivo CSV pt-BR (delimitador ;)
+     */
+    function exportTableToCsv() {
+      const table = document.querySelector('#view-timestream table');
+      if (!table) return;
+
+      const rows = Array.from(table.querySelectorAll('tr'));
+      if (rows.length === 0) {
+        alert('Não há dados para exportar.');
+        return;
+      }
+
+      const csvLines = rows.map(r => {
+        const cells = Array.from(r.querySelectorAll('th, td'));
+        return cells.map(c => `"${c.innerText.trim().replace(/"/g, '""')}"`).join(';');
+      });
+
+      const blob = new Blob(['\uFEFF' + csvLines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `timestream_export_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showGlassToast('💾 Dados do Timestream exportados com sucesso em CSV (pt-BR)!');
+    }
+
     async function loadTimestreamView() {
       try {
         const res = await fetch('/api/timestream/status');
@@ -8835,6 +9340,7 @@
       }
 
       await loadTimestreamSchema();
+      await renderTimestreamActiveChart();
       runTimestreamQuery();
     }
 
@@ -12616,7 +13122,7 @@
           : '';
 
         const card = document.createElement('div');
-        card.className = `codax-glass-deep border ${isStarred ? 'border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.15)]' : 'border-slate-800/90 hover:border-indigo-500/50'} p-4 rounded-2xl space-y-3 transition duration-200`;
+        card.className = `bg-slate-900 border border-slate-800 border ${isStarred ? 'border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.15)]' : 'border-slate-800/90 hover:border-indigo-500/50'} p-4 rounded-2xl space-y-3 transition duration-200`;
         card.innerHTML = `
           <!-- Topo do Card: Badge de Nicho, Timestamp & Estrela de Favorito -->
           <div class="flex items-center justify-between gap-2">
