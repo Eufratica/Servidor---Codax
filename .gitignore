@@ -45,3 +45,7 @@ certs/
 *.pem
 *.key
 *.crt
+
+# Scratch / scripts temporarios
+scratch/
+

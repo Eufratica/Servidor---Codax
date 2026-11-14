@@ -1,5 +1,285 @@
 [
   {
+    "id": "gh-29625478",
+    "category": "design",
+    "badge": "🌐 Topologia de Redes (★ 361)",
+    "title": "Referência Open-Source: 1ultimat3/PcapViz",
+    "source": "https://github.com/1ultimat3/PcapViz",
+    "summary": "Visualize network topologies and collect graph statistics based on pcap files — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source '1ultimat3/PcapViz' (Visualize network topologies and collect graph statistics based on pcap files) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "12:24:53"
+  },
+  {
+    "id": "gh-18214229",
+    "category": "app",
+    "badge": "🌐 Protocol Analyzer (★ 2032)",
+    "title": "Referência Open-Source: sipcapture/homer",
+    "source": "https://github.com/sipcapture/homer",
+    "summary": "HOMER - 100% Open-Source SIP, VoIP, RTC Packet Capture & Monitoring — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'sipcapture/homer' (HOMER - 100% Open-Source SIP, VoIP, RTC Packet Capture & Monitoring) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "12:23:37"
+  },
+  {
+    "id": "gh-1153926073",
+    "category": "app",
+    "badge": "🌐 Engenharia FreeRTOS (★ 4)",
+    "title": "Referência Open-Source: hugo-juarez/FreeRTOS-Projects",
+    "source": "https://github.com/hugo-juarez/FreeRTOS-Projects",
+    "summary": "Six self-contained FreeRTOS examples on the STM32F407G Discovery board — covering tasks, ISR   notifications, queues, semaphores, and mutexe — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'hugo-juarez/FreeRTOS-Projects' (Six self-contained FreeRTOS examples on the STM32F407G Discovery board — covering tasks, ISR   notifications, queues, semaphores, and mutexes — with SEGGER SystemView tracing and a CMake build system.) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "12:22:21"
+  },
+  {
+    "id": "inn-proc-376a32f0",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Detector Preditivo de Inversão de Prioridade em Tasks FreeRTOS",
+    "source": "Pesquisa de Resiliência de Redes Sem Fio",
+    "summary": "Verifica se tarefas críticas de envio MQTT estão sendo bloqueadas por rotinas demoradas de medição. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Detector Preditivo de Inversão de Prioridade em Tasks FreeRTOS': Verifica se tarefas críticas de envio MQTT estão sendo bloqueadas por rotinas demoradas de medição. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "12:21:06"
+  },
+  {
+    "id": "inn-proc-241362c8",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Painel Holográfico de Enlaces de Rádio com Gravidade Baseada em RSSI",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Painel Holográfico de Enlaces de Rádio com Gravidade Baseada em RSSI': Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "12:19:51"
+  },
+  {
+    "id": "inn-proc-c8971ddb",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Classificador Estatístico de Derivação de Relógio RTC vs NTP",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Monitora a diferença de microssegundos no timestamp dos medidores para garantir perfeita sincronia de faturamento. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Classificador Estatístico de Derivação de Relógio RTC vs NTP': Monitora a diferença de microssegundos no timestamp dos medidores para garantir perfeita sincronia de faturamento. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "12:18:36"
+  },
+  {
+    "id": "inn-proc-67f62fe4",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Mapeador P2P de Coexistência Wi-Fi e Bluetooth BLE",
+    "source": "Padrão Industrial de Telemetria IEC",
+    "summary": "Gerencia o tempo compartilhado da antena 2.4GHz para permitir comissionamento BLE simultâneo à malha mesh. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Mapeador P2P de Coexistência Wi-Fi e Bluetooth BLE': Gerencia o tempo compartilhado da antena 2.4GHz para permitir comissionamento BLE simultâneo à malha mesh. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "12:17:21"
+  },
+  {
+    "id": "inn-proc-fd6565cc",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Micro-Osciloscópio Glassmorphism de Enlaces de Rádio com Gravidade Baseada em RSSI",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Micro-Osciloscópio Glassmorphism de Enlaces de Rádio com Gravidade Baseada em RSSI': Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "12:16:06"
+  },
+  {
+    "id": "inn-proc-de4c15c7",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Sentinela de Integridade de Isolamento Lógico de Placas Não-Homologadas",
+    "source": "Pesquisa de Resiliência de Redes Sem Fio",
+    "summary": "Move automaticamente nós com firmware desconhecido para uma VLAN/malha de quarentena. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Sentinela de Integridade de Isolamento Lógico de Placas Não-Homologadas': Move automaticamente nós com firmware desconhecido para uma VLAN/malha de quarentena. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "12:14:51"
+  },
+  {
+    "id": "inn-proc-5157a448",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Estimador de Borda de Oscilação Térmica da CPU sob Alta Carga",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Cruza a temperatura da CPU do ESP32 com o throughput MQTT para evitar throttling térmico. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Estimador de Borda de Oscilação Térmica da CPU sob Alta Carga': Cruza a temperatura da CPU do ESP32 com o throughput MQTT para evitar throttling térmico. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "12:13:36"
+  },
+  {
+    "id": "gh-372830538",
+    "category": "app",
+    "badge": "🌐 Padrão SCADA Web (★ 1305)",
+    "title": "Referência Open-Source: le5le-com/meta2d.js",
+    "source": "https://github.com/le5le-com/meta2d.js",
+    "summary": "Meta2d.js是一个实时数据响应和交互的2d引擎，可用于Web 组态、SCADA，表报、流程图、中控可视化等可视化需求。Meta2d.js is a 2D visualization engine built around data-driven display and dy — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'le5le-com/meta2d.js' (Meta2d.js是一个实时数据响应和交互的2d引擎，可用于Web 组态、SCADA，表报、流程图、中控可视化等可视化需求。Meta2d.js is a 2D visualization engine built around data-driven display and dynamic interaction. It can be used to build web SCADA/HMI, reports, flowcharts, control-room dashboards and similar visualizations and so on.) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "12:12:20"
+  },
+  {
+    "id": "inn-proc-f93672ef",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Sentinela de Integridade de Detecção de Modificação Não-Autorizada de Flash NVS",
+    "source": "Pesquisa de Resiliência de Redes Sem Fio",
+    "summary": "Verifica o CRC32 das configurações salvas no ESP32 para alertar contra adulteração de parâmetros. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Sentinela de Integridade de Detecção de Modificação Não-Autorizada de Flash NVS': Verifica o CRC32 das configurações salvas no ESP32 para alertar contra adulteração de parâmetros. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "12:11:05"
+  },
+  {
+    "id": "inn-proc-a24ac6b2",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Classificador Estatístico de Oscilação Térmica da CPU sob Alta Carga",
+    "source": "Padrão Industrial de Telemetria IEC",
+    "summary": "Cruza a temperatura da CPU do ESP32 com o throughput MQTT para evitar throttling térmico. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Classificador Estatístico de Oscilação Térmica da CPU sob Alta Carga': Cruza a temperatura da CPU do ESP32 com o throughput MQTT para evitar throttling térmico. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "12:09:50"
+  },
+  {
+    "id": "inn-proc-b401bd64",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Algoritmo Adaptativo de Roteamento Multi-Hop Ponderado por Jitter",
+    "source": "Design System Sci-Fi & Glassmorphism",
+    "summary": "Recalcula a melhor árvore de nós priorizando enlaces com menor desvio padrão de latência. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Algoritmo Adaptativo de Roteamento Multi-Hop Ponderado por Jitter': Recalcula a melhor árvore de nós priorizando enlaces com menor desvio padrão de latência. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "12:08:35"
+  },
+  {
+    "id": "inn-proc-677c3da4",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Escudo Ativo de Rotação Periódica de Chaves de Enlace Mesh",
+    "source": "Observabilidade Industrial de Alto Desempenho",
+    "summary": "Atualiza as chaves simétricas de criptografia da rede mesh sem necessidade de reiniciar os medidores. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Escudo Ativo de Rotação Periódica de Chaves de Enlace Mesh': Atualiza as chaves simétricas de criptografia da rede mesh sem necessidade de reiniciar os medidores. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "12:07:20"
+  },
+  {
+    "id": "gh-1350975575",
+    "category": "design",
+    "badge": "🌐 Visual Sci-Fi (★ 207)",
+    "title": "Referência Open-Source: IzumiRain/HyperDNS",
+    "source": "https://github.com/IzumiRain/HyperDNS",
+    "summary": "⚡ Next-Gen Standalone SmartDNS & Ultra-Low Latency Gaming Gateway in Go · Anti-Sanction 403 Bypass, Multi-Port SNI Proxy, Cyberpunk Web UI & — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'IzumiRain/HyperDNS' (⚡ Next-Gen Standalone SmartDNS & Ultra-Low Latency Gaming Gateway in Go · Anti-Sanction 403 Bypass, Multi-Port SNI Proxy, Cyberpunk Web UI & TUI Controller) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "12:06:05"
+  },
+  {
+    "id": "inn-proc-657e2dae",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Mapeador P2P de Potência de Transmissão TX Adaptativa",
+    "source": "Padrão Industrial de Telemetria IEC",
+    "summary": "Reduz a potência de rádio dos nós com sinal muito forte (-40 dBm) para economizar energia e mitigar auto-interferência. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Mapeador P2P de Potência de Transmissão TX Adaptativa': Reduz a potência de rádio dos nós com sinal muito forte (-40 dBm) para economizar energia e mitigar auto-interferência. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "12:04:50"
+  },
+  {
+    "id": "inn-proc-2880c6f9",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Widget Sci-Fi HUD de Distribuição Harmônica de Tensão e Corrente",
+    "source": "Design System Sci-Fi & Glassmorphism",
+    "summary": "Renderiza gráficos polares interativos exibindo a defasagem angular e harmônicas elétricas dos medidores. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Widget Sci-Fi HUD de Distribuição Harmônica de Tensão e Corrente': Renderiza gráficos polares interativos exibindo a defasagem angular e harmônicas elétricas dos medidores. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "12:03:35"
+  },
+  {
+    "id": "gh-11726302",
+    "category": "design",
+    "badge": "🌐 Design System IoT (★ 6500)",
+    "title": "Referência Open-Source: Freeboard/freeboard",
+    "source": "https://github.com/Freeboard/freeboard",
+    "summary": "A damn-sexy, open source real-time dashboard builder for IOT and other web mashups. A free open-source alternative to Geckoboard. — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'Freeboard/freeboard' (A damn-sexy, open source real-time dashboard builder for IOT and other web mashups. A free open-source alternative to Geckoboard.) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "12:02:19"
+  },
+  {
+    "id": "inn-proc-9206438f",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Sincronizador Heurístico de Roteamento Multi-Hop Ponderado por Jitter",
+    "source": "Pesquisa de Resiliência de Redes Sem Fio",
+    "summary": "Recalcula a melhor árvore de nós priorizando enlaces com menor desvio padrão de latência. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Sincronizador Heurístico de Roteamento Multi-Hop Ponderado por Jitter': Recalcula a melhor árvore de nós priorizando enlaces com menor desvio padrão de latência. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "12:01:04"
+  },
+  {
+    "id": "inn-proc-82cf7515",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Detector Preditivo de Oscilação Térmica da CPU sob Alta Carga",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Cruza a temperatura da CPU do ESP32 com o throughput MQTT para evitar throttling térmico. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Detector Preditivo de Oscilação Térmica da CPU sob Alta Carga': Cruza a temperatura da CPU do ESP32 com o throughput MQTT para evitar throttling térmico. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "11:59:49"
+  },
+  {
+    "id": "inn-proc-f1290eff",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Visualizador Force-Directed de Enlaces de Rádio com Gravidade Baseada em RSSI",
+    "source": "Engenharia ESP-IDF 5.x & Protocolo MESH",
+    "summary": "Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Visualizador Force-Directed de Enlaces de Rádio com Gravidade Baseada em RSSI': Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "11:58:34"
+  },
+  {
+    "id": "inn-proc-4c427d34",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Detector Preditivo de Inversão de Prioridade em Tasks FreeRTOS",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Verifica se tarefas críticas de envio MQTT estão sendo bloqueadas por rotinas demoradas de medição. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Detector Preditivo de Inversão de Prioridade em Tasks FreeRTOS': Verifica se tarefas críticas de envio MQTT estão sendo bloqueadas por rotinas demoradas de medição. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "11:57:19"
+  },
+  {
+    "id": "inn-proc-294a5d77",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Painel Holográfico de Fluxo de Pacotes por Segundo (PPS) em Tempo Real",
+    "source": "Padrão Industrial de Telemetria IEC",
+    "summary": "Adiciona um velocímetro neon no topo do painel indicando a cadência instantânea de mensagens MQTT. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Painel Holográfico de Fluxo de Pacotes por Segundo (PPS) em Tempo Real': Adiciona um velocímetro neon no topo do painel indicando a cadência instantânea de mensagens MQTT. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "11:56:04"
+  },
+  {
+    "id": "inn-proc-229539d3",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Detector Preditivo de Inversão de Prioridade em Tasks FreeRTOS",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Verifica se tarefas críticas de envio MQTT estão sendo bloqueadas por rotinas demoradas de medição. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Detector Preditivo de Inversão de Prioridade em Tasks FreeRTOS': Verifica se tarefas críticas de envio MQTT estão sendo bloqueadas por rotinas demoradas de medição. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "11:54:48"
+  },
+  {
+    "id": "inn-proc-9b14eae6",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Inspetor de Segurança de Assinatura Digital Ed25519 em Comandos Críticos",
+    "source": "Observabilidade Industrial de Alto Desempenho",
+    "summary": "Valida uma assinatura criptográfica nos métodos perigosos (ex: mupgrade, mwifi_restart) antes da execução. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Inspetor de Segurança de Assinatura Digital Ed25519 em Comandos Críticos': Valida uma assinatura criptográfica nos métodos perigosos (ex: mupgrade, mwifi_restart) antes da execução. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "11:53:33"
+  },
+  {
+    "id": "inn-proc-315890ac",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Estimador de Borda de Vazamento Lento de Memória Heap",
+    "source": "Design System Sci-Fi & Glassmorphism",
+    "summary": "Mede a taxa de declive de RAM nas placas ao longo de dias e emite alerta preditivo antes de qualquer reboot. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Estimador de Borda de Vazamento Lento de Memória Heap': Mede a taxa de declive de RAM nas placas ao longo de dias e emite alerta preditivo antes de qualquer reboot. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "11:52:18"
+  },
+  {
+    "id": "gh-167694194",
+    "category": "web",
+    "badge": "🌐 Ecossistema ESPHome (★ 37463)",
+    "title": "Referência Open-Source: blakeblackshear/frigate",
+    "source": "https://github.com/blakeblackshear/frigate",
+    "summary": "NVR with realtime local object detection for IP cameras — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'blakeblackshear/frigate' (NVR with realtime local object detection for IP cameras) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "11:51:02"
+  },
+  {
     "id": "ui-dark-industrial-theme",
     "category": "design",
     "badge": "🎨 Design & Ergonomia",
