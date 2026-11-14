@@ -1,5 +1,35 @@
 [
   {
+    "id": "inn-proc-6b7943cd",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Auditor Autônomo de Derivação de Relógio RTC vs NTP",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Monitora a diferença de microssegundos no timestamp dos medidores para garantir perfeita sincronia de faturamento. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Auditor Autônomo de Derivação de Relógio RTC vs NTP': Monitora a diferença de microssegundos no timestamp dos medidores para garantir perfeita sincronia de faturamento. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "14:43:49"
+  },
+  {
+    "id": "inn-proc-f03d6657",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Algoritmo Adaptativo de Potência de Transmissão TX Adaptativa",
+    "source": "Engenharia ESP-IDF 5.x & Protocolo MESH",
+    "summary": "Reduz a potência de rádio dos nós com sinal muito forte (-40 dBm) para economizar energia e mitigar auto-interferência. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Algoritmo Adaptativo de Potência de Transmissão TX Adaptativa': Reduz a potência de rádio dos nós com sinal muito forte (-40 dBm) para economizar energia e mitigar auto-interferência. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "14:42:34"
+  },
+  {
+    "id": "inn-proc-b9104384",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Painel Holográfico de Enlaces de Rádio com Gravidade Baseada em RSSI",
+    "source": "Padrão Industrial de Telemetria IEC",
+    "summary": "Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Painel Holográfico de Enlaces de Rádio com Gravidade Baseada em RSSI': Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "14:41:19"
+  },
+  {
     "id": "inn-proc-277cfb84",
     "category": "app",
     "badge": "📡 Engenharia ESP-MESH",
