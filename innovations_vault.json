@@ -1,5 +1,25 @@
 [
   {
+    "id": "inn-proc-cc6a3a6d",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Vigilante Heurístico de Oscilação Térmica da CPU sob Alta Carga",
+    "source": "Engenharia ESP-IDF 5.x & Protocolo MESH",
+    "summary": "Cruza a temperatura da CPU do ESP32 com o throughput MQTT para evitar throttling térmico. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Vigilante Heurístico de Oscilação Térmica da CPU sob Alta Carga': Cruza a temperatura da CPU do ESP32 com o throughput MQTT para evitar throttling térmico. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "15:30:18"
+  },
+  {
+    "id": "gh-92812410",
+    "category": "design",
+    "badge": "🌐 Topologia de Redes (★ 259)",
+    "title": "Referência Open-Source: openwisp/openwisp-network-topology",
+    "source": "https://github.com/openwisp/openwisp-network-topology",
+    "summary": "Network topology collector and visualizer. Collects network topology data from dynamic mesh routing protocols or other popular networking so — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'openwisp/openwisp-network-topology' (Network topology collector and visualizer. Collects network topology data from dynamic mesh routing protocols or other popular networking software like OpenVPN, allows to visualize the network graph, save daily snapshots that can be viewed in the future and more.) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "15:29:02"
+  },
+  {
     "id": "inn-proc-3b7b6815",
     "category": "app",
     "badge": "🧠 IA, Borda & SCADA",
