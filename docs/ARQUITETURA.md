@@ -1,7 +1,7 @@
 # ARQUITETURA.md - Documentação Permanente do Sistema
 
-**Última Atualização**: 2026-11-13  
-**Versão Atual**: `v2.7-pro`  
+**Última Atualização**: 2026-11-14  
+**Versão Atual**: `v2.8-pro`  
 **Escopo**: Servidor de Telemetria, Orquestração ESP-MESH e Studio de Observabilidade Industrial da **Ledax Energy**.
 
 ---
@@ -74,6 +74,7 @@ flowchart TD
       - **Terminal Filtrado**: Console ao vivo e envio de comandos estritamente para o MAC em foco.
       - **Central OTA**: Status de partição ativa (`ota_0`/`ota_1`) e disparo de firmware (.bin) para a placa selecionada.
       - **Menu Setinha MQTT (Glassmorphism)**: Dropdown em vidro fosco com comandos agrupados em `Query`, `Change` e `Settings`.
+      - **Faixa Docked Inferior (Carrossel Horizontal de Codax)**: Barra fixa ancorada no rodapé da gaveta com carrossel deslizante suave dos outros Codax da bancada, anel luminoso no dispositivo ativo (`ATIVO`), métricas de RSSI, RTT e protocolo de medidor, permitindo alternância instantânea sem fechar o Cockpit.
 
 ---
 

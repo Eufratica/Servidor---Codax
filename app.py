@@ -73,7 +73,7 @@ def get_local_ip() -> str:
 LOCAL_IP = get_local_ip()
 
 # ================= FASTAPI & ESTADO GLOBAL =================
-app = FastAPI(title="Codax Mesh IoT & OTA Hub")
+app = FastAPI(title="Codax Mesh IoT & OTA Hub", version="2.8.0")
 
 # Servir arquivos de firmware diretamente para download OTA (HTTP GET)
 app.mount("/firmware", StaticFiles(directory=FIRMWARE_DIR), name="firmware")
@@ -2445,7 +2445,7 @@ def ingest_timestream_metric(req: TimestreamIngestRequest):
         app_state["timestream_records"].pop(0)
     return {"status": "ok", "record": record, "total_records": len(app_state["timestream_records"])}
 
-# ================= [INOVAÇÃO CODAX HUB 2.7 PRO: LAB SCI-FI & OBSERVABILIDADE AVANÇADA] =================
+# ================= [INOVAÇÃO CODAX HUB 2.8 PRO: LAB SCI-FI & OBSERVABILIDADE AVANÇADA] =================
 # Modelos e Estado para as 10 Inovações:
 # 1. Micro-Osciloscópio / Matriz de Distribuição Harmônica de Tensão e Corrente (Polares + THD)
 # 2. Painel Holográfico de Linha do Tempo de Camadas (Timeline L1/L2)
