@@ -1,0 +1,191 @@
+[
+  {
+    "category": "rf",
+    "badge": "📡 Interferometria RF & Micro-Vibração",
+    "title": "Interferometria Espectral de Micro-Vibrações Mecânicas via Harmônicas RF",
+    "source": "Física de Radiofrequência & Interferometria Não-Linear",
+    "summary": "Usa a micro-modulação de fase nas portadoras Wi-Fi refletidas no chassi do transformador para medir vibrações em micrômetros, detectando folgas em barramentos antes de falhas catastróficas.",
+    "physics_principle": "Efeito micro-Doppler com modulação de ângulo de fase Delta Theta = (4 * pi * Delta d) / Lambda na frequência de 2.412 GHz (comprimento de onda Lambda = 12.4 cm). Variações submétricas na posição da carcaça do quadro elétrico modulam as subportadoras OFDM do ESP32.",
+    "bench_impact": "Permite monitorar a saúde estrutural de contatoras, relés e barramentos de cobre da bancada sem instalar acelerômetros físicos caros.",
+    "trl_level": "TRL-8 (Fronteira Tecnológica)",
+    "tags": [
+      "MicroDoppler",
+      "VibracaoRF",
+      "SemSensores",
+      "ManutencaoPreditiva",
+      "ESP32"
+    ],
+    "prompt": "Quero implementar a 'Interferometria de Micro-Vibrações via Harmônicas RF': capture a oscilação de fase das mensagens de retorno para exibir uma curva de vibração mecânica do painel elétrico no Cockpit 360°.",
+    "id": "inn-epic-f17b1e05",
+    "starred": false,
+    "timestamp": "09:11:28"
+  },
+  {
+    "id": "inn-digital-twin-3d",
+    "title": "Gêmeo Digital Holográfico 3D da Placa (WebGPU / Three.js)",
+    "category": "design",
+    "badge": "🛰️ Digital Twin & WebGPU",
+    "source": "Modelagem 3D Fotorrealista de Borda (GLTF / WebGPU)",
+    "summary": "Renderiza em tempo real um modelo 3D fotorrealista da placa ESP32 na bancada. Os LEDs onboard piscam sincronizados com as mensagens MQTT reais e a CPU exibe um mapa de calor térmico colorido.",
+    "physics_principle": "Renderização PBR (Physically Based Rendering) via shaders WebGPU com sombreamento Phong, mapeamento de textura GLTF e iluminação dinâmica ligada aos tópicos /telemetria e /conn.",
+    "bench_impact": "Permite ao operador inspecionar o estado visual de placas instaladas em locais de difícil acesso, painéis elétricos fechados ou caixas herméticas sem precisar abrir a bancada física.",
+    "trl_level": "TRL-9 (Pronto para Produção)",
+    "tags": [
+      "WebGPU",
+      "ThreeJS",
+      "DigitalTwin",
+      "3D",
+      "ESP32"
+    ],
+    "prompt": "Quero implementar a inovação 'Gêmeo Digital Holográfico 3D da Placa (WebGPU)': adicione uma visão 3D interativa no Cockpit que renderiza a placa ESP32 com LEDs que piscam conforme as mensagens MQTT reais e mapa de calor da CPU.",
+    "starred": true,
+    "timestamp": "07:50:00"
+  },
+  {
+    "id": "inn-rf-tomography-csi",
+    "title": "Tomografia de Rádio Passiva & Radar Wi-Fi CSI (Sensor Sem Câmeras)",
+    "category": "rf",
+    "badge": "📡 Efeito Doppler & Tomografia RF",
+    "source": "Engenharia de Rádio ESP32 CSI (Channel State Information)",
+    "summary": "Usa as reflexões de sinal Wi-Fi (CSI) entre os Codax na bancada para detectar a aproximação de pessoas, passos ou vibrações mecânicas em painéis elétricos sem nenhuma câmera ou sensor externo.",
+    "physics_principle": "Análise da matriz de dispersão de canal H(f, t) nas 64 subportadoras OFDM de 2.4 GHz. Movimentos de corpos condutores ou pessoas geram defasagem Doppler de fase Delta phi e variação de amplitude em cada caminho de reflexão.",
+    "bench_impact": "Transforma a própria malha ESP-MESH em um sistema de segurança de bancada e vigilância de intrusão, detectando quando alguém se aproxima ou toca na fiação.",
+    "trl_level": "TRL-8 (Avançado)",
+    "tags": [
+      "Wi-Fi_CSI",
+      "DopplerRadar",
+      "TomografiaRF",
+      "SemSensores",
+      "ESP32"
+    ],
+    "prompt": "Quero implementar o 'Radar Wi-Fi CSI de Bancada': colete as métricas de subportadoras OFDM reportadas pelo ESP32 e plote um gráfico de perturbação de sinal capaz de detectar movimento de pessoas na sala.",
+    "starred": true,
+    "timestamp": "07:51:00"
+  },
+  {
+    "id": "inn-time-travel-debugger",
+    "title": "Caixa Preta de Telemetria com Replay Instantâneo (Time-Travel Debugger)",
+    "category": "app",
+    "badge": "⏱️ Time-Travel & Debugger",
+    "source": "Sistemas Críticos de Aviação & Gravadores de Voo",
+    "summary": "Mantém um buffer circular com os últimos 10 minutos de telemetria da bancada. Um cursor temporal deslizante permite 'voltar no tempo' e rever exatamente os segundos anteriores a uma queda de conexão ou pico de corrente.",
+    "physics_principle": "Estrutura de dados Ring Buffer circular em memória RAM de alta velocidade com indexação por epoch timestamp UTC de precisão milissegunda e re-injeção no barramento de estado visual do dashboard.",
+    "bench_impact": "Elimina horas de adivinhação: quando uma placa reinicia por Brownout ou perde conexão, o operador simplesmente recua a fita 30 segundos e assiste ao replay de tensão, corrente e heap quadro a quadro.",
+    "trl_level": "TRL-9 (Pronto para Produção)",
+    "tags": [
+      "TimeTravel",
+      "Replay",
+      "BlackBox",
+      "Diagnostico",
+      "Bancada"
+    ],
+    "prompt": "Quero implementar a 'Caixa Preta de Telemetria (Time-Travel Debugger)': adicione uma barra de rolagem temporal na parte inferior da tela que permite retroceder até 10 minutos no histórico e rever o estado dos cartões e medidores em modo replay.",
+    "starred": true,
+    "timestamp": "07:52:00"
+  },
+  {
+    "id": "inn-self-healing-copilot",
+    "title": "Agente Copilot Autônomo de Auto-Cura de Malha (Self-Healing)",
+    "category": "ai",
+    "badge": "🧠 IA Autônoma & Auto-Cura",
+    "source": "Sistemas Autonômicos de Redes Sem Fio (Self-Organizing Networks)",
+    "summary": "Um bot vigilante que analisa as respostas MQTT de erro, saturação de canal e retransmissões. Ele diagnostica a causa-raiz e executa comandos automáticos de correção (ex: mwifi_restart, troca de canal RF ou alteração de camada) antes que a bancada trave.",
+    "physics_principle": "Grafo de Causalidade Heurística com motor de inferência probabilística bayesiana, cruzando métricas de RSSI, RTT, Heap, Watchdog e taxa de colisão CSMA/CA.",
+    "bench_impact": "Bancada autônoma que se conserta sozinha durante testes de longa duração (overnight), mantendo 100% de disponibilidade sem necessidade de operador presencial.",
+    "trl_level": "TRL-9 (Pronto para Produção)",
+    "tags": [
+      "SelfHealing",
+      "CopilotIA",
+      "AutoCura",
+      "Resiliencia",
+      "ZeroDowntime"
+    ],
+    "prompt": "Quero implementar o 'Agente Copilot de Auto-Cura da Malha': crie um módulo autônomo que monitora mensagens de erro e alertas de heap, sugerindo e executando automaticamente ações corretivas para manter a malha 100% online.",
+    "starred": false,
+    "timestamp": "07:53:00"
+  },
+  {
+    "id": "inn-nilm-load-disaggregation",
+    "title": "Desagregação de Cargas Elétricas por IA no Medidor (NILM)",
+    "category": "ai",
+    "badge": "⚡ IA de Borda & NILM",
+    "source": "Non-Intrusive Load Monitoring & Deep Learning de Sinais",
+    "summary": "O Codax analisa os transitórios de partida de corrente e o fator de potência trifásico para identificar automaticamente quais equipamentos específicos estão ligados na bancada (ex: motor 5HP, bancada resistiva, inversor solar).",
+    "physics_principle": "Decomposição de envelope de corrente no domínio do tempo e frequência via Transformada Wavelet Discreta (DWT), comparando as curvas de surto inicial contra assinaturas elétricas conhecidas.",
+    "bench_impact": "Permite auditoria de eficiência energética e detecção imediata de máquinas ligadas indevidamente sem precisar colocar sensores de corrente em cada tomada.",
+    "trl_level": "TRL-8 (Avançado)",
+    "tags": [
+      "NILM",
+      "IA_Borda",
+      "DWT",
+      "AssinaturaEletrica",
+      "NBR14522"
+    ],
+    "prompt": "Quero implementar a 'Desagregação de Cargas NILM por IA': exiba no Cockpit 360° uma lista de equipamentos identificados automaticamente a partir da análise da forma de onda de corrente trifásica.",
+    "starred": false,
+    "timestamp": "07:54:00"
+  },
+  {
+    "id": "inn-fft-3d-waterfall",
+    "title": "Cascata Espectral 3D de Harmônicas e Ruído Elétrico (FFT Waterfall)",
+    "category": "rf",
+    "badge": "📊 Análise Espectral 3D",
+    "source": "Processamento Digital de Sinais (FFT de Alta Resolução)",
+    "summary": "Visualizador 3D contínuo que desenha uma 'cascata' fluida de frequências elétricas, mostrando o surgimento de ruídos de chaveamento de inversores e distorções harmônicas de 3ª a 50ª ordem ao longo do tempo.",
+    "physics_principle": "Transformada Rápida de Fourier (Cooley-Tukey FFT) aplicada a blocos de 1024 amostras de tensão e corrente, gerando um espectrograma tridimensional com profundidade temporal.",
+    "bench_impact": "Identificação visual imediata de fontes de poluição harmônica na bancada que possam estar aquecendo transformadores ou gerando ruído nas placas ESP32.",
+    "trl_level": "TRL-9 (Pronto para Produção)",
+    "tags": [
+      "FFT",
+      "3DWaterfall",
+      "Harmonicas",
+      "Distorcao",
+      "IEEE519"
+    ],
+    "prompt": "Quero implementar a 'Cascata Espectral 3D de Harmônicas (FFT Waterfall)' no Radar Sci-Fi: exiba um gráfico 3D que mostra a evolução temporal das harmônicas de tensão e corrente trifásicas.",
+    "starred": false,
+    "timestamp": "07:55:00"
+  },
+  {
+    "id": "inn-post-quantum-ota",
+    "title": "Túnel Seguro Pós-Quântico para Atualizações OTA (Dilithium / Falcon)",
+    "category": "sec",
+    "badge": "🔒 Criptografia Pós-Quântica",
+    "source": "NIST Post-Quantum Cryptography Standardization",
+    "summary": "Assina digitalmente os binários de firmware (.bin) com algoritmos baseados em reticulados (Lattice-based cryptography), blindando o processo de deploy OTA contra ataques de computadores quânticos.",
+    "physics_principle": "Assinatura digital baseada no problema matemático Short Integer Solution (SIS) sobre reticulados algébricos modulares (ML-DSA / CRYSTALS-Dilithium), resistente ao Algoritmo de Shor.",
+    "bench_impact": "Garante que nenhuma placa Codax aceite firmwares adulterados, mesmo em cenários de interceptação de rede em ambientes corporativos ou governamentais ultrasseguros.",
+    "trl_level": "TRL-8 (Fronteira)",
+    "tags": [
+      "PostQuantum",
+      "NIST",
+      "Dilithium",
+      "OTA_Security",
+      "Firmware"
+    ],
+    "prompt": "Quero implementar a 'Assinatura Pós-Quântica de Firmware OTA': adicione verificação criptográfica de integridade de arquivo .bin com exibição de selo de segurança quântica na Central de OTA.",
+    "starred": false,
+    "timestamp": "07:56:00"
+  },
+  {
+    "id": "inn-voice-scada-handsfree",
+    "title": "Comando por Voz Industrial Local Hands-Free (Web Speech API)",
+    "category": "design",
+    "badge": "🎙️ Operação Hands-Free",
+    "source": "Interfaces Industriais Hands-Free & Reconhecimento de Voz Local",
+    "summary": "Permite ao engenheiro disparar comandos na bancada usando a voz ('Codax, ler tensão fase A', 'Codax, testar meter', 'Codax, reiniciar nó 1ca0') sem tirar as mãos das ferramentas, multímetro ou osciloscópio.",
+    "physics_principle": "Reconhecimento fonético neural local integrado ao navegador via Web Speech Recognition API com gramática restrita de comandos industriais e confirmação acústica sintetizada.",
+    "bench_impact": "Agiliza em até 3x os testes manuais na bancada quando o operador está com as mãos ocupadas conectando cabos de alta tensão ou pontas de prova de medição.",
+    "trl_level": "TRL-9 (Pronto para Produção)",
+    "tags": [
+      "VoiceControl",
+      "HandsFree",
+      "WebSpeech",
+      "SCADA",
+      "Produtividade"
+    ],
+    "prompt": "Quero implementar o 'Comando por Voz Industrial (Hands-Free)' no Codax Hub: adicione um microfone no cabeçalho que escuta comandos de voz simples (ex: ping, ler malha, reiniciar) e executa instantaneamente.",
+    "starred": false,
+    "timestamp": "07:57:00"
+  }
+]

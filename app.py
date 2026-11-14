@@ -531,9 +531,13 @@ async def startup_event():
                 try:
                     loop = asyncio.get_running_loop()
                     new_item = await loop.run_in_executor(None, lambda: pick_next_innovation(include_web=True))
-                    app_state["innovations_feed"].insert(0, new_item)
-                    if len(app_state["innovations_feed"]) > 500:
-                        app_state["innovations_feed"].pop()
+                    items = load_innovations_vault()
+                    items = [x for x in items if x.get("id") != new_item.get("id")]
+                    items.insert(0, new_item)
+                    if len(items) > 500:
+                        items = items[:500]
+                    save_innovations_vault(items)
+                    app_state["innovations_feed"] = items
                     await ws_manager.broadcast({
                         "type": "innovation_discovered",
                         "item": new_item
@@ -1963,15 +1967,183 @@ def pick_next_innovation(include_web: bool = True) -> Dict[str, Any]:
     procedural_item["timestamp"] = now_str
     return procedural_item
 
-# Inicializar com 5 ideias iniciais ricas e diversificadas sem custo de IA
-for _ in range(5):
-    app_state["innovations_feed"].insert(0, pick_next_innovation(include_web=False))
+# ================= COFRE PERSISTENTE DE INOVAÇÕES & CURADOR IA ÉPICO =================
+INNOVATIONS_VAULT_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), "innovations_vault.json"))
+
+def load_innovations_vault() -> List[Dict[str, Any]]:
+    if not os.path.exists(INNOVATIONS_VAULT_FILE):
+        return []
+    try:
+        with open(INNOVATIONS_VAULT_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            if isinstance(data, list):
+                return data
+    except Exception as e:
+        print(f"[InnovationsVault] Erro ao carregar {INNOVATIONS_VAULT_FILE}: {e}")
+    return []
+
+def save_innovations_vault(items: List[Dict[str, Any]]) -> bool:
+    try:
+        tmp_file = INNOVATIONS_VAULT_FILE + ".tmp"
+        with open(tmp_file, "w", encoding="utf-8") as f:
+            json.dump(items, f, indent=2, ensure_ascii=False)
+        if os.path.exists(INNOVATIONS_VAULT_FILE):
+            os.replace(tmp_file, INNOVATIONS_VAULT_FILE)
+        else:
+            os.rename(tmp_file, INNOVATIONS_VAULT_FILE)
+        return True
+    except Exception as e:
+        print(f"[InnovationsVault] Erro ao salvar {INNOVATIONS_VAULT_FILE}: {e}")
+        return False
+
+EPIC_DISCOVERY_CONCEPTS = [
+    {
+        "category": "rf",
+        "badge": "📡 Interferometria RF & Micro-Vibração",
+        "title": "Interferometria Espectral de Micro-Vibrações Mecânicas via Harmônicas RF",
+        "source": "Física de Radiofrequência & Interferometria Não-Linear",
+        "summary": "Usa a micro-modulação de fase nas portadoras Wi-Fi refletidas no chassi do transformador para medir vibrações em micrômetros, detectando folgas em barramentos antes de falhas catastróficas.",
+        "physics_principle": "Efeito micro-Doppler com modulação de ângulo de fase Delta Theta = (4 * pi * Delta d) / Lambda na frequência de 2.412 GHz (comprimento de onda Lambda = 12.4 cm). Variações submétricas na posição da carcaça do quadro elétrico modulam as subportadoras OFDM do ESP32.",
+        "bench_impact": "Permite monitorar a saúde estrutural de contatoras, relés e barramentos de cobre da bancada sem instalar acelerômetros físicos caros.",
+        "trl_level": "TRL-8 (Fronteira Tecnológica)",
+        "tags": ["MicroDoppler", "VibracaoRF", "SemSensores", "ManutencaoPreditiva", "ESP32"],
+        "prompt": "Quero implementar a 'Interferometria de Micro-Vibrações via Harmônicas RF': capture a oscilação de fase das mensagens de retorno para exibir uma curva de vibração mecânica do painel elétrico no Cockpit 360°."
+    },
+    {
+        "category": "ai",
+        "badge": "🧠 TinyML & Previsão Sub-Ciclo",
+        "title": "Copilot Neural TinyML em Borda para Previsão de Falha em 200ms",
+        "source": "Redes Neurais Spiking & Inferência de Borda Ultrarrápida",
+        "summary": "Uma micro-rede neural TinyML de 18KB que roda no ESP32 ou no backend com latência de 2 milissegundos, antecipando picos de sobretensão e disparos espúrios de disjuntores antes que ocorram.",
+        "physics_principle": "Classificador de convolução 1D quantizado int8 que processa janelas deslizantes de 16 ciclos da forma de onda de 60Hz. O gradiente da derivada de corrente dI/dt é correlacionado a padrões pré-falha de isolamento dielétrico.",
+        "bench_impact": "Emite avisos luminosos e sonoros antes do desarme geral da bancada, permitindo desligar cargas de teste com segurança.",
+        "trl_level": "TRL-9 (Pronto para Produção)",
+        "tags": ["TinyML", "Int8", "PrevisaoSubCiclo", "ZeroDowntime", "SegurancaEletrica"],
+        "prompt": "Quero implementar o 'Copilot Neural TinyML de Previsão de Falhas Sub-Ciclo': calcule dI/dt em tempo real e exiba um alerta preditivo 'Risco de Desarme' com probabilidade percentual no cabeçalho do SCADA."
+    },
+    {
+        "category": "sec",
+        "badge": "🛡️ Ciberdefesa & Diodo Óptico",
+        "title": "Diodo de Dados Óptico Virtual com Honeypot Mesh Anti-Intrusão",
+        "source": "Normas de Cibersegurança SCADA IEC 62443 & Zero-Trust Industrial",
+        "summary": "Isola os fluxos de medição de faturamento da rede de comando operacional, criando nós fantasmas (honeypots) que atraem e bloqueiam tentativas de injeção de pacotes forjados.",
+        "physics_principle": "Canal unidirecional por emulação de diodo fotônico em software, combinado com detecção de desvio estatístico de entropia Shannon nos payloads recebidos.",
+        "bench_impact": "Garante imunidade total contra ataques cibernéticos em redes industriais compartilhadas, protegendo a integridade dos dados fiscais de energia.",
+        "trl_level": "TRL-9 (Pronto para Produção)",
+        "tags": ["IEC62443", "ZeroTrust", "Honeypot", "DiodoDados", "Ciberseguranca"],
+        "prompt": "Quero implementar o 'Diodo de Dados Óptico Virtual com Honeypot Mesh': adicione validação de assinatura estrita e um botão no console que exibe tentativas de varredura ou comandos não autorizados detectados na malha."
+    },
+    {
+        "category": "design",
+        "badge": "🔮 WebGL & Diagrama de Smith",
+        "title": "Visualizador Vetorial da Matriz de Impedância e Diagrama de Smith Dinâmico",
+        "source": "Engenharia Eletrotécnica Avançada & Gráficos Vetoriais SVG/Canvas",
+        "summary": "Desenha o Diagrama de Smith e o plano de fasores complexos de tensão e corrente trifásica em tempo real, mostrando o ponto de impedância Z = R + jX se deslocando conforme motores e reatores ligam.",
+        "physics_principle": "Mapeamento conforme bilinear da impedância normalizada z = (1 + Gamma)/(1 - Gamma) no círculo unitário do coeficiente de reflexão Gamma. Cálculo de reatância indutiva XL e capacitiva XC em 60Hz.",
+        "bench_impact": "Visualização cirúrgica para engenheiros elétricos entenderem instantaneamente se a bancada está consumindo reativos indutivos ou capacitivos sem depender de tabelas estáticas.",
+        "trl_level": "TRL-9 (Pronto para Produção)",
+        "tags": ["SmithChart", "FasoresTrifasicos", "ImpedanciaComplexa", "SCADAAvancado", "Canvas2D"],
+        "prompt": "Quero implementar o 'Visualizador de Fasores e Diagrama de Smith Dinâmico' no Cockpit 360°: desenhe um gráfico circular de fasores interativo que ilustra os vetores Va, Vb, Vc e Ia, Ib, Ic com defasagem angular e fator de potência real."
+    },
+    {
+        "category": "app",
+        "badge": "⚡ Auto-Cura & Salto de Canal",
+        "title": "Protocolo Anti-Jamming com Agilidade Autônoma e Salto de Canal de Rádio",
+        "source": "Sistemas Táticos Militares de Salto de Frequência (FHSS)",
+        "summary": "Monitora o nível de ruído em todos os canais Wi-Fi de 1 a 13. Se detectar interferência intencional ou saturação por micro-ondas/forno, comanda a malha inteira a saltar sincronizadamente para o canal mais limpo em menos de 50ms.",
+        "physics_principle": "Cálculo de relação sinal-ruído (SNR) e índice de erro de modulação (EVM). Um pseudorandom sequence generator sincronizado pelo relógio SNTP comanda a troca orquestrada de canal RF.",
+        "bench_impact": "Impede que fornos de micro-ondas, soldas elétricas ou roteadores vizinhos derrubem a telemetria dos medidores durante ensaios críticos na bancada.",
+        "trl_level": "TRL-9 (Pronto para Produção)",
+        "tags": ["AntiJamming", "FHSS", "SaltoCanal", "ResilienciaRF", "ESP_MESH"],
+        "prompt": "Quero implementar o 'Protocolo Anti-Jamming com Agilidade de Canal': adicione um indicador de ruído RF por canal (1 a 13) e um botão de 'Salto de Canal Sincronizado' que envia o comando mchannel para todos os nós simultaneamente."
+    },
+    {
+        "category": "ai",
+        "badge": "🎧 Detecção Acústica Neural",
+        "title": "Assinatura Acústica Neural de Descargas Parciais e Arco Elétrico (I2S MEMS)",
+        "source": "Física de Plasmas & Processamento de Sinais de Ultrassom",
+        "summary": "Analisa o áudio ultrassônico capturado por um microfone I2S conectado ao ESP32 para identificar o chiado característico de efeito corona ou arco voltaico microscópico em bornes frouxos.",
+        "physics_principle": "Emissão acústica de ondas de choque de micro-plasma na faixa de 18 kHz a 48 kHz. A Transformada de Fourier de Tempo Curto (STFT) revela o padrão tonal intermitente a 120 Hz decorrente da alternância senoidal da rede.",
+        "bench_impact": "Detecta parafusos soltos em bornes de medidores antes que aqueçam ou provoquem incêndio, garantindo máxima segurança contra acidentes elétricos.",
+        "trl_level": "TRL-8 (Fronteira Tecnológica)",
+        "tags": ["ArcoEletrico", "EfeitoCorona", "Ultrassom", "STFT", "SegurancaPreventiva"],
+        "prompt": "Quero implementar a 'Detecção Acústica Neural de Arco Elétrico': processe o espectrograma sonoro dos bornes e adicione um termômetro de risco acústico no Cockpit 360° para prevenir sobreaquecimentos."
+    }
+]
+
+def generate_epic_frontier_innovation() -> Dict[str, Any]:
+    vault = load_innovations_vault()
+    existing_titles = {x.get("title") for x in vault}
+    
+    # 1. Procura se há algum conceito do pool épico que ainda não está no vault
+    unseen_epic = [c for c in EPIC_DISCOVERY_CONCEPTS if c["title"] not in existing_titles]
+    if unseen_epic:
+        chosen = dict(random.choice(unseen_epic))
+        chosen["id"] = f"inn-epic-{uuid.uuid4().hex[:8]}"
+        chosen["starred"] = False
+        chosen["timestamp"] = datetime.now().strftime("%H:%M:%S")
+        return chosen
+    
+    # 2. Se todos já estão no vault, sintetiza uma combinação procedural avançada com física profunda
+    theme = random.choice(PROC_COMBOS)
+    prefix = random.choice(theme["prefixes"])
+    core_title, core_desc = random.choice(theme["cores"])
+    full_title = f"{prefix} {core_title}"
+    uid = f"inn-epic-{uuid.uuid4().hex[:8]}"
+    
+    principles = [
+        "Equações de Maxwell em meios dielétricos estratificados com formulação variacional de elementos finitos para dispersão eletromagnética.",
+        "Análise estocástica de séries temporais com filtro de Kalman estendido (EKF) acoplado a modelo de Markov de transição de estado.",
+        "Decomposição em valores singulares (SVD) da matriz de covariância espacial de sinais multicanal com redução de dimensionalidade PCA.",
+        "Teoria dos Grafos Espectrais aplicada ao Laplaciano da malha ESP-MESH com convergência assintótica de consenso distribuído.",
+        "Algoritmo de Otimização por Enxame de Partículas (PSO) para minimização da função custo de energia e retardo de propagação."
+    ]
+    
+    impacts = [
+        "Reduz a taxa de retransmissão de pacotes em até 85% e eleva a confiabilidade da bancada para níveis aeroespaciais.",
+        "Permite diagnosticar instantaneamente a causa-raiz de falhas elétricas sem necessidade de abrir quadros energizados.",
+        "Aumenta a eficiência operacional dos testes de certificação de medidores, reduzindo o tempo de validação de horas para segundos.",
+        "Garante conformidade estrita com normas internacionais IEC e NBR 14522 mesmo sob condições de severo estresse eletromagnético."
+    ]
+    
+    tags_pool = ["ESP32", "DeepSCADA", "Fronteira", "MicroDoppler", "TinyML", "IEC62443", "ZeroLatency", "Resiliencia"]
+    
+    return {
+        "id": uid,
+        "category": theme["category"],
+        "badge": f"🚀 {theme['badge']}",
+        "title": full_title,
+        "source": "Codax AI Research Engine • Deep Discovery",
+        "summary": f"{core_desc} Arquitetura de observabilidade em tempo real com resposta de borda determinística.",
+        "physics_principle": random.choice(principles),
+        "bench_impact": random.choice(impacts),
+        "trl_level": "TRL-9 (Pronto para Produção)",
+        "tags": random.sample(tags_pool, 4),
+        "prompt": f"Quero implementar a inovação '{full_title}': {core_desc} Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+        "starred": False,
+        "timestamp": datetime.now().strftime("%H:%M:%S")
+    }
+
+# Carregar feed a partir do cofre persistente
+vault_init = load_innovations_vault()
+if vault_init:
+    app_state["innovations_feed"] = vault_init
+    for it in vault_init:
+        if "id" in it:
+            app_state["seen_innovation_ids"].add(it["id"])
+else:
+    for _ in range(5):
+        app_state["innovations_feed"].insert(0, pick_next_innovation(include_web=False))
+    save_innovations_vault(app_state["innovations_feed"])
 
 @app.get("/api/innovations")
 def get_innovations():
+    vault_items = load_innovations_vault()
+    if not vault_items:
+        vault_items = app_state["innovations_feed"]
     return {
-        "items": app_state["innovations_feed"],
-        "total_discovered": len(app_state["seen_innovation_ids"]),
+        "items": vault_items,
+        "total_discovered": len(vault_items),
         "unlimited": True,
         "zero_quota_cost": True
     }
@@ -1980,9 +2152,14 @@ def get_innovations():
 async def trigger_innovation_scan():
     loop = asyncio.get_running_loop()
     new_item = await loop.run_in_executor(None, lambda: pick_next_innovation(include_web=True))
-    app_state["innovations_feed"].insert(0, new_item)
-    if len(app_state["innovations_feed"]) > 500:
-        app_state["innovations_feed"].pop()
+    items = load_innovations_vault()
+    items = [x for x in items if x.get("id") != new_item.get("id")]
+    items.insert(0, new_item)
+    if len(items) > 500:
+        items = items[:500]
+    save_innovations_vault(items)
+    app_state["innovations_feed"] = items
+    app_state["seen_innovation_ids"].add(new_item["id"])
     await ws_manager.broadcast({
         "type": "innovation_discovered",
         "item": new_item
@@ -1990,7 +2167,49 @@ async def trigger_innovation_scan():
     return {
         "status": "ok",
         "item": new_item,
-        "total_discovered": len(app_state["seen_innovation_ids"])
+        "total_discovered": len(items)
+    }
+
+class StarInnovationRequest(BaseModel):
+    id: str
+
+@app.post("/api/innovations/star")
+def toggle_star_innovation(req: StarInnovationRequest):
+    items = load_innovations_vault()
+    target_starred = False
+    found = False
+    for it in items:
+        if it.get("id") == req.id:
+            it["starred"] = not it.get("starred", False)
+            target_starred = it["starred"]
+            found = True
+            break
+    if found:
+        save_innovations_vault(items)
+        app_state["innovations_feed"] = items
+        return {"status": "ok", "id": req.id, "starred": target_starred}
+    return {"status": "error", "message": "Inovação não encontrada no cofre"}
+
+@app.post("/api/innovations/generate-epic")
+async def trigger_epic_innovation():
+    loop = asyncio.get_running_loop()
+    new_item = await loop.run_in_executor(None, generate_epic_frontier_innovation)
+    items = load_innovations_vault()
+    items = [x for x in items if x.get("id") != new_item.get("id")]
+    items.insert(0, new_item)
+    if len(items) > 500:
+        items = items[:500]
+    save_innovations_vault(items)
+    app_state["innovations_feed"] = items
+    app_state["seen_innovation_ids"].add(new_item["id"])
+    await ws_manager.broadcast({
+        "type": "innovation_discovered",
+        "item": new_item
+    })
+    return {
+        "status": "ok",
+        "item": new_item,
+        "total_discovered": len(items)
     }
 
 # ================= AWS TIMESTREAM (SÉRIES TEMPORAIS & TELEMETRIA EM NUVEM) =================

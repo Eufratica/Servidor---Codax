@@ -320,6 +320,7 @@
     #modal-glass-confirm > div,
     #ui-inspector-popover,
     #innovation-radar-popover,
+    #innovation-drawer-panel,
     .glass-toast-card {
       background-color: rgba(15, 23, 42, 0.88) !important;
       backdrop-filter: blur(18px) saturate(160%) !important;
@@ -3726,56 +3727,87 @@
   <!-- Retângulo de Arrastar (Lasso de Seleção de Área) -->
   <div id="ui-inspector-lasso" class="fixed pointer-events-none z-[81] hidden border-2 border-dashed border-cyan-400 bg-cyan-500/15 backdrop-blur-[2px] rounded-xl shadow-[0_0_25px_rgba(6,182,212,0.3)]"></div>
 
-  <!-- ================= PAINEL FLUTUANTE: RADAR DE INOVAÇÕES CONTÍNUAS (ZERO CONSUMO DE COTA IA) ================= -->
-  <div id="innovation-radar-popover" class="fixed top-16 right-4 z-[82] hidden w-96 sm:w-[430px] rounded-2xl border border-slate-600/90 overflow-hidden flex flex-col max-h-[82vh] select-none shadow-2xl">
-    
-    <!-- Cabeçalho do Radar -->
-    <div class="p-4 border-b border-slate-700/80 bg-slate-950/75 flex items-center justify-between">
-      <div class="flex items-center space-x-2.5">
-        <div class="p-2 rounded-xl bg-amber-500/15 text-amber-400 border border-amber-500/30">
-          <i data-lucide="sparkles" class="w-4 h-4"></i>
-        </div>
-        <div>
-          <div class="flex items-center space-x-1.5">
-            <h3 class="font-extrabold text-xs sm:text-sm text-slate-100 flex items-center gap-1.5">
-              <span>Radar de Inovações & Ideias</span>
-              <span id="innov-total-count-pill" class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-full bg-purple-900/60 text-purple-200 border border-purple-500/40">0</span>
-            </h3>
-            <span class="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-950/90 text-emerald-300 border border-emerald-500/40">ILIMITADO</span>
+  <!-- ================= GAVETA LATERAL: CODAX INNOVATION STUDIO 3.0 (OPÇÃO B - SLIDE-OVER DRAWER) ================= -->
+  <div id="innovation-drawer" class="fixed inset-0 z-[82] overflow-hidden hidden" role="dialog" aria-modal="true">
+    <!-- Backdrop translúcido com desfoque -->
+    <div class="absolute inset-0 bg-black/65 backdrop-blur-[3px] transition-opacity duration-300" onclick="closeInnovationRadar()"></div>
+
+    <div class="fixed inset-y-0 right-0 max-w-full flex pl-4 sm:pl-10">
+      <div id="innovation-drawer-panel" class="w-screen max-w-2xl bg-slate-900 border-l border-indigo-500/30 shadow-[0_0_50px_rgba(0,0,0,0.8)] flex flex-col h-full text-slate-200 transform transition-transform duration-300 ease-out">
+        
+        <!-- Cabeçalho do Innovation Studio -->
+        <div class="p-4 sm:p-5 border-b border-slate-800 bg-slate-950/90 flex items-center justify-between gap-3 shrink-0">
+          <div class="flex items-center space-x-3">
+            <div class="p-2.5 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-600/30 text-indigo-400 border border-indigo-500/40 shadow-inner">
+              <i data-lucide="sparkles" class="w-6 h-6 text-amber-400"></i>
+            </div>
+            <div>
+              <div class="flex items-center space-x-2">
+                <h3 class="font-extrabold text-sm sm:text-base text-slate-100 flex items-center gap-2">
+                  <span>Innovation Studio 3.0</span>
+                  <span id="innov-total-count-pill" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-purple-900/60 text-purple-200 border border-purple-500/40">0</span>
+                </h3>
+                <span class="text-[9px] font-mono font-extrabold px-2 py-0.5 rounded bg-emerald-950/90 text-emerald-300 border border-emerald-500/40">COFRE ATIVO</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5">Descobertas Científicas • Princípios Físicos • Arquitetura SCADA & ESP-MESH</p>
+            </div>
           </div>
-          <p class="text-[10px] text-slate-400 mt-0.5">ESP-MESH • SCADA • Borda & IA • UI/UX Sci-Fi • Sem Limites & Sem Repetição</p>
+          <div class="flex items-center space-x-2">
+            <!-- Botão Curador IA Épico -->
+            <button type="button" id="btn-epic-bot" onclick="triggerEpicInnovationBot()" title="Gerar inovação de fronteira científica hiper-criativa com Curador IA" class="px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-600 hover:brightness-110 text-slate-950 font-black text-xs transition flex items-center space-x-1.5 shadow-lg shadow-amber-500/25 active:scale-95">
+              <i data-lucide="bot" class="w-4 h-4"></i>
+              <span class="hidden sm:inline">Curador IA</span>
+              <span class="bg-black/20 px-1 py-0.2 rounded text-[10px]">ÉPICO</span>
+            </button>
+            <button type="button" onclick="closeInnovationRadar()" title="Fechar Gaveta (Esc)" class="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-slate-800/70 transition">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
         </div>
+
+        <!-- Barra de Busca Instantânea com Lupa e Limpeza -->
+        <div class="p-3.5 bg-slate-950/95 border-b border-slate-800/80 shrink-0">
+          <div class="relative flex items-center">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none"></i>
+            <input type="text" id="innov-search-input" oninput="handleInnovationSearch(this.value)" placeholder="Buscar por título, princípio físico, tag (ex: FFT, WebGPU, Doppler, Dilithium)..." class="w-full bg-slate-900 border border-slate-700/80 rounded-xl pl-9 pr-8 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 font-sans shadow-inner transition" />
+            <button type="button" onclick="clearInnovationSearch()" id="btn-clear-innov-search" class="hidden absolute right-2.5 text-slate-400 hover:text-white p-1 rounded-lg">
+              <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtros por Categoria & Favoritos -->
+        <div class="px-3.5 py-2.5 bg-slate-950/80 border-b border-slate-800/80 flex items-center space-x-2 overflow-x-auto shrink-0 scrollbar-thin">
+          <button type="button" onclick="setInnovationFilter('all')" id="btn-innov-all" class="innov-filter-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white shrink-0">Todas</button>
+          <button type="button" onclick="setInnovationFilter('starred')" id="btn-innov-starred" class="innov-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium text-amber-300 hover:text-white hover:bg-amber-950/50 border border-amber-500/30 shrink-0">⭐ Favoritas</button>
+          <button type="button" onclick="setInnovationFilter('ai')" id="btn-innov-ai" class="innov-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0">🧠 IA & Edge</button>
+          <button type="button" onclick="setInnovationFilter('rf')" id="btn-innov-rf" class="innov-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0">📡 Física & RF</button>
+          <button type="button" onclick="setInnovationFilter('design')" id="btn-innov-design" class="innov-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0">🎨 Sci-Fi SCADA</button>
+          <button type="button" onclick="setInnovationFilter('app')" id="btn-innov-app" class="innov-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0">⚡ Resiliência Mesh</button>
+          <button type="button" onclick="setInnovationFilter('sec')" id="btn-innov-sec" class="innov-filter-btn px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0">🛡️ Cibersegurança</button>
+        </div>
+
+        <!-- Lista de Inovações Ricas com Accordion Técnico -->
+        <div id="innovations-list-container" class="p-4 space-y-3.5 overflow-y-auto flex-1">
+          <p class="text-xs text-slate-500 italic text-center p-6">Carregando cofre de inovações...</p>
+        </div>
+
+        <!-- Rodapé do Drawer com Ações Rápidas -->
+        <div class="px-5 py-3 bg-slate-950/90 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400 shrink-0">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Cofre persistido em <code class="font-mono text-cyan-300 text-[11px]">innovations_vault.json</code></span>
+          </div>
+          <div class="flex items-center space-x-3">
+            <button type="button" onclick="triggerManualInnovationScan()" id="btn-scan-innovation" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center space-x-1">
+              <i data-lucide="radar" class="w-3.5 h-3.5"></i>
+              <span>Varredura Radar</span>
+            </button>
+          </div>
+        </div>
+
       </div>
-      <div class="flex items-center space-x-1">
-        <button type="button" id="btn-scan-innovation" onclick="triggerManualInnovationScan()" title="Descobrir nova inovação inédita e criativa agora" class="px-2.5 py-1.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-[11px] font-bold transition flex items-center space-x-1 shadow-md shadow-purple-600/30">
-          <i data-lucide="radar" class="w-3.5 h-3.5"></i>
-          <span>+ Descobrir</span>
-        </button>
-        <button type="button" onclick="closeInnovationRadar()" class="text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-slate-800/70 transition">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
-      </div>
     </div>
-
-    <!-- Barra de Filtros por Nicho -->
-    <div class="px-3.5 py-2 bg-slate-950/90 border-b border-slate-800/80 flex items-center space-x-1.5 overflow-x-auto shrink-0">
-      <button type="button" onclick="setInnovationFilter('all')" id="btn-innov-all" class="innov-filter-btn px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-600 text-white shrink-0">Todas</button>
-      <button type="button" onclick="setInnovationFilter('design')" id="btn-innov-design" class="innov-filter-btn px-2.5 py-1 rounded-lg text-[10px] font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0">🎨 Design & UI</button>
-      <button type="button" onclick="setInnovationFilter('app')" id="btn-innov-app" class="innov-filter-btn px-2.5 py-1 rounded-lg text-[10px] font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0">⚡ Aplicações Mesh</button>
-      <button type="button" onclick="setInnovationFilter('web')" id="btn-innov-web" class="innov-filter-btn px-2.5 py-1 rounded-lg text-[10px] font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0">🌐 GitHub / Web</button>
-    </div>
-
-    <!-- Lista de Notificações Inovadoras -->
-    <div id="innovations-list-container" class="p-3 space-y-2.5 overflow-y-auto flex-1">
-      <p class="text-xs text-slate-500 italic text-center p-4">Carregando descobertas...</p>
-    </div>
-
-    <!-- Rodapé Explicativo -->
-    <div class="px-4 py-2.5 bg-slate-950/80 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400">
-      <span>🔄 Radar ativo no servidor local (sem consumo semanal)</span>
-      <span class="text-indigo-400 font-semibold">1 clique copia o prompt</span>
-    </div>
-
   </div>
 
   <!-- Mini-Caixinha Flutuante de Vidro ao Clicar ou Selecionar Área -->
@@ -9416,6 +9448,11 @@
         return;
       }
       if (e.key === 'Escape') {
+        const innovDrawer = document.getElementById('innovation-drawer');
+        if (innovDrawer && !innovDrawer.classList.contains('hidden')) {
+          closeInnovationRadar();
+          return;
+        }
         const cpDrawer = document.getElementById('device-cockpit-drawer');
         if (cpDrawer && !cpDrawer.classList.contains('hidden')) {
           closeDeviceCockpit();
@@ -9800,9 +9837,11 @@
       }
       lastNearScrollEl = found;
     }, { passive: true });
-    // ================= RADAR DE INOVAÇÕES CONTÍNUAS (ZERO CONSUMO DE COTA IA) =================
+    // ================= INNOVATION STUDIO 3.0 & COFRE PERSISTENTE (ZERO COTA IA) =================
     let currentInnovationFilter = 'all';
     let innovationsList = [];
+    let innovationSearchQuery = '';
+    const expandedInnovationDetails = new Set();
 
     async function loadInnovations() {
       try {
@@ -9814,7 +9853,7 @@
           renderInnovationsList();
         }
       } catch (e) {
-        console.error('Erro ao carregar inovações:', e);
+        console.error('Erro ao carregar inovações do cofre:', e);
       }
     }
 
@@ -9831,46 +9870,209 @@
 
     function handleIncomingInnovation(item) {
       if (!item) return;
-      // Sem teto limitador rígido de 25: suporta até 500 inovações descobertas continuamente
       innovationsList = [item, ...innovationsList.filter(i => i.id !== item.id)].slice(0, 500);
       updateInnovationsBadge();
       renderInnovationsList();
       showGlassToast(`✨ Nova Inovação Descoberta: <strong>${escapeHtml(item.title)}</strong>`, 'info');
     }
 
-    function toggleInnovationRadar() {
-      const pop = document.getElementById('innovation-radar-popover');
-      if (!pop) return;
-      if (pop.classList.contains('hidden')) {
-        pop.classList.remove('hidden');
+    function toggleInnovationRadar(forceState) {
+      const drawer = document.getElementById('innovation-drawer');
+      if (!drawer) return;
+      const isHidden = drawer.classList.contains('hidden');
+      const shouldOpen = typeof forceState === 'boolean' ? forceState : isHidden;
+      if (shouldOpen) {
+        drawer.classList.remove('hidden');
         renderInnovationsList();
+        setTimeout(() => {
+          const search = document.getElementById('innov-search-input');
+          if (search) search.focus();
+        }, 120);
       } else {
-        pop.classList.add('hidden');
+        drawer.classList.add('hidden');
       }
     }
 
     function closeInnovationRadar() {
-      const pop = document.getElementById('innovation-radar-popover');
-      if (pop) pop.classList.add('hidden');
+      const drawer = document.getElementById('innovation-drawer');
+      if (drawer) drawer.classList.add('hidden');
+    }
+
+    function handleInnovationSearch(val) {
+      innovationSearchQuery = (val || '').trim().toLowerCase();
+      const clearBtn = document.getElementById('btn-clear-innov-search');
+      if (clearBtn) {
+        if (innovationSearchQuery.length > 0) {
+          clearBtn.classList.remove('hidden');
+        } else {
+          clearBtn.classList.add('hidden');
+        }
+      }
+      renderInnovationsList();
+    }
+
+    function clearInnovationSearch() {
+      const search = document.getElementById('innov-search-input');
+      if (search) {
+        search.value = '';
+        handleInnovationSearch('');
+        search.focus();
+      }
+    }
+
+    function filterByTag(tagName) {
+      const search = document.getElementById('innov-search-input');
+      if (search) {
+        search.value = tagName;
+        handleInnovationSearch(tagName);
+      }
     }
 
     function setInnovationFilter(filter) {
       currentInnovationFilter = filter;
-      document.querySelectorAll('.innov-filter-btn').forEach(b => {
-        b.className = 'innov-filter-btn px-2.5 py-1 rounded-lg text-[10px] font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0';
+      const buttons = [
+        { id: 'btn-innov-all', defaultClass: 'px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0' },
+        { id: 'btn-innov-starred', defaultClass: 'px-2.5 py-1 rounded-lg text-xs font-medium text-amber-300 hover:text-white hover:bg-amber-950/50 border border-amber-500/30 shrink-0' },
+        { id: 'btn-innov-ai', defaultClass: 'px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0' },
+        { id: 'btn-innov-rf', defaultClass: 'px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0' },
+        { id: 'btn-innov-design', defaultClass: 'px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0' },
+        { id: 'btn-innov-app', defaultClass: 'px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0' },
+        { id: 'btn-innov-sec', defaultClass: 'px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 shrink-0' }
+      ];
+
+      buttons.forEach(b => {
+        const el = document.getElementById(b.id);
+        if (el) el.className = `innov-filter-btn ${b.defaultClass}`;
       });
-      const active = document.getElementById(`btn-innov-${filter}`);
-      if (active) {
-        active.className = 'innov-filter-btn px-2.5 py-1 rounded-lg text-[10px] font-bold bg-indigo-600 text-white shrink-0';
+
+      const activeEl = document.getElementById(`btn-innov-${filter}`);
+      if (activeEl) {
+        if (filter === 'starred') {
+          activeEl.className = 'innov-filter-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500 text-slate-950 border border-amber-400 shadow-md shrink-0';
+        } else {
+          activeEl.className = 'innov-filter-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow-md shrink-0';
+        }
       }
       renderInnovationsList();
+    }
+
+    async function toggleStarInnovation(id, event) {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      const item = innovationsList.find(x => x.id === id);
+      if (!item) return;
+
+      const previousState = !!item.starred;
+      item.starred = !previousState;
+      renderInnovationsList();
+
+      try {
+        const res = await fetch('/api/innovations/star', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: id })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          item.starred = data.starred;
+          renderInnovationsList();
+          showGlassToast(item.starred ? '⭐ Inovação favoritada e salva no cofre!' : 'Inovação removida dos favoritos.', 'info');
+        } else {
+          item.starred = previousState;
+          renderInnovationsList();
+          showGlassToast('Erro ao atualizar favorito no servidor.', 'error');
+        }
+      } catch (e) {
+        item.starred = previousState;
+        renderInnovationsList();
+        showGlassToast('Falha na conexão ao favoritar inovação.', 'error');
+      }
+    }
+
+    function toggleInnovationDetails(id) {
+      if (expandedInnovationDetails.has(id)) {
+        expandedInnovationDetails.delete(id);
+      } else {
+        expandedInnovationDetails.add(id);
+      }
+      renderInnovationsList();
+    }
+
+    function copyInnovationPrompt(id) {
+      const item = innovationsList.find(x => x.id === id);
+      if (!item || !item.prompt) {
+        showGlassToast('Prompt não disponível para cópia.', 'error');
+        return;
+      }
+
+      const text = item.prompt;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showGlassToast('📋 Prompt copiado para a área de transferência! Cole no chat com a IA.', 'success');
+        }).catch(() => {
+          fallbackCopyText(text);
+        });
+      } else {
+        fallbackCopyText(text);
+      }
+    }
+
+    function fallbackCopyText(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showGlassToast('📋 Prompt copiado! Cole no chat com a IA.', 'success');
+      } catch (err) {
+        showGlassToast('Não foi possível copiar automaticamente.', 'error');
+      }
+      document.body.removeChild(ta);
+    }
+
+    async function triggerEpicInnovationBot() {
+      const btn = document.getElementById('btn-epic-bot');
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin text-slate-950"></i><span class="text-slate-950 font-bold">Curando...</span>';
+        lucide.createIcons();
+      }
+
+      try {
+        const res = await fetch('/api/innovations/generate-epic', { method: 'POST' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.item) {
+            innovationsList = [data.item, ...innovationsList.filter(x => x.id !== data.item.id)];
+            expandedInnovationDetails.add(data.item.id);
+            updateInnovationsBadge();
+            renderInnovationsList();
+            showGlassToast(`🚀 Curador IA gerou: <strong>${escapeHtml(data.item.title)}</strong>! Ficha técnica aberta.`, 'success');
+          }
+        } else {
+          showGlassToast('Erro ao acionar Curador IA.', 'error');
+        }
+      } catch (e) {
+        showGlassToast('Falha na comunicação com o Curador IA.');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<i data-lucide="bot" class="w-4 h-4"></i><span class="hidden sm:inline">Curador IA</span><span class="bg-black/20 px-1 py-0.2 rounded text-[10px]">ÉPICO</span>';
+          lucide.createIcons();
+        }
+      }
     }
 
     async function triggerManualInnovationScan() {
       const btn = document.getElementById('btn-scan-innovation');
       if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Descobrindo...</span>';
+        btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i><span>Varrendo...</span>';
         lucide.createIcons();
       }
       try {
@@ -9886,7 +10088,7 @@
       } finally {
         if (btn) {
           btn.disabled = false;
-          btn.innerHTML = '<i data-lucide="radar" class="w-3.5 h-3.5"></i><span>+ Descobrir</span>';
+          btn.innerHTML = '<i data-lucide="radar" class="w-3.5 h-3.5"></i><span>Varredura Radar</span>';
           lucide.createIcons();
         }
       }
@@ -9897,48 +10099,180 @@
       if (!container) return;
       container.innerHTML = '';
 
-      const filtered = innovationsList.filter(item => {
+      // 1. Filtro de Categoria & Favoritos
+      let list = innovationsList.filter(item => {
         if (currentInnovationFilter === 'all') return true;
+        if (currentInnovationFilter === 'starred') return !!item.starred;
         return item.category === currentInnovationFilter;
       });
 
-      if (filtered.length === 0) {
-        container.innerHTML = '<p class="text-xs text-slate-500 italic text-center p-4">Nenhuma inovação nesta categoria ainda. Clique em "+ Descobrir" acima!</p>';
+      // 2. Filtro de Busca Instantânea
+      if (innovationSearchQuery.length > 0) {
+        list = list.filter(item => {
+          const title = (item.title || '').toLowerCase();
+          const summary = (item.summary || '').toLowerCase();
+          const physics = (item.physics_principle || '').toLowerCase();
+          const impact = (item.bench_impact || '').toLowerCase();
+          const source = (item.source || '').toLowerCase();
+          const badge = (item.badge || '').toLowerCase();
+          const tags = Array.isArray(item.tags) ? item.tags.join(' ').toLowerCase() : '';
+
+          return title.includes(innovationSearchQuery) ||
+                 summary.includes(innovationSearchQuery) ||
+                 physics.includes(innovationSearchQuery) ||
+                 impact.includes(innovationSearchQuery) ||
+                 source.includes(innovationSearchQuery) ||
+                 badge.includes(innovationSearchQuery) ||
+                 tags.includes(innovationSearchQuery);
+        });
+      }
+
+      if (list.length === 0) {
+        if (currentInnovationFilter === 'starred') {
+          container.innerHTML = `
+            <div class="text-center p-8 space-y-3">
+              <div class="text-3xl">⭐</div>
+              <h4 class="text-sm font-bold text-slate-200">Nenhuma inovação favoritada</h4>
+              <p class="text-xs text-slate-400 max-w-sm mx-auto">Clique na estrela ⭐ no topo de qualquer card para fixar suas inovações e descobertas favoritas aqui no cofre permanente.</p>
+            </div>
+          `;
+        } else if (innovationSearchQuery.length > 0) {
+          container.innerHTML = `
+            <div class="text-center p-8 space-y-3">
+              <div class="text-3xl">🔍</div>
+              <h4 class="text-sm font-bold text-slate-200">Nenhum resultado para "${escapeHtml(innovationSearchQuery)}"</h4>
+              <p class="text-xs text-slate-400 max-w-sm mx-auto">Experimente pesquisar por termos como <span class="text-indigo-400 font-mono">WebGPU, Doppler, CSI, FFT, Dilithium</span> ou clique em "Curador IA" para sintetizar uma inédita!</p>
+              <button type="button" onclick="clearInnovationSearch()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 transition">Limpar Busca</button>
+            </div>
+          `;
+        } else {
+          container.innerHTML = `
+            <div class="text-center p-8 space-y-3">
+              <div class="text-3xl">💡</div>
+              <h4 class="text-sm font-bold text-slate-200">Nenhuma inovação nesta categoria</h4>
+              <p class="text-xs text-slate-400 max-w-sm mx-auto">Clique no botão "Curador IA" ou "Varredura Radar" para descobrir novas tecnologias de fronteira.</p>
+            </div>
+          `;
+        }
         return;
       }
 
-      filtered.forEach((item) => {
-        const realIdx = innovationsList.findIndex(x => x.id === item.id);
-        const badgeText = item.badge || '';
+      list.forEach((item) => {
+        const isExpanded = expandedInnovationDetails.has(item.id);
+        const isStarred = !!item.starred;
+        const badgeText = item.badge || 'Inovação';
 
-        // Badges com cores dinâmicas e contrastadas estilo Sci-Fi Glass
+        // Cores temáticas Sci-Fi para badges
         let badgeColor = 'bg-emerald-950/80 text-emerald-300 border-emerald-500/40';
-        if (item.category === 'design' || badgeText.includes('🎨')) {
+        if (item.category === 'design' || badgeText.includes('🎨') || badgeText.includes('WebGL') || badgeText.includes('WebGPU')) {
           badgeColor = 'bg-purple-950/80 text-purple-300 border-purple-500/40';
-        } else if (item.category === 'web' || badgeText.includes('🌐')) {
-          badgeColor = 'bg-cyan-950/80 text-cyan-300 border-cyan-500/40';
-        } else if (badgeText.includes('🔐') || badgeText.includes('Segurança')) {
-          badgeColor = 'bg-rose-950/80 text-rose-300 border-rose-500/40';
-        } else if (badgeText.includes('🧠') || badgeText.includes('IA') || badgeText.includes('Telemetria')) {
+        } else if (item.category === 'ai' || badgeText.includes('🧠') || badgeText.includes('Neural') || badgeText.includes('TinyML')) {
           badgeColor = 'bg-amber-950/80 text-amber-300 border-amber-500/40';
-        } else if (badgeText.includes('📡') || badgeText.includes('MESH') || badgeText.includes('RF')) {
+        } else if (item.category === 'rf' || badgeText.includes('📡') || badgeText.includes('Doppler') || badgeText.includes('FFT')) {
+          badgeColor = 'bg-cyan-950/80 text-cyan-300 border-cyan-500/40';
+        } else if (item.category === 'sec' || badgeText.includes('🛡️') || badgeText.includes('Quântico') || badgeText.includes('Ciber')) {
+          badgeColor = 'bg-rose-950/80 text-rose-300 border-rose-500/40';
+        } else if (item.category === 'app' || badgeText.includes('⚡') || badgeText.includes('Mesh') || badgeText.includes('Cura')) {
           badgeColor = 'bg-blue-950/80 text-blue-300 border-blue-500/40';
         }
 
+        const tagsHtml = Array.isArray(item.tags) && item.tags.length > 0
+          ? item.tags.map(tag => `
+              <button type="button" onclick="filterByTag('${escapeHtml(tag)}')" title="Filtrar por esta tag" class="px-2 py-0.5 rounded-md bg-slate-950/80 hover:bg-indigo-900/60 text-slate-300 hover:text-indigo-200 border border-slate-700/80 text-[10px] font-mono transition">
+                #${escapeHtml(tag)}
+              </button>
+            `).join('')
+          : '';
+
         const card = document.createElement('div');
-        card.className = 'codax-glass-deep border border-slate-800/90 hover:border-indigo-500/60 p-3 rounded-xl space-y-2 transition shadow-md';
+        card.className = `codax-glass-deep border ${isStarred ? 'border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.15)]' : 'border-slate-800/90 hover:border-indigo-500/50'} p-4 rounded-2xl space-y-3 transition duration-200`;
         card.innerHTML = `
+          <!-- Topo do Card: Badge de Nicho, Timestamp & Estrela de Favorito -->
           <div class="flex items-center justify-between gap-2">
-            <span class="text-[9px] font-bold px-2 py-0.5 rounded border ${badgeColor}">${escapeHtml(badgeText || 'Inovação')}</span>
-            <span class="font-mono text-[10px] text-slate-400 font-semibold">${escapeHtml(item.timestamp || 'Agora')}</span>
+            <div class="flex items-center space-x-2">
+              <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${badgeColor}">
+                ${escapeHtml(badgeText)}
+              </span>
+              ${item.trl_level ? `<span class="text-[9.5px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700/60">${escapeHtml(item.trl_level.split(' ')[0])}</span>` : ''}
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="font-mono text-[10.5px] text-slate-400 font-semibold">${escapeHtml(item.timestamp || 'Hoje')}</span>
+              <button type="button" onclick="toggleStarInnovation('${escapeHtml(item.id)}', event)" title="${isStarred ? 'Desfavoritar inovação' : 'Favoritar e fixar no cofre permanente'}" class="p-1 rounded-lg hover:bg-slate-800 text-lg transition leading-none">
+                ${isStarred ? '<span class="text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]">★</span>' : '<span class="text-slate-500 hover:text-amber-400">☆</span>'}
+              </button>
+            </div>
           </div>
-          <h4 class="font-extrabold text-xs text-slate-100 leading-snug">${escapeHtml(item.title)}</h4>
-          <p class="text-[11px] text-slate-300 leading-relaxed">${escapeHtml(item.summary)}</p>
-          <div class="pt-1.5 border-t border-slate-800/80 flex items-center justify-between gap-2">
-            <span class="text-[9px] text-slate-400 truncate max-w-[160px]" title="${escapeHtml(item.source || '')}">📌 ${escapeHtml(item.source || 'Radar Local')}</span>
-            <button type="button" onclick="copyInnovationPrompt(${realIdx})" class="px-2.5 py-1 rounded-lg bg-indigo-600/30 hover:bg-indigo-600 border border-indigo-500/40 text-indigo-200 hover:text-white text-[10px] font-bold transition flex items-center space-x-1 shrink-0">
-              <i data-lucide="copy" class="w-3 h-3"></i>
-              <span>🚀 Copiar Prompt p/ Chat</span>
+
+          <!-- Título da Inovação -->
+          <h4 class="font-extrabold text-sm text-slate-100 leading-snug tracking-tight">
+            ${escapeHtml(item.title)}
+          </h4>
+
+          <!-- Resumo Executivo -->
+          <p class="text-xs text-slate-300 leading-relaxed">
+            ${escapeHtml(item.summary)}
+          </p>
+
+          <!-- Botão Accordion de Detalhamento Científico / Ficha Técnica -->
+          <div class="pt-1">
+            <button type="button" onclick="toggleInnovationDetails('${escapeHtml(item.id)}')" class="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-slate-950/70 hover:bg-slate-800/80 border border-slate-800 text-xs font-semibold text-indigo-300 hover:text-white transition">
+              <span class="flex items-center space-x-1.5">
+                <i data-lucide="${isExpanded ? 'chevron-up' : 'chevron-down'}" class="w-3.5 h-3.5"></i>
+                <span>${isExpanded ? 'Recolher Ficha Técnica' : '🔬 Ver Ficha Técnica & Princípio Físico'}</span>
+              </span>
+              <span class="text-[10px] font-mono text-slate-400">${item.trl_level || 'TRL-9'}</span>
+            </button>
+          </div>
+
+          <!-- Corpo do Accordion (Expandível) -->
+          ${isExpanded ? `
+            <div class="p-3.5 rounded-xl bg-slate-950/90 border border-indigo-500/30 space-y-3 text-xs animate-fadeIn">
+              
+              <!-- Princípio Físico & Teoria -->
+              ${item.physics_principle ? `
+                <div class="space-y-1">
+                  <div class="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-400 flex items-center space-x-1">
+                    <span>🧪 Princípio Físico / Engenharia Aplicada:</span>
+                  </div>
+                  <p class="text-[11.5px] text-slate-200 leading-relaxed bg-slate-900/90 p-2.5 rounded-lg border border-slate-800 font-mono">
+                    ${escapeHtml(item.physics_principle)}
+                  </p>
+                </div>
+              ` : ''}
+
+              <!-- Impacto Real na Bancada -->
+              ${item.bench_impact ? `
+                <div class="space-y-1">
+                  <div class="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400 flex items-center space-x-1">
+                    <span>🎯 Impacto Direto na Bancada:</span>
+                  </div>
+                  <p class="text-[11.5px] text-slate-300 leading-relaxed bg-slate-900/60 p-2 rounded-lg border border-slate-800/80">
+                    ${escapeHtml(item.bench_impact)}
+                  </p>
+                </div>
+              ` : ''}
+
+              <!-- Tags de Engenharia -->
+              ${tagsHtml ? `
+                <div class="space-y-1">
+                  <div class="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">Tags de Engenharia:</div>
+                  <div class="flex flex-wrap gap-1.5">
+                    ${tagsHtml}
+                  </div>
+                </div>
+              ` : ''}
+
+            </div>
+          ` : ''}
+
+          <!-- Rodapé do Card: Fonte / Referência & Botão Copiar Prompt -->
+          <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between gap-2">
+            <span class="text-[10px] text-slate-400 truncate max-w-[200px]" title="${escapeHtml(item.source || '')}">
+              📌 ${escapeHtml(item.source || 'Cofre Local')}
+            </span>
+            <button type="button" onclick="copyInnovationPrompt('${escapeHtml(item.id)}')" class="px-3 py-1.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600 border border-indigo-500/40 text-indigo-200 hover:text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-sm active:scale-95 shrink-0">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>Copiar Prompt p/ Chat</span>
             </button>
           </div>
         `;
