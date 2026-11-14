@@ -109,3 +109,16 @@ flowchart TD
 ## 3. Invariantes de Dados
 - **`devices.json`**: Cadastro persistido de dispositivos com chaves MAC limpas (12 caracteres hexadecimais em minúsculo, ex: `4417934f49a4`).
 - **Formatação pt-BR**: Leituras de totalizadores elétricos utilizam vírgula como separador decimal (`1403,5`, `1538,5`...) e ponto como separador de milhar.
+
+---
+
+## 4. Design System Industrial SCADA 3D (Solid Matte Carbon & Relevo Mecânico)
+- **Zero Glassmorphism**: Regra universal estrita (`backdrop-filter: none !important;` e `-webkit-backdrop-filter: none !important;`). Não são toleradas transparências leitosas, borrões ou fundos translúcidos difusos.
+- **Chanfro Mecânico Zenital & Sombra de Corte**:
+  - Painéis principais (`.bg-slate-900`) usam relevo chanfrado com highlight zenital superior (`inset 0 1px 0 rgba(255, 255, 255, 0.08)`), corte inferior de sombra mecânica (`inset 0 -1px 0 rgba(0, 0, 0, 0.7)`) e oclusão de ambiente multicamada (`0 12px 28px -4px rgba(0, 0, 0, 0.78), 0 6px 12px -2px rgba(0, 0, 0, 0.65)`).
+- **Poços Rebaixados Industriais (Debossed Wells)**:
+  - Consoles de terminal, inputs, tabelas e monitores CRT (`.bg-slate-950`) possuem profundidade embutida com sombreamento interno duplo (`inset 0 4px 8px rgba(0, 0, 0, 0.9), inset 0 1px 2px rgba(0, 0, 0, 0.95)`), simulando cavidades usinadas em painéis de aço de subestação.
+- **Botões Táteis 3D com Resposta Física de Pressionamento**:
+  - `.btn-card` e controles de ação possuem iluminação direcional sólida (`border-top: 1px solid #455d85`, degrau inferior `border-bottom: 2px solid #070c16`) e afundamento mecânico tátil no estado ativo (`:active { transform: translateY(1px); inset 0 2px 5px rgba(0,0,0,0.9); }`).
+- **Bordas Industriais Físicas**:
+  - Bordas primárias em `#223048` e secundárias em `#334460`, garantindo alto contraste e contornos cirúrgicos sobre telas 4K/8K de bancada.

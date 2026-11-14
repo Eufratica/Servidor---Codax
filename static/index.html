@@ -216,8 +216,7 @@
       -webkit-font-smoothing: subpixel-antialiased !important;
     }
 
-    /* Elimina o embaçado do backdrop-filter da GPU ao aplicar Zoom no Canvas */
-    #tree-stage .bg-slate-900 border border-slate-800,
+    /* Elimina o embaçado do backdrop-filter da GPU ao aplicar Zoom no Canvas e confere relevo 3D tátil aos nós */
     #tree-stage .bg-slate-900,
     #tree-stage .bg-slate-900\/90,
     #tree-stage .bg-slate-900\/80,
@@ -231,7 +230,8 @@
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
       background-color: #0b1120 !important;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(255, 255, 255, 0.08) !important;
+      border: 1px solid #2b3d5c !important;
+      box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.85), 0 4px 10px -2px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.7) !important;
     }
 
     /* Vetorização nítida de precisão geométrica nos conduítes e sparklines */
@@ -255,64 +255,125 @@
       animation: treeLaserStream 1.9s linear infinite;
     }
 
-    /* ================= DESIGN SYSTEM CORPORATIVO INDUSTRIAL & VIDRO FOSCO EXCLUSIVO NAS SETINHAS ================= */
+    /* ================= DESIGN SYSTEM INDUSTRIAL SCADA 3D (CHANFRO MECÂNICO, PROFUNDIDADE TÁTIL & ZERO VIDRO) ================= */
     body {
-      background-color: #0b0f19;
-      background-image: linear-gradient(180deg, #0b0f19 0%, #070a12 100%);
+      background-color: #080c16;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(30, 41, 59, 0.35) 0%, transparent 60%),
+        linear-gradient(180deg, #0a0f1d 0%, #050811 100%);
       color: #e2e8f0;
       background-attachment: fixed;
     }
 
-    /* Superfícies principais Corporativas SÓLIDAS (Clean, opacas e com alto contraste para ambiente sério) */
-    .bg-slate-900 border border-slate-800,
+    /* 1. Painéis Principais Elevados 3D (Solid Chiseled SCADA Panels) com Chanfro Zenital e Sombra de Oclusão */
     .bg-slate-900,
     .bg-slate-900\/95,
     .bg-slate-900\/90,
     .bg-slate-900\/80 {
-      background-color: #0f172a !important;
+      background-color: #0e1526 !important;
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2) !important;
+      border-color: #223048 !important;
+      box-shadow: 
+        0 12px 28px -4px rgba(0, 0, 0, 0.78),
+        0 6px 12px -2px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.7) !important;
     }
 
-    /* Sub-containers internos, inputs e consoles corporativos sólidos */
-    .bg-slate-900 border border-slate-800,
+    /* 2. Poços e Cavidades Rebaixadas 3D (Debossed Wells para Terminais, Inputs, Tabelas e Monitores) */
     .bg-slate-950,
     .bg-slate-950\/90,
     .bg-slate-950\/80,
     .bg-slate-950\/70,
     .bg-slate-950\/60 {
-      background-color: #070b14 !important;
+      background-color: #060912 !important;
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+      border-color: #1a2538 !important;
+      box-shadow: 
+        inset 0 4px 8px rgba(0, 0, 0, 0.9),
+        inset 0 1px 2px rgba(0, 0, 0, 0.95),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.04),
+        0 1px 1px rgba(255, 255, 255, 0.02) !important;
     }
 
-    /* Bordas Corporativas Sólidas e Precisas */
+    /* 3. Bordas Físicas Industriais com Contraste Preciso e Nítido */
     .border-slate-800,
     .border-slate-800\/80,
     .border-slate-800\/90 {
-      border-color: #1e293b !important;
+      border-color: #223048 !important;
+    }
+    .border-slate-700 {
+      border-color: #334460 !important;
     }
 
-    /* Cards e botões em tema corporativo elegante */
+    /* Barra Superior com degrau 3D de relevo estrutural */
+    header.bg-slate-900 {
+      border-bottom: 1px solid #1a2538 !important;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.75), inset 0 -1px 0 rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    }
+
+    /* 4. Botões e Cards Interativos com Relevo Tátil Físico 3D (Press-Button Response) */
     .btn-card {
-      background-color: #0f172a !important;
+      background: linear-gradient(180deg, #141f33 0%, #0d1626 100%) !important;
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-      border-color: #1e293b !important;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25) !important;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      border: 1px solid #2b3d5c !important;
+      border-top: 1px solid #455d85 !important;
+      border-bottom: 2px solid #070c16 !important;
+      box-shadow: 
+        0 4px 8px -1px rgba(0, 0, 0, 0.65),
+        0 2px 4px -2px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.6) !important;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
     .btn-card:hover {
-      background-color: #1e293b !important;
-      border-color: #334155 !important;
+      background: linear-gradient(180deg, #1a2740 0%, #101b2e 100%) !important;
+      border-color: #3b5078 !important;
+      border-top-color: #5c79a8 !important;
       transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35) !important;
+      box-shadow: 
+        0 8px 16px -2px rgba(0, 0, 0, 0.8),
+        0 4px 8px -1px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.6) !important;
+    }
+    .btn-card:active {
+      transform: translateY(1px) !important;
+      border-bottom-width: 1px !important;
+      box-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.85),
+        inset 0 2px 5px rgba(0, 0, 0, 0.9) !important;
     }
 
-    /* ================= DESIGN INDUSTRIAL SÓLIDO (MATTE CARBON SCADA - ZERO VIDRO LEITOSO) ================= */
-    /* Menus flutuantes, seletores, gavetas e modais com acabamento sólido, opaco, alto contraste e sem blur */
+    /* 5. Inputs, Seletores e Textareas em Rebaixo Usinado Industrial */
+    input[type="text"],
+    input[type="number"],
+    input[type="search"],
+    input[type="password"],
+    select,
+    textarea {
+      box-shadow: 
+        inset 0 2px 5px rgba(0, 0, 0, 0.85),
+        inset 0 1px 1px rgba(0, 0, 0, 0.95),
+        0 1px 0 rgba(255, 255, 255, 0.04) !important;
+    }
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    input[type="search"]:focus,
+    input[type="password"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #06b6d4 !important;
+      box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.75),
+        0 0 0 2px rgba(6, 182, 212, 0.25),
+        0 3px 8px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    /* 6. Modais, Popovers, Drawers e Paineis Flutuantes com Profundidade 3D Pesada (Zero Vidro) */
     #function-autocomplete-dropdown,
     #recipients-dropdown-popover,
     .dropdown-glass-menu,
@@ -328,8 +389,13 @@
       background-color: #0b1120 !important;
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-      border: 1px solid #334155 !important;
-      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+      border: 1px solid #334460 !important;
+      border-top: 1px solid #4e6790 !important;
+      box-shadow: 
+        0 30px 60px -12px rgba(0, 0, 0, 0.98),
+        0 14px 28px -6px rgba(0, 0, 0, 0.9),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.8) !important;
     }
 
     body.ui-inspector-active,
@@ -385,17 +451,21 @@
     body.theme-scada-industrial::before {
       background-image: radial-gradient(rgba(255, 176, 0, 0.12) 1px, transparent 1px) !important;
     }
-    body.theme-scada-industrial .bg-slate-900 border border-slate-800,
     body.theme-scada-industrial .bg-slate-900,
     body.theme-scada-industrial .bg-slate-900\/95,
     body.theme-scada-industrial .bg-slate-900\/90,
-    body.theme-scada-industrial .bg-slate-900\/80,
+    body.theme-scada-industrial .bg-slate-900\/80 {
+      background-color: #0c101c !important;
+      border-color: rgba(255, 176, 0, 0.45) !important;
+      border-top-color: rgba(255, 176, 0, 0.7) !important;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 176, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.8) !important;
+    }
     body.theme-scada-industrial .bg-slate-950,
     body.theme-scada-industrial .bg-slate-950\/90,
     body.theme-scada-industrial .bg-slate-950\/80 {
-      background-color: #080c14 !important;
-      border-color: rgba(255, 176, 0, 0.35) !important;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 176, 0, 0.15) !important;
+      background-color: #050810 !important;
+      border-color: rgba(255, 176, 0, 0.25) !important;
+      box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.95), inset 0 1px 0 rgba(255, 176, 0, 0.1) !important;
     }
     body.theme-scada-industrial h1,
     body.theme-scada-industrial h2,
