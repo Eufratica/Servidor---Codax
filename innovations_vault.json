@@ -1,5 +1,115 @@
 [
   {
+    "id": "inn-proc-6c4fa442",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Micro-Osciloscópio Glassmorphism de Distribuição Harmônica de Tensão e Corrente",
+    "source": "Design System Sci-Fi & Glassmorphism",
+    "summary": "Renderiza gráficos polares interativos exibindo a defasagem angular e harmônicas elétricas dos medidores. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Micro-Osciloscópio Glassmorphism de Distribuição Harmônica de Tensão e Corrente': Renderiza gráficos polares interativos exibindo a defasagem angular e harmônicas elétricas dos medidores. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "16:06:44"
+  },
+  {
+    "id": "inn-proc-a383adca",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Validador Cripto de Assinatura Digital Ed25519 em Comandos Críticos",
+    "source": "Pesquisa de Resiliência de Redes Sem Fio",
+    "summary": "Valida uma assinatura criptográfica nos métodos perigosos (ex: mupgrade, mwifi_restart) antes da execução. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Validador Cripto de Assinatura Digital Ed25519 em Comandos Críticos': Valida uma assinatura criptográfica nos métodos perigosos (ex: mupgrade, mwifi_restart) antes da execução. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "16:05:29"
+  },
+  {
+    "id": "inn-proc-3449bae4",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Otimizador RF de Beaconing Anti-Desvio de Fase",
+    "source": "Observabilidade Industrial de Alto Desempenho",
+    "summary": "Sincroniza os pulsos de sincronismo das placas para manter a malha coesa sem atrasos temporais. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Otimizador RF de Beaconing Anti-Desvio de Fase': Sincroniza os pulsos de sincronismo das placas para manter a malha coesa sem atrasos temporais. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "16:04:14"
+  },
+  {
+    "id": "gh-541535266",
+    "category": "app",
+    "badge": "🌐 Engenharia FreeRTOS (★ 2)",
+    "title": "Referência Open-Source: valentinad-vtool/SEGGER_SystemView_trace_example",
+    "source": "https://github.com/valentinad-vtool/SEGGER_SystemView_trace_example",
+    "summary": "Tracing FreeRTOS code for NXP rt1170 board  and ST nucleo-f413zh board — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'valentinad-vtool/SEGGER_SystemView_trace_example' (Tracing FreeRTOS code for NXP rt1170 board  and ST nucleo-f413zh board) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "16:02:58"
+  },
+  {
+    "id": "inn-proc-ad66d4bb",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Micro-Osciloscópio Glassmorphism de Relação Sinal-Ruído (SNR) e Densidade de Tráfego",
+    "source": "Observabilidade Industrial de Alto Desempenho",
+    "summary": "Desenha uma grade luminosa de dispersão mostrando quais nós têm o sinal mais limpo na bancada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Micro-Osciloscópio Glassmorphism de Relação Sinal-Ruído (SNR) e Densidade de Tráfego': Desenha uma grade luminosa de dispersão mostrando quais nós têm o sinal mais limpo na bancada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "16:01:43"
+  },
+  {
+    "id": "gh-191457249",
+    "category": "design",
+    "badge": "🌐 Topologia de Redes (★ 244)",
+    "title": "Referência Open-Source: Vadims06/topolograph",
+    "source": "https://github.com/Vadims06/topolograph",
+    "summary": "Topolograph.com is an online project which can visualize OSPF/ISIS topology based on LSDB output from a single network device. Then you can  — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'Vadims06/topolograph' (Topolograph.com is an online project which can visualize OSPF/ISIS topology based on LSDB output from a single network device. Then you can not only see (and check) the shortest path from source to destination, but also see the outcome from link or node failure along the path to the destination.) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "16:00:27"
+  },
+  {
+    "id": "inn-proc-ef967b54",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Otimizador RF de Coexistência Wi-Fi e Bluetooth BLE",
+    "source": "Observabilidade Industrial de Alto Desempenho",
+    "summary": "Gerencia o tempo compartilhado da antena 2.4GHz para permitir comissionamento BLE simultâneo à malha mesh. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Otimizador RF de Coexistência Wi-Fi e Bluetooth BLE': Gerencia o tempo compartilhado da antena 2.4GHz para permitir comissionamento BLE simultâneo à malha mesh. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "15:59:12"
+  },
+  {
+    "id": "inn-proc-a81aa32f",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Widget Sci-Fi HUD de Enlaces de Rádio com Gravidade Baseada em RSSI",
+    "source": "Engenharia ESP-IDF 5.x & Protocolo MESH",
+    "summary": "Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Widget Sci-Fi HUD de Enlaces de Rádio com Gravidade Baseada em RSSI': Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "15:57:57"
+  },
+  {
+    "id": "inn-proc-78d41672",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Auditor Autônomo de Desgaste da Flash SPI por Ciclos NVS",
+    "source": "Observabilidade Industrial de Alto Desempenho",
+    "summary": "Rastreia a quantidade de gravações nas partições do ESP32 para prever a vida útil da memória não-volátil. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Auditor Autônomo de Desgaste da Flash SPI por Ciclos NVS': Rastreia a quantidade de gravações nas partições do ESP32 para prever a vida útil da memória não-volátil. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "15:56:42"
+  },
+  {
+    "id": "inn-proc-3f71944d",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Matriz Interativa de Enlaces de Rádio com Gravidade Baseada em RSSI",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Matriz Interativa de Enlaces de Rádio com Gravidade Baseada em RSSI': Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "15:55:27"
+  },
+  {
+    "id": "inn-proc-59ce97f5",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Filtro de Anomalias de Derivação de Relógio RTC vs NTP",
+    "source": "Engenharia ESP-IDF 5.x & Protocolo MESH",
+    "summary": "Monitora a diferença de microssegundos no timestamp dos medidores para garantir perfeita sincronia de faturamento. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Filtro de Anomalias de Derivação de Relógio RTC vs NTP': Monitora a diferença de microssegundos no timestamp dos medidores para garantir perfeita sincronia de faturamento. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "15:54:12"
+  },
+  {
     "id": "inn-proc-d2b34c67",
     "category": "design",
     "badge": "🎨 Visualização Sci-Fi & UX",

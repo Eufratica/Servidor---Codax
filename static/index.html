@@ -216,22 +216,16 @@
       -webkit-font-smoothing: subpixel-antialiased !important;
     }
 
-    /* Elimina o embaçado do backdrop-filter da GPU ao aplicar Zoom no Canvas e confere relevo 3D tátil aos nós */
+    /* Elimina o embaçado do backdrop-filter da GPU ao aplicar Zoom no Canvas e confere relevo Modern Dark aos nós */
     #tree-stage .bg-slate-900,
-    #tree-stage .bg-slate-900\/90,
-    #tree-stage .bg-slate-900\/80,
-    #tree-stage .bg-slate-900\/60,
-    #tree-stage .bg-slate-900\/50,
+    #tree-stage [class*="bg-slate-900/"],
     #tree-stage .bg-slate-950,
-    #tree-stage .bg-slate-950\/90,
-    #tree-stage .bg-slate-950\/80,
-    #tree-stage .bg-slate-950\/70,
-    #tree-stage .bg-slate-950\/40 {
+    #tree-stage [class*="bg-slate-950/"] {
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-      background-color: #0b1120 !important;
-      border: 1px solid #2b3d5c !important;
-      box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.85), 0 4px 10px -2px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 -1px 0 rgba(0, 0, 0, 0.7) !important;
+      background-color: #070b13 !important;
+      border: 1px solid #182234 !important;
+      box-shadow: 0 8px 20px -3px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
     }
 
     /* Vetorização nítida de precisão geométrica nos conduítes e sparklines */
@@ -255,110 +249,149 @@
       animation: treeLaserStream 1.9s linear infinite;
     }
 
-    /* ================= DESIGN SYSTEM INDUSTRIAL SCADA 3D (CHANFRO MECÂNICO, PROFUNDIDADE TÁTIL & ZERO VIDRO) ================= */
+    /* ================= [DARK.DESIGN] MODERN DEEP DARK OBSIDIAN DESIGN SYSTEM (ZERO VIDRO / ZERO TRANSLUCIDEZ) ================= */
+    
+    /* 0. Erradicação Universal Estrita de Qualquer Efeito de Vidro ou Desfoque */
+    *, *::before, *::after {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    /* 1. Canvas / Fundo Geral da Aplicação (Deep Dark Obsidian Grounding) */
     body {
-      background-color: #080c16;
+      background-color: #030508 !important;
       background-image: 
-        radial-gradient(circle at 50% 0%, rgba(30, 41, 59, 0.35) 0%, transparent 60%),
-        linear-gradient(180deg, #0a0f1d 0%, #050811 100%);
-      color: #e2e8f0;
-      background-attachment: fixed;
+        radial-gradient(ellipse 90% 55% at 50% -15%, rgba(15, 23, 42, 0.45), transparent 70%),
+        linear-gradient(180deg, #030508 0%, #010204 100%) !important;
+      color: #f1f5f9 !important;
+      background-attachment: fixed !important;
     }
 
-    /* 1. Painéis Principais Elevados 3D (Solid Chiseled SCADA Panels) com Chanfro Zenital e Sombra de Oclusão */
+    /* 2. Painéis Principais & Cards Elevados (Deep Matte Carbon Sólido 100% Opaco) */
     .bg-slate-900,
-    .bg-slate-900\/95,
-    .bg-slate-900\/90,
-    .bg-slate-900\/80 {
-      background-color: #0e1526 !important;
+    [class*="bg-slate-900/"] {
+      background-color: #080c14 !important;
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-      border-color: #223048 !important;
+      border-color: #131b28 !important;
       box-shadow: 
-        0 12px 28px -4px rgba(0, 0, 0, 0.78),
-        0 6px 12px -2px rgba(0, 0, 0, 0.65),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.7) !important;
+        0 4px 20px -2px rgba(0, 0, 0, 0.85),
+        0 2px 6px -1px rgba(0, 0, 0, 0.75),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
     }
 
-    /* 2. Poços e Cavidades Rebaixadas 3D (Debossed Wells para Terminais, Inputs, Tabelas e Monitores) */
+    /* 3. Sub-containers, Cabeçalhos e Superfícies Intermediárias Sólidas */
+    .bg-slate-800,
+    [class*="bg-slate-800/"] {
+      background-color: #0d121e !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      border-color: #172235 !important;
+    }
+
+    /* 4. Poços Rebaixados, Terminais CRT, Tabelas e Displays (Preto Jet Absoluto Debossed) */
     .bg-slate-950,
-    .bg-slate-950\/90,
-    .bg-slate-950\/80,
-    .bg-slate-950\/70,
-    .bg-slate-950\/60 {
-      background-color: #060912 !important;
+    [class*="bg-slate-950/"] {
+      background-color: #020306 !important;
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-      border-color: #1a2538 !important;
+      border-color: #101622 !important;
       box-shadow: 
-        inset 0 4px 8px rgba(0, 0, 0, 0.9),
-        inset 0 1px 2px rgba(0, 0, 0, 0.95),
-        inset 0 -1px 0 rgba(255, 255, 255, 0.04),
-        0 1px 1px rgba(255, 255, 255, 0.02) !important;
+        inset 0 2px 6px rgba(0, 0, 0, 0.95),
+        inset 0 1px 1px rgba(0, 0, 0, 0.98),
+        0 1px 0 rgba(255, 255, 255, 0.02) !important;
     }
 
-    /* 3. Bordas Físicas Industriais com Contraste Preciso e Nítido */
+    /* 5. Erradicação de Transparência em Badges de Status do Tailwind (100% Sólidos & Vibrantes) */
+    [class*="bg-emerald-950/"] { background-color: #021a12 !important; border-color: #05402a !important; color: #34d399 !important; }
+    [class*="bg-cyan-950/"]    { background-color: #031a24 !important; border-color: #07435b !important; color: #22d3ee !important; }
+    [class*="bg-indigo-950/"]  { background-color: #0a0e29 !important; border-color: #1e2868 !important; color: #a5b4fc !important; }
+    [class*="bg-purple-950/"]  { background-color: #150826 !important; border-color: #3b1766 !important; color: #c084fc !important; }
+    [class*="bg-amber-950/"]   { background-color: #1c1003 !important; border-color: #4d2d09 !important; color: #fbbf24 !important; }
+    [class*="bg-rose-950/"]    { background-color: #22050c !important; border-color: #551120 !important; color: #fb7185 !important; }
+    [class*="bg-blue-950/"]    { background-color: #05142b !important; border-color: #0c3169 !important; color: #60a5fa !important; }
+    [class*="bg-slate-700/"]   { background-color: #111828 !important; border-color: #1c273c !important; }
+
+    /* 6. Micro-Bordas Cirúrgicas Modernas de 1px (Hairline Definition) */
     .border-slate-800,
-    .border-slate-800\/80,
-    .border-slate-800\/90 {
-      border-color: #223048 !important;
+    [class*="border-slate-800/"] {
+      border-color: #131b28 !important;
     }
-    .border-slate-700 {
-      border-color: #334460 !important;
+    .border-slate-700,
+    [class*="border-slate-700/"] {
+      border-color: #1c273c !important;
     }
 
-    /* Barra Superior com degrau 3D de relevo estrutural */
+    /* 7. Barra Superior de Comando e Bancada (Modern Dark Shelf) */
     header.bg-slate-900 {
-      border-bottom: 1px solid #1a2538 !important;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.75), inset 0 -1px 0 rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+      background-color: #04070e !important;
+      border-bottom: 1px solid #131b28 !important;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+    }
+    header button,
+    .top-action-btn {
+      background-color: #080c15 !important;
+      border: 1px solid #141c2c !important;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    header button:hover,
+    .top-action-btn:hover {
+      background-color: #0e1422 !important;
+      border-color: #223048 !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+    }
+    header button:active,
+    .top-action-btn:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.9) !important;
     }
 
-    /* 4. Botões e Cards Interativos com Relevo Tátil Físico 3D (Press-Button Response) */
+    /* 8. Botões Táteis Modernos (Tactile Dark Micro-Press Buttons) */
     .btn-card {
-      background: linear-gradient(180deg, #141f33 0%, #0d1626 100%) !important;
+      background: linear-gradient(180deg, #0e1422 0%, #070a13 100%) !important;
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-      border: 1px solid #2b3d5c !important;
-      border-top: 1px solid #455d85 !important;
-      border-bottom: 2px solid #070c16 !important;
+      border: 1px solid #182234 !important;
+      border-top: 1px solid #263652 !important;
+      border-bottom: 2px solid #030509 !important;
       box-shadow: 
-        0 4px 8px -1px rgba(0, 0, 0, 0.65),
-        0 2px 4px -2px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.6) !important;
+        0 2px 6px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.5) !important;
       transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
     .btn-card:hover {
-      background: linear-gradient(180deg, #1a2740 0%, #101b2e 100%) !important;
-      border-color: #3b5078 !important;
-      border-top-color: #5c79a8 !important;
+      background: linear-gradient(180deg, #141c2c 0%, #0a0f19 100%) !important;
+      border-color: #263750 !important;
+      border-top-color: #3b5076 !important;
       transform: translateY(-1px);
       box-shadow: 
-        0 8px 16px -2px rgba(0, 0, 0, 0.8),
-        0 4px 8px -1px rgba(0, 0, 0, 0.6),
-        inset 0 1px 0 rgba(255, 255, 255, 0.18),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.6) !important;
+        0 6px 14px -2px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
     }
     .btn-card:active {
       transform: translateY(1px) !important;
       border-bottom-width: 1px !important;
       box-shadow: 
-        0 1px 2px rgba(0, 0, 0, 0.85),
-        inset 0 2px 5px rgba(0, 0, 0, 0.9) !important;
+        0 1px 2px rgba(0, 0, 0, 0.9),
+        inset 0 2px 4px rgba(0, 0, 0, 0.9) !important;
     }
 
-    /* 5. Inputs, Seletores e Textareas em Rebaixo Usinado Industrial */
+    /* 9. Inputs, Seletores e Textareas em Cavidade Usinada Jet-Black */
     input[type="text"],
     input[type="number"],
     input[type="search"],
     input[type="password"],
     select,
     textarea {
+      background-color: #020306 !important;
+      border: 1px solid #131b28 !important;
       box-shadow: 
-        inset 0 2px 5px rgba(0, 0, 0, 0.85),
-        inset 0 1px 1px rgba(0, 0, 0, 0.95),
-        0 1px 0 rgba(255, 255, 255, 0.04) !important;
+        inset 0 2px 5px rgba(0, 0, 0, 0.95),
+        0 1px 0 rgba(255, 255, 255, 0.02) !important;
+      color: #f1f5f9 !important;
     }
     input[type="text"]:focus,
     input[type="number"]:focus,
@@ -368,12 +401,13 @@
     textarea:focus {
       border-color: #06b6d4 !important;
       box-shadow: 
-        inset 0 2px 4px rgba(0, 0, 0, 0.75),
-        0 0 0 2px rgba(6, 182, 212, 0.25),
-        0 3px 8px rgba(0, 0, 0, 0.6) !important;
+        inset 0 2px 4px rgba(0, 0, 0, 0.85),
+        0 0 0 1px #06b6d4,
+        0 2px 6px rgba(0, 0, 0, 0.6) !important;
+      outline: none !important;
     }
 
-    /* 6. Modais, Popovers, Drawers e Paineis Flutuantes com Profundidade 3D Pesada (Zero Vidro) */
+    /* 10. Modais, Popovers, Gavetas Laterais e Caixas Flutuantes (Solid Dark Theater) */
     #function-autocomplete-dropdown,
     #recipients-dropdown-popover,
     .dropdown-glass-menu,
@@ -385,17 +419,29 @@
     #ui-inspector-popover,
     #innovation-radar-popover,
     #innovation-drawer-panel,
+    #cockpit-drawer-panel,
     .glass-toast-card {
-      background-color: #0b1120 !important;
+      background-color: #070b13 !important;
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
-      border: 1px solid #334460 !important;
-      border-top: 1px solid #4e6790 !important;
+      border: 1px solid #1a2538 !important;
+      border-top: 1px solid #2b3d5b !important;
       box-shadow: 
-        0 30px 60px -12px rgba(0, 0, 0, 0.98),
-        0 14px 28px -6px rgba(0, 0, 0, 0.9),
-        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        0 28px 60px -10px rgba(0, 0, 0, 0.99),
+        0 12px 24px -5px rgba(0, 0, 0, 0.92),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07),
         inset 0 -1px 0 rgba(0, 0, 0, 0.8) !important;
+    }
+
+    /* 11. Overlays de Fundo de Modais (Solid Dark Dimming sem Efeito Vidro) */
+    #modal-ota,
+    #modal-return-inspector,
+    #modal-glass-confirm,
+    #device-cockpit-drawer > div:first-child,
+    #modal-topology-timeline > div:first-child {
+      background-color: rgba(1, 2, 4, 0.93) !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
     }
 
     body.ui-inspector-active,
@@ -452,20 +498,17 @@
       background-image: radial-gradient(rgba(255, 176, 0, 0.12) 1px, transparent 1px) !important;
     }
     body.theme-scada-industrial .bg-slate-900,
-    body.theme-scada-industrial .bg-slate-900\/95,
-    body.theme-scada-industrial .bg-slate-900\/90,
-    body.theme-scada-industrial .bg-slate-900\/80 {
-      background-color: #0c101c !important;
-      border-color: rgba(255, 176, 0, 0.45) !important;
-      border-top-color: rgba(255, 176, 0, 0.7) !important;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 176, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.8) !important;
+    body.theme-scada-industrial [class*="bg-slate-900/"] {
+      background-color: #060910 !important;
+      border-color: rgba(255, 176, 0, 0.4) !important;
+      border-top-color: rgba(255, 176, 0, 0.65) !important;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 176, 0, 0.2) !important;
     }
     body.theme-scada-industrial .bg-slate-950,
-    body.theme-scada-industrial .bg-slate-950\/90,
-    body.theme-scada-industrial .bg-slate-950\/80 {
-      background-color: #050810 !important;
-      border-color: rgba(255, 176, 0, 0.25) !important;
-      box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.95), inset 0 1px 0 rgba(255, 176, 0, 0.1) !important;
+    body.theme-scada-industrial [class*="bg-slate-950/"] {
+      background-color: #020306 !important;
+      border-color: rgba(255, 176, 0, 0.2) !important;
+      box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.95), inset 0 1px 0 rgba(255, 176, 0, 0.08) !important;
     }
     body.theme-scada-industrial h1,
     body.theme-scada-industrial h2,
@@ -1415,7 +1458,7 @@
                         </div>
                       </div>
 
-                      <!-- Seção Pílulas de Seleção Rápida (Dentro do Vidro Borrado!) -->
+                      <!-- Seção Pílulas de Seleção Rápida (Chips Sólidos) -->
                       <div class="border-t border-slate-800/80 pt-2.5">
                         <div class="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                           <span>Atalhos Rápidos (Chips)</span>
@@ -3707,7 +3750,7 @@
               <option value="">Alternar Codax...</option>
             </select>
 
-            <!-- Botão com Setinha: Comandos Rápidos MQTT (Abre menu Dropdown Glassmorphism) -->
+            <!-- Botão com Setinha: Comandos Rápidos MQTT (Abre menu Dropdown Modern Dark) -->
             <div class="relative">
               <button id="cockpit-mqtt-menu-btn" onclick="toggleCockpitMqttDropdown(event)" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-md shadow-indigo-600/30">
                 <i data-lucide="zap" class="w-3.5 h-3.5"></i>
@@ -3715,7 +3758,7 @@
                 <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
               </button>
 
-              <!-- Dropdown Flutuante em Vidro Fosco Glassmorphism (Setinha do Codax) -->
+              <!-- Dropdown Flutuante Sólido Modern Dark (Setinha do Codax) -->
               <div id="cockpit-mqtt-dropdown" class="dropdown-glass-menu absolute right-0 mt-2 w-80 rounded-2xl p-3 shadow-2xl border hidden z-50 space-y-3">
                 
                 <!-- Seção 1: Query -->
@@ -4555,7 +4598,7 @@
     </div>
   </div>
 
-  <!-- ================= MODAL DE CONFIRMAÇÃO DE RISCO (GLASSMORPHISM) ================= -->
+  <!-- ================= MODAL DE CONFIRMAÇÃO DE RISCO (MODERN DARK SÓLIDO) ================= -->
   <div id="modal-glass-confirm" class="fixed inset-0 bg-slate-950/65 flex items-center justify-center p-4 z-[60] hidden select-none">
     <div class="bg-slate-900 border border-slate-700/90 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col">
       
@@ -4645,10 +4688,10 @@
     </div>
   </div>
 
-  <!-- ================= CONTAINER DE NOTIFICAÇÕES / TOASTS EM VIDRO FOSCO ================= -->
+  <!-- ================= CONTAINER DE NOTIFICAÇÕES / TOASTS MODERN DARK ================= -->
   <div id="glass-toast-container" class="fixed top-20 right-5 z-[70] flex flex-col space-y-2.5 max-w-sm w-full pointer-events-none"></div>
 
-  <!-- ================= INSPETOR VISUAL IA (CONTORNO + CAIXA FLUTUANTE EM VIDRO FOSCO) ================= -->
+  <!-- ================= INSPETOR VISUAL IA (CONTORNO + CAIXA FLUTUANTE MODERN DARK) ================= -->
   <!-- Contorno Luminoso do Elemento Sob o Mouse / Selecionado -->
   <div id="ui-inspector-highlight" class="fixed pointer-events-none z-[80] hidden border-2 border-indigo-400 bg-indigo-500/10 rounded-xl transition-all duration-75 shadow-[0_0_20px_rgba(99,102,241,0.35)]">
     <div id="ui-inspector-badge" class="absolute -top-6 left-0 bg-indigo-600/95 text-white text-[10px] font-mono font-bold px-2 py-0.5 rounded-md shadow-lg whitespace-nowrap border border-indigo-300/50">
@@ -5308,7 +5351,7 @@
     </div>
   </div>
 
-  <!-- Mini-Caixinha Flutuante de Vidro ao Clicar ou Selecionar Área -->
+  <!-- Mini-Caixinha Flutuante Modern Dark ao Clicar ou Selecionar Área -->
   <div id="ui-inspector-popover" class="fixed z-[85] hidden w-80 sm:w-96 rounded-2xl border border-slate-600/90 p-3.5 space-y-3 text-xs select-none">
     
     <!-- Cabeçalho da Caixa Flutuante -->
@@ -5457,7 +5500,7 @@
       }, 4200);
     }
 
-    // Substitui o alert nativo do navegador pelo popup em vidro fosco
+    // Substitui o alert nativo do navegador pelo popup Modern Dark Toast
     window.alert = showGlassToast;
 
     let allMessages = [];

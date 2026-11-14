@@ -112,13 +112,16 @@ flowchart TD
 
 ---
 
-## 4. Design System Industrial SCADA 3D (Solid Matte Carbon & Relevo Mecânico)
-- **Zero Glassmorphism**: Regra universal estrita (`backdrop-filter: none !important;` e `-webkit-backdrop-filter: none !important;`). Não são toleradas transparências leitosas, borrões ou fundos translúcidos difusos.
-- **Chanfro Mecânico Zenital & Sombra de Corte**:
-  - Painéis principais (`.bg-slate-900`) usam relevo chanfrado com highlight zenital superior (`inset 0 1px 0 rgba(255, 255, 255, 0.08)`), corte inferior de sombra mecânica (`inset 0 -1px 0 rgba(0, 0, 0, 0.7)`) e oclusão de ambiente multicamada (`0 12px 28px -4px rgba(0, 0, 0, 0.78), 0 6px 12px -2px rgba(0, 0, 0, 0.65)`).
-- **Poços Rebaixados Industriais (Debossed Wells)**:
-  - Consoles de terminal, inputs, tabelas e monitores CRT (`.bg-slate-950`) possuem profundidade embutida com sombreamento interno duplo (`inset 0 4px 8px rgba(0, 0, 0, 0.9), inset 0 1px 2px rgba(0, 0, 0, 0.95)`), simulando cavidades usinadas em painéis de aço de subestação.
-- **Botões Táteis 3D com Resposta Física de Pressionamento**:
-  - `.btn-card` e controles de ação possuem iluminação direcional sólida (`border-top: 1px solid #455d85`, degrau inferior `border-bottom: 2px solid #070c16`) e afundamento mecânico tátil no estado ativo (`:active { transform: translateY(1px); inset 0 2px 5px rgba(0,0,0,0.9); }`).
-- **Bordas Industriais Físicas**:
-  - Bordas primárias em `#223048` e secundárias em `#334460`, garantindo alto contraste e contornos cirúrgicos sobre telas 4K/8K de bancada.
+## 4. Modern Deep Dark Obsidian Design System (Inspirado em dark.design & Behance)
+- **Zero Glassmorphism & Erradicação Total de Translucidez**: Regra universal estrita (`backdrop-filter: none !important;` e `-webkit-backdrop-filter: none !important;`). Nenhuma classe de opacidade fracionária do Tailwind (`bg-.../80`, `/70`, `/60`, etc.) gera canal alfa; todas são forçadas via seletores de atributo a 100% de opacidade sólida.
+- **Hierarquia de Superfícies Ultra-Dark**:
+  - **Fundo / Canvas Geral**: `#030508` com gradiente radial sutil de ancoragem (`radial-gradient(ellipse 90% 55% at 50% -15%, rgba(15, 23, 42, 0.45), transparent 70%)`).
+  - **Painéis Principais & Cards**: `#080c14` (Matte Carbon Sólido) com micro-borda cirúrgica `#131b28` e hairline superior zenital (`inset 0 1px 0 rgba(255, 255, 255, 0.05)`).
+  - **Sub-containers & Headers**: `#0d121e` sólido com borda `#172235`.
+  - **Poços Rebaixados & Terminais CRT**: `#020306` (Preto Jet Absoluto) com rebaixo debossed profundo (`inset 0 2px 6px rgba(0, 0, 0, 0.95)`).
+  - **Badges de Status Sólidos**: Tons ricos escuros (`#021a12`, `#031a24`, `#0a0e29`, `#150826`, `#1c1003`, `#22050c`) com texto neon fosforescente de alto contraste.
+- **Botões Táteis Modernos (Tactile Micro-Press)**:
+  - `.btn-card` e controles da barra superior com gradiente linear metálico escuro (`#0e1422` a `#070a13`), borda superior iluminada (`#263652`) e resposta física tátil de clique (`:active { transform: translateY(1px); }`).
+- **Modais & Overlays de Foco**:
+  - Caixas flutuantes em `#070b13` com oclusão profunda (`0 28px 60px -10px rgba(0, 0, 0, 0.99)`).
+  - Backdrops de modal escurecidos uniformemente (`rgba(1, 2, 4, 0.93)`), eliminando o aspecto de vidro translúcido.
