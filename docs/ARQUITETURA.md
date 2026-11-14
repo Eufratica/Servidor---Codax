@@ -1,7 +1,7 @@
 # ARQUITETURA.md - Documentação Permanente do Sistema
 
 **Última Atualização**: 2026-11-14  
-**Versão Atual**: `v2.8-pro`  
+**Versão Atual**: `v2.9-pro`  
 **Escopo**: Servidor de Telemetria, Orquestração ESP-MESH e Studio de Observabilidade Industrial da **Ledax Energy**.
 
 ---

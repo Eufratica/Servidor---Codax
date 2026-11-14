@@ -74,7 +74,7 @@ def get_local_ip() -> str:
 LOCAL_IP = get_local_ip()
 
 # ================= FASTAPI & ESTADO GLOBAL =================
-app = FastAPI(title="Codax Mesh IoT & OTA Hub", version="2.8.0")
+app = FastAPI(title="Codax Mesh IoT & OTA Hub", version="2.9.0")
 
 # Servir arquivos de firmware diretamente para download OTA (HTTP GET)
 app.mount("/firmware", StaticFiles(directory=FIRMWARE_DIR), name="firmware")
