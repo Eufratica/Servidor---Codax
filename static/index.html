@@ -10000,17 +10000,22 @@
       renderInnovationsList();
     }
 
-    function copyInnovationPrompt(id) {
-      const item = innovationsList.find(x => x.id === id);
-      if (!item || !item.prompt) {
-        showGlassToast('Prompt não disponível para cópia.', 'error');
+    function copyInnovationPrompt(target) {
+      let item = null;
+      if (typeof target === 'number') {
+        item = innovationsList[target];
+      } else if (typeof target === 'string') {
+        item = innovationsList.find(x => x.id === target) || (Number.isInteger(Number(target)) ? innovationsList[Number(target)] : null);
+      }
+      if (!item) {
+        showGlassToast('Inovação não encontrada para cópia.', 'error');
         return;
       }
 
-      const text = item.prompt;
+      const text = `✨ [INOVAÇÃO CODAX HUB: ${item.title}]\n• Categoria: ${item.badge || item.category}\n• Fonte/Referência: ${item.source || 'Cofre Local'}\n• Pedido de Implementação:\n${item.prompt || item.summary}`;
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(() => {
-          showGlassToast('📋 Prompt copiado para a área de transferência! Cole no chat com a IA.', 'success');
+          showGlassToast('🚀 Prompt copiado com sucesso! Basta colar no chat.', 'success');
         }).catch(() => {
           fallbackCopyText(text);
         });
@@ -10694,14 +10699,6 @@
         });
       }
     });
-
-    function copyInnovationPrompt(idx) {
-      const item = innovationsList[idx];
-      if (!item) return;
-      const text = `✨ [INOVAÇÃO CODAX HUB: ${item.title}]\n• Categoria: ${item.badge}\n• Fonte/Referência: ${item.source}\n• Pedido de Implementação:\n${item.prompt}`;
-      navigator.clipboard.writeText(text);
-      showGlassToast('🚀 Prompt da Inovação copiado!\nBasta dar Ctrl + V no chat para eu implementar agora.');
-    }
 
     // =========================================================================
     // [INOVAÇÃO CODAX HUB 2.8 PRO] RADAR SCI-FI LAB & OBSERVABILIDADE DE BORDA

@@ -1,5 +1,86 @@
 [
   {
+    "id": "live-rssi-50b0",
+    "category": "app",
+    "badge": "🧠 Diagnóstico ao Vivo",
+    "title": "Auditoria de Enlace RF do Nó 3083986350B0 (-55 dBm)",
+    "source": "Métricas em Tempo Real da Bancada",
+    "summary": "O medidor 3083986350B0 está reportando -55 dBm. Podemos calcular o Packet Error Rate (PER) e a margem de fade desse enlace.",
+    "prompt": "Quero implementar uma análise aprofundada de RF para o medidor 3083986350B0: calcule a margem de desvanecimento e plote um indicador de saúde de sinal dedicado para este nó.",
+    "timestamp": "09:32:02"
+  },
+  {
+    "id": "iot-batch-macro",
+    "category": "app",
+    "badge": "⚡ Automação de Bancada",
+    "title": "Macros de Bancada (Sequência de Comandos em 1 Clique)",
+    "source": "Automação de Testes Industriais IoT",
+    "summary": "Permite rodar uma bateria de testes automática (Ping -> Info -> Memory -> Partition) em uma placa nova e gerar um laudo visual de aprovação.",
+    "prompt": "Quero implementar 'Macros de Bancada (Bateria de Testes em 1 Clique)' na aba Ações Rápidas: um botão que dispara sequencialmente ping, info, memory e partition com intervalo de 2s e mostra um checklist de homologação da placa.",
+    "timestamp": "09:30:47"
+  },
+  {
+    "id": "app-mesh-spectral-scan",
+    "category": "app",
+    "badge": "📡 Engenharia RF & Wi-Fi",
+    "title": "Espectrograma de Saturação de Canais 2.4GHz na Bancada",
+    "source": "Análise Espectral ESP32 Promiscuous Mode",
+    "summary": "Identifica ruído e interferência nos 14 canais Wi-Fi da bancada e recomenda automaticamente o melhor canal com menor perda de pacotes.",
+    "prompt": "Quero implementar o 'Espectrograma de Canais RF 2.4GHz': consulte a ocupação de rádio das placas e exiba um gráfico de calor colorido mostrando os canais com menos interferência para configurar a malha.",
+    "timestamp": "09:29:32"
+  },
+  {
+    "id": "live-broker-aws",
+    "category": "app",
+    "badge": "⚡ Broker em Foco",
+    "title": "Otimizador de Throughput para Broker AWS",
+    "source": "Conexão Ativa no Broker AWS",
+    "summary": "Identificamos que o hub está operando em modo AWS. Que tal ativar uma fila local de retenção de pacotes com auto-reconnect resiliente?",
+    "prompt": "Quero implementar o 'Otimizador de Throughput para Broker AWS': adicione monitoramento de taxas de pacotes por segundo (pub/sub) e buffer local de segurança caso o broker oscile.",
+    "timestamp": "09:28:17"
+  },
+  {
+    "id": "live-rssi-5088",
+    "category": "app",
+    "badge": "🧠 Diagnóstico ao Vivo",
+    "title": "Auditoria de Enlace RF do Nó 308398635088 (-22 dBm)",
+    "source": "Métricas em Tempo Real da Bancada",
+    "summary": "O medidor 308398635088 está reportando -22 dBm. Podemos calcular o Packet Error Rate (PER) e a margem de fade desse enlace.",
+    "prompt": "Quero implementar uma análise aprofundada de RF para o medidor 308398635088: calcule a margem de desvanecimento e plote um indicador de saúde de sinal dedicado para este nó.",
+    "timestamp": "09:27:01"
+  },
+  {
+    "category": "design",
+    "badge": "🔮 WebGL & Diagrama de Smith",
+    "title": "Visualizador Vetorial da Matriz de Impedância e Diagrama de Smith Dinâmico",
+    "source": "Engenharia Eletrotécnica Avançada & Gráficos Vetoriais SVG/Canvas",
+    "summary": "Desenha o Diagrama de Smith e o plano de fasores complexos de tensão e corrente trifásica em tempo real, mostrando o ponto de impedância Z = R + jX se deslocando conforme motores e reatores ligam.",
+    "physics_principle": "Mapeamento conforme bilinear da impedância normalizada z = (1 + Gamma)/(1 - Gamma) no círculo unitário do coeficiente de reflexão Gamma. Cálculo de reatância indutiva XL e capacitiva XC em 60Hz.",
+    "bench_impact": "Visualização cirúrgica para engenheiros elétricos entenderem instantaneamente se a bancada está consumindo reativos indutivos ou capacitivos sem depender de tabelas estáticas.",
+    "trl_level": "TRL-9 (Pronto para Produção)",
+    "tags": [
+      "SmithChart",
+      "FasoresTrifasicos",
+      "ImpedanciaComplexa",
+      "SCADAAvancado",
+      "Canvas2D"
+    ],
+    "prompt": "Quero implementar o 'Visualizador de Fasores e Diagrama de Smith Dinâmico' no Cockpit 360°: desenhe um gráfico circular de fasores interativo que ilustra os vetores Va, Vb, Vc e Ia, Ib, Ic com defasagem angular e fator de potência real.",
+    "id": "inn-epic-609a8375",
+    "starred": false,
+    "timestamp": "09:25:54"
+  },
+  {
+    "id": "live-export-csv",
+    "category": "app",
+    "badge": "🧠 Insight da Sua Bancada",
+    "title": "Exportação Rápida de Logs & Retornos (250 pacotes capturados)",
+    "source": "Análise Local do Tráfego MQTT",
+    "summary": "Detectamos tráfego ativo na sua bancada. Que tal um botão para baixar o relatório dos retornos e telemetrias em JSON/CSV com 1 clique?",
+    "prompt": "Adicione um botão 'Baixar Relatório (JSON/CSV)' no Console ao Vivo e em Últimos Retornos para exportar todas as mensagens capturadas na sessão.",
+    "timestamp": "09:25:46"
+  },
+  {
     "category": "rf",
     "badge": "📡 Interferometria RF & Micro-Vibração",
     "title": "Interferometria Espectral de Micro-Vibrações Mecânicas via Harmônicas RF",
