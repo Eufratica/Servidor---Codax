@@ -4217,6 +4217,18 @@
                   <span id="btn-twin-heatmap-label">Mapa Térmico: ON</span>
                 </button>
 
+                <!-- Toggle ESP-Prog Plug & Play -->
+                <button type="button" onclick="toggleTwinEspProg()" id="btn-twin-espprog" class="px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-300 hover:text-emerald-400 transition flex items-center space-x-1.5" title="Conectar ou desconectar o cabo físico e módulo gravador ESP-Prog no conector micro-USB da placa">
+                  <i data-lucide="cable" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  <span id="btn-twin-espprog-label">ESP-Prog: OFF</span>
+                </button>
+
+                <!-- Toggle Fluxo Laser RS485 -->
+                <button type="button" onclick="toggleTwinLaserStream()" id="btn-twin-laser" class="px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-300 hover:text-cyan-400 transition flex items-center space-x-1.5" title="Ativar ou desativar animação do feixe laser de fluxo de dados RS485 para o medidor">
+                  <i data-lucide="activity" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span id="btn-twin-laser-label">Fluxo Laser: ON</span>
+                </button>
+
                 <!-- Presets de Câmera -->
                 <div class="flex items-center bg-slate-900 border border-slate-700 rounded-xl p-0.5">
                   <button type="button" onclick="setTwinCameraView('iso')" title="Visão Isométrica" class="px-2 py-1 rounded-lg text-[10px] font-bold text-slate-300 hover:text-white hover:bg-slate-800">ISO</button>
@@ -4225,9 +4237,9 @@
                 </div>
 
                 <!-- Botão Testar LEDs -->
-                <button type="button" onclick="triggerTwinLedTestPulse()" title="Disparar pulso luminoso de teste nos LEDs onboard" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-md shadow-indigo-950">
+                <button type="button" onclick="triggerTwinLedTestPulse()" title="Disparar pulso luminoso de teste nos LEDs onboard e pinos RS485" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-md shadow-indigo-950">
                   <i data-lucide="zap" class="w-3.5 h-3.5"></i>
-                  <span>Testar LEDs</span>
+                  <span>Testar Sinais</span>
                 </button>
               </div>
             </div>
@@ -4237,6 +4249,24 @@
               
               <!-- Container onde o Three.js renderiza -->
               <div id="digital-twin-canvas-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
+
+              <!-- HUD Holográfico de Pinos em Tempo Real (Canto Superior Direito) -->
+              <div id="twin-pin-inspector-hud" class="absolute top-4 right-4 pointer-events-none font-mono hidden max-w-xs transition-all duration-200">
+                <div class="bg-slate-900/95 border border-cyan-500/50 rounded-xl p-3 space-y-1.5 shadow-2xl text-xs">
+                  <div class="flex items-center justify-between border-b border-slate-800 pb-1.5 gap-2">
+                    <div class="flex items-center space-x-1.5 min-w-0">
+                      <span id="twin-pin-hud-dot" class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shrink-0"></span>
+                      <span id="twin-pin-hud-name" class="font-extrabold text-cyan-300 text-[11px] truncate">GPIO17 (TX2)</span>
+                    </div>
+                    <span id="twin-pin-hud-state" class="text-[9px] px-1.5 py-0.2 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/40 font-bold shrink-0">HIGH (3.3V)</span>
+                  </div>
+                  <div class="text-[10px] text-slate-300 space-y-1">
+                    <div><span class="text-slate-500">Função:</span> <span id="twin-pin-hud-role" class="text-slate-200 font-semibold">RS485 Modbus / NBR 14522 TX</span></div>
+                    <div><span class="text-slate-500">Tensão / Tipo:</span> <span id="twin-pin-hud-type" class="text-amber-300 font-mono">3.3V • Digital Output (Push-Pull)</span></div>
+                    <div><span class="text-slate-500">Tráfego:</span> <span id="twin-pin-hud-traffic" class="text-emerald-400">Ativo • 9600 bps</span></div>
+                  </div>
+                </div>
+              </div>
 
               <!-- HUD Holográfico de Telemetria Flutuante no Canto Superior Esquerdo -->
               <div class="absolute top-4 left-4 pointer-events-none space-y-2 font-mono">
@@ -11034,7 +11064,16 @@
       rxIntensity: 0,
       autoRotate: true,
       heatmapActive: true,
-      currentTemp: 42.5
+      currentTemp: 42.5,
+      espProgConnected: false,
+      laserStreamActive: true,
+      espProgGroup: null,
+      laserTube: null,
+      laserTubeMat: null,
+      packetParticles: [],
+      pinMeshes: [],
+      pinHaloMeshes: [],
+      pulseRs485Pins: null
     };
 
     function openDigitalTwinFromTop() {
@@ -11076,6 +11115,31 @@
       updateTwinHeatmapTexture();
     }
 
+    function toggleTwinEspProg() {
+      if (!window.twin3d) return;
+      window.twin3d.espProgConnected = !window.twin3d.espProgConnected;
+      if (window.twin3d.espProgGroup) {
+        window.twin3d.espProgGroup.visible = window.twin3d.espProgConnected;
+      }
+      const label = document.getElementById('btn-twin-espprog-label');
+      if (label) {
+        label.innerText = `ESP-Prog: ${window.twin3d.espProgConnected ? 'CONECTADO' : 'OFF'}`;
+      }
+      showGlassToast(window.twin3d.espProgConnected
+        ? '🔌 Gravador ESP-Prog acoplado à porta micro-USB: Linhas UART0/JTAG ativas para gravação e telemetria!'
+        : '🔌 Cabo ESP-Prog desconectado da placa.', window.twin3d.espProgConnected ? 'success' : 'info');
+    }
+
+    function toggleTwinLaserStream() {
+      if (!window.twin3d) return;
+      window.twin3d.laserStreamActive = !window.twin3d.laserStreamActive;
+      const label = document.getElementById('btn-twin-laser-label');
+      if (label) {
+        label.innerText = `Fluxo Laser: ${window.twin3d.laserStreamActive ? 'ON' : 'OFF'}`;
+      }
+      showGlassToast(`⚡ Conduíte Laser de dados RS485 para o medidor: ${window.twin3d.laserStreamActive ? 'ATIVADO' : 'PAUSADO'}`, 'info');
+    }
+
     function setTwinCameraView(view) {
       if (!window.twin3d.camera || !window.twin3d.controls) return;
       if (view === 'iso') {
@@ -11092,6 +11156,9 @@
     function triggerTwinLedTestPulse() {
       window.twin3d.txIntensity = 3.5;
       window.twin3d.rxIntensity = 3.5;
+      if (window.twin3d.pulseRs485Pins) {
+        window.twin3d.pulseRs485Pins();
+      }
       const txDot = document.getElementById('twin-led-indicator-tx');
       const rxDot = document.getElementById('twin-led-indicator-rx');
       if (txDot) txDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,1)] animate-ping';
@@ -11100,7 +11167,7 @@
         if (txDot) txDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]';
         if (rxDot) rxDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]';
       }, 600);
-      showGlassToast('⚡ Pulso de teste de RF/MQTT disparado nos LEDs da placa 3D!', 'success');
+      showGlassToast('⚡ Sinais de teste disparados: LEDs onboard, pulso nos pinos GPIO16/17 e feixe Laser RS485!', 'success');
     }
 
     function triggerTwinRxFlash() {
@@ -11319,7 +11386,6 @@
       boardGroup.add(btnBoot);
       boardGroup.add(btnEn);
 
-      const pinMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, metalness: 0.95, roughness: 0.2 });
       const pinBlockMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.8 });
 
       const headerGeo = new THREE.BoxGeometry(4.8, 0.35, 0.28);
@@ -11330,15 +11396,204 @@
       boardGroup.add(headerTop);
       boardGroup.add(headerBottom);
 
+      const pinMeshes = [];
+      const pinHaloMeshes = [];
+
+      // Mapeamento real dos 30 pinos físicos do NodeMCU ESP32 DevKit
+      const pinDefinitions = [
+        // Lado Superior (z = -1.22, 15 pinos de x = -2.1 a +2.1)
+        { name: '3V3', label: '3.3V Power Out', type: 'Alimentação', volt: '3.3V', state: 'HIGH', role: 'Saída Regulada 3.3V LDO', color: 0xef4444, glow: 0.8 },
+        { name: 'EN', label: 'Chip Enable / RST', type: 'Controle', volt: '3.3V', state: 'HIGH', role: 'Reset (Pull-up Ativo)', color: 0xf59e0b, glow: 0.5 },
+        { name: 'VP (GPIO36)', label: 'Sensor VP / ADC1_CH0', type: 'Entrada Analógica', volt: '0.0V', state: 'LOW', role: 'Entrada Analógica Ultra-Low Noise', color: 0x06b6d4, glow: 0.3 },
+        { name: 'VN (GPIO39)', label: 'Sensor VN / ADC1_CH3', type: 'Entrada Analógica', volt: '0.0V', state: 'LOW', role: 'Entrada Analógica Ultra-Low Noise', color: 0x06b6d4, glow: 0.3 },
+        { name: 'GPIO34', label: 'ADC1_CH6 (Input Only)', type: 'Entrada Digital', volt: '0.0V', state: 'LOW', role: 'Entrada de Sinal (Sem Pull-up)', color: 0x64748b, glow: 0.2 },
+        { name: 'GPIO35', label: 'ADC1_CH7 (Input Only)', type: 'Entrada Digital', volt: '0.0V', state: 'LOW', role: 'Entrada de Sinal (Sem Pull-up)', color: 0x64748b, glow: 0.2 },
+        { name: 'GPIO32', label: 'Touch9 / ADC1_CH4', type: 'Capacitivo/Touch', volt: '3.3V', state: 'HIGH', role: 'Sensor Capacitivo Touch / RTC', color: 0x10b981, glow: 0.6 },
+        { name: 'GPIO33', label: 'Touch8 / ADC1_CH5', type: 'Capacitivo/Touch', volt: '0.0V', state: 'LOW', role: 'Sensor Capacitivo Touch / RTC', color: 0x10b981, glow: 0.2 },
+        { name: 'GPIO25', label: 'DAC1 / ADC2_CH8', type: 'Analógico DAC', volt: '1.65V', state: 'HIGH', role: 'Saída DAC 8-bit de Tensão', color: 0x8b5cf6, glow: 0.5 },
+        { name: 'GPIO26', label: 'DAC2 / ADC2_CH9', type: 'Analógico DAC', volt: '0.0V', state: 'LOW', role: 'Saída DAC 8-bit de Tensão', color: 0x8b5cf6, glow: 0.2 },
+        { name: 'GPIO27', label: 'Touch7 / ADC2_CH7', type: 'Capacitivo/GPIO', volt: '3.3V', state: 'HIGH', role: 'Sensor Touch / Linha de Controle', color: 0x10b981, glow: 0.6 },
+        { name: 'GPIO14', label: 'JTAG TMS / HSPI CLK', type: 'JTAG / SPI', volt: '3.3V', state: 'HIGH', role: 'Linha JTAG TMS (ESP-Prog)', color: 0xa855f7, glow: 0.5 },
+        { name: 'GPIO12', label: 'JTAG TDI / MTDI', type: 'JTAG / Strapping', volt: '0.0V', state: 'LOW', role: 'Linha JTAG TDI (ESP-Prog)', color: 0xa855f7, glow: 0.2 },
+        { name: 'GND', label: 'Terra Digital', type: 'Referência', volt: '0.0V', state: 'GND', role: 'Referência Elétrica 0V', color: 0x1e293b, glow: 0.1 },
+        { name: 'VIN (5V)', label: 'Entrada 5V USB/Fonte', type: 'Alimentação', volt: '5.0V', state: 'HIGH', role: 'Alimentação Primária 5V USB', color: 0xd97706, glow: 0.9 },
+
+        // Lado Inferior (z = +1.22, 15 pinos de x = -2.1 a +2.1)
+        { name: 'GPIO13', label: 'JTAG TCK / Touch4', type: 'JTAG / Touch', volt: '3.3V', state: 'HIGH', role: 'Linha JTAG TCK (ESP-Prog)', color: 0xa855f7, glow: 0.5 },
+        { name: 'GPIO9', label: 'SPI D2 (Flash)', type: 'Barramento SPI', volt: '3.3V', state: 'PULSE', role: 'Flash Memory QIO Data 2', color: 0x64748b, glow: 0.4 },
+        { name: 'GPIO10', label: 'SPI D3 (Flash)', type: 'Barramento SPI', volt: '3.3V', state: 'PULSE', role: 'Flash Memory QIO Data 3', color: 0x64748b, glow: 0.4 },
+        { name: 'GPIO11', label: 'SPI CMD (Flash)', type: 'Barramento SPI', volt: '3.3V', state: 'PULSE', role: 'Flash Memory Command Line', color: 0x64748b, glow: 0.4 },
+        { name: 'GPIO6', label: 'SPI CLK (Flash)', type: 'Clock 80MHz', volt: '3.3V', state: 'PULSE', role: 'Flash Memory Clock 80MHz', color: 0x64748b, glow: 0.4 },
+        { name: 'GPIO7', label: 'SPI D0 (Flash)', type: 'Barramento SPI', volt: '3.3V', state: 'PULSE', role: 'Flash Memory QIO Data 0', color: 0x64748b, glow: 0.4 },
+        { name: 'GPIO8', label: 'SPI D1 (Flash)', type: 'Barramento SPI', volt: '3.3V', state: 'PULSE', role: 'Flash Memory QIO Data 1', color: 0x64748b, glow: 0.4 },
+        { name: 'GPIO15', label: 'JTAG TDO / MTDO', type: 'JTAG / Strapping', volt: '0.0V', state: 'LOW', role: 'Linha JTAG TDO (ESP-Prog)', color: 0xa855f7, glow: 0.2 },
+        { name: 'GPIO2', label: 'LED Onboard (Azul)', type: 'Status LED', volt: '3.3V', state: 'PULSE', role: 'Status LED / Strapping Pin', color: 0x3b82f6, glow: 1.0 },
+        { name: 'GPIO0', label: 'Bootloader / Touch1', type: 'Boot / Controle', volt: '3.3V', state: 'HIGH', role: 'Botão BOOT / Linha DTR Gravador', color: 0xf59e0b, glow: 0.7 },
+        { name: 'GPIO4', label: 'Touch0 / ADC2_CH0', type: 'Capacitivo/GPIO', volt: '0.0V', state: 'LOW', role: 'Sensor Capacitivo Touch0', color: 0x10b981, glow: 0.2 },
+        { name: 'GPIO16', label: 'UART2 RX (RS485 RX)', type: 'Comunicação Serial', volt: '3.3V', state: 'PULSE', role: 'Recepção de Medição ABNT / Modbus', color: 0x10b981, glow: 1.2 },
+        { name: 'GPIO17', label: 'UART2 TX (RS485 TX)', type: 'Comunicação Serial', volt: '3.3V', state: 'PULSE', role: 'Transmissão de Comando ABNT / Modbus', color: 0x06b6d4, glow: 1.2 },
+        { name: 'GPIO5', label: 'VSPI CS / RS485 RTS', type: 'Controle Direção', volt: '3.3V', state: 'HIGH', role: 'Controle Direção RS485 Transceiver', color: 0x06b6d4, glow: 0.6 },
+        { name: 'GPIO18', label: 'VSPI SCK', type: 'SPI Geral', volt: '0.0V', state: 'LOW', role: 'Barramento de Expansão SPI', color: 0x64748b, glow: 0.2 }
+      ];
+
       for (let i = 0; i < 15; i++) {
         const xPos = -2.1 + (i * 0.3);
-        const pinGeo = new THREE.BoxGeometry(0.08, 0.6, 0.08);
-        const pinT = new THREE.Mesh(pinGeo, pinMat);
+        const pinDefTop = pinDefinitions[i];
+        const pinDefBot = pinDefinitions[i + 15];
+
+        // Pino Topo
+        const pinTGeo = new THREE.BoxGeometry(0.08, 0.65, 0.08);
+        const pinTMat = new THREE.MeshStandardMaterial({
+          color: pinDefTop.color,
+          metalness: 0.9,
+          roughness: 0.2,
+          emissive: pinDefTop.color,
+          emissiveIntensity: pinDefTop.glow * 0.4
+        });
+        const pinT = new THREE.Mesh(pinTGeo, pinTMat);
         pinT.position.set(xPos, 0.28, -1.22);
-        const pinB = new THREE.Mesh(pinGeo, pinMat);
-        pinB.position.set(xPos, 0.28, 1.22);
+        pinT.userData = pinDefTop;
         boardGroup.add(pinT);
+        pinMeshes.push(pinT);
+
+        const haloTGeo = new THREE.BoxGeometry(0.18, 0.06, 0.18);
+        const haloTMat = new THREE.MeshStandardMaterial({
+          color: pinDefTop.color,
+          emissive: pinDefTop.color,
+          emissiveIntensity: pinDefTop.glow * 0.8
+        });
+        const haloT = new THREE.Mesh(haloTGeo, haloTMat);
+        haloT.position.set(xPos, 0.03, -1.22);
+        boardGroup.add(haloT);
+        pinHaloMeshes.push({ mesh: haloT, def: pinDefTop });
+
+        // Pino Base
+        const pinBGeo = new THREE.BoxGeometry(0.08, 0.65, 0.08);
+        const pinBMat = new THREE.MeshStandardMaterial({
+          color: pinDefBot.color,
+          metalness: 0.9,
+          roughness: 0.2,
+          emissive: pinDefBot.color,
+          emissiveIntensity: pinDefBot.glow * 0.4
+        });
+        const pinB = new THREE.Mesh(pinBGeo, pinBMat);
+        pinB.position.set(xPos, 0.28, 1.22);
+        pinB.userData = pinDefBot;
         boardGroup.add(pinB);
+        pinMeshes.push(pinB);
+
+        const haloBGeo = new THREE.BoxGeometry(0.18, 0.06, 0.18);
+        const haloBMat = new THREE.MeshStandardMaterial({
+          color: pinDefBot.color,
+          emissive: pinDefBot.color,
+          emissiveIntensity: pinDefBot.glow * 0.8
+        });
+        const haloB = new THREE.Mesh(haloBGeo, haloBMat);
+        haloB.position.set(xPos, 0.03, 1.22);
+        boardGroup.add(haloB);
+        pinHaloMeshes.push({ mesh: haloB, def: pinDefBot });
+      }
+
+      // ==========================================
+      // [INOVAÇÃO] CABO & MÓDULO ESP-PROG PLUG & PLAY 3D
+      // ==========================================
+      const espProgGroup = new THREE.Group();
+      espProgGroup.position.set(2.4, 0.2, 0); // Alinhado ao conector micro-USB da placa
+
+      const plugGeo = new THREE.BoxGeometry(0.38, 0.24, 0.6);
+      const plugMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.95, roughness: 0.1 });
+      const plug = new THREE.Mesh(plugGeo, plugMat);
+      espProgGroup.add(plug);
+
+      const bootGeo = new THREE.BoxGeometry(0.55, 0.36, 0.75);
+      const bootMat = new THREE.MeshStandardMaterial({ color: 0x090e17, roughness: 0.7 });
+      const boot = new THREE.Mesh(bootGeo, bootMat);
+      boot.position.set(0.42, 0, 0);
+      espProgGroup.add(boot);
+
+      const cableCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0.7, 0, 0),
+        new THREE.Vector3(1.6, 0.15, -0.4),
+        new THREE.Vector3(2.5, 0.25, -0.85),
+        new THREE.Vector3(3.3, 0.2, -1.2)
+      ]);
+      const cableGeo = new THREE.TubeGeometry(cableCurve, 24, 0.08, 10, false);
+      const cableMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.6 });
+      const cableMesh = new THREE.Mesh(cableGeo, cableMat);
+      espProgGroup.add(cableMesh);
+
+      const progPcbGeo = new THREE.BoxGeometry(1.9, 0.12, 1.3);
+      const progPcbMat = new THREE.MeshStandardMaterial({ color: 0xb91c1c, roughness: 0.5, metalness: 0.2 });
+      const progPcb = new THREE.Mesh(progPcbGeo, progPcbMat);
+      progPcb.position.set(4.25, 0.2, -1.2);
+      espProgGroup.add(progPcb);
+
+      const ftdiGeo = new THREE.BoxGeometry(0.65, 0.14, 0.65);
+      const ftdiMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.8 });
+      const ftdiChip = new THREE.Mesh(ftdiGeo, ftdiMat);
+      ftdiChip.position.set(4.25, 0.3, -1.2);
+      espProgGroup.add(ftdiChip);
+
+      const progLedGeo = new THREE.BoxGeometry(0.1, 0.08, 0.1);
+      const progLedPwrMat = new THREE.MeshStandardMaterial({ color: 0x10b981, emissive: 0x10b981, emissiveIntensity: 1.6 });
+      const progLedPwr = new THREE.Mesh(progLedGeo, progLedPwrMat);
+      progLedPwr.position.set(4.7, 0.3, -0.9);
+      espProgGroup.add(progLedPwr);
+
+      const progLedTxMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xf59e0b, emissiveIntensity: 1.2 });
+      const progLedTx = new THREE.Mesh(progLedGeo, progLedTxMat);
+      progLedTx.position.set(4.7, 0.3, -1.2);
+      espProgGroup.add(progLedTx);
+
+      boardGroup.add(espProgGroup);
+      espProgGroup.visible = Boolean(window.twin3d && window.twin3d.espProgConnected);
+
+      // ==========================================
+      // [INOVAÇÃO] CONDUÍTE LASER DE FLUXO DE DADOS RS485
+      // ==========================================
+      const laserCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(1.35, 0.45, 1.22),  // Pinos GPIO16/17 (RS485 TX/RX)
+        new THREE.Vector3(2.5, 1.2, 1.8),     // Arco elevado pelo ar
+        new THREE.Vector3(3.8, 0.9, 2.5),
+        new THREE.Vector3(5.2, 0.3, 3.2)      // Conector do medidor de energia
+      ]);
+      const laserTubeGeo = new THREE.TubeGeometry(laserCurve, 40, 0.035, 8, false);
+      const laserTubeMat = new THREE.MeshStandardMaterial({
+        color: 0x06b6d4,
+        emissive: 0x06b6d4,
+        emissiveIntensity: 1.2,
+        transparent: true,
+        opacity: 0.8,
+        roughness: 0.2
+      });
+      const laserTube = new THREE.Mesh(laserTubeGeo, laserTubeMat);
+      boardGroup.add(laserTube);
+
+      const packetParticleGeo = new THREE.SphereGeometry(0.08, 8, 8);
+      const packetParticleMat = new THREE.MeshStandardMaterial({
+        color: 0x34d399,
+        emissive: 0x34d399,
+        emissiveIntensity: 2.8
+      });
+      const packetParticles = [];
+      for (let p = 0; p < 6; p++) {
+        const part = new THREE.Mesh(packetParticleGeo, packetParticleMat);
+        boardGroup.add(part);
+        packetParticles.push({
+          mesh: part,
+          offset: p * 0.166
+        });
+      }
+
+      function pulseRs485Pins() {
+        pinHaloMeshes.forEach(item => {
+          if (item.def.type === 'Comunicação Serial' || item.def.type === 'Status LED') {
+            item.mesh.material.emissiveIntensity = 3.2;
+            setTimeout(() => {
+              if (item.mesh.material) item.mesh.material.emissiveIntensity = item.def.glow * 0.8;
+            }, 550);
+          }
+        });
       }
 
       const ledGeo = new THREE.BoxGeometry(0.12, 0.08, 0.18);
@@ -11380,6 +11635,57 @@
 
       scene.add(boardGroup);
 
+      // Raycaster para Hover / Inspeção Interativa de Pinos 3D
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+      let hoveredPin = null;
+
+      renderer.domElement.addEventListener('mousemove', (event) => {
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(pinMeshes);
+
+        const hud = document.getElementById('twin-pin-inspector-hud');
+        if (intersects.length > 0) {
+          const hitPin = intersects[0].object;
+          renderer.domElement.style.cursor = 'pointer';
+          if (hoveredPin !== hitPin) {
+            if (hoveredPin && hoveredPin.material) hoveredPin.material.emissiveIntensity = hoveredPin.userData.glow * 0.4;
+            hoveredPin = hitPin;
+            if (hitPin.material) hitPin.material.emissiveIntensity = 2.2;
+
+            const d = hitPin.userData;
+            if (hud && d) {
+              hud.classList.remove('hidden');
+              document.getElementById('twin-pin-hud-name').innerText = d.name;
+              document.getElementById('twin-pin-hud-role').innerText = d.role;
+              document.getElementById('twin-pin-hud-type').innerText = `${d.volt} • ${d.type}`;
+              const stateBadge = document.getElementById('twin-pin-hud-state');
+              if (stateBadge) {
+                stateBadge.innerText = `${d.state} (${d.volt})`;
+                stateBadge.className = (d.state === 'HIGH' || d.state === 'PULSE')
+                  ? 'text-[9px] px-1.5 py-0.2 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/40 font-bold shrink-0'
+                  : 'text-[9px] px-1.5 py-0.2 rounded bg-slate-900 text-slate-400 border border-slate-700 font-bold shrink-0';
+              }
+              const dot = document.getElementById('twin-pin-hud-dot');
+              if (dot) {
+                dot.style.backgroundColor = `#${d.color.toString(16).padStart(6, '0')}`;
+              }
+            }
+          }
+        } else {
+          renderer.domElement.style.cursor = 'grab';
+          if (hoveredPin) {
+            if (hoveredPin.material) hoveredPin.material.emissiveIntensity = hoveredPin.userData.glow * 0.4;
+            hoveredPin = null;
+            if (hud) hud.classList.add('hidden');
+          }
+        }
+      });
+
       window.twin3d = {
         initialized: true,
         scene: scene,
@@ -11400,7 +11706,16 @@
         rxIntensity: 0,
         autoRotate: true,
         heatmapActive: true,
-        currentTemp: 42.5
+        currentTemp: 42.5,
+        espProgConnected: (window.twin3d && window.twin3d.espProgConnected) || false,
+        laserStreamActive: (window.twin3d && window.twin3d.laserStreamActive !== undefined) ? window.twin3d.laserStreamActive : true,
+        espProgGroup: espProgGroup,
+        laserTube: laserTube,
+        laserTubeMat: laserTubeMat,
+        packetParticles: packetParticles,
+        pinMeshes: pinMeshes,
+        pinHaloMeshes: pinHaloMeshes,
+        pulseRs485Pins: pulseRs485Pins
       };
 
       updateTwinHeatmapTexture();
@@ -11434,6 +11749,29 @@
           window.twin3d.rxIntensity = Math.max(0, window.twin3d.rxIntensity - delta * 5.0);
           if (window.twin3d.ledRxMat) window.twin3d.ledRxMat.emissiveIntensity = window.twin3d.rxIntensity;
           if (window.twin3d.rxLight) window.twin3d.rxLight.intensity = window.twin3d.rxIntensity * 1.5;
+        }
+
+        // Animação do Conduíte Laser de Dados RS485 & Partículas Fótons
+        if (window.twin3d.laserStreamActive && window.twin3d.laserTube) {
+          window.twin3d.laserTube.visible = true;
+          const laserSpeed = (window.twin3d.txIntensity > 0 || window.twin3d.rxIntensity > 0) ? 2.0 : 0.5;
+          const laserIntensity = 0.9 + 0.5 * Math.sin(time * 5.5) + (window.twin3d.txIntensity * 0.6);
+          if (window.twin3d.laserTubeMat) {
+            window.twin3d.laserTubeMat.emissiveIntensity = laserIntensity;
+          }
+          if (Array.isArray(window.twin3d.packetParticles)) {
+            window.twin3d.packetParticles.forEach(pt => {
+              pt.mesh.visible = true;
+              pt.offset = (pt.offset + delta * laserSpeed) % 1.0;
+              const ptPos = laserCurve.getPoint(pt.offset);
+              pt.mesh.position.copy(ptPos);
+            });
+          }
+        } else if (window.twin3d.laserTube) {
+          window.twin3d.laserTube.visible = false;
+          if (Array.isArray(window.twin3d.packetParticles)) {
+            window.twin3d.packetParticles.forEach(pt => { pt.mesh.visible = false; });
+          }
         }
 
         if (window.twin3d.controls) {
@@ -15272,6 +15610,14 @@
       const btnText = document.getElementById('btn-serial-connect-text');
       const placeholder = document.getElementById('serial-placeholder');
       const sideBadge = document.getElementById('sidebar-badge-serial');
+
+      // Sincroniza acoplamento físico do cabo no Gêmeo Digital 3D
+      if (window.twin3d) {
+        window.twin3d.espProgConnected = connected;
+        if (window.twin3d.espProgGroup) window.twin3d.espProgGroup.visible = connected;
+        const label = document.getElementById('btn-twin-espprog-label');
+        if (label) label.innerText = `ESP-Prog: ${connected ? 'CONECTADO' : 'OFF'}`;
+      }
 
       if (connected) {
         if (badge) badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950/90 text-emerald-300 border border-emerald-500/50 flex items-center space-x-1.5 shadow-sm';
