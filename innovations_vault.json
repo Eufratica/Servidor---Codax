@@ -1,5 +1,85 @@
 [
   {
+    "id": "inn-proc-b0192c06",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Inspetor de Segurança contra Tempestades de Mensagens Broadcast",
+    "source": "Observabilidade Industrial de Alto Desempenho",
+    "summary": "Limita dinamicamente comandos enviados para 'ffffffffffff' para impedir saturação acidental da bancada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Inspetor de Segurança contra Tempestades de Mensagens Broadcast': Limita dinamicamente comandos enviados para 'ffffffffffff' para impedir saturação acidental da bancada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:42:05"
+  },
+  {
+    "id": "app-rogue-mac-sentinel",
+    "category": "app",
+    "badge": "🔐 Cibersegurança IoT",
+    "title": "Sentinela Anti-Spoofing e Detector de Nós Não-Homologados",
+    "source": "Padrões Industriais IEC 62443",
+    "summary": "Detecta instantaneamente pacotes originados de endereços MAC que não estejam no arquivo de dispositivos homologados e sinaliza alerta vermelho.",
+    "prompt": "Quero implementar a 'Sentinela Anti-Spoofing': emita um alerta sonoro e destaque visual em vermelho se qualquer pacote for recebido no broker com endereço MAC não cadastrado no devices.json.",
+    "timestamp": "09:40:50"
+  },
+  {
+    "id": "app-kalman-rssi",
+    "category": "app",
+    "badge": "🧠 DSP & Filtragem de Sinal",
+    "title": "Filtro de Kalman para Estabilização de RSSI nos Medidores",
+    "source": "Processamento Digital de Sinais (DSP IoT)",
+    "summary": "Filtra flutuações rápidas de multi-percurso e reflexões de bancada, apresentando a tendência real da força do link sem oscilações falsas.",
+    "prompt": "Quero implementar o 'Filtro de Kalman para RSSI': aplique suavização matemática nas leituras de RSSI recebidas para manter curvas de sinal limpas e estáveis nos gráficos e na topologia.",
+    "timestamp": "09:39:35"
+  },
+  {
+    "id": "gh-701560353",
+    "category": "app",
+    "badge": "🌐 Repositório ESP-MESH (★ 438)",
+    "title": "Referência Open-Source: attermann/microReticulum",
+    "source": "https://github.com/attermann/microReticulum",
+    "summary": "C++ port of the Reticulum Network Stack — a cryptographic mesh networking library that runs on both 32-bit+ microcontrollers (ESP32, nRF52,  — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'attermann/microReticulum' (C++ port of the Reticulum Network Stack — a cryptographic mesh networking library that runs on both 32-bit+ microcontrollers (ESP32, nRF52, LoRa boards) and native platforms (Linux, macOS), with PlatformIO and CMake build support.) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "09:38:19"
+  },
+  {
+    "id": "gh-399096679",
+    "category": "app",
+    "badge": "🌐 Engenharia FreeRTOS (★ 12)",
+    "title": "Referência Open-Source: gpollo/freertos-barectf",
+    "source": "https://github.com/gpollo/freertos-barectf",
+    "summary": "FreeRTOS tracing using BareCTF and Trace Compass — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'gpollo/freertos-barectf' (FreeRTOS tracing using BareCTF and Trace Compass) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "09:37:03"
+  },
+  {
+    "id": "iot-auto-health-check",
+    "category": "app",
+    "badge": "⚡ Diagnóstico Autônomo",
+    "title": "Diagnóstico Preventivo de Memória Heap & Quedas LWT",
+    "source": "Especificação ESP-IDF v4.4.8 Watchdog",
+    "summary": "Monitora automaticamente os retornos de memória e mensagens de conexão (conn/shopba/mesh), alertando visualmente se alguma placa tiver Heap abaixo de 40KB.",
+    "prompt": "Quero implementar o 'Diagnóstico Preventivo de Memória Heap & Quedas LWT' no painel: destaque com alerta visual se algum retorno trouxer free_heap abaixo de 40KB ou razão de reset anormal no tópico conn.",
+    "timestamp": "09:35:48"
+  },
+  {
+    "id": "gh-174708928",
+    "category": "app",
+    "badge": "🌐 Padrão SCADA Web (★ 5280)",
+    "title": "Referência Open-Source: frangoteam/FUXA",
+    "source": "https://github.com/frangoteam/FUXA",
+    "summary": "Web-based Process Visualization (SCADA/HMI/Dashboard) software — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'frangoteam/FUXA' (Web-based Process Visualization (SCADA/HMI/Dashboard) software) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "09:34:32"
+  },
+  {
+    "id": "live-rssi-1d9c",
+    "category": "app",
+    "badge": "🧠 Diagnóstico ao Vivo",
+    "title": "Auditoria de Enlace RF do Nó 704BCA491D9C (-30 dBm)",
+    "source": "Métricas em Tempo Real da Bancada",
+    "summary": "O medidor 704BCA491D9C está reportando -30 dBm. Podemos calcular o Packet Error Rate (PER) e a margem de fade desse enlace.",
+    "prompt": "Quero implementar uma análise aprofundada de RF para o medidor 704BCA491D9C: calcule a margem de desvanecimento e plote um indicador de saúde de sinal dedicado para este nó.",
+    "timestamp": "09:33:17"
+  },
+  {
     "id": "live-rssi-50b0",
     "category": "app",
     "badge": "🧠 Diagnóstico ao Vivo",

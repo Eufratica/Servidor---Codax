@@ -308,8 +308,8 @@
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35) !important;
     }
 
-    /* ================= TEMA DE VIDRO FOSCO (GLASSMORPHISM) EXCLUSIVO DAS SETINHAS / DROPDOWNS E POPOVERS ================= */
-    /* Quando o operador clica na setinha da função ou dos destinatários, abre o menu flutuante em vidro cristalino elegante */
+    /* ================= DESIGN INDUSTRIAL SÓLIDO (MATTE CARBON SCADA - ZERO VIDRO LEITOSO) ================= */
+    /* Menus flutuantes, seletores, gavetas e modais com acabamento sólido, opaco, alto contraste e sem blur */
     #function-autocomplete-dropdown,
     #recipients-dropdown-popover,
     .dropdown-glass-menu,
@@ -322,11 +322,11 @@
     #innovation-radar-popover,
     #innovation-drawer-panel,
     .glass-toast-card {
-      background-color: rgba(15, 23, 42, 0.88) !important;
-      backdrop-filter: blur(18px) saturate(160%) !important;
-      -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
-      border: 1px solid rgba(99, 102, 241, 0.45) !important;
-      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.75), inset 0 1px 0 0 rgba(255, 255, 255, 0.12) !important;
+      background-color: #0b1120 !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      border: 1px solid #334155 !important;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
     }
 
     body.ui-inspector-active,
@@ -507,6 +507,13 @@
         <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-400"></i>
         <span class="text-[11px]">Inovações</span>
         <span id="top-innovations-badge" class="text-[9px] font-mono font-extrabold bg-purple-600 text-white px-1.5 py-0.2 rounded-full shadow-sm">3</span>
+      </button>
+
+      <!-- [INOVAÇÃO] Time-Travel Debugger (Caixa Preta de Telemetria com Replay Instantâneo) -->
+      <button onclick="toggleBlackboxDock()" id="top-btn-blackbox" title="Caixa Preta de Telemetria (Replay Instantâneo dos Últimos 10 Minutos de Bancada)" class="flex items-center space-x-1.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-cyan-500/60 text-slate-300 hover:text-cyan-300 px-2 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
+        <span id="blackbox-status-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="text-[11px]">Caixa Preta</span>
+        <span id="blackbox-mode-pill" class="text-[9px] font-mono font-bold bg-cyan-950 text-cyan-300 px-1 py-0.2 rounded border border-cyan-500/30">AO VIVO</span>
       </button>
 
       <!-- Modo Inspetor Visual para IA (F2 ou Alt+Clique) -->
@@ -3810,6 +3817,101 @@
     </div>
   </div>
 
+  <!-- ================= TIME-TRAVEL DEBUGGER: CAIXA PRETA DE TELEMETRIA COM REPLAY INSTANTÂNEO ================= -->
+  <!-- Banner de Aviso de Modo Replay Ativo no Topo -->
+  <div id="blackbox-replay-banner" class="fixed top-12 left-0 right-0 z-40 hidden bg-amber-500 text-slate-950 px-4 py-1.5 text-xs font-black shadow-lg flex items-center justify-between transition-all">
+    <div class="flex items-center space-x-2">
+      <span class="animate-ping w-2 h-2 rounded-full bg-slate-950"></span>
+      <span>⏪ MODO TIME-TRAVEL REPLAY ATIVO: Vendo telemetria histórica gravada às <strong id="replay-banner-time">--:--:--</strong> (<span id="replay-banner-offset">-00:00</span>)</span>
+    </div>
+    <div class="flex items-center space-x-2">
+      <span class="text-[10px] uppercase font-bold tracking-wider bg-black/20 px-2 py-0.5 rounded">Congelado no Tempo</span>
+      <button type="button" onclick="returnToLiveTelemetry()" class="px-2.5 py-0.5 rounded bg-slate-950 text-amber-300 hover:bg-slate-900 text-xs font-bold transition shadow">
+        🔴 Voltar para AO VIVO
+      </button>
+    </div>
+  </div>
+
+  <!-- Barra de Controle Docked no Rodapé (Solid Industrial Carbon) -->
+  <div id="blackbox-timetravel-dock" class="fixed bottom-0 left-0 right-0 z-40 hidden bg-slate-950 border-t-2 border-cyan-500/50 shadow-[0_-10px_35px_rgba(0,0,0,0.9)] text-slate-200 select-none transition-all duration-200">
+    <div class="max-w-7xl mx-auto px-4 py-2.5 space-y-2">
+      
+      <!-- Linha Superior: Status, Horário Atual, Estatísticas de Buffer e Botão Minimizar -->
+      <div class="flex items-center justify-between text-xs flex-wrap gap-2">
+        <div class="flex items-center space-x-3">
+          <div class="flex items-center space-x-1.5">
+            <span id="blackbox-dock-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="blackbox-dock-mode" class="font-extrabold text-xs tracking-wider text-emerald-400 uppercase">AO VIVO (GRAVANDO)</span>
+          </div>
+          <span class="text-slate-600">|</span>
+          <div class="flex items-center space-x-1.5 text-slate-300 font-mono text-[11px]">
+            <span class="text-slate-500">Ponto Gravado:</span>
+            <span id="blackbox-display-time" class="font-bold text-cyan-300">--:--:--</span>
+            <span id="blackbox-display-offset" class="text-amber-400 text-[10px] font-bold">(0s)</span>
+          </div>
+        </div>
+
+        <!-- Estatísticas do Ring Buffer & Eventos Detectados -->
+        <div class="flex items-center space-x-3 text-[11px] text-slate-400 font-mono">
+          <span id="blackbox-buffer-stats">Buffer: 0s gravados (0 amostras)</span>
+          <span class="text-slate-600">•</span>
+          <span id="blackbox-events-badge" class="px-2 py-0.5 rounded bg-slate-900 text-amber-400 border border-slate-800">0 Eventos Críticos</span>
+          <button type="button" onclick="toggleBlackboxDock(false)" title="Minimizar Barra de Replay" class="p-1 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition">
+            <i data-lucide="chevron-down" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Linha Central: Régua Temporal Interativa (Scrubber / Timeline Slider) -->
+      <div class="relative flex items-center py-1">
+        <input type="range" id="blackbox-slider" min="0" max="100" value="100" step="1" oninput="onBlackboxSliderInput(this.value)" onchange="onBlackboxSliderChange(this.value)" class="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400 focus:outline-none shadow-inner" />
+        <div id="blackbox-event-markers" class="absolute inset-x-0 top-1 bottom-1 pointer-events-none"></div>
+      </div>
+
+      <!-- Linha Inferior: Controles de Transporte (Playback) -->
+      <div class="flex items-center justify-between text-xs pt-1 flex-wrap gap-2">
+        <div class="flex items-center space-x-1.5">
+          <button type="button" onclick="jumpToPreviousEvent()" title="Pular para o Evento Crítico Anterior (Queda, Pico de Corrente, Reset)" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-amber-300 text-[11px] font-bold transition flex items-center space-x-1">
+            <i data-lucide="skip-back" class="w-3.5 h-3.5 text-amber-400"></i>
+            <span class="hidden sm:inline">Evento Ant.</span>
+          </button>
+          <button type="button" onclick="stepBlackboxTime(-30)" title="Recuar 30 segundos" class="px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-[11px] font-semibold transition">
+            ⏪ -30s
+          </button>
+          <button type="button" onclick="stepBlackboxTime(-5)" title="Recuar 5 segundos" class="px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-[11px] font-semibold transition">
+            -5s
+          </button>
+          <button type="button" id="btn-blackbox-play" onclick="toggleBlackboxPlay()" title="Reproduzir / Pausar Replay Quadro a Quadro" class="px-3.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-bold transition flex items-center space-x-1 shadow-sm">
+            <i data-lucide="play" class="w-3.5 h-3.5"></i>
+            <span id="btn-blackbox-play-label">Play</span>
+          </button>
+          <button type="button" onclick="stepBlackboxTime(5)" title="Avançar 5 segundos" class="px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-[11px] font-semibold transition">
+            +5s
+          </button>
+          <button type="button" onclick="stepBlackboxTime(30)" title="Avançar 30 segundos" class="px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white text-[11px] font-semibold transition">
+            +30s ⏩
+          </button>
+          <button type="button" onclick="jumpToNextEvent()" title="Pular para o Próximo Evento Crítico" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-amber-300 text-[11px] font-bold transition flex items-center space-x-1">
+            <span class="hidden sm:inline">Próx. Evento</span>
+            <i data-lucide="skip-forward" class="w-3.5 h-3.5 text-amber-400"></i>
+          </button>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <!-- Velocidade de Replay -->
+          <button type="button" onclick="toggleBlackboxSpeed()" id="btn-blackbox-speed" title="Alternar Velocidade de Reprodução" class="px-2 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-cyan-300 text-[11px] font-mono font-bold transition">
+            1.0x
+          </button>
+          <button type="button" onclick="returnToLiveTelemetry()" id="btn-blackbox-golive" title="Voltar para Telemetria em Tempo Real" class="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center space-x-1 shadow-md shadow-emerald-950">
+            <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+            <span>AO VIVO</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- Mini-Caixinha Flutuante de Vidro ao Clicar ou Selecionar Área -->
   <div id="ui-inspector-popover" class="fixed z-[85] hidden w-80 sm:w-96 rounded-2xl border border-slate-600/90 p-3.5 space-y-3 text-xs select-none">
     
@@ -4064,6 +4166,7 @@
       loadFirmwares();
       loadSubscriptions();
       loadInnovations();
+      initBlackboxRecorder();
       await loadSpecRules();
       await loadCommandsDocs();
       await loadTopicsDocs();
@@ -4098,6 +4201,9 @@
             }
           }
         } else if (data.type === 'mqtt_message') {
+          if (window.captureBlackboxSnapshot) {
+            window.captureBlackboxSnapshot(data.message);
+          }
           allMessages.push(data.message);
           if (allMessages.length > 300) allMessages.shift();
           if (matchesActiveLogFilter(data.message)) {
@@ -4177,8 +4283,10 @@
               }
             }
             updateBuilderFeedbackSuccess(data.message, respMac);
-            loadDevices();
-            loadDiscovered();
+            if (!window.isBlackboxReplay) {
+              loadDevices();
+              loadDiscovered();
+            }
           }
 
           const badgeLogs = document.getElementById('badge-logs-count');
@@ -10284,6 +10392,383 @@
         container.appendChild(card);
       });
       lucide.createIcons();
+    }
+
+    // =========================================================================
+    // [INOVAÇÃO] CAIXA PRETA DE TELEMETRIA COM REPLAY INSTANTÂNEO (TIME-TRAVEL DEBUGGER)
+    // Buffer circular de 10 minutos (600s), marcação de eventos e re-injeção no dashboard
+    // =========================================================================
+    window.blackboxRingBuffer = [];
+    window.isBlackboxReplay = false;
+    window.blackboxPlaybackTimer = null;
+    window.blackboxPlaybackSpeed = 1.0;
+    window.blackboxCurrentViewIndex = -1;
+
+    function initBlackboxRecorder() {
+      // Grava snapshot a cada 1 segundo em background
+      setInterval(() => {
+        if (!window.isBlackboxReplay) {
+          captureBlackboxSnapshot(null, null);
+        }
+      }, 1000);
+    }
+
+    function captureBlackboxSnapshot(incomingMsg = null, forcedEventType = null) {
+      const now = Date.now();
+      let eventType = forcedEventType;
+      let eventSummary = null;
+
+      // Detecção inteligente de eventos críticos a partir da telemetria ou mensagem MQTT
+      if (incomingMsg) {
+        const topic = (incomingMsg.topic || '').toLowerCase();
+        const raw = (incomingMsg.raw || '');
+        const payload = (incomingMsg.payload && typeof incomingMsg.payload === 'object') ? incomingMsg.payload : {};
+        
+        // 1. Queda ou LWT no tópico conn
+        if (topic.includes('conn') && (raw.includes('LWT') || raw.includes('offline') || raw.includes('queda'))) {
+          eventType = 'lwt';
+          eventSummary = `Queda LWT no nó ${extractMacFromMessage(incomingMsg) || 'desconhecido'}`;
+        }
+        // 2. Alerta de Free Heap crítico (< 40KB)
+        else if (payload.free_heap && payload.free_heap < 40000) {
+          eventType = 'heap';
+          eventSummary = `Memória baixa (${Math.round(payload.free_heap / 1024)}KB) no nó ${extractMacFromMessage(incomingMsg) || ''}`;
+        }
+        // 3. Pico de Corrente Trifásica (> 20A)
+        else if ((payload.Ia && payload.Ia > 20) || (payload.Ib && payload.Ib > 20) || (payload.Ic && payload.Ic > 20)) {
+          eventType = 'peak';
+          eventSummary = `Pico de corrente trifásica (${Math.max(payload.Ia||0, payload.Ib||0, payload.Ic||0)}A)`;
+        }
+        // 4. Reinício / Reset anormal
+        else if (payload.reset_reason && payload.reset_reason !== 0) {
+          eventType = 'reboot';
+          eventSummary = `Reinício de placa (Razão: ${payload.reset_reason})`;
+        }
+      }
+
+      const snapshot = {
+        epoch: now,
+        timeStr: new Date(now).toLocaleTimeString('pt-BR'),
+        devices: Array.isArray(window.configuredDevicesList) ? JSON.parse(JSON.stringify(window.configuredDevicesList)) : [],
+        discovered: Array.isArray(window.allDiscoveredNodes) ? JSON.parse(JSON.stringify(window.allDiscoveredNodes)) : [],
+        recentMessages: (window.allMessages || []).slice(-15),
+        cockpitMac: window.currentCockpitMac || null,
+        rttMap: { ...window.deviceRttMap },
+        rssiMap: { ...window.deviceRssiMap },
+        eventType: eventType,
+        eventSummary: eventSummary
+      };
+
+      window.blackboxRingBuffer.push(snapshot);
+
+      // Limita a janela temporal aos últimos 10 minutos (600.000 ms)
+      const tenMinsAgo = now - 10 * 60 * 1000;
+      while (window.blackboxRingBuffer.length > 0 && window.blackboxRingBuffer[0].epoch < tenMinsAgo) {
+        window.blackboxRingBuffer.shift();
+      }
+
+      if (!window.isBlackboxReplay) {
+        updateBlackboxDockUI();
+      }
+    }
+
+    function toggleBlackboxDock(forceState) {
+      const dock = document.getElementById('blackbox-timetravel-dock');
+      if (!dock) return;
+      const isHidden = dock.classList.contains('hidden');
+      const show = typeof forceState === 'boolean' ? forceState : isHidden;
+      if (show) {
+        dock.classList.remove('hidden');
+        updateBlackboxDockUI();
+        lucide.createIcons();
+      } else {
+        dock.classList.add('hidden');
+      }
+    }
+
+    function updateBlackboxDockUI() {
+      const buf = window.blackboxRingBuffer;
+      const totalSamples = buf.length;
+      if (totalSamples === 0) return;
+
+      const firstEpoch = buf[0].epoch;
+      const lastEpoch = buf[buf.length - 1].epoch;
+      const durationSec = Math.round((lastEpoch - firstEpoch) / 1000);
+      const mins = Math.floor(durationSec / 60);
+      const secs = durationSec % 60;
+
+      const statsEl = document.getElementById('blackbox-buffer-stats');
+      if (statsEl) {
+        statsEl.innerText = `Buffer: ${mins}m ${secs}s (${totalSamples} amostras)`;
+      }
+
+      // Conta eventos críticos
+      const events = buf.filter(s => s.eventType !== null);
+      const evBadge = document.getElementById('blackbox-events-badge');
+      if (evBadge) {
+        evBadge.innerText = `${events.length} Eventos Críticos`;
+      }
+
+      // Atualiza marcadores visuais no slider
+      renderBlackboxEventMarkers(firstEpoch, lastEpoch, events);
+
+      // Se não estiver em modo replay, atualiza o slider para 100%
+      if (!window.isBlackboxReplay) {
+        const slider = document.getElementById('blackbox-slider');
+        if (slider) slider.value = 100;
+        const dispTime = document.getElementById('blackbox-display-time');
+        if (dispTime) dispTime.innerText = buf[buf.length - 1].timeStr;
+        const dispOff = document.getElementById('blackbox-display-offset');
+        if (dispOff) dispOff.innerText = '(Ao Vivo)';
+      }
+    }
+
+    function renderBlackboxEventMarkers(firstEpoch, lastEpoch, events) {
+      const container = document.getElementById('blackbox-event-markers');
+      if (!container) return;
+      container.innerHTML = '';
+      const range = lastEpoch - firstEpoch;
+      if (range <= 0) return;
+
+      events.forEach(ev => {
+        const pct = Math.max(0, Math.min(100, ((ev.epoch - firstEpoch) / range) * 100));
+        const dot = document.createElement('div');
+        dot.className = 'absolute top-0 bottom-0 w-1.5 rounded-full cursor-pointer hover:scale-150 transition-transform';
+        if (ev.eventType === 'lwt') dot.className += ' bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.9)]';
+        else if (ev.eventType === 'peak') dot.className += ' bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.9)]';
+        else if (ev.eventType === 'heap') dot.className += ' bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.9)]';
+        else dot.className += ' bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)]';
+        dot.style.left = `${pct}%`;
+        dot.title = `[${ev.timeStr}] ${ev.eventSummary || 'Evento Crítico'}`;
+        dot.onclick = () => seekBlackboxEpoch(ev.epoch);
+        container.appendChild(dot);
+      });
+    }
+
+    function onBlackboxSliderInput(val) {
+      const buf = window.blackboxRingBuffer;
+      if (buf.length === 0) return;
+      const idx = Math.min(buf.length - 1, Math.floor((val / 100) * (buf.length - 1)));
+      const snap = buf[idx];
+      if (!snap) return;
+
+      if (val < 99 && !window.isBlackboxReplay) {
+        enterBlackboxReplay();
+      }
+      applyBlackboxSnapshot(snap, idx);
+    }
+
+    function onBlackboxSliderChange(val) {
+      if (val >= 99) {
+        returnToLiveTelemetry();
+      }
+    }
+
+    function enterBlackboxReplay() {
+      window.isBlackboxReplay = true;
+      const banner = document.getElementById('blackbox-replay-banner');
+      if (banner) banner.classList.remove('hidden');
+
+      const modeDot = document.getElementById('blackbox-dock-dot');
+      if (modeDot) {
+        modeDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse';
+      }
+      const modeLabel = document.getElementById('blackbox-dock-mode');
+      if (modeLabel) {
+        modeLabel.className = 'font-extrabold text-xs tracking-wider text-amber-400 uppercase';
+        modeLabel.innerText = 'MODO REPLAY ATIVO';
+      }
+      const pill = document.getElementById('blackbox-mode-pill');
+      if (pill) {
+        pill.className = 'text-[9px] font-mono font-bold bg-amber-950 text-amber-300 px-1 py-0.2 rounded border border-amber-500/40';
+        pill.innerText = 'REPLAY';
+      }
+      showGlassToast('⏪ Modo Time-Travel Ativo: Navegando no histórico gravado.', 'info');
+    }
+
+    function applyBlackboxSnapshot(snapshot, idx) {
+      if (!snapshot) return;
+      window.blackboxCurrentViewIndex = idx;
+
+      const bannerTime = document.getElementById('replay-banner-time');
+      if (bannerTime) bannerTime.innerText = snapshot.timeStr;
+
+      const offsetSec = Math.max(0, Math.round((Date.now() - snapshot.epoch) / 1000));
+      const mins = Math.floor(offsetSec / 60);
+      const secs = offsetSec % 60;
+      const offsetStr = `-${mins}m ${secs}s atrás`;
+
+      const bannerOffset = document.getElementById('replay-banner-offset');
+      if (bannerOffset) bannerOffset.innerText = offsetStr;
+
+      const dispTime = document.getElementById('blackbox-display-time');
+      if (dispTime) dispTime.innerText = snapshot.timeStr;
+
+      const dispOff = document.getElementById('blackbox-display-offset');
+      if (dispOff) dispOff.innerText = `(${offsetStr})`;
+
+      // Re-injeção de dispositivos e nós da época
+      if (snapshot.devices && Array.isArray(snapshot.devices)) {
+        renderDevicesTable(snapshot.devices);
+      }
+      if (snapshot.discovered && Array.isArray(snapshot.discovered)) {
+        renderDiscoveredTable(snapshot.discovered);
+      }
+
+      if (snapshot.eventType && snapshot.eventSummary) {
+        showGlassToast(`⏱️ Snapshot [${snapshot.timeStr}]: <strong>${escapeHtml(snapshot.eventSummary)}</strong>`, 'warning');
+      }
+    }
+
+    function returnToLiveTelemetry() {
+      if (window.blackboxPlaybackTimer) {
+        clearInterval(window.blackboxPlaybackTimer);
+        window.blackboxPlaybackTimer = null;
+        const playBtn = document.getElementById('btn-blackbox-play-label');
+        if (playBtn) playBtn.innerText = 'Play';
+      }
+
+      window.isBlackboxReplay = false;
+      const banner = document.getElementById('blackbox-replay-banner');
+      if (banner) banner.classList.add('hidden');
+
+      const modeDot = document.getElementById('blackbox-dock-dot');
+      if (modeDot) {
+        modeDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse';
+      }
+      const modeLabel = document.getElementById('blackbox-dock-mode');
+      if (modeLabel) {
+        modeLabel.className = 'font-extrabold text-xs tracking-wider text-emerald-400 uppercase';
+        modeLabel.innerText = 'AO VIVO (GRAVANDO)';
+      }
+      const pill = document.getElementById('blackbox-mode-pill');
+      if (pill) {
+        pill.className = 'text-[9px] font-mono font-bold bg-cyan-950 text-cyan-300 px-1 py-0.2 rounded border border-cyan-500/30';
+        pill.innerText = 'AO VIVO';
+      }
+
+      const slider = document.getElementById('blackbox-slider');
+      if (slider) slider.value = 100;
+
+      loadDevices();
+      loadDiscovered();
+      showGlassToast('🔴 Retornado para Telemetria em Tempo Real (Ao Vivo).', 'success');
+    }
+
+    function stepBlackboxTime(seconds) {
+      const buf = window.blackboxRingBuffer;
+      if (buf.length === 0) return;
+      if (!window.isBlackboxReplay) enterBlackboxReplay();
+
+      let curIdx = window.blackboxCurrentViewIndex >= 0 ? window.blackboxCurrentViewIndex : buf.length - 1;
+      const curEpoch = buf[curIdx].epoch;
+      const targetEpoch = curEpoch + (seconds * 1000);
+
+      seekBlackboxEpoch(targetEpoch);
+    }
+
+    function seekBlackboxEpoch(targetEpoch) {
+      const buf = window.blackboxRingBuffer;
+      if (buf.length === 0) return;
+      if (!window.isBlackboxReplay) enterBlackboxReplay();
+
+      let closestIdx = 0;
+      let minDiff = Math.abs(buf[0].epoch - targetEpoch);
+
+      for (let i = 1; i < buf.length; i++) {
+        const diff = Math.abs(buf[i].epoch - targetEpoch);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closestIdx = i;
+        }
+      }
+
+      const pct = Math.floor((closestIdx / (buf.length - 1)) * 100);
+      const slider = document.getElementById('blackbox-slider');
+      if (slider) slider.value = pct;
+
+      applyBlackboxSnapshot(buf[closestIdx], closestIdx);
+    }
+
+    function jumpToPreviousEvent() {
+      const buf = window.blackboxRingBuffer;
+      if (buf.length === 0) return;
+      let curIdx = window.blackboxCurrentViewIndex >= 0 ? window.blackboxCurrentViewIndex : buf.length - 1;
+
+      for (let i = curIdx - 1; i >= 0; i--) {
+        if (buf[i].eventType !== null) {
+          if (!window.isBlackboxReplay) enterBlackboxReplay();
+          const pct = Math.floor((i / (buf.length - 1)) * 100);
+          const slider = document.getElementById('blackbox-slider');
+          if (slider) slider.value = pct;
+          applyBlackboxSnapshot(buf[i], i);
+          return;
+        }
+      }
+      showGlassToast('Nenhum evento crítico anterior no buffer de 10 minutos.', 'info');
+    }
+
+    function jumpToNextEvent() {
+      const buf = window.blackboxRingBuffer;
+      if (buf.length === 0) return;
+      let curIdx = window.blackboxCurrentViewIndex >= 0 ? window.blackboxCurrentViewIndex : 0;
+
+      for (let i = curIdx + 1; i < buf.length; i++) {
+        if (buf[i].eventType !== null) {
+          if (!window.isBlackboxReplay) enterBlackboxReplay();
+          const pct = Math.floor((i / (buf.length - 1)) * 100);
+          const slider = document.getElementById('blackbox-slider');
+          if (slider) slider.value = pct;
+          applyBlackboxSnapshot(buf[i], i);
+          return;
+        }
+      }
+      returnToLiveTelemetry();
+    }
+
+    function toggleBlackboxPlay() {
+      if (window.blackboxPlaybackTimer) {
+        clearInterval(window.blackboxPlaybackTimer);
+        window.blackboxPlaybackTimer = null;
+        const playBtn = document.getElementById('btn-blackbox-play-label');
+        if (playBtn) playBtn.innerText = 'Play';
+      } else {
+        if (!window.isBlackboxReplay) {
+          stepBlackboxTime(-30);
+        }
+        const playBtn = document.getElementById('btn-blackbox-play-label');
+        if (playBtn) playBtn.innerText = 'Pause';
+
+        const stepMs = Math.round(1000 / window.blackboxPlaybackSpeed);
+        window.blackboxPlaybackTimer = setInterval(() => {
+          const buf = window.blackboxRingBuffer;
+          let curIdx = window.blackboxCurrentViewIndex >= 0 ? window.blackboxCurrentViewIndex : 0;
+          if (curIdx < buf.length - 1) {
+            curIdx++;
+            const pct = Math.floor((curIdx / (buf.length - 1)) * 100);
+            const slider = document.getElementById('blackbox-slider');
+            if (slider) slider.value = pct;
+            applyBlackboxSnapshot(buf[curIdx], curIdx);
+          } else {
+            returnToLiveTelemetry();
+          }
+        }, stepMs);
+      }
+      lucide.createIcons();
+    }
+
+    function toggleBlackboxSpeed() {
+      const speeds = [1.0, 2.0, 4.0];
+      const curIdx = speeds.indexOf(window.blackboxPlaybackSpeed);
+      const nextIdx = (curIdx + 1) % speeds.length;
+      window.blackboxPlaybackSpeed = speeds[nextIdx];
+      const btn = document.getElementById('btn-blackbox-speed');
+      if (btn) btn.innerText = `${window.blackboxPlaybackSpeed.toFixed(1)}x`;
+
+      if (window.blackboxPlaybackTimer) {
+        toggleBlackboxPlay();
+        toggleBlackboxPlay();
+      }
     }
 
     // ================= [INOVAÇÃO] COMMAND PALETTE INSTANTÂNEO ESTILO RAYCAST / MAC (CTRL + K) =================
