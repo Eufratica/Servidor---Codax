@@ -3333,6 +3333,115 @@ async def websocket_endpoint(websocket: WebSocket):
     except Exception:
         ws_manager.disconnect(websocket)
 
+# ================= API DE PORTAS SERIAIS & WEBSERVER LOCAL =================
+@app.get("/api/serial/ports")
+def get_serial_ports():
+    """
+    Lista portas COM disponíveis no Windows (ESP-Prog, CP2102, FTDI, CH340).
+    Permite à bancada saber quais adaptadores seriais USB estão fisicamente conectados.
+    """
+    try:
+        import serial.tools.list_ports
+        ports = serial.tools.list_ports.comports()
+        detected = []
+        for p in ports:
+            detected.append({
+                "port": p.device,
+                "description": p.description,
+                "hwid": p.hwid,
+                "manufacturer": getattr(p, "manufacturer", "Desconhecido") or "Desconhecido",
+                "vid": hex(p.vid) if getattr(p, "vid", None) is not None else None,
+                "pid": hex(p.pid) if getattr(p, "pid", None) is not None else None,
+                "is_esp": any(k in (p.description or "").lower() or k in (getattr(p, "manufacturer", "") or "").lower() 
+                              for k in ["cp210", "ftdi", "ch340", "esp", "silicon", "uart", "serial"])
+            })
+        return {
+            "status": "ok",
+            "ports": detected,
+            "count": len(detected),
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e),
+            "ports": [],
+            "count": 0
+        }
+
+class TriggerWebserverRequest(BaseModel):
+    mac: Optional[str] = "any"
+    env: Optional[str] = "PROD"
+
+@app.post("/api/webserver/trigger-config-state")
+def trigger_webserver_config_state(req: TriggerWebserverRequest):
+    """
+    Dispara o comando oficial config_state para colocar a placa em modo SoftAP + Webserver local.
+    A placa salva na flash e reinicia em 10s no modo de comissionamento.
+    """
+    mac = clean_mac_address(req.mac) if req.mac and req.mac.lower() != "any" else "any"
+    addr_list = [mac] if mac != "any" else ["any"]
+    
+    payload = {
+        "addr": addr_list,
+        "type": "json",
+        "data": {
+            "method": "setting",
+            "function": "config_state"
+        }
+    }
+    
+    topic = CMD_TOPIC_PROD if req.env.upper() == "PROD" else CMD_TOPIC_DEV
+    payload_str = json.dumps(payload)
+    res = mqtt_client.publish(topic, payload_str)
+    
+    # Se estiver em modo local, publica nos dois tópicos
+    if app_state.get("broker_mode") == "LOCAL":
+        alt_topic = CMD_TOPIC_DEV if topic == CMD_TOPIC_PROD else CMD_TOPIC_PROD
+        mqtt_client.publish(alt_topic, payload_str)
+        
+    return {
+        "status": "ok" if res.rc == mqtt.MQTT_ERR_SUCCESS else "queued",
+        "target_mac": mac,
+        "topic": topic,
+        "command": "config_state",
+        "message": "Comando config_state enviado. A placa salvará na flash e reiniciará no modo SoftAP + Webserver em 10 segundos."
+    }
+
+@app.get("/api/webserver/credentials")
+def get_webserver_credentials_info(mac: Optional[str] = None):
+    """
+    Retorna as diretrizes de credenciais e links de acesso ao Webserver do ESP32.
+    """
+    clean_mac = clean_mac_address(mac) if mac and mac != "any" else None
+    return {
+        "status": "ok",
+        "softap_default_ip": "http://192.168.4.1",
+        "softap_ssid_pattern": f"CODAX_{clean_mac[-6:].upper() if clean_mac else 'XXXXXX'}",
+        "default_roles": {
+            "user": {
+                "role": "user",
+                "default_user": "user",
+                "default_pass": "user",
+                "permission": "Visualização de status, rede e telemetria básica"
+            },
+            "dev": {
+                "role": "dev",
+                "default_user": "dev",
+                "default_pass": "admin",
+                "permission": "Acesso total à configuração de Interfaces, Protocolos NBR/Modbus e Malha ESP-MESH"
+            }
+        },
+        "query_cmd_example": {
+            "method": "query",
+            "function": "webserver_credentials"
+        },
+        "reset_pass_cmd_example": {
+            "method": "change",
+            "function": "webserver_password"
+        }
+    }
+
 # ================= PÁGINA WEB DASHBOARD =================
 @app.get("/", response_class=HTMLResponse)
 def index_page():

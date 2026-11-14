@@ -810,6 +810,24 @@
             <span id="sidebar-badge-logs" class="bg-rose-950/80 text-rose-300 border border-rose-500/40 text-[10px] px-1.5 py-0.2 rounded-full font-mono">0</span>
           </button>
 
+          <!-- ABA EXCLUSIVA 1: MONITOR SERIAL USB (ESP-PROG / UART FÍSICA) -->
+          <button onclick="switchTab('serial')" id="nav-btn-serial" class="sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/80 group">
+            <span class="flex items-center space-x-2.5">
+              <i data-lucide="cpu" class="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform"></i>
+              <span>Monitor Serial USB</span>
+            </span>
+            <span id="sidebar-badge-serial" class="text-[9px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.2 rounded font-mono font-bold">115.2k</span>
+          </button>
+
+          <!-- ABA EXCLUSIVA 2: WEBSERVER LOCAL DO ESP32 & PROVISIONAMENTO -->
+          <button onclick="switchTab('webserver')" id="nav-btn-webserver" class="sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/80 group">
+            <span class="flex items-center space-x-2.5">
+              <i data-lucide="globe" class="w-4 h-4 text-cyan-400 group-hover:rotate-45 transition-transform"></i>
+              <span>Webserver da Placa</span>
+            </span>
+            <span class="text-[9px] bg-cyan-950/80 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.2 rounded font-mono font-bold">SoftAP</span>
+          </button>
+
           <button onclick="switchTab('timestream')" id="nav-btn-timestream" class="sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/80">
             <span class="flex items-center space-x-2.5">
               <i data-lucide="clock" class="w-4 h-4 text-cyan-400"></i>
@@ -3004,6 +3022,351 @@
                 <span class="flex items-center space-x-1"><span class="w-2 h-2 rounded-full bg-cyan-400"></span><strong class="text-cyan-300 font-bold">Melhor Canal da Malha</strong></span>
               </div>
             </div>
+          </div>
+
+        </section>
+
+        <!-- ================= ABA EXCLUSIVA 10: MONITOR SERIAL USB (ESP-PROG / UART 115200) ================= -->
+        <section id="view-serial" class="tab-content hidden space-y-4">
+          
+          <!-- Cabeçalho de Controle Serial -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm space-y-4">
+            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-3 border-b border-slate-800">
+              <div class="flex items-center space-x-3">
+                <div class="p-2.5 rounded-2xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                  <i data-lucide="cpu" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <div class="flex items-center space-x-2 flex-wrap">
+                    <h3 class="text-base font-bold text-slate-100">Monitor Serial USB • Espelhamento Físico UART</h3>
+                    <span id="serial-status-badge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center space-x-1">
+                      <span id="serial-status-dot" class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+                      <span id="serial-status-text">DESCONECTADO</span>
+                    </span>
+                    <span id="serial-port-name-badge" class="hidden text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/40">
+                      --
+                    </span>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-0.5">Captura em tempo real da porta serial física (ESP-Prog / CP2102) a 115.200 bps com controle de linhas DTR/RTS e decodificador ANSI</p>
+                </div>
+              </div>
+
+              <!-- Controles de Conexão -->
+              <div class="flex items-center space-x-2 flex-wrap">
+                <div class="flex items-center space-x-1.5 bg-slate-950 border border-slate-700/80 rounded-xl px-2.5 py-1 text-xs">
+                  <span class="text-slate-400 text-[11px] font-medium">Baud:</span>
+                  <select id="serial-baudrate-select" class="bg-transparent text-emerald-400 font-mono font-bold focus:outline-none cursor-pointer">
+                    <option value="115200" selected class="bg-slate-900 text-slate-200">115.200 (ESP-IDF Padrão)</option>
+                    <option value="74880" class="bg-slate-900 text-slate-200">74.880 (ESP32 Bootloader ROM)</option>
+                    <option value="921600" class="bg-slate-900 text-slate-200">921.600 (High-Speed / Flash)</option>
+                    <option value="230400" class="bg-slate-900 text-slate-200">230.400</option>
+                    <option value="57600" class="bg-slate-900 text-slate-200">57.600</option>
+                    <option value="9600" class="bg-slate-900 text-slate-200">9.600 (Modbus Base)</option>
+                  </select>
+                </div>
+
+                <button id="btn-serial-connect" onclick="toggleWebSerialConnection()" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-md shadow-emerald-600/20">
+                  <i data-lucide="plug" class="w-3.5 h-3.5"></i>
+                  <span id="btn-serial-connect-text">Conectar Porta Serial USB</span>
+                </button>
+
+                <button onclick="toggleSplitView('serial')" id="btn-split-serial" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700 flex items-center space-x-1.5" title="Dividir tela entre Monitor Serial e Webserver">
+                  <i data-lucide="columns" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>Visão Dividida (Split)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Barra de Ações Rápidas de Hardware (DTR/RTS) & Webserver -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
+              <div class="flex items-center space-x-2 flex-wrap">
+                <span class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider flex items-center space-x-1">
+                  <i data-lucide="cpu" class="w-3.5 h-3.5 text-amber-400"></i>
+                  <span>Controles ESP-Prog:</span>
+                </span>
+                <button onclick="pulseEsp32Reset()" class="px-2.5 py-1 rounded-lg bg-amber-950/80 hover:bg-amber-900/80 text-amber-300 border border-amber-500/40 font-semibold transition flex items-center space-x-1" title="Pulsa a linha EN/RST para reiniciar a placa">
+                  <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+                  <span>Reiniciar ESP32 (EN)</span>
+                </button>
+                <button onclick="pulseEsp32Bootloader()" class="px-2.5 py-1 rounded-lg bg-purple-950/80 hover:bg-purple-900/80 text-purple-300 border border-purple-500/40 font-semibold transition flex items-center space-x-1" title="Pulsa GPIO0 e EN para colocar a placa em modo de gravação">
+                  <i data-lucide="download" class="w-3 h-3"></i>
+                  <span>Modo Bootloader (GPIO0)</span>
+                </button>
+                <button onclick="forceWebserverViaSerial()" class="px-2.5 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900/80 text-rose-300 border border-rose-500/40 font-semibold transition flex items-center space-x-1" title="Força a placa a entrar no modo Webserver mesmo sem rede">
+                  <i data-lucide="zap" class="w-3 h-3"></i>
+                  <span>Forçar Modo Webserver</span>
+                </button>
+              </div>
+
+              <div class="flex items-center space-x-2 flex-wrap">
+                <button onclick="checkWindowsComPorts()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs transition flex items-center space-x-1">
+                  <i data-lucide="search" class="w-3 h-3 text-cyan-400"></i>
+                  <span>Detectar COMs Windows</span>
+                </button>
+                <button onclick="switchTab('webserver')" class="px-2.5 py-1 rounded-lg bg-cyan-950/80 hover:bg-cyan-900/80 text-cyan-300 border border-cyan-500/40 font-semibold transition flex items-center space-x-1">
+                  <i data-lucide="globe" class="w-3 h-3"></i>
+                  <span>Ir para Webserver (192.168.4.1)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Banner de Detecção Automática do Webserver na Saída Serial -->
+          <div id="serial-webserver-detected-banner" class="hidden bg-cyan-950 border border-cyan-500/60 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs text-cyan-200 shadow-lg shadow-cyan-950/50">
+            <div class="flex items-center space-x-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
+              <div>
+                <strong class="font-bold text-white text-sm">🎉 Webserver do ESP32 Detectado na Porta Serial!</strong>
+                <p class="text-[11px] text-cyan-300 mt-0.5">
+                  Endereço HTTP: <span id="banner-webserver-ip" class="font-mono font-bold text-white underline">http://192.168.4.1</span> • Rede SoftAP: <span id="banner-webserver-ssid" class="font-mono text-cyan-200">CODAX_XXXXXX</span>
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="openDetectedWebserverIframe()" class="px-3 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold transition flex items-center space-x-1 shadow-md">
+                <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+                <span>Abrir Webserver na Plataforma</span>
+              </button>
+              <a id="banner-webserver-link" href="http://192.168.4.1" target="_blank" rel="noopener noreferrer" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-cyan-300 border border-cyan-500/40 font-semibold transition flex items-center space-x-1">
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                <span>Nova Janela</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Filtros de Console & Utilitários -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div class="flex items-center space-x-1.5 flex-wrap">
+              <button onclick="setSerialFilter('all')" id="btn-ser-all" class="ser-filter-btn px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-medium">Todos</button>
+              <button onclick="setSerialFilter('info')" id="btn-ser-info" class="ser-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-emerald-400 hover:text-white font-mono">🟢 [I] INFO</button>
+              <button onclick="setSerialFilter('warn')" id="btn-ser-warn" class="ser-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-amber-400 hover:text-white font-mono">🟡 [W] WARN</button>
+              <button onclick="setSerialFilter('err')" id="btn-ser-err" class="ser-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-rose-400 hover:text-white font-mono">🔴 [E] ERRO</button>
+              <button onclick="setSerialFilter('boot')" id="btn-ser-boot" class="ser-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-purple-400 hover:text-white font-mono">🟣 BOOT/ROM</button>
+              <button onclick="setSerialFilter('web')" id="btn-ser-web" class="ser-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-cyan-400 hover:text-white font-mono">🌐 WEBSERVER</button>
+            </div>
+
+            <div class="flex items-center space-x-2 flex-wrap">
+              <input type="text" id="serial-search-input" oninput="renderSerialTerminalLines()" placeholder="Filtrar saída serial..." class="bg-slate-950 border border-slate-700/80 rounded-lg px-3 py-1 text-slate-200 focus:outline-none focus:border-emerald-500 w-48 text-xs font-mono">
+              <label class="flex items-center space-x-1.5 text-slate-400 cursor-pointer text-xs">
+                <input type="checkbox" id="serial-autoscroll-toggle" checked class="rounded bg-slate-950 border-slate-700 text-emerald-600">
+                <span>Auto-scroll</span>
+              </label>
+              <label class="flex items-center space-x-1.5 text-slate-400 cursor-pointer text-xs">
+                <input type="checkbox" id="serial-timestamp-toggle" checked class="rounded bg-slate-950 border-slate-700 text-emerald-600">
+                <span>Timestamp</span>
+              </label>
+              <button onclick="clearSerialTerminal()" class="bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-lg text-slate-300 transition font-semibold" title="Limpar saída serial">Limpar</button>
+              <button onclick="downloadSerialLogFile()" class="bg-slate-800 hover:bg-slate-700 px-2.5 py-1 rounded-lg text-slate-300 transition font-semibold flex items-center space-x-1" title="Salvar log como arquivo .txt">
+                <i data-lucide="download" class="w-3.5 h-3.5 text-emerald-400"></i>
+                <span>Salvar Log</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tela CRT Principal do Monitor Serial -->
+          <div id="serial-crt-terminal" class="bg-black border border-slate-800 rounded-2xl p-4 font-mono text-xs text-slate-200 h-[calc(100vh-320px)] overflow-y-auto space-y-0.5 select-text leading-relaxed">
+            <div id="serial-placeholder" class="text-slate-500 italic p-4 text-center">
+              <p class="font-bold text-slate-400 mb-1">🔌 Monitor Serial Físico Desconectado</p>
+              <p class="text-[11px] text-slate-600">Espete o cabo USB / ESP-Prog no notebook e clique em <strong class="text-emerald-400 font-bold">"Conectar Porta Serial USB"</strong> acima.</p>
+              <p class="text-[10px] text-slate-600 mt-2 font-mono">Padrão da bancada: 115.200 bps • 8 bits de dados • Sem paridade • 1 stop bit</p>
+            </div>
+          </div>
+
+          <!-- Linha de Envio Interativo (Serial Input CLI) -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex items-center space-x-2 text-xs">
+            <div class="flex items-center space-x-1.5 text-slate-400 font-mono text-[11px] pl-1">
+              <span class="text-emerald-400 font-bold">ESP32&gt;</span>
+            </div>
+            <input type="text" id="serial-cmd-input" placeholder="Digite um comando para a placa (ex: help, restart, heap, status, config)..." class="flex-1 bg-slate-950 border border-slate-700/80 rounded-xl px-3 py-2 text-xs font-mono text-slate-100 focus:outline-none focus:border-emerald-500" onkeydown="if(event.key==='Enter') sendSerialLineCommand()">
+            
+            <select id="serial-line-ending" class="bg-slate-950 border border-slate-700 text-slate-300 text-xs rounded-xl px-2.5 py-2 font-mono">
+              <option value="\r\n" selected>CRLF (\r\n)</option>
+              <option value="\n">LF (\n)</option>
+              <option value="\r">CR (\r)</option>
+              <option value="">Nenhum</option>
+            </select>
+
+            <button onclick="sendSerialLineCommand()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition flex items-center space-x-1.5 shadow-md shadow-emerald-600/20">
+              <i data-lucide="send" class="w-3.5 h-3.5"></i>
+              <span>Enviar</span>
+            </button>
+          </div>
+
+        </section>
+
+        <!-- ================= ABA EXCLUSIVA 11: WEBSERVER LOCAL DO ESP32 & PROVISIONAMENTO ================= -->
+        <section id="view-webserver" class="tab-content hidden space-y-4">
+          
+          <!-- Cabeçalho do Portal de Comissionamento -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-sm space-y-4">
+            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-3 border-b border-slate-800">
+              <div class="flex items-center space-x-3">
+                <div class="p-2.5 rounded-2xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+                  <i data-lucide="globe" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <div class="flex items-center space-x-2 flex-wrap">
+                    <h3 class="text-base font-bold text-slate-100">Webserver Local do ESP32 • Portal de Comissionamento</h3>
+                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-500/40">
+                      HTTP Porta 80 • SoftAP / LAN
+                    </span>
+                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/40">
+                      Offline Ready (Zero Nuvem)
+                    </span>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-0.5">Interface de configuração embarcada na memória flash da placa. Funciona mesmo se a AWS estiver fora do ar ou para provisionar placas novas</p>
+                </div>
+              </div>
+
+              <!-- Barra de Endereço & Ações -->
+              <div class="flex items-center space-x-2 flex-wrap w-full lg:w-auto">
+                <div class="flex items-center space-x-1 bg-slate-950 border border-slate-700/80 rounded-xl px-2.5 py-1 text-xs flex-1 sm:flex-initial">
+                  <i data-lucide="link" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <input type="text" id="webserver-url-input" value="http://192.168.4.1" placeholder="http://192.168.4.1" class="bg-transparent text-slate-100 font-mono text-xs focus:outline-none w-36 sm:w-44">
+                </div>
+
+                <button onclick="loadWebserverIframe()" class="px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-md shadow-cyan-600/20">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                  <span>Carregar Portal</span>
+                </button>
+
+                <button onclick="openWebserverExternalWindow()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs font-semibold transition border border-slate-700 flex items-center space-x-1.5" title="Abrir o site do webserver da placa em uma nova aba">
+                  <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                  <span>Nova Aba</span>
+                </button>
+
+                <button onclick="toggleSplitView('webserver')" id="btn-split-webserver" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700 flex items-center space-x-1.5" title="Dividir tela entre Webserver e Monitor Serial">
+                  <i data-lucide="columns" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  <span>Visão Dividida (Split)</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 3 Cards de Gestão: Acesso Rápido, Credenciais & Comandos -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1 text-xs">
+              
+              <!-- Card 1: Forçar Modo Webserver Offline -->
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-2">
+                <div class="flex items-center justify-between">
+                  <h4 class="font-bold text-white flex items-center space-x-1.5">
+                    <i data-lucide="zap" class="w-4 h-4 text-amber-400"></i>
+                    <span>Entrar no Webserver</span>
+                  </h4>
+                  <span class="text-[9px] bg-amber-950 text-amber-300 border border-amber-500/30 px-1.5 py-0.2 rounded font-mono">A Qualquer Hora</span>
+                </div>
+                <p class="text-[11px] text-slate-400 leading-tight">
+                  A placa já está configurada ou a AWS está sem conexão? Coloque o ESP32 em modo de comissionamento:
+                </p>
+                <div class="pt-1 flex items-center space-x-2">
+                  <button onclick="triggerWebserverConfigStateMqtt()" class="flex-1 px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[11px] transition flex items-center justify-center space-x-1">
+                    <i data-lucide="radio" class="w-3 h-3"></i>
+                    <span>Via Rede (config_state)</span>
+                  </button>
+                  <button onclick="forceWebserverViaSerial()" class="flex-1 px-2.5 py-1.5 rounded-lg bg-rose-950 hover:bg-rose-900 text-rose-300 border border-rose-500/40 font-bold text-[11px] transition flex items-center justify-center space-x-1">
+                    <i data-lucide="cpu" class="w-3 h-3"></i>
+                    <span>Via Cabo USB (Offline)</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Card 2: Credenciais de Fábrica & Segurança -->
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-2">
+                <div class="flex items-center justify-between">
+                  <h4 class="font-bold text-white flex items-center space-x-1.5">
+                    <i data-lucide="key" class="w-4 h-4 text-cyan-400"></i>
+                    <span>Credenciais do Webserver</span>
+                  </h4>
+                  <span class="text-[9px] bg-cyan-950 text-cyan-300 border border-cyan-500/30 px-1.5 py-0.2 rounded font-mono">Fábrica</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+                  <div class="bg-slate-900 border border-slate-800 rounded-lg p-2">
+                    <span class="text-slate-400 block text-[9px] uppercase font-bold">Operador (user)</span>
+                    <span class="text-emerald-400 font-bold">user</span> / <span class="text-slate-300">user</span>
+                  </div>
+                  <div class="bg-slate-900 border border-slate-800 rounded-lg p-2">
+                    <span class="text-slate-400 block text-[9px] uppercase font-bold">Desenvolvedor (dev)</span>
+                    <span class="text-cyan-400 font-bold">dev</span> / <span class="text-slate-300">admin</span>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-2 pt-0.5">
+                  <button onclick="queryWebserverCredentialsMqtt()" class="flex-1 px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-[10px] font-semibold transition flex items-center justify-center space-x-1">
+                    <i data-lucide="search" class="w-3 h-3 text-cyan-400"></i>
+                    <span>Consultar na Placa</span>
+                  </button>
+                  <button onclick="resetWebserverPasswordMqtt()" class="flex-1 px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-amber-300 border border-amber-500/30 text-[10px] font-semibold transition flex items-center justify-center space-x-1">
+                    <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
+                    <span>Resetar Senha</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Card 3: Roteiro Rápido de Provisionamento -->
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <h4 class="font-bold text-white flex items-center space-x-1.5">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+                    <span>Passo a Passo de Bancada</span>
+                  </h4>
+                  <span class="text-[9px] text-slate-500 font-mono">4 Etapas</span>
+                </div>
+                <ol class="text-[10px] text-slate-400 space-y-1 list-decimal list-inside leading-tight font-mono">
+                  <li>Ligue a placa ou force o modo Webserver.</li>
+                  <li>No note, conecte na rede Wi-Fi <strong class="text-cyan-300">CODAX_XXXXXX</strong>.</li>
+                  <li>Acesse <strong class="text-white">http://192.168.4.1</strong> com login <strong class="text-cyan-300">dev</strong>.</li>
+                  <li>Configure Interface, Protocolo e MESH ID.</li>
+                </ol>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Container do Iframe / Visualizador Embutido do Webserver -->
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden h-[calc(100vh-320px)] relative flex flex-col shadow-inner">
+            
+            <!-- Barra Superior do Navegador Integrado -->
+            <div class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex items-center justify-between text-xs font-mono">
+              <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+                <span class="text-slate-500 text-[11px] ml-2 font-bold">Portal Embutido:</span>
+                <span id="webserver-active-url-label" class="text-cyan-400 font-bold">http://192.168.4.1</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <button onclick="reloadWebserverIframe()" class="text-slate-400 hover:text-white transition flex items-center space-x-1 text-[11px]">
+                  <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+                  <span>Recarregar</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Iframe Real do Webserver -->
+            <iframe id="webserver-frame" src="about:blank" class="w-full flex-1 bg-slate-950 border-0" sandbox="allow-same-origin allow-scripts allow-forms allow-popups" title="Webserver ESP32"></iframe>
+
+            <!-- Fallback Overlay (Orientações de Conexão com o SoftAP) -->
+            <div id="webserver-overlay-helper" class="absolute inset-0 bg-slate-950/95 flex flex-col items-center justify-center p-6 text-center space-y-4">
+              <div class="p-4 rounded-3xl bg-cyan-950 border border-cyan-500/30 text-cyan-400 shadow-xl">
+                <i data-lucide="wifi" class="w-10 h-10 animate-pulse"></i>
+              </div>
+              <div class="max-w-md space-y-2">
+                <h3 class="text-base font-bold text-white">Conectando ao Webserver da Placa</h3>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  Para carregar o portal da placa, garanta que seu notebook esteja conectado à rede Wi-Fi da placa (<strong class="text-cyan-300 font-mono">CODAX_XXXXXX</strong>) ou que o ESP32 esteja conectado no mesmo roteador da sua bancada.
+                </p>
+              </div>
+              <div class="flex items-center space-x-3 pt-2">
+                <button onclick="loadWebserverIframe(true)" class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs transition flex items-center space-x-2 shadow-lg shadow-cyan-600/30">
+                  <i data-lucide="arrow-right-circle" class="w-4 h-4"></i>
+                  <span>Tentar Conectar Agora (192.168.4.1)</span>
+                </button>
+                <button onclick="openWebserverExternalWindow()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 font-semibold text-xs transition flex items-center space-x-2">
+                  <i data-lucide="external-link" class="w-4 h-4"></i>
+                  <span>Abrir em Nova Aba do Navegador</span>
+                </button>
+              </div>
+              <p class="text-[10px] text-slate-500 font-mono">Dica: Se o navegador bloquear o carregamento em iframe por segurança HTTP/HTTPS, use o botão "Abrir em Nova Aba".</p>
+            </div>
+
           </div>
 
         </section>
@@ -5873,6 +6236,8 @@
       dictionary: { title: 'Dicionário Oficial de Comandos & Tópicos', icon: 'book-open', desc: 'Explicações detalhadas de cada função e tópico MQTT' },
       ota: { title: 'Central de Atualização OTA (HTTP)', icon: 'upload-cloud', desc: 'Envie .bin e dispare mupgrade na malha' },
       logs: { title: 'Console ao Vivo (WebSockets)', icon: 'terminal', desc: 'Transmissão em tempo real do tráfego MQTT' },
+      serial: { title: 'Monitor Serial USB (ESP-Prog & UART Direta)', icon: 'cpu', desc: 'Espelhamento em tempo real da saída serial física USB a 115.200 bps com decodificação ANSI e controle DTR/RTS' },
+      webserver: { title: 'Webserver Local do ESP32 & Portal de Comissionamento', icon: 'globe', desc: 'Acesso direto ao portal de configuração HTTP do microcontrolador (192.168.4.1) independente da AWS' },
       timestream: { title: 'Amazon Timestream • Séries Temporais & Métricas em Nuvem', icon: 'clock', desc: 'Consultas SQL, medições elétricas trifásicas e telemetria histórica no AWS Timestream' },
       scifi: { title: 'Radar Sci-Fi Lab & Observabilidade de Borda', icon: 'sparkles', desc: 'Osciloscópio harmônico polar, CSMA/CA adaptativo, FreeRTOS watcher e filtros de sinal' }
     };
@@ -14175,6 +14540,761 @@
         console.error(e);
       }
     }
+
+    // =========================================================================
+    // ENGINE DO MONITOR SERIAL USB (ESP-PROG / UART) & WEBSERVER LOCAL ESP32
+    // =========================================================================
+
+    let serialPort = null;
+    let serialReader = null;
+    let serialWriter = null;
+    let isSerialConnected = false;
+    let serialKeepReading = false;
+    let serialRawLines = [];
+    let serialFilterCategory = 'all';
+    let isSplitViewActive = false;
+    let detectedWebserverIp = '192.168.4.1';
+    let detectedSoftApSsid = null;
+
+    /**
+     * Alterna conexão com a porta serial física usando Web Serial API
+     */
+    async function toggleWebSerialConnection() {
+      if (isSerialConnected) {
+        await disconnectWebSerial();
+      } else {
+        await connectWebSerial();
+      }
+    }
+
+    /**
+     * Conecta à porta serial USB via navigator.serial
+     */
+    async function connectWebSerial() {
+      if (!('serial' in navigator)) {
+        alert('⚠️ Web Serial API não suportada neste navegador!\n\nPara acessar a porta USB/ESP-Prog diretamente pelo navegador, utilize o Google Chrome ou Microsoft Edge no Windows.');
+        return;
+      }
+
+      try {
+        // Solicita ao operador a escolha da porta COM (ESP-Prog / CP2102 / CH340)
+        serialPort = await navigator.serial.requestPort();
+        
+        const baudSelect = document.getElementById('serial-baudrate-select');
+        const baudRate = baudSelect ? parseInt(baudSelect.value, 10) : 115200;
+
+        // Abre a porta serial
+        await serialPort.open({
+          baudRate: baudRate,
+          dataBits: 8,
+          stopBits: 1,
+          parity: 'none',
+          flowControl: 'none'
+        });
+
+        isSerialConnected = true;
+        serialKeepReading = true;
+
+        // Atualiza UI de status
+        updateSerialConnectionUI(true, baudRate);
+
+        // Dispara loop de leitura
+        readSerialStream(serialPort);
+
+        // Notifica o operador
+        showGlassToast(`🔌 Porta Serial Conectada a ${baudRate} bps!\nEspelhamento UART ativo.`);
+
+      } catch (err) {
+        if (err.name !== 'NotFoundError') {
+          console.error('Erro ao abrir porta serial:', err);
+          showGlassToast(`❌ Erro ao conectar porta serial: ${err.message || err}`);
+        }
+        isSerialConnected = false;
+        updateSerialConnectionUI(false);
+      }
+    }
+
+    /**
+     * Desconecta a porta serial física
+     */
+    async function disconnectWebSerial() {
+      serialKeepReading = false;
+      try {
+        if (serialReader) {
+          await serialReader.cancel();
+          serialReader.releaseLock();
+          serialReader = null;
+        }
+        if (serialWriter) {
+          serialWriter.releaseLock();
+          serialWriter = null;
+        }
+        if (serialPort) {
+          await serialPort.close();
+          serialPort = null;
+        }
+      } catch (e) {
+        console.warn('Fechamento de porta serial:', e);
+      } finally {
+        isSerialConnected = false;
+        updateSerialConnectionUI(false);
+        showGlassToast('🛑 Porta Serial Desconectada da Bancada.');
+      }
+    }
+
+    /**
+     * Atualiza elementos da interface indicando status da porta serial
+     */
+    function updateSerialConnectionUI(connected, baudRate = 115200) {
+      const badge = document.getElementById('serial-status-badge');
+      const dot = document.getElementById('serial-status-dot');
+      const text = document.getElementById('serial-status-text');
+      const btn = document.getElementById('btn-serial-connect');
+      const btnText = document.getElementById('btn-serial-connect-text');
+      const placeholder = document.getElementById('serial-placeholder');
+      const sideBadge = document.getElementById('sidebar-badge-serial');
+
+      if (connected) {
+        if (badge) badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950/90 text-emerald-300 border border-emerald-500/50 flex items-center space-x-1.5 shadow-sm';
+        if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping';
+        if (text) text.innerText = `CONECTADO: UART @ ${baudRate} bps`;
+        if (btn) btn.className = 'px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-md shadow-rose-600/20';
+        if (btnText) btnText.innerText = 'Desconectar Serial';
+        if (placeholder) placeholder.classList.add('hidden');
+        if (sideBadge) {
+          sideBadge.className = 'text-[9px] bg-emerald-600 text-white font-mono font-bold px-1.5 py-0.2 rounded animate-pulse';
+          sideBadge.innerText = 'ONLINE';
+        }
+      } else {
+        if (badge) badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center space-x-1';
+        if (dot) dot.className = 'w-1.5 h-1.5 rounded-full bg-slate-500';
+        if (text) text.innerText = 'DESCONECTADO';
+        if (btn) btn.className = 'px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-md shadow-emerald-600/20';
+        if (btnText) btnText.innerText = 'Conectar Porta Serial USB';
+        if (serialRawLines.length === 0 && placeholder) placeholder.classList.remove('hidden');
+        if (sideBadge) {
+          sideBadge.className = 'text-[9px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.2 rounded font-mono font-bold';
+          sideBadge.innerText = '115.2k';
+        }
+      }
+    }
+
+    /**
+     * Loop de leitura da porta serial UART com decodificação de linhas e ANSI
+     */
+    async function readSerialStream(port) {
+      const textDecoder = new TextDecoderStream();
+      const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+      serialReader = textDecoder.readable.getReader();
+
+      let lineBuffer = '';
+
+      try {
+        while (serialKeepReading) {
+          const { value, done } = await serialReader.read();
+          if (done) break;
+          if (value) {
+            lineBuffer += value;
+            const lines = lineBuffer.split(/\r?\n/);
+            // Mantém a última linha incompleta no buffer
+            lineBuffer = lines.pop();
+
+            for (const rawLine of lines) {
+              if (rawLine !== undefined) {
+                appendSerialLogLine(rawLine);
+              }
+            }
+          }
+        }
+      } catch (err) {
+        if (serialKeepReading) {
+          console.error('Erro no stream serial:', err);
+          appendSerialLogLine(`[SISTEMA] Conexão serial interrompida: ${err.message || err}`, 'err');
+        }
+      } finally {
+        try {
+          serialReader.releaseLock();
+        } catch (e) {}
+      }
+    }
+
+    /**
+     * Processa, categoriza e adiciona uma linha ao monitor serial
+     */
+    function appendSerialLogLine(rawText, forceCategory = null) {
+      const now = new Date();
+      const timeStr = now.toTimeString().split(' ')[0] + '.' + String(now.getMilliseconds()).padStart(3, '0');
+
+      // Determina categoria para filtros
+      let category = forceCategory || 'all';
+      const cleanUpper = rawText.toUpperCase();
+
+      if (rawText.includes('[I]') || cleanUpper.includes('INFO:') || rawText.includes('I (')) category = 'info';
+      else if (rawText.includes('[W]') || cleanUpper.includes('WARN:') || rawText.includes('W (')) category = 'warn';
+      else if (rawText.includes('[E]') || cleanUpper.includes('ERROR:') || cleanUpper.includes('PANIC') || cleanUpper.includes('ABORT') || rawText.includes('E (')) category = 'err';
+      else if (cleanUpper.includes('BOOT') || cleanUpper.includes('RST:0X') || cleanUpper.includes('CONFIGSIP') || cleanUpper.includes('ROM')) category = 'boot';
+      
+      if (cleanUpper.includes('WEBSERVER') || cleanUpper.includes('SOFTAP') || rawText.includes('192.168.4.1') || cleanUpper.includes('CODAX_')) {
+        category = 'web';
+        detectSerialWebserverPattern(rawText);
+      }
+
+      // Registro no buffer circular (últimas 3000 linhas)
+      const record = {
+        id: 'ser-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+        timestamp: timeStr,
+        raw: rawText,
+        html: ansiToHtml(rawText),
+        category: category
+      };
+
+      serialRawLines.push(record);
+      if (serialRawLines.length > 3000) {
+        serialRawLines.shift();
+      }
+
+      // Renderiza no DOM se atender ao filtro
+      renderSingleSerialLine(record);
+    }
+
+    /**
+     * Renderiza uma linha única no console CRT
+     */
+    function renderSingleSerialLine(record) {
+      const terminal = document.getElementById('serial-crt-terminal');
+      if (!terminal) return;
+
+      const placeholder = document.getElementById('serial-placeholder');
+      if (placeholder && !placeholder.classList.contains('hidden')) {
+        placeholder.classList.add('hidden');
+      }
+
+      // Aplica filtro de categoria
+      if (serialFilterCategory !== 'all' && record.category !== serialFilterCategory) {
+        return;
+      }
+
+      // Aplica filtro textual
+      const searchInput = document.getElementById('serial-search-input');
+      const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+      if (query && !record.raw.toLowerCase().includes(query)) {
+        return;
+      }
+
+      const showTimestamp = document.getElementById('serial-timestamp-toggle')?.checked ?? true;
+      const autoscroll = document.getElementById('serial-autoscroll-toggle')?.checked ?? true;
+
+      const row = document.createElement('div');
+      row.className = 'hover:bg-slate-900/60 py-0.5 px-1 rounded flex items-start space-x-2 font-mono text-[11px] leading-relaxed break-all';
+
+      let timeHtml = '';
+      if (showTimestamp) {
+        timeHtml = `<span class="text-slate-500 select-none text-[10px] shrink-0 font-normal">[${record.timestamp}]</span>`;
+      }
+
+      // Badge visual de categoria
+      let badgeHtml = '';
+      if (record.category === 'info') badgeHtml = '<span class="text-emerald-400 font-bold shrink-0">[I]</span>';
+      else if (record.category === 'warn') badgeHtml = '<span class="text-amber-400 font-bold shrink-0">[W]</span>';
+      else if (record.category === 'err') badgeHtml = '<span class="text-rose-400 font-bold shrink-0">[E]</span>';
+      else if (record.category === 'boot') badgeHtml = '<span class="text-purple-400 font-bold shrink-0">[ROM]</span>';
+      else if (record.category === 'web') badgeHtml = '<span class="text-cyan-400 font-bold shrink-0">[WEB]</span>';
+
+      row.innerHTML = `${timeHtml} ${badgeHtml} <span class="flex-1">${record.html}</span>`;
+      terminal.appendChild(row);
+
+      // Auto-scroll para o final
+      if (autoscroll) {
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+    }
+
+    /**
+     * Renderiza todas as linhas de acordo com filtros ativos
+     */
+    function renderSerialTerminalLines() {
+      const terminal = document.getElementById('serial-crt-terminal');
+      if (!terminal) return;
+
+      terminal.innerHTML = '';
+
+      if (serialRawLines.length === 0) {
+        terminal.innerHTML = `
+          <div id="serial-placeholder" class="text-slate-500 italic p-4 text-center">
+            <p class="font-bold text-slate-400 mb-1">🔌 Monitor Serial Físico</p>
+            <p class="text-[11px] text-slate-600">Nenhum log gravado ou porta desconectada.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const searchInput = document.getElementById('serial-search-input');
+      const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+      const showTimestamp = document.getElementById('serial-timestamp-toggle')?.checked ?? true;
+
+      const fragment = document.createDocumentFragment();
+
+      for (const record of serialRawLines) {
+        if (serialFilterCategory !== 'all' && record.category !== serialFilterCategory) continue;
+        if (query && !record.raw.toLowerCase().includes(query)) continue;
+
+        const row = document.createElement('div');
+        row.className = 'hover:bg-slate-900/60 py-0.5 px-1 rounded flex items-start space-x-2 font-mono text-[11px] leading-relaxed break-all';
+
+        let timeHtml = showTimestamp ? `<span class="text-slate-500 select-none text-[10px] shrink-0 font-normal">[${record.timestamp}]</span>` : '';
+        let badgeHtml = '';
+        if (record.category === 'info') badgeHtml = '<span class="text-emerald-400 font-bold shrink-0">[I]</span>';
+        else if (record.category === 'warn') badgeHtml = '<span class="text-amber-400 font-bold shrink-0">[W]</span>';
+        else if (record.category === 'err') badgeHtml = '<span class="text-rose-400 font-bold shrink-0">[E]</span>';
+        else if (record.category === 'boot') badgeHtml = '<span class="text-purple-400 font-bold shrink-0">[ROM]</span>';
+        else if (record.category === 'web') badgeHtml = '<span class="text-cyan-400 font-bold shrink-0">[WEB]</span>';
+
+        row.innerHTML = `${timeHtml} ${badgeHtml} <span class="flex-1">${record.html}</span>`;
+        fragment.appendChild(row);
+      }
+
+      terminal.appendChild(fragment);
+
+      const autoscroll = document.getElementById('serial-autoscroll-toggle')?.checked ?? true;
+      if (autoscroll) {
+        terminal.scrollTop = terminal.scrollHeight;
+      }
+    }
+
+    /**
+     * Define filtro de categoria para o console serial
+     */
+    function setSerialFilter(cat) {
+      serialFilterCategory = cat;
+      document.querySelectorAll('.ser-filter-btn').forEach(b => {
+        b.className = 'ser-filter-btn px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400 hover:text-white font-mono text-xs';
+      });
+      const activeBtn = document.getElementById(`btn-ser-${cat}`);
+      if (activeBtn) {
+        activeBtn.className = 'ser-filter-btn px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-mono font-medium text-xs shadow-sm';
+      }
+      renderSerialTerminalLines();
+    }
+
+    /**
+     * Limpa o console serial da tela
+     */
+    function clearSerialTerminal() {
+      serialRawLines = [];
+      const terminal = document.getElementById('serial-crt-terminal');
+      if (terminal) {
+        terminal.innerHTML = `
+          <div id="serial-placeholder" class="text-slate-500 italic p-4 text-center">
+            <p class="font-bold text-slate-400 mb-1">🧹 Console Serial Limpo</p>
+            <p class="text-[11px] text-slate-600">Aguardando novos frames da UART...</p>
+          </div>
+        `;
+      }
+      showGlassToast('🧹 Console Serial Limpo com sucesso.');
+    }
+
+    /**
+     * Faz download do log serial completo como arquivo .txt
+     */
+    function downloadSerialLogFile() {
+      if (serialRawLines.length === 0) {
+        alert('Não há logs na memória para salvar.');
+        return;
+      }
+      const text = serialRawLines.map(r => `[${r.timestamp}] ${r.raw}`).join('\n');
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `codax_serial_log_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showGlassToast('💾 Log Serial salvo com sucesso!');
+    }
+
+    /**
+     * Converte sequências ANSI do ESP-IDF em HTML colorido
+     */
+    function ansiToHtml(text) {
+      if (!text) return '';
+      let escaped = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      // Cores padrão ANSI do ESP-IDF
+      escaped = escaped
+        .replace(/\x1b\[0;32m/g, '<span class="text-emerald-400 font-semibold">')
+        .replace(/\x1b\[32m/g, '<span class="text-emerald-400 font-semibold">')
+        .replace(/\x1b\[0;31m/g, '<span class="text-rose-400 font-semibold">')
+        .replace(/\x1b\[31m/g, '<span class="text-rose-400 font-semibold">')
+        .replace(/\x1b\[0;33m/g, '<span class="text-amber-400 font-semibold">')
+        .replace(/\x1b\[33m/g, '<span class="text-amber-400 font-semibold">')
+        .replace(/\x1b\[0;36m/g, '<span class="text-cyan-400 font-semibold">')
+        .replace(/\x1b\[36m/g, '<span class="text-cyan-400 font-semibold">')
+        .replace(/\x1b\[0;35m/g, '<span class="text-purple-400 font-semibold">')
+        .replace(/\x1b\[35m/g, '<span class="text-purple-400 font-semibold">')
+        .replace(/\x1b\[0;34m/g, '<span class="text-blue-400 font-semibold">')
+        .replace(/\x1b\[34m/g, '<span class="text-blue-400 font-semibold">')
+        .replace(/\x1b\[0m/g, '</span>')
+        .replace(/\x1b\[[0-9;]*m/g, ''); // Limpa códigos restantes
+
+      return escaped;
+    }
+
+    /**
+     * Detecta padrões de IP e SoftAP emitidos pelo firmware da Codax
+     */
+    function detectSerialWebserverPattern(rawText) {
+      // Procura por IP (192.168.4.1 ou IP de roteador)
+      const ipMatch = rawText.match(/\b(192\.168\.\d+\.\d+)\b/);
+      if (ipMatch) {
+        detectedWebserverIp = ipMatch[1];
+      }
+
+      // Procura por SSID SoftAP
+      const ssidMatch = rawText.match(/CODAX_[0-9A-Fa-f]{6,12}/i);
+      if (ssidMatch) {
+        detectedSoftApSsid = ssidMatch[0].toUpperCase();
+      }
+
+      // Atualiza banner de detecção
+      const banner = document.getElementById('serial-webserver-detected-banner');
+      const ipSpan = document.getElementById('banner-webserver-ip');
+      const ssidSpan = document.getElementById('banner-webserver-ssid');
+      const link = document.getElementById('banner-webserver-link');
+      const urlInput = document.getElementById('webserver-url-input');
+
+      if (banner && (ipMatch || ssidMatch)) {
+        banner.classList.remove('hidden');
+        if (ipSpan) ipSpan.innerText = `http://${detectedWebserverIp}`;
+        if (ssidSpan && detectedSoftApSsid) ssidSpan.innerText = detectedSoftApSsid;
+        if (link) link.href = `http://${detectedWebserverIp}`;
+        if (urlInput) urlInput.value = `http://${detectedWebserverIp}`;
+      }
+    }
+
+    /**
+     * Envia linha de comando digitada pelo operador para a UART do ESP32
+     */
+    async function sendSerialLineCommand() {
+      const input = document.getElementById('serial-cmd-input');
+      if (!input || !input.value.trim()) return;
+
+      const cmdText = input.value.trim();
+      const endingSelect = document.getElementById('serial-line-ending');
+      let ending = '\r\n';
+      if (endingSelect) {
+        if (endingSelect.value === '\\r\\n') ending = '\r\n';
+        else if (endingSelect.value === '\\n') ending = '\n';
+        else if (endingSelect.value === '\\r') ending = '\r';
+        else ending = '';
+      }
+
+      if (!isSerialConnected || !serialPort || !serialPort.writable) {
+        alert('⚠️ Porta Serial não conectada!\n\nConecte a porta serial USB para enviar comandos diretos à placa.');
+        return;
+      }
+
+      try {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(cmdText + ending);
+        const writer = serialPort.writable.getWriter();
+        await writer.write(data);
+        writer.releaseLock();
+
+        // Echo visual no console
+        appendSerialLogLine(`>> ${cmdText}`, 'info');
+        input.value = '';
+      } catch (err) {
+        console.error('Erro ao escrever na porta serial:', err);
+        showGlassToast(`❌ Erro no envio serial: ${err.message || err}`);
+      }
+    }
+
+    /**
+     * Hardware Control: Pulsa a linha RST/EN para reiniciar o ESP32 (ESP-Prog)
+     */
+    async function pulseEsp32Reset() {
+      if (!isSerialConnected || !serialPort) {
+        alert('Conecte a porta serial antes de enviar o pulso de reset.');
+        return;
+      }
+      try {
+        // Sequência padrão ESP32 DTR/RTS auto-reset
+        await serialPort.setSignals({ dataTerminalReady: false, requestToSend: true });
+        await new Promise(r => setTimeout(r, 120));
+        await serialPort.setSignals({ dataTerminalReady: false, requestToSend: false });
+
+        appendSerialLogLine('⚡ [SISTEMA] Pulso de reinicialização EN/RST enviado via ESP-Prog!', 'boot');
+        showGlassToast('⚡ Pulso EN/RST enviado: Placa reiniciada!');
+      } catch (err) {
+        console.error('Erro ao pulsar reset:', err);
+        showGlassToast(`❌ Erro no pulso de reset: ${err.message || err}`);
+      }
+    }
+
+    /**
+     * Hardware Control: Coloca o ESP32 em modo Bootloader ROM (GPIO0 + EN)
+     */
+    async function pulseEsp32Bootloader() {
+      if (!isSerialConnected || !serialPort) {
+        alert('Conecte a porta serial antes de colocar em modo Bootloader.');
+        return;
+      }
+      try {
+        // Coloca GPIO0 (DTR) em nível baixo e pulsa EN (RTS)
+        await serialPort.setSignals({ dataTerminalReady: true, requestToSend: true });
+        await new Promise(r => setTimeout(r, 120));
+        await serialPort.setSignals({ dataTerminalReady: true, requestToSend: false });
+        await new Promise(r => setTimeout(r, 60));
+        await serialPort.setSignals({ dataTerminalReady: false, requestToSend: false });
+
+        appendSerialLogLine('📥 [SISTEMA] Pulso GPIO0 + EN enviado: ESP32 em Modo Bootloader!', 'boot');
+        showGlassToast('📥 Placa colocada em Modo Bootloader (Gravação)!');
+      } catch (err) {
+        console.error('Erro no bootloader:', err);
+        showGlassToast(`❌ Erro no modo bootloader: ${err.message || err}`);
+      }
+    }
+
+    /**
+     * Força a placa a entrar no modo Webserver (offline ou via comando)
+     */
+    async function forceWebserverViaSerial() {
+      const confirmAction = confirm(
+        '⚡ FORÇAR MODO WEBSERVER DA PLACA:\n\n' +
+        'Deseja colocar o ESP32 em modo de comissionamento (SoftAP + Webserver local)?\n\n' +
+        '• Se a placa estiver conectada ao USB, enviaremos a ordem de configuração.\n' +
+        '• O ESP32 salvará o estado e subirá a rede Wi-Fi CODAX_XXXXXX em http://192.168.4.1.\n\n' +
+        'Deseja prosseguir?'
+      );
+      if (!confirmAction) return;
+
+      // 1. Tenta via serial direta se estiver conectada
+      if (isSerialConnected && serialPort && serialPort.writable) {
+        try {
+          const encoder = new TextEncoder();
+          // Envia sequência de reset de config / console
+          await serialPort.writable.getWriter().write(encoder.encode('config_state\r\n'));
+          appendSerialLogLine('⚡ [SISTEMA] Comando config_state enviado via UART física!', 'web');
+        } catch (e) {
+          console.warn('Erro ao enviar via serial:', e);
+        }
+      }
+
+      // 2. Dispara também via backend local
+      try {
+        const res = await fetch('/api/webserver/trigger-config-state', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mac: 'any', env: 'PROD' })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          showGlassToast('✅ Ordem enviada: Placa entrará em modo SoftAP + Webserver em 10 segundos!');
+          appendSerialLogLine('🌐 [WEBSERVER] Modo de configuração ativado! Aguarde reinicialização e acesse http://192.168.4.1', 'web');
+        }
+      } catch (err) {
+        showGlassToast('⚠️ Ordem enviada via barramento serial local.');
+      }
+    }
+
+    /**
+     * Consulta portas COM ativas no Windows através do backend Python
+     */
+    async function checkWindowsComPorts() {
+      try {
+        const res = await fetch('/api/serial/ports');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.ports && data.ports.length > 0) {
+            const listStr = data.ports.map(p => `• ${p.port}: ${p.description} (${p.manufacturer})`).join('\n');
+            alert(`🔍 Portas Seriais Físicas Detectadas no Windows (${data.ports.length}):\n\n${listStr}\n\nClique em "Conectar Porta Serial USB" para abrir a porta no monitor.`);
+          } else {
+            alert('🔍 Nenhuma porta serial física (COM) detectada no Windows no momento.\n\nVerifique se o cabo USB ou ESP-Prog está devidamente conectado ao notebook.');
+          }
+        }
+      } catch (err) {
+        console.error('Erro ao consultar portas:', err);
+      }
+    }
+
+    /**
+     * Alterna o modo Visão Dividida (Split Screen: Serial + Webserver lado a lado)
+     */
+    function toggleSplitView(sourceTab) {
+      isSplitViewActive = !isSplitViewActive;
+
+      const serialSec = document.getElementById('view-serial');
+      const webserverSec = document.getElementById('view-webserver');
+      const btnSerial = document.getElementById('btn-split-serial');
+      const btnWeb = document.getElementById('btn-split-webserver');
+
+      if (isSplitViewActive) {
+        // Exibe ambos lado a lado
+        if (serialSec) {
+          serialSec.classList.remove('hidden');
+          serialSec.style.flex = '1';
+        }
+        if (webserverSec) {
+          webserverSec.classList.remove('hidden');
+          webserverSec.style.flex = '1';
+        }
+
+        // Envolve em container flex se pai permitir
+        const parent = serialSec?.parentElement;
+        if (parent) {
+          parent.classList.add('split-view-active');
+        }
+
+        if (btnSerial) btnSerial.innerHTML = '<i data-lucide="minimize-2" class="w-3.5 h-3.5 text-amber-400"></i><span>Tela Cheia</span>';
+        if (btnWeb) btnWeb.innerHTML = '<i data-lucide="minimize-2" class="w-3.5 h-3.5 text-amber-400"></i><span>Tela Cheia</span>';
+        
+        showGlassToast('◫ Visão Dividida Ativa: Monitor Serial à esquerda, Webserver à direita!');
+      } else {
+        // Restaura visão única baseada na aba de origem
+        const parent = serialSec?.parentElement;
+        if (parent) {
+          parent.classList.remove('split-view-active');
+        }
+        if (btnSerial) btnSerial.innerHTML = '<i data-lucide="columns" class="w-3.5 h-3.5 text-cyan-400"></i><span>Visão Dividida (Split)</span>';
+        if (btnWeb) btnWeb.innerHTML = '<i data-lucide="columns" class="w-3.5 h-3.5 text-emerald-400"></i><span>Visão Dividida (Split)</span>';
+
+        switchTab(sourceTab || 'serial');
+        showGlassToast('⬜ Retornado ao modo de Tela Cheia.');
+      }
+      lucide.createIcons();
+    }
+
+    /**
+     * Carrega a URL no Iframe do Webserver
+     */
+    function loadWebserverIframe(forceConnect = false) {
+      const urlInput = document.getElementById('webserver-url-input');
+      const frame = document.getElementById('webserver-frame');
+      const overlay = document.getElementById('webserver-overlay-helper');
+      const label = document.getElementById('webserver-active-url-label');
+
+      const url = urlInput ? urlInput.value.trim() : 'http://192.168.4.1';
+      if (frame) {
+        frame.src = url;
+      }
+      if (label) {
+        label.innerText = url;
+      }
+      if (overlay) {
+        overlay.classList.add('hidden');
+      }
+      showGlassToast(`🌐 Carregando Webserver em: ${url}`);
+    }
+
+    /**
+     * Recarrega o Iframe do Webserver
+     */
+    function reloadWebserverIframe() {
+      const frame = document.getElementById('webserver-frame');
+      if (frame) {
+        frame.src = frame.src;
+        showGlassToast('🔄 Recarregando portal do Webserver...');
+      }
+    }
+
+    /**
+     * Abre a URL do Webserver em uma nova aba externa do navegador
+     */
+    function openWebserverExternalWindow() {
+      const urlInput = document.getElementById('webserver-url-input');
+      const url = urlInput ? urlInput.value.trim() : 'http://192.168.4.1';
+      window.open(url, '_blank', 'noopener,noreferrer');
+      showGlassToast(`↗️ Abrindo ${url} em nova janela do navegador.`);
+    }
+
+    /**
+     * Abre o Webserver detectado via monitor serial direto na aba
+     */
+    function openDetectedWebserverIframe() {
+      switchTab('webserver');
+      const urlInput = document.getElementById('webserver-url-input');
+      if (urlInput) {
+        urlInput.value = `http://${detectedWebserverIp}`;
+      }
+      loadWebserverIframe(true);
+    }
+
+    /**
+     * Dispara comando MQTT config_state para colocar a placa em modo Webserver
+     */
+    async function triggerWebserverConfigStateMqtt() {
+      try {
+        const res = await fetch('/api/webserver/trigger-config-state', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mac: 'any', env: 'PROD' })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          alert(`✅ COMANDO CONFIG_STATE DISPARADO!\n\n${data.message}\n\nA placa reiniciará no modo SoftAP. Conecte no Wi-Fi da placa e acerte os parâmetros.`);
+        }
+      } catch (err) {
+        alert('Erro ao disparar config_state: ' + err.message);
+      }
+    }
+
+    /**
+     * Consulta credenciais do webserver salvas na placa
+     */
+    async function queryWebserverCredentialsMqtt() {
+      try {
+        const res = await fetch('/api/webserver/credentials');
+        if (res.ok) {
+          const data = await res.json();
+          alert(
+            `🔑 CREDENCIAIS DO WEBSERVER DA PLACA:\n\n` +
+            `• Papel Operador (user):\n` +
+            `  Login: ${data.default_roles.user.default_user} | Senha: ${data.default_roles.user.default_pass}\n` +
+            `  ${data.default_roles.user.permission}\n\n` +
+            `• Papel Engenharia/Dev (dev):\n` +
+            `  Login: ${data.default_roles.dev.default_user} | Senha: ${data.default_roles.dev.default_pass}\n` +
+            `  ${data.default_roles.dev.permission}\n\n` +
+            `Acesse http://192.168.4.1 após conectar na rede Wi-Fi da placa.`
+          );
+        }
+      } catch (err) {
+        alert('Erro ao consultar credenciais: ' + err.message);
+      }
+    }
+
+    /**
+     * Reseta as senhas do webserver para o padrão de fábrica
+     */
+    async function resetWebserverPasswordMqtt() {
+      const confirmReset = confirm('Deseja resetar as senhas do Webserver da placa para os padrões de fábrica (user/user e dev/admin)?');
+      if (!confirmReset) return;
+
+      try {
+        const payload = {
+          addr: ['any'],
+          type: 'json',
+          data: {
+            method: 'change',
+            function: 'webserver_password'
+          }
+        };
+        const res = await fetch('/api/command/publish', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            topic: 'config/shopba/mesh',
+            payload: JSON.stringify(payload)
+          })
+        });
+        showGlassToast('🔄 Ordem enviada: Senhas do webserver resetadas para padrão!');
+      } catch (err) {
+        showGlassToast('Erro ao resetar senhas: ' + err.message);
+      }
+    }
+
   </script>
 </body>
 </html>
