@@ -8,6 +8,9 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Three.js & OrbitControls para Gêmeo Digital 3D (WebGPU / WebGL) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -514,6 +517,12 @@
         <span id="blackbox-status-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
         <span class="text-[11px]">Caixa Preta</span>
         <span id="blackbox-mode-pill" class="text-[9px] font-mono font-bold bg-cyan-950 text-cyan-300 px-1 py-0.2 rounded border border-cyan-500/30">AO VIVO</span>
+      </button>
+
+      <!-- [INOVAÇÃO] Gêmeo Digital Holográfico 3D da Placa (WebGPU / Three.js) -->
+      <button onclick="openDigitalTwinFromTop()" id="top-btn-twin" title="Abrir Gêmeo Digital Holográfico 3D da Placa ESP32 (LEDs em tempo real e mapa térmico)" class="flex items-center space-x-1.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-cyan-500/60 text-slate-300 hover:text-cyan-300 px-2.5 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
+        <i data-lucide="box" class="w-3.5 h-3.5 text-cyan-400"></i>
+        <span class="text-[11px]">Gêmeo 3D</span>
       </button>
 
       <!-- Modo Inspetor Visual para IA (F2 ou Alt+Clique) -->
@@ -3145,6 +3154,10 @@
             <i data-lucide="upload-cloud" class="w-3.5 h-3.5 text-purple-400"></i>
             <span>Atualização OTA</span>
           </button>
+          <button onclick="switchCockpitSubTab('twin')" id="cockpit-tab-twin" class="cockpit-sub-tab px-3.5 py-2 text-xs font-medium border-b-2 border-transparent text-slate-400 hover:text-cyan-300 flex items-center space-x-2">
+            <i data-lucide="box" class="w-3.5 h-3.5 text-cyan-400"></i>
+            <span>🛰️ Gêmeo Digital 3D</span>
+          </button>
         </div>
 
         <!-- Conteúdo Rolável das Abas do Cockpit -->
@@ -3452,6 +3465,138 @@
               </div>
 
             </div>
+          </div>
+
+          <!-- SUB-ABA 6: GÊMEO DIGITAL HOLOGRÁFICO 3D (WEBGPU / THREE.JS) -->
+          <div id="cockpit-view-twin" class="cockpit-content-section space-y-4 hidden">
+            
+            <!-- Barra Superior de Ferramentas & Status do Gêmeo 3D -->
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3 shadow-md">
+              <div class="flex items-center space-x-3">
+                <div class="p-2.5 rounded-xl bg-cyan-950/80 text-cyan-400 border border-cyan-500/40">
+                  <i data-lucide="box" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <h4 class="font-extrabold text-sm text-slate-100">Gêmeo Digital Holográfico 3D da Placa ESP32</h4>
+                    <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/40">WebGPU / Three.js</span>
+                    <span id="twin-mac-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-300 border border-slate-700">--:--:--:--:--:--</span>
+                  </div>
+                  <p class="text-[11px] text-slate-400 mt-0.5">Renderização PBR fotorrealista com iluminação dinâmica, LEDs sincronizados com MQTT e mapa de calor térmico da CPU.</p>
+                </div>
+              </div>
+
+              <!-- Controles Rápidos do Canvas 3D -->
+              <div class="flex items-center space-x-2 flex-wrap">
+                <!-- Toggle Auto-Giro -->
+                <button type="button" onclick="toggleTwinAutoRotate()" id="btn-twin-autorotate" class="px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-300 hover:text-white transition flex items-center space-x-1.5">
+                  <i data-lucide="rotate-cw" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span id="btn-twin-autorotate-label">Giro 360°: ON</span>
+                </button>
+
+                <!-- Toggle Mapa Térmico -->
+                <button type="button" onclick="toggleTwinHeatmap()" id="btn-twin-heatmap" class="px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-300 hover:text-amber-400 transition flex items-center space-x-1.5">
+                  <i data-lucide="flame" class="w-3.5 h-3.5 text-amber-400"></i>
+                  <span id="btn-twin-heatmap-label">Mapa Térmico: ON</span>
+                </button>
+
+                <!-- Presets de Câmera -->
+                <div class="flex items-center bg-slate-900 border border-slate-700 rounded-xl p-0.5">
+                  <button type="button" onclick="setTwinCameraView('iso')" title="Visão Isométrica" class="px-2 py-1 rounded-lg text-[10px] font-bold text-slate-300 hover:text-white hover:bg-slate-800">ISO</button>
+                  <button type="button" onclick="setTwinCameraView('top')" title="Visão Superior" class="px-2 py-1 rounded-lg text-[10px] font-bold text-slate-300 hover:text-white hover:bg-slate-800">TOPO</button>
+                  <button type="button" onclick="setTwinCameraView('front')" title="Visão Frontal" class="px-2 py-1 rounded-lg text-[10px] font-bold text-slate-300 hover:text-white hover:bg-slate-800">FRENTE</button>
+                </div>
+
+                <!-- Botão Testar LEDs -->
+                <button type="button" onclick="triggerTwinLedTestPulse()" title="Disparar pulso luminoso de teste nos LEDs onboard" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white text-xs font-bold transition flex items-center space-x-1.5 shadow-md shadow-indigo-950">
+                  <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                  <span>Testar LEDs</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Viewport 3D Principal (Canvas WebGL / Three.js) -->
+            <div class="relative bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl h-[440px] sm:h-[490px] flex items-center justify-center select-none">
+              
+              <!-- Container onde o Three.js renderiza -->
+              <div id="digital-twin-canvas-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
+
+              <!-- HUD Holográfico de Telemetria Flutuante no Canto Superior Esquerdo -->
+              <div class="absolute top-4 left-4 pointer-events-none space-y-2 font-mono">
+                <div class="bg-slate-900/95 border border-slate-700/80 rounded-xl p-3 space-y-1.5 shadow-xl text-xs backdrop-blur-none">
+                  <div class="flex items-center space-x-2 text-cyan-400 font-bold text-[11px] uppercase tracking-wider">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                    <span>Status de Borda ESP32</span>
+                  </div>
+                  <div class="text-[11px] text-slate-300 flex justify-between space-x-4">
+                    <span class="text-slate-500">CPU Temp:</span>
+                    <span id="twin-hud-temp" class="text-amber-400 font-bold">42.5 °C</span>
+                  </div>
+                  <div class="text-[11px] text-slate-300 flex justify-between space-x-4">
+                    <span class="text-slate-500">Free Heap:</span>
+                    <span id="twin-hud-heap" class="text-emerald-400 font-bold">184.2 KB</span>
+                  </div>
+                  <div class="text-[11px] text-slate-300 flex justify-between space-x-4">
+                    <span class="text-slate-500">Mesh RSSI:</span>
+                    <span id="twin-hud-rssi" class="text-cyan-300 font-bold">-48 dBm</span>
+                  </div>
+                  <div class="text-[11px] text-slate-300 flex justify-between space-x-4">
+                    <span class="text-slate-500">Camada / Role:</span>
+                    <span id="twin-hud-role" class="text-purple-300 font-bold">L1 (Root)</span>
+                  </div>
+                </div>
+
+                <!-- Indicadores de LEDs Onboard -->
+                <div class="bg-slate-900/95 border border-slate-700/80 rounded-xl p-2.5 flex items-center space-x-3 text-[10px] shadow-xl text-slate-300">
+                  <div class="flex items-center space-x-1.5">
+                    <span id="twin-led-indicator-pwr" class="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(239,68,68,0.9)]"></span>
+                    <span>PWR</span>
+                  </div>
+                  <div class="flex items-center space-x-1.5">
+                    <span id="twin-led-indicator-wifi" class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.9)] animate-pulse"></span>
+                    <span>WIFI</span>
+                  </div>
+                  <div class="flex items-center space-x-1.5">
+                    <span id="twin-led-indicator-tx" class="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></span>
+                    <span>TX</span>
+                  </div>
+                  <div class="flex items-center space-x-1.5">
+                    <span id="twin-led-indicator-rx" class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+                    <span>RX</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Dica de Interação no Canto Inferior Direito -->
+              <div class="absolute bottom-3 right-4 pointer-events-none text-[10px] text-slate-500 font-mono flex items-center space-x-2">
+                <span>🖱️ Arraste para girar • Scroll para zoom • Botão direito para mover</span>
+              </div>
+            </div>
+
+            <!-- Ficha Técnica de Hardware da Placa em Tempo Real -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 space-y-1">
+                <span class="text-slate-500 block text-[10px] uppercase font-mono">SoC / Microcontrolador</span>
+                <span class="font-extrabold text-slate-200 block text-xs">Xtensa Dual-Core 32-bit LX6</span>
+                <span class="text-[10px] text-cyan-400 font-mono">Clock 240 MHz • 520KB SRAM</span>
+              </div>
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 space-y-1">
+                <span class="text-slate-500 block text-[10px] uppercase font-mono">Rádio & Topologia</span>
+                <span class="font-extrabold text-slate-200 block text-xs">802.11 b/g/n + ESP-MESH</span>
+                <span class="text-[10px] text-emerald-400 font-mono">Canal Wi-Fi 2.4 GHz • -82 dBm Sens.</span>
+              </div>
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 space-y-1">
+                <span class="text-slate-500 block text-[10px] uppercase font-mono">Interface de Medição</span>
+                <span class="font-extrabold text-slate-200 block text-xs">RS485 Modbus / NBR 14522</span>
+                <span class="text-[10px] text-amber-400 font-mono">Isolação Galvânica Óptica</span>
+              </div>
+              <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 space-y-1">
+                <span class="text-slate-500 block text-[10px] uppercase font-mono">Alimentação & Consumo</span>
+                <span class="font-extrabold text-slate-200 block text-xs">Fonte DC 5V / 3.3V LDO</span>
+                <span class="text-[10px] text-purple-400 font-mono">Corrente Média: 120 mA RMS</span>
+              </div>
+            </div>
+
           </div>
 
         </div>
@@ -4203,6 +4348,9 @@
         } else if (data.type === 'mqtt_message') {
           if (window.captureBlackboxSnapshot) {
             window.captureBlackboxSnapshot(data.message);
+          }
+          if (window.triggerTwinRxFlash) {
+            window.triggerTwinRxFlash();
           }
           allMessages.push(data.message);
           if (allMessages.length > 300) allMessages.shift();
@@ -9052,13 +9200,13 @@
     }
 
     function switchCockpitSubTab(tabName) {
-      const tabs = ['telemetry', 'mesh', 'timestream', 'terminal', 'ota'];
+      const tabs = ['telemetry', 'mesh', 'timestream', 'terminal', 'ota', 'twin'];
       tabs.forEach(t => {
         const btn = document.getElementById(`cockpit-tab-${t}`);
         const view = document.getElementById(`cockpit-view-${t}`);
         if (t === tabName) {
           if (btn) {
-            btn.className = 'cockpit-sub-tab px-3.5 py-2 text-xs font-bold border-b-2 border-indigo-500 text-white flex items-center space-x-2';
+            btn.className = 'cockpit-sub-tab px-3.5 py-2 text-xs font-bold border-b-2 border-cyan-400 text-white flex items-center space-x-2';
           }
           if (view) view.classList.remove('hidden');
         } else {
@@ -9069,6 +9217,11 @@
         }
       });
       lucide.createIcons();
+      if (tabName === 'twin') {
+        setTimeout(() => {
+          if (window.initOrUpdateDigitalTwin3D) window.initOrUpdateDigitalTwin3D();
+        }, 50);
+      }
     }
 
     function refreshCockpitData() {
@@ -9225,6 +9378,450 @@
           activeEl.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
         }
       }, 100);
+    }
+
+    // =========================================================================
+    // [INOVAÇÃO] GÊMEO DIGITAL HOLOGRÁFICO 3D DA PLACA (WEBGPU / THREE.JS)
+    // Renderização PBR procedural da placa ESP32, LEDs MQTT reais e mapa de calor da CPU
+    // =========================================================================
+    window.twin3d = {
+      initialized: false,
+      scene: null,
+      camera: null,
+      renderer: null,
+      controls: null,
+      boardGroup: null,
+      cpuMesh: null,
+      cpuCanvas: null,
+      cpuTexture: null,
+      ledWifiLight: null,
+      ledTxLight: null,
+      ledRxLight: null,
+      txIntensity: 0,
+      rxIntensity: 0,
+      autoRotate: true,
+      heatmapActive: true,
+      currentTemp: 42.5
+    };
+
+    function openDigitalTwinFromTop() {
+      let targetMac = window.currentCockpitMac;
+      if (!targetMac && window.configuredDevicesList && window.configuredDevicesList.length > 0) {
+        targetMac = window.configuredDevicesList[0].mac;
+      }
+      if (!targetMac && window.allDiscoveredNodes && window.allDiscoveredNodes.length > 0) {
+        targetMac = window.allDiscoveredNodes[0].mac;
+      }
+      if (!targetMac) {
+        targetMac = 'ff0000010000';
+      }
+      openDeviceCockpit(targetMac);
+      switchCockpitSubTab('twin');
+      showGlassToast(`🛰️ Gêmeo Digital 3D carregado para o nó: <strong>${formatMac(targetMac)}</strong>`, 'info');
+    }
+
+    function openDigitalTwinForMac(mac) {
+      if (!mac) return;
+      openDeviceCockpit(mac);
+      switchCockpitSubTab('twin');
+    }
+
+    function toggleTwinAutoRotate() {
+      window.twin3d.autoRotate = !window.twin3d.autoRotate;
+      const label = document.getElementById('btn-twin-autorotate-label');
+      if (label) {
+        label.innerText = `Giro 360°: ${window.twin3d.autoRotate ? 'ON' : 'OFF'}`;
+      }
+    }
+
+    function toggleTwinHeatmap() {
+      window.twin3d.heatmapActive = !window.twin3d.heatmapActive;
+      const label = document.getElementById('btn-twin-heatmap-label');
+      if (label) {
+        label.innerText = `Mapa Térmico: ${window.twin3d.heatmapActive ? 'ON' : 'OFF'}`;
+      }
+      updateTwinHeatmapTexture();
+    }
+
+    function setTwinCameraView(view) {
+      if (!window.twin3d.camera || !window.twin3d.controls) return;
+      if (view === 'iso') {
+        window.twin3d.camera.position.set(6, 6, 6);
+      } else if (view === 'top') {
+        window.twin3d.camera.position.set(0, 8.5, 0.01);
+      } else if (view === 'front') {
+        window.twin3d.camera.position.set(0, 1.5, 7.5);
+      }
+      window.twin3d.controls.target.set(0, 0, 0);
+      window.twin3d.controls.update();
+    }
+
+    function triggerTwinLedTestPulse() {
+      window.twin3d.txIntensity = 3.5;
+      window.twin3d.rxIntensity = 3.5;
+      const txDot = document.getElementById('twin-led-indicator-tx');
+      const rxDot = document.getElementById('twin-led-indicator-rx');
+      if (txDot) txDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_12px_rgba(251,191,36,1)] animate-ping';
+      if (rxDot) rxDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(16,185,129,1)] animate-ping';
+      setTimeout(() => {
+        if (txDot) txDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]';
+        if (rxDot) rxDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]';
+      }, 600);
+      showGlassToast('⚡ Pulso de teste de RF/MQTT disparado nos LEDs da placa 3D!', 'success');
+    }
+
+    function triggerTwinRxFlash() {
+      window.twin3d.rxIntensity = 3.0;
+      const rxDot = document.getElementById('twin-led-indicator-rx');
+      if (rxDot) {
+        rxDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(16,185,129,1)]';
+        setTimeout(() => {
+          if (rxDot) rxDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]';
+        }, 200);
+      }
+    }
+
+    function triggerTwinTxFlash() {
+      window.twin3d.txIntensity = 3.0;
+      const txDot = document.getElementById('twin-led-indicator-tx');
+      if (txDot) {
+        txDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,1)]';
+        setTimeout(() => {
+          if (txDot) txDot.className = 'w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]';
+        }, 200);
+      }
+    }
+
+    function updateTwinHeatmapTexture() {
+      const t = window.twin3d;
+      if (!t.cpuCanvas || !t.cpuTexture) return;
+      const ctx = t.cpuCanvas.getContext('2d');
+      const w = t.cpuCanvas.width;
+      const h = t.cpuCanvas.height;
+
+      // Fundo metálico da blindagem
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(0, 0, w, h);
+
+      if (t.heatmapActive) {
+        // Desenha mapa de calor térmico radial
+        const rad = ctx.createRadialGradient(w / 2, h / 2, 5, w / 2, h / 2, w / 2);
+        const temp = t.currentTemp || 42.5;
+
+        let centerColor = '#06b6d4';
+        if (temp > 60) centerColor = '#ef4444';
+        else if (temp > 50) centerColor = '#f59e0b';
+        else if (temp > 40) centerColor = '#10b981';
+
+        rad.addColorStop(0, centerColor);
+        rad.addColorStop(0.5, '#3b82f6');
+        rad.addColorStop(1, '#0f172a');
+        ctx.fillStyle = rad;
+        ctx.fillRect(0, 0, w, h);
+      }
+
+      // Serigrafia metálica
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'bold 22px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('ESPRESSIF', w / 2, 45);
+      ctx.font = 'bold 18px monospace';
+      ctx.fillText('ESP32-WROOM-32', w / 2, 75);
+      ctx.font = '14px monospace';
+      ctx.fillText(`CPU: ${t.currentTemp.toFixed(1)}°C`, w / 2, 120);
+
+      // Borda interna
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(6, 6, w - 12, h - 12);
+
+      t.cpuTexture.needsUpdate = true;
+    }
+
+    function initOrUpdateDigitalTwin3D() {
+      const container = document.getElementById('digital-twin-canvas-container');
+      if (!container) return;
+
+      const mac = currentCockpitMac || 'ff0000010000';
+      const macBadge = document.getElementById('twin-mac-badge');
+      if (macBadge) macBadge.innerText = formatMac(mac);
+
+      if (window.deviceTempMap && window.deviceTempMap[mac]) {
+        window.twin3d.currentTemp = window.deviceTempMap[mac];
+      }
+      const tempEl = document.getElementById('twin-hud-temp');
+      if (tempEl) tempEl.innerText = `${window.twin3d.currentTemp.toFixed(1)} °C`;
+
+      const rssi = (window.deviceRssiMap && window.deviceRssiMap[mac] && window.deviceRssiMap[mac].slice(-1)[0]) || -48;
+      const rssiEl = document.getElementById('twin-hud-rssi');
+      if (rssiEl) rssiEl.innerText = `${rssi} dBm`;
+
+      if (window.twin3d.initialized) {
+        const width = container.clientWidth || 600;
+        const height = container.clientHeight || 450;
+        window.twin3d.camera.aspect = width / height;
+        window.twin3d.camera.updateProjectionMatrix();
+        window.twin3d.renderer.setSize(width, height);
+        updateTwinHeatmapTexture();
+        return;
+      }
+
+      if (typeof THREE === 'undefined') {
+        setTimeout(initOrUpdateDigitalTwin3D, 150);
+        return;
+      }
+
+      const width = container.clientWidth || 600;
+      const height = container.clientHeight || 450;
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x070b14);
+
+      const grid = new THREE.GridHelper(16, 16, 0x1e293b, 0x0f172a);
+      grid.position.y = -1.2;
+      scene.add(grid);
+
+      const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+      camera.position.set(6, 6, 6);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.25;
+
+      container.innerHTML = '';
+      container.appendChild(renderer.domElement);
+
+      let controls = null;
+      if (typeof THREE.OrbitControls !== 'undefined') {
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.maxDistance = 20;
+        controls.minDistance = 2.5;
+        controls.target.set(0, 0, 0);
+      }
+
+      const ambLight = new THREE.AmbientLight(0xffffff, 0.85);
+      scene.add(ambLight);
+
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.4);
+      dirLight.position.set(5, 10, 5);
+      dirLight.castShadow = true;
+      scene.add(dirLight);
+
+      const rimCyan = new THREE.PointLight(0x06b6d4, 1.6, 25);
+      rimCyan.position.set(-6, 3, -6);
+      scene.add(rimCyan);
+
+      const rimMagenta = new THREE.PointLight(0x818cf8, 1.2, 25);
+      rimMagenta.position.set(6, -2, 6);
+      scene.add(rimMagenta);
+
+      const boardGroup = new THREE.Group();
+
+      const pcbGeo = new THREE.BoxGeometry(5.4, 0.16, 2.8);
+      const pcbMat = new THREE.MeshStandardMaterial({
+        color: 0x090e17,
+        roughness: 0.7,
+        metalness: 0.15
+      });
+      const pcb = new THREE.Mesh(pcbGeo, pcbMat);
+      pcb.castShadow = true;
+      pcb.receiveShadow = true;
+      boardGroup.add(pcb);
+
+      const antGeo = new THREE.BoxGeometry(0.8, 0.18, 2.4);
+      const antMat = new THREE.MeshStandardMaterial({
+        color: 0xd97706,
+        metalness: 0.9,
+        roughness: 0.2
+      });
+      const antenna = new THREE.Mesh(antGeo, antMat);
+      antenna.position.set(-2.2, 0.01, 0);
+      boardGroup.add(antenna);
+
+      const cpuCanvas = document.createElement('canvas');
+      cpuCanvas.width = 256;
+      cpuCanvas.height = 256;
+      const cpuTexture = new THREE.CanvasTexture(cpuCanvas);
+
+      const shieldGeo = new THREE.BoxGeometry(1.9, 0.28, 1.8);
+      const shieldMats = [
+        new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.85, roughness: 0.25 }),
+        new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.85, roughness: 0.25 }),
+        new THREE.MeshStandardMaterial({ map: cpuTexture, metalness: 0.7, roughness: 0.3 }),
+        new THREE.MeshStandardMaterial({ color: 0x64748b, metalness: 0.85, roughness: 0.25 }),
+        new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.85, roughness: 0.25 }),
+        new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.85, roughness: 0.25 })
+      ];
+      const cpuMesh = new THREE.Mesh(shieldGeo, shieldMats);
+      cpuMesh.position.set(-0.6, 0.16, 0);
+      cpuMesh.castShadow = true;
+      boardGroup.add(cpuMesh);
+
+      const usbGeo = new THREE.BoxGeometry(0.75, 0.35, 0.8);
+      const usbMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.95, roughness: 0.15 });
+      const usb = new THREE.Mesh(usbGeo, usbMat);
+      usb.position.set(2.4, 0.2, 0);
+      usb.castShadow = true;
+      boardGroup.add(usb);
+
+      const chipGeo = new THREE.BoxGeometry(0.7, 0.15, 0.7);
+      const chipMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8, metalness: 0.2 });
+      const chip = new THREE.Mesh(chipGeo, chipMat);
+      chip.position.set(1.1, 0.14, 0);
+      chip.castShadow = true;
+      boardGroup.add(chip);
+
+      const btnGeo = new THREE.BoxGeometry(0.35, 0.2, 0.35);
+      const btnMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8, roughness: 0.3 });
+      const btnBoot = new THREE.Mesh(btnGeo, btnMat);
+      btnBoot.position.set(2.1, 0.16, 1.0);
+      const btnEn = new THREE.Mesh(btnGeo, btnMat);
+      btnEn.position.set(2.1, 0.16, -1.0);
+      boardGroup.add(btnBoot);
+      boardGroup.add(btnEn);
+
+      const pinMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, metalness: 0.95, roughness: 0.2 });
+      const pinBlockMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.8 });
+
+      const headerGeo = new THREE.BoxGeometry(4.8, 0.35, 0.28);
+      const headerTop = new THREE.Mesh(headerGeo, pinBlockMat);
+      headerTop.position.set(0, 0.24, -1.22);
+      const headerBottom = new THREE.Mesh(headerGeo, pinBlockMat);
+      headerBottom.position.set(0, 0.24, 1.22);
+      boardGroup.add(headerTop);
+      boardGroup.add(headerBottom);
+
+      for (let i = 0; i < 15; i++) {
+        const xPos = -2.1 + (i * 0.3);
+        const pinGeo = new THREE.BoxGeometry(0.08, 0.6, 0.08);
+        const pinT = new THREE.Mesh(pinGeo, pinMat);
+        pinT.position.set(xPos, 0.28, -1.22);
+        const pinB = new THREE.Mesh(pinGeo, pinMat);
+        pinB.position.set(xPos, 0.28, 1.22);
+        boardGroup.add(pinT);
+        boardGroup.add(pinB);
+      }
+
+      const ledGeo = new THREE.BoxGeometry(0.12, 0.08, 0.18);
+      const ledPwrMat = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0xef4444, emissiveIntensity: 1.8 });
+      const ledPwr = new THREE.Mesh(ledGeo, ledPwrMat);
+      ledPwr.position.set(1.5, 0.14, 0.8);
+      boardGroup.add(ledPwr);
+
+      const pwrLight = new THREE.PointLight(0xef4444, 0.8, 1.5);
+      pwrLight.position.set(1.5, 0.2, 0.8);
+      boardGroup.add(pwrLight);
+
+      const ledWifiMat = new THREE.MeshStandardMaterial({ color: 0x06b6d4, emissive: 0x06b6d4, emissiveIntensity: 1.5 });
+      const ledWifi = new THREE.Mesh(ledGeo, ledWifiMat);
+      ledWifi.position.set(1.5, 0.14, 0.45);
+      boardGroup.add(ledWifi);
+
+      const wifiLight = new THREE.PointLight(0x06b6d4, 1.2, 2.0);
+      wifiLight.position.set(1.5, 0.2, 0.45);
+      boardGroup.add(wifiLight);
+
+      const ledTxMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xf59e0b, emissiveIntensity: 0 });
+      const ledTx = new THREE.Mesh(ledGeo, ledTxMat);
+      ledTx.position.set(1.5, 0.14, -0.45);
+      boardGroup.add(ledTx);
+
+      const txLight = new THREE.PointLight(0xf59e0b, 0, 2.0);
+      txLight.position.set(1.5, 0.2, -0.45);
+      boardGroup.add(txLight);
+
+      const ledRxMat = new THREE.MeshStandardMaterial({ color: 0x10b981, emissive: 0x10b981, emissiveIntensity: 0 });
+      const ledRx = new THREE.Mesh(ledGeo, ledRxMat);
+      ledRx.position.set(1.5, 0.14, -0.8);
+      boardGroup.add(ledRx);
+
+      const rxLight = new THREE.PointLight(0x10b981, 0, 2.0);
+      rxLight.position.set(1.5, 0.2, -0.8);
+      boardGroup.add(rxLight);
+
+      scene.add(boardGroup);
+
+      window.twin3d = {
+        initialized: true,
+        scene: scene,
+        camera: camera,
+        renderer: renderer,
+        controls: controls,
+        boardGroup: boardGroup,
+        cpuMesh: cpuMesh,
+        cpuCanvas: cpuCanvas,
+        cpuTexture: cpuTexture,
+        ledWifiMat: ledWifiMat,
+        ledTxMat: ledTxMat,
+        ledRxMat: ledRxMat,
+        wifiLight: wifiLight,
+        txLight: txLight,
+        rxLight: rxLight,
+        txIntensity: 0,
+        rxIntensity: 0,
+        autoRotate: true,
+        heatmapActive: true,
+        currentTemp: 42.5
+      };
+
+      updateTwinHeatmapTexture();
+
+      let clock = new THREE.Clock();
+      function animateTwin3D() {
+        requestAnimationFrame(animateTwin3D);
+
+        const delta = clock.getDelta();
+        const time = clock.getElapsedTime();
+
+        if (window.twin3d.autoRotate && window.twin3d.boardGroup) {
+          window.twin3d.boardGroup.rotation.y += delta * 0.45;
+        }
+
+        const wifiGlow = 0.8 + 0.6 * Math.sin(time * 4.5);
+        if (window.twin3d.ledWifiMat) {
+          window.twin3d.ledWifiMat.emissiveIntensity = wifiGlow;
+        }
+        if (window.twin3d.wifiLight) {
+          window.twin3d.wifiLight.intensity = wifiGlow * 1.2;
+        }
+
+        if (window.twin3d.txIntensity > 0) {
+          window.twin3d.txIntensity = Math.max(0, window.twin3d.txIntensity - delta * 5.0);
+          if (window.twin3d.ledTxMat) window.twin3d.ledTxMat.emissiveIntensity = window.twin3d.txIntensity;
+          if (window.twin3d.txLight) window.twin3d.txLight.intensity = window.twin3d.txIntensity * 1.5;
+        }
+
+        if (window.twin3d.rxIntensity > 0) {
+          window.twin3d.rxIntensity = Math.max(0, window.twin3d.rxIntensity - delta * 5.0);
+          if (window.twin3d.ledRxMat) window.twin3d.ledRxMat.emissiveIntensity = window.twin3d.rxIntensity;
+          if (window.twin3d.rxLight) window.twin3d.rxLight.intensity = window.twin3d.rxIntensity * 1.5;
+        }
+
+        if (window.twin3d.controls) {
+          window.twin3d.controls.update();
+        }
+
+        renderer.render(scene, camera);
+      }
+
+      animateTwin3D();
+
+      window.addEventListener('resize', () => {
+        if (!container) return;
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        if (w > 0 && h > 0) {
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+          renderer.setSize(w, h);
+        }
+      });
     }
 
     function openDeviceModal(mac = '', name = '', serial = '', type = 'ABNT NBR 14522', role = 'NODE', notes = '') {

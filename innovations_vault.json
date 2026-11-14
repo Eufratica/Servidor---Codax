@@ -1,5 +1,115 @@
 [
   {
+    "id": "ui-command-palette",
+    "category": "design",
+    "badge": "🎨 Design & Produtividade",
+    "title": "Command Palette Instantâneo Estilo Raycast / macOS (Ctrl + K)",
+    "source": "Tendência Linear / Raycast UI",
+    "summary": "Uma barra de busca flutuante em vidro cristalino acionada por Ctrl+K para disparar qualquer um dos 62 comandos ou focar em um medidor em 1 segundo.",
+    "prompt": "Quero implementar o 'Command Palette Instantâneo (Ctrl+K)' em vidro fosco: ao apertar Ctrl+K abre uma busca centralizada onde posso digitar o nome de qualquer medidor ou função (ex: ping, topology, info) e disparar com Enter.",
+    "timestamp": "09:55:55"
+  },
+  {
+    "id": "inn-proc-7173c374",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Auditor de Protocolo de Assinatura Digital Ed25519 em Comandos Críticos",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Valida uma assinatura criptográfica nos métodos perigosos (ex: mupgrade, mwifi_restart) antes da execução. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Auditor de Protocolo de Assinatura Digital Ed25519 em Comandos Críticos': Valida uma assinatura criptográfica nos métodos perigosos (ex: mupgrade, mwifi_restart) antes da execução. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:54:40"
+  },
+  {
+    "id": "gh-519895363",
+    "category": "app",
+    "badge": "🌐 Protocol Analyzer (★ 42756)",
+    "title": "Referência Open-Source: GyulyVGC/sniffnet",
+    "source": "https://github.com/GyulyVGC/sniffnet",
+    "summary": "Comfortably monitor your network traffic 🕵️‍♂️ — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'GyulyVGC/sniffnet' (Comfortably monitor your network traffic 🕵️‍♂️) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "09:53:23"
+  },
+  {
+    "id": "inn-proc-b9007a6f",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Inspetor Ciberpunk de Histórico de Mudanças de Topologia em Linha do Tempo",
+    "source": "Engenharia ESP-IDF 5.x & Protocolo MESH",
+    "summary": "Cria uma régua cronológica interativa mostrando exatamente quando cada placa subiu ou desceu de camada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Inspetor Ciberpunk de Histórico de Mudanças de Topologia em Linha do Tempo': Cria uma régua cronológica interativa mostrando exatamente quando cada placa subiu ou desceu de camada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:52:08"
+  },
+  {
+    "id": "gh-658025162",
+    "category": "design",
+    "badge": "🌐 Visual Sci-Fi (★ 229)",
+    "title": "Referência Open-Source: IDEDARY/Bevypunk",
+    "source": "https://github.com/IDEDARY/Bevypunk",
+    "summary": "This repository is a recreation of Cyberpunk UI in Bevy — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'IDEDARY/Bevypunk' (This repository is a recreation of Cyberpunk UI in Bevy) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "09:50:52"
+  },
+  {
+    "id": "ui-sparkline-rssi",
+    "category": "design",
+    "badge": "🎨 UI/UX & Telemetria",
+    "title": "Mini-Gráficos Sparkline de Sinal RSSI nos Cards",
+    "source": "Inspirado em Vercel Analytics & Grafana Live",
+    "summary": "Adiciona uma micro-curva luminosa em SVG dentro do card de cada medidor mostrando a oscilação de sinal dBm das últimas leituras.",
+    "prompt": "Quero implementar a inovação 'Mini-Gráficos Sparkline de Sinal RSSI nos Cards': armazene os últimos 10 valores de RSSI de cada MAC no frontend/backend e desenhe um mini-gráfico SVG sparkline neon em vidro fosco dentro dos cards de Medidores Cadastrados.",
+    "timestamp": "09:49:37"
+  },
+  {
+    "id": "ui-sound-haptics",
+    "category": "design",
+    "badge": "🎨 Experiência Sensorial",
+    "title": "Feedback Sonoro Sintetizado Sutil (Web Audio API Sci-Fi)",
+    "source": "Interfaces Aeroespaciais / SpaceX Dragon UI",
+    "summary": "Sons curtíssimos e suaves gerados via Web Audio API (com botão Mute) quando uma placa responde ao Ping ou quando um novo nó entra na malha.",
+    "prompt": "Quero implementar 'Feedback Sonoro Sintetizado Sutil (Web Audio API)' com botão de ligar/desligar no topo: emita um toque acústico suave e futurista quando uma controladora responder com sucesso ao ping ou quando um erro chegar.",
+    "timestamp": "09:48:22"
+  },
+  {
+    "id": "gh-1180854394",
+    "category": "app",
+    "badge": "🌐 Repositório ESP-MESH (★ 314)",
+    "title": "Referência Open-Source: bitleproject/bitle",
+    "source": "https://github.com/bitleproject/bitle",
+    "summary": "A self-powered ESP32-C3 relay node for BitChat. Extends Bluetooth mesh with Noise-secured handshakes, battery/solar support, and autonomous  — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'bitleproject/bitle' (A self-powered ESP32-C3 relay node for BitChat. Extends Bluetooth mesh with Noise-secured handshakes, battery/solar support, and autonomous packet forwarding.) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "09:47:06"
+  },
+  {
+    "id": "gh-203380777",
+    "category": "design",
+    "badge": "🌐 Visual Sci-Fi (★ 1411)",
+    "title": "Referência Open-Source: propjockey/augmented-ui",
+    "source": "https://github.com/propjockey/augmented-ui",
+    "summary": "Cyberpunk-inspired web UI made easy. Get augmented. — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'propjockey/augmented-ui' (Cyberpunk-inspired web UI made easy. Get augmented.) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "09:45:50"
+  },
+  {
+    "id": "ui-sankey-flow",
+    "category": "design",
+    "badge": "🎨 Visualização de Fluxo",
+    "title": "Diagrama Sankey de Tráfego de Mensagens MQTT por Tópico",
+    "source": "Observabilidade de Sistemas de Alta Vazão",
+    "summary": "Visualiza em faixas luminosas proporcionais quantos bytes e mensagens fluem para dev, prod, conn e retornos em tempo real.",
+    "prompt": "Quero implementar um 'Diagrama Sankey de Fluxo MQTT': mostre visualmente a distribuição de tráfego entre os tópicos da bancada com faixas coloridas indicando volume e taxa de mensagens.",
+    "timestamp": "09:44:35"
+  },
+  {
+    "id": "app-acoustic-ping-finder",
+    "category": "app",
+    "badge": "🔊 Manutenção de Campo",
+    "title": "Localizador Físico de Medidor (Ping Acústico & Piscar de LED)",
+    "source": "Ferramentas de Suporte Técnico de Bancada",
+    "summary": "Dispara uma sequência de bipes sonoros e piscar rápido do LED onboard no medidor selecionado para localização física imediata.",
+    "prompt": "Quero implementar o 'Localizador Físico de Medidor': adicione um botão 'Localizar na Bancada' nos cards que dispara um comando para piscar freneticamente o LED da placa e toca um som de rastreamento no painel.",
+    "timestamp": "09:43:20"
+  },
+  {
     "id": "inn-proc-b0192c06",
     "category": "app",
     "badge": "🔐 Segurança & Resiliência",
