@@ -88,7 +88,12 @@ flowchart TD
         - Alternador dinâmico de fluxo cronológico: no modo *Recentes no Topo* (padrão), pacotes mais novos (ex: 07:31) entram imediatamente na primeira linha superior e empurram pacotes anteriores (07:30) para baixo, ancorando o leitor no topo (`scrollTop = 0`) e eliminando o scroll manual descendente contínuo.
         - No modo *Antigos no Topo*, restaura o fluxo cronológico convencional tipo terminal terminal CRT com auto-scroll no rodapé. Preferência salva em `localStorage` (`codax_console_sort_order`).
       - **Visualização Expandida com Syntax Highlighting Real de JSON**: Tokenizador léxico puro nativo que colore chaves (`#38bdf8`), strings (`#fde047`), números (`#34d399`), booleans (`#c084fc`) e nulls (`#fb7185`) sobre poço debossed Jet Black `#020306`.
-      - **Stream Freeze / Congelamento de Rolagem (`⏸️ Pausar Stream`)**: Permite pausar a renderização da tela para inspecionar e copiar dados com calma, acumulando novas mensagens em buffer com contador de pendências `(+N)` e retomada instantânea sem perda de pacotes.
+      - **Modo Dividido / Split Screen (2 Colunas Lado a Lado - `[ ◫ 2 Colunas ]`)**:
+        - Divide a janela do terminal em duas colunas paralelas sincronizadas em tempo real.
+        - Cada coluna possui seu próprio seletor independente de tópico (ex: Coluna 1 monitorando *Telemetria* e Coluna 2 monitorando *Retornos* ou *Conexão*), permitindo comparação visual imediata sem misturar os fluxos.
+      - **Multi-Seleção Bimodal de Tópicos (Até 2 Tópicos Simultâneos)**:
+        - Na barra de categorias com ícones vetoriais monocromáticos Lucide (`activity`, `git-fork`, `radio`, `terminal`, `alert-triangle`, `layers`), o operador pode selecionar 2 tópicos ao mesmo tempo para fluírem juntos na mesma lista com badge indicador ativo.
+        - Stream 100% contínuo sem interrupção de pacotes (eliminação do botão de pausa para conformidade com telemetria viva).
       - **Chips Dinâmicos de Filtragem por MAC**: Barra de chips gerada automaticamente com os nós ativos detectados na malha (ex: `Codax Bancada (14)`), permitindo isolar o tráfego de um dispositivo específico em 1 clique.
       - **Contadores de Categorias em Tempo Real**: Pílulas de filtro com contagem viva (`Todos`, `Retornos`, `Telemetria`, `Topologia`, `Conexão`, `Comandos`, `Erros`).
       - **Busca com Realce `<mark>`**: Filtro instantâneo com destaque em amarelo dos termos encontrados nos tópicos e payloads, acompanhado de botão de limpeza rápida `✕`.

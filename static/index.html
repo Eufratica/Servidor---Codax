@@ -2122,23 +2122,26 @@
           <!-- Painel de Controles SCADA do Console -->
           <div class="bg-[#080c14] border border-[#131b28] rounded-2xl p-3.5 space-y-3 text-xs shadow-lg">
             
-            <!-- Linha 1: Categorias e Contadores em Tempo Real -->
-            <div class="flex flex-wrap items-center justify-between gap-2.5">
-              <div class="flex items-center space-x-1.5 flex-wrap gap-y-1.5" id="console-category-buttons">
-                <button onclick="setLogCategory('all')" id="btn-cat-all" class="cat-filter-btn px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold transition shadow-sm">Todos <span id="count-cat-all" class="ml-1 text-[10px] opacity-80">(0)</span></button>
-                <button onclick="setLogCategory('retorno')" id="btn-cat-retorno" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-emerald-400 hover:text-white transition">✅ Retornos <span id="count-cat-retorno" class="ml-1 text-[10px] opacity-80">(0)</span></button>
-                <button onclick="setLogCategory('telemetria')" id="btn-cat-telemetria" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-cyan-400 hover:text-white transition">⚡ Telemetria <span id="count-cat-telemetria" class="ml-1 text-[10px] opacity-80">(0)</span></button>
-                <button onclick="setLogCategory('topologia')" id="btn-cat-topologia" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-purple-400 hover:text-white transition">🌳 Topologia <span id="count-cat-topologia" class="ml-1 text-[10px] opacity-80">(0)</span></button>
-                <button onclick="setLogCategory('conexao')" id="btn-cat-conexao" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-blue-400 hover:text-white transition">📡 Conexão <span id="count-cat-conexao" class="ml-1 text-[10px] opacity-80">(0)</span></button>
-                <button onclick="setLogCategory('msg')" id="btn-cat-msg" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-indigo-300 hover:text-white transition">💬 Comandos <span id="count-cat-msg" class="ml-1 text-[10px] opacity-80">(0)</span></button>
-                <button onclick="setLogCategory('erro')" id="btn-cat-erro" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-rose-400 hover:text-white transition">❌ Erros <span id="count-cat-erro" class="ml-1 text-[10px] opacity-80">(0)</span></button>
+            <!-- Linha 1: Header do Console, Modos de Visualização e Layout Dividido (Split) -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-[#131b28]">
+              
+              <!-- Identidade e Status do Stream SCADA -->
+              <div class="flex items-center space-x-2.5">
+                <span class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-[#020306] border border-[#131b28] text-slate-300 font-mono text-[11px] font-bold">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span class="text-white">LIVE STREAM</span>
+                </span>
+                <span class="text-[11px] font-mono text-slate-400 hidden sm:inline">
+                  (WebSockets MQTT 1883)
+                </span>
               </div>
 
-              <!-- Modos de Visualização & Congelar Stream -->
+              <!-- Docks de Visualização, Ordenação e Layout Dividido (Split) -->
               <div class="flex items-center space-x-2 flex-wrap gap-y-1.5">
+                
                 <!-- Toggle Compacto vs Expandido -->
                 <div class="bg-[#020306] border border-[#131b28] p-0.5 rounded-xl flex items-center">
-                  <button id="btn-console-mode-compact" onclick="setConsoleViewMode('compact')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1" title="Visualização compacta de 1 linha por pacote (estilo Wireshark/Logcat)">
+                  <button id="btn-console-mode-compact" onclick="setConsoleViewMode('compact')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1" title="Visualização compacta de 1 linha por pacote (estilo Wireshark)">
                     <i data-lucide="align-justify" class="w-3 h-3"></i>
                     <span>Compacto</span>
                   </button>
@@ -2160,11 +2163,64 @@
                   </button>
                 </div>
 
-                <!-- Botão Congelar Stream -->
-                <button id="btn-console-freeze" onclick="toggleConsoleFreeze()" class="px-3 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] hover:border-amber-500/50 text-slate-300 hover:text-white text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm" title="Congela a rolagem e visualização para inspecionar pacotes sem interferência">
-                  <i data-lucide="pause" class="w-3.5 h-3.5 text-amber-400"></i>
-                  <span id="btn-console-freeze-text">Pausar</span>
+                <!-- Split Screen (1 Coluna vs 2 Colunas Lado a Lado) -->
+                <div class="bg-[#020306] border border-[#131b28] p-0.5 rounded-xl flex items-center">
+                  <button id="btn-console-layout-single" onclick="setConsoleSplitMode(false)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1" title="Visualização em Coluna Única">
+                    <i data-lucide="square" class="w-3 h-3"></i>
+                    <span>1 Coluna</span>
+                  </button>
+                  <button id="btn-console-layout-split" onclick="setConsoleSplitMode(true)" class="px-2.5 py-1 rounded-lg text-[11px] font-medium transition text-slate-400 hover:text-white flex items-center space-x-1" title="Dividir terminal em 2 colunas para comparar dois tópicos lado a lado">
+                    <i data-lucide="columns-2" class="w-3 h-3"></i>
+                    <span>2 Colunas</span>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Linha 2: Trilho de Tópicos & Categorias (Ícones Vetoriais Lucide Monocromáticos + Multi-Seleção de até 2 Tópicos) -->
+            <div class="flex items-center justify-between flex-wrap gap-2 pt-0.5">
+              <div class="flex items-center space-x-1.5 flex-wrap gap-y-1.5" id="console-category-buttons">
+                <button onclick="setLogCategory('all')" id="btn-cat-all" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-indigo-600 text-white font-bold transition shadow-sm flex items-center space-x-1.5 text-xs">
+                  <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                  <span>Todos</span>
+                  <span id="count-cat-all" class="ml-1 text-[10px] opacity-80 font-mono">(0)</span>
                 </button>
+                <button onclick="setLogCategory('retorno')" id="btn-cat-retorno" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white transition flex items-center space-x-1.5 text-xs">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400"></i>
+                  <span>Retornos</span>
+                  <span id="count-cat-retorno" class="ml-1 text-[10px] opacity-80 font-mono text-emerald-400">(0)</span>
+                </button>
+                <button onclick="setLogCategory('telemetria')" id="btn-cat-telemetria" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white transition flex items-center space-x-1.5 text-xs">
+                  <i data-lucide="activity" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>Telemetria</span>
+                  <span id="count-cat-telemetria" class="ml-1 text-[10px] opacity-80 font-mono text-cyan-400">(0)</span>
+                </button>
+                <button onclick="setLogCategory('topologia')" id="btn-cat-topologia" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white transition flex items-center space-x-1.5 text-xs">
+                  <i data-lucide="git-fork" class="w-3.5 h-3.5 text-purple-400"></i>
+                  <span>Topologia</span>
+                  <span id="count-cat-topologia" class="ml-1 text-[10px] opacity-80 font-mono text-purple-400">(0)</span>
+                </button>
+                <button onclick="setLogCategory('conexao')" id="btn-cat-conexao" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white transition flex items-center space-x-1.5 text-xs">
+                  <i data-lucide="radio" class="w-3.5 h-3.5 text-blue-400"></i>
+                  <span>Conexão</span>
+                  <span id="count-cat-conexao" class="ml-1 text-[10px] opacity-80 font-mono text-blue-400">(0)</span>
+                </button>
+                <button onclick="setLogCategory('msg')" id="btn-cat-msg" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white transition flex items-center space-x-1.5 text-xs">
+                  <i data-lucide="terminal" class="w-3.5 h-3.5 text-indigo-400"></i>
+                  <span>Comandos</span>
+                  <span id="count-cat-msg" class="ml-1 text-[10px] opacity-80 font-mono text-indigo-400">(0)</span>
+                </button>
+                <button onclick="setLogCategory('erro')" id="btn-cat-erro" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white transition flex items-center space-x-1.5 text-xs">
+                  <i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-rose-400"></i>
+                  <span>Erros</span>
+                  <span id="count-cat-erro" class="ml-1 text-[10px] opacity-80 font-mono text-rose-400">(0)</span>
+                </button>
+              </div>
+
+              <!-- Badge Indicador de Multi-Seleção de Tópicos -->
+              <div id="console-multi-topic-badge" class="hidden sm:flex items-center text-[10px] font-mono text-slate-400 bg-[#0d121e] border border-[#172235] px-2.5 py-1 rounded-lg">
+                <span>Dica: Selecione até 2 tópicos para ver juntos</span>
               </div>
             </div>
 
@@ -2214,9 +2270,60 @@
 
           </div>
 
-          <!-- Janela do Terminal de Mensagens (Preto Jet Debossed Sólido) -->
+          <!-- Janela do Terminal de Mensagens (Preto Jet Debossed Sólido - Coluna Única) -->
           <div id="console-output" class="bg-[#020306] border border-[#131b28] rounded-2xl p-3 sm:p-4 h-[calc(100vh-235px)] min-h-[460px] overflow-y-auto space-y-1.5 mono text-xs shadow-inner select-text">
             <p class="text-slate-500 italic p-4 text-center">Aguardando mensagens do Broker MQTT...</p>
+          </div>
+
+          <!-- Janela do Terminal em Modo Dividido (Split Screen - 2 Colunas Lado a Lado) -->
+          <div id="console-split-container" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-3 h-[calc(100vh-235px)] min-h-[460px]">
+            
+            <!-- Coluna 1 (Esquerda) -->
+            <div class="flex flex-col bg-[#020306] border border-[#131b28] rounded-2xl overflow-hidden shadow-inner">
+              <div class="flex items-center justify-between px-3.5 py-2.5 bg-[#080c14] border-b border-[#131b28] text-xs">
+                <div class="flex items-center space-x-2">
+                  <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                  <span class="font-bold text-slate-200">Coluna 1:</span>
+                  <select id="split-filter-col1" onchange="renderLogs()" class="bg-[#020306] border border-[#172235] rounded-lg px-2 py-0.5 text-cyan-300 font-mono text-[11px] focus:outline-none">
+                    <option value="all">Todos os Tópicos</option>
+                    <option value="telemetria" selected>⚡ Telemetria</option>
+                    <option value="retorno">✅ Retornos</option>
+                    <option value="topologia">🌳 Topologia</option>
+                    <option value="conexao">📡 Conexão</option>
+                    <option value="msg">💬 Comandos</option>
+                    <option value="erro">❌ Erros</option>
+                  </select>
+                </div>
+                <span id="split-count-col1" class="text-[10px] font-mono text-cyan-400">0 msgs</span>
+              </div>
+              <div id="console-output-col1" class="flex-1 p-3 overflow-y-auto space-y-1.5 mono text-xs select-text">
+                <p class="text-slate-500 italic p-4 text-center">Aguardando mensagens da Coluna 1...</p>
+              </div>
+            </div>
+
+            <!-- Coluna 2 (Direita) -->
+            <div class="flex flex-col bg-[#020306] border border-[#131b28] rounded-2xl overflow-hidden shadow-inner">
+              <div class="flex items-center justify-between px-3.5 py-2.5 bg-[#080c14] border-b border-[#131b28] text-xs">
+                <div class="flex items-center space-x-2">
+                  <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                  <span class="font-bold text-slate-200">Coluna 2:</span>
+                  <select id="split-filter-col2" onchange="renderLogs()" class="bg-[#020306] border border-[#172235] rounded-lg px-2 py-0.5 text-indigo-300 font-mono text-[11px] focus:outline-none">
+                    <option value="all">Todos os Tópicos</option>
+                    <option value="telemetria">⚡ Telemetria</option>
+                    <option value="retorno" selected>✅ Retornos</option>
+                    <option value="topologia">🌳 Topologia</option>
+                    <option value="conexao">📡 Conexão</option>
+                    <option value="msg">💬 Comandos</option>
+                    <option value="erro">❌ Erros</option>
+                  </select>
+                </div>
+                <span id="split-count-col2" class="text-[10px] font-mono text-indigo-400">0 msgs</span>
+              </div>
+              <div id="console-output-col2" class="flex-1 p-3 overflow-y-auto space-y-1.5 mono text-xs select-text">
+                <p class="text-slate-500 italic p-4 text-center">Aguardando mensagens da Coluna 2...</p>
+              </div>
+            </div>
+
           </div>
 
         </section>
@@ -5856,6 +5963,8 @@
       selectMethod('query');
       updateLivePreview();
       updateConsoleSortButtonsUI();
+      updateConsoleSplitButtonsUI();
+      updateCategoryButtonsUI();
       updateTreeFilterButtonsUI();
     });
 
@@ -13212,8 +13321,8 @@
     // ================= [INOVAÇÃO] CONSOLE AO VIVO SCADA DEVTOOLS =================
     window.consoleViewMode = 'compact'; // 'compact' ou 'expanded'
     window.consoleSortOrder = localStorage.getItem('codax_console_sort_order') || 'newest_first';
-    window.consoleStreamFrozen = false;
-    window.consoleFrozenBufferCount = 0;
+    window.consoleSplitMode = (localStorage.getItem('codax_console_split_mode') === '1');
+    window.selectedLogCategories = new Set(['all']); // Multi-seleção de tópicos (até 2 tópicos simultâneos)
     window.activeConsoleMacFilter = null;
     window.expandedLogIndices = new Set();
 
@@ -13245,16 +13354,105 @@
       }
     }
 
-    function setLogCategory(cat) {
-      currentCategory = cat;
-      document.querySelectorAll('.cat-filter-btn').forEach(b => {
-        b.className = 'cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-slate-400 hover:text-white transition text-xs';
-      });
-      const activeBtn = document.getElementById(`btn-cat-${cat}`);
-      if (activeBtn) {
-        activeBtn.className = 'cat-filter-btn px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold transition shadow-sm text-xs';
-      }
+    function setConsoleSplitMode(isSplit) {
+      window.consoleSplitMode = isSplit;
+      try { localStorage.setItem('codax_console_split_mode', isSplit ? '1' : '0'); } catch(e) {}
+      updateConsoleSplitButtonsUI();
       renderLogs();
+      if (isSplit) {
+        showGlassToast('◫ Modo Dividido Ativado: 2 Colunas lado a lado');
+      } else {
+        showGlassToast('❚ Modo Coluna Única restaurado');
+      }
+    }
+
+    function updateConsoleSplitButtonsUI() {
+      const btnSingle = document.getElementById('btn-console-layout-single');
+      const btnSplit = document.getElementById('btn-console-layout-split');
+      const isSplit = !!window.consoleSplitMode;
+
+      if (btnSingle) {
+        btnSingle.className = !isSplit 
+          ? 'px-2.5 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1' 
+          : 'px-2.5 py-1 rounded-lg text-[11px] font-medium transition text-slate-400 hover:text-white flex items-center space-x-1';
+      }
+      if (btnSplit) {
+        btnSplit.className = isSplit 
+          ? 'px-2.5 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1' 
+          : 'px-2.5 py-1 rounded-lg text-[11px] font-medium transition text-slate-400 hover:text-white flex items-center space-x-1';
+      }
+
+      const singleContainer = document.getElementById('console-output');
+      const splitContainer = document.getElementById('console-split-container');
+      if (singleContainer && splitContainer) {
+        if (isSplit) {
+          singleContainer.classList.add('hidden');
+          splitContainer.classList.remove('hidden');
+        } else {
+          singleContainer.classList.remove('hidden');
+          splitContainer.classList.add('hidden');
+        }
+      }
+    }
+
+    function setLogCategory(cat) {
+      if (cat === 'all') {
+        window.selectedLogCategories = new Set(['all']);
+        currentCategory = 'all';
+        showGlassToast('Visualizando todos os tópicos');
+      } else {
+        window.selectedLogCategories.delete('all');
+        if (window.selectedLogCategories.has(cat)) {
+          window.selectedLogCategories.delete(cat);
+          if (window.selectedLogCategories.size === 0) {
+            window.selectedLogCategories.add('all');
+            currentCategory = 'all';
+          }
+        } else {
+          // Permite até 2 tópicos simultâneos
+          if (window.selectedLogCategories.size >= 2) {
+            const first = window.selectedLogCategories.values().next().value;
+            window.selectedLogCategories.delete(first);
+          }
+          window.selectedLogCategories.add(cat);
+          if (window.selectedLogCategories.size === 2) {
+            const list = Array.from(window.selectedLogCategories).map(c => c.toUpperCase()).join(' + ');
+            showGlassToast(`⚡ 2 Tópicos Ativos: ${list}`);
+          }
+        }
+        currentCategory = Array.from(window.selectedLogCategories)[0] || 'all';
+      }
+      updateCategoryButtonsUI();
+      renderLogs();
+    }
+
+    function updateCategoryButtonsUI() {
+      const isAll = window.selectedLogCategories.has('all');
+      const cats = ['all', 'retorno', 'telemetria', 'topologia', 'conexao', 'msg', 'erro'];
+      cats.forEach(c => {
+        const btn = document.getElementById(`btn-cat-${c}`);
+        if (!btn) return;
+        const isSelected = window.selectedLogCategories.has(c);
+        if (isSelected) {
+          btn.className = 'cat-filter-btn px-2.5 py-1.5 rounded-xl bg-indigo-600 text-white font-bold transition shadow-sm flex items-center space-x-1.5 text-xs ring-1 ring-cyan-400/50';
+        } else {
+          btn.className = 'cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white transition flex items-center space-x-1.5 text-xs';
+        }
+      });
+
+      const badge = document.getElementById('console-multi-topic-badge');
+      if (badge) {
+        if (window.selectedLogCategories.size === 2) {
+          badge.innerHTML = '<span class="text-cyan-300 font-bold">⚡ 2 Tópicos Ativos Simultâneos</span>';
+          badge.className = 'hidden sm:flex items-center text-[10px] font-mono text-cyan-300 bg-cyan-950/80 border border-cyan-400/50 px-2.5 py-1 rounded-lg';
+        } else if (isAll) {
+          badge.innerHTML = '<span class="text-slate-400">Dica: Selecione até 2 tópicos para ver juntos</span>';
+          badge.className = 'hidden sm:flex items-center text-[10px] font-mono text-slate-400 bg-[#0d121e] border border-[#172235] px-2.5 py-1 rounded-lg';
+        } else {
+          badge.innerHTML = '<span class="text-cyan-400 font-medium">1 Tópico Ativo (clique em outro para comparar)</span>';
+          badge.className = 'hidden sm:flex items-center text-[10px] font-mono text-cyan-400 bg-cyan-950/40 border border-cyan-500/30 px-2.5 py-1 rounded-lg';
+        }
+      }
     }
 
     function setConsoleViewMode(mode) {
@@ -13269,25 +13467,6 @@
         if (btnExpanded) btnExpanded.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1';
       }
       renderLogs();
-    }
-
-    function toggleConsoleFreeze() {
-      window.consoleStreamFrozen = !window.consoleStreamFrozen;
-      const btn = document.getElementById('btn-console-freeze');
-      const text = document.getElementById('btn-console-freeze-text');
-      if (window.consoleStreamFrozen) {
-        window.consoleFrozenBufferCount = 0;
-        if (btn) btn.className = 'px-3 py-1.5 rounded-xl bg-amber-950/80 border border-amber-500 text-amber-300 text-xs font-bold transition flex items-center space-x-1.5 shadow-md animate-pulse';
-        if (text) text.innerText = 'Stream Congelado';
-        showGlassToast('⏸️ Console pausado! Novas mensagens ficam em buffer sem rolar a tela.', 'info');
-      } else {
-        window.consoleFrozenBufferCount = 0;
-        if (btn) btn.className = 'px-3 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] hover:border-amber-500/50 text-slate-300 hover:text-white text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm';
-        if (text) text.innerText = 'Pausar';
-        renderLogs();
-        showGlassToast('▶️ Stream retomado. Console atualizado!', 'success');
-      }
-      lucide.createIcons();
     }
 
     function setConsoleMacFilter(mac) {
@@ -13530,14 +13709,29 @@
       return !['retorno', 'telemetria', 'topologia', 'conexao', 'erro'].includes(cat);
     }
 
-    function matchesActiveLogFilter(msg) {
-      if (currentCategory !== 'all') {
-        if (currentCategory === 'msg') {
-          if (!isMsgCategory(msg.category)) return false;
-        } else if (msg.category !== currentCategory) {
-          return false;
+    function matchesActiveLogFilter(msg, overrideCategory = null) {
+      if (overrideCategory) {
+        if (overrideCategory !== 'all') {
+          if (overrideCategory === 'msg') {
+            if (!isMsgCategory(msg.category)) return false;
+          } else if (msg.category !== overrideCategory) {
+            return false;
+          }
+        }
+      } else {
+        if (window.selectedLogCategories && !window.selectedLogCategories.has('all')) {
+          let matchedCat = false;
+          for (const cat of window.selectedLogCategories) {
+            if (cat === 'msg') {
+              if (isMsgCategory(msg.category)) { matchedCat = true; break; }
+            } else if (msg.category === cat) {
+              matchedCat = true; break;
+            }
+          }
+          if (!matchedCat) return false;
         }
       }
+
       if (window.activeConsoleMacFilter) {
         const cleanMac = window.activeConsoleMacFilter.toLowerCase().replace(/[^a-f0-9]/g, '');
         const msgMac = extractMacFromMessage(msg);
@@ -13555,10 +13749,97 @@
       return true;
     }
 
-    function renderLogs() {
-      const container = document.getElementById('console-output');
-      if (!container) return;
+    function buildLogItemHtml(msg, isCompact, query) {
+      const originalIndex = allMessages.indexOf(msg);
+      const mac = extractMacFromMessage(msg);
+      const dev = mac ? devicesList.find(d => d.mac && d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === mac) : null;
+      const devName = dev ? dev.name : null;
+      const isExpanded = window.expandedLogIndices.has(originalIndex) || !isCompact;
+      const badge = getLogCategoryBadge(msg.category);
+      const syntaxHighlighted = formatAndHighlightJson(msg.payload, msg.raw, query);
+      const byteSize = (msg.raw ? msg.raw.length : JSON.stringify(msg.payload || '').length);
 
+      if (isCompact && !isExpanded) {
+        const summary = getOneLineSummary(msg.payload, msg.raw);
+        return `
+          <div class="console-compact-strip flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl border border-[#131b28] bg-[#060912] hover:border-slate-700 transition cursor-pointer font-mono text-[11px] select-none group" onclick="toggleLogDetail(${originalIndex})">
+            <div class="flex items-center space-x-2 truncate min-w-0">
+              <span class="text-slate-500 text-[10px] shrink-0 font-bold">${msg.timestamp}</span>
+              ${badge}
+              ${mac ? `
+                <span class="px-1.5 py-0.2 rounded bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-[10px] shrink-0 truncate max-w-[130px]" title="${formatMac(mac)}${devName ? ' - ' + devName : ''}">
+                  ${escapeHtml(devName || formatMac(mac))}
+                </span>
+              ` : ''}
+              <span class="text-indigo-300 font-semibold truncate shrink-0 max-w-[220px]" title="${msg.topic}">${highlightSearchTerms(escapeHtml(msg.topic), query)}</span>
+              <span class="text-slate-400 truncate text-[11px] font-normal opacity-90">${highlightSearchTerms(escapeHtml(summary), query)}</span>
+            </div>
+            <div class="flex items-center space-x-1.5 shrink-0 opacity-70 group-hover:opacity-100" onclick="event.stopPropagation()">
+              <button onclick="copyLogPayload(${originalIndex})" class="px-2 py-0.5 rounded bg-[#0d121e] hover:bg-slate-700 border border-[#172235] text-slate-300 hover:text-white text-[10px] transition" title="Copiar Payload JSON">Copiar</button>
+              ${mac ? `
+                <button onclick="openDeviceCockpit('${mac}')" class="px-2 py-0.5 rounded bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 text-[10px] transition" title="Inspecionar no Cockpit 360°">Cockpit</button>
+              ` : ''}
+              <button onclick="toggleLogDetail(${originalIndex})" class="p-1 rounded text-slate-400 hover:text-white transition" title="Expandir JSON detalhado">
+                <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        return `
+          <div class="p-3.5 rounded-2xl border ${isCompact ? 'border-cyan-500/40 bg-[#070b14]' : 'border-[#131b28] bg-[#070b14]'} transition space-y-2 shadow-sm font-mono text-xs">
+            <!-- Header do Card -->
+            <div class="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-[#131b28] text-[11px]">
+              <div class="flex items-center space-x-2.5 flex-wrap gap-y-1">
+                <span class="text-slate-500 font-bold">${msg.timestamp}</span>
+                ${badge}
+                <span class="text-indigo-400 font-semibold break-all" title="${msg.topic}">${highlightSearchTerms(escapeHtml(msg.topic), query)}</span>
+                ${mac ? `
+                  <span class="px-2 py-0.5 rounded-md bg-cyan-950/70 border border-cyan-500/40 text-cyan-300 text-[10px] font-bold flex items-center space-x-1">
+                    <i data-lucide="cpu" class="w-2.5 h-2.5"></i>
+                    <span>${escapeHtml(devName || formatMac(mac))}</span>
+                  </span>
+                ` : ''}
+                <span class="text-slate-500 text-[10px]">${byteSize} B</span>
+              </div>
+
+              <div class="flex items-center space-x-1.5 shrink-0">
+                <button onclick="copyLogPayload(${originalIndex})" class="px-2 py-0.5 rounded-lg bg-[#0d121e] hover:bg-slate-700 border border-[#172235] text-slate-300 hover:text-white text-[10px] transition flex items-center space-x-1 shadow-sm" title="Copiar Payload">
+                  <i data-lucide="copy" class="w-2.5 h-2.5"></i>
+                  <span>JSON</span>
+                </button>
+                <button onclick="copyLogTopic('${msg.topic}')" class="px-2 py-0.5 rounded-lg bg-[#0d121e] hover:bg-slate-700 border border-[#172235] text-slate-300 hover:text-white text-[10px] transition flex items-center space-x-1 shadow-sm" title="Copiar Tópico">
+                  <i data-lucide="tag" class="w-2.5 h-2.5"></i>
+                  <span>Tópico</span>
+                </button>
+                ${mac ? `
+                  <button onclick="openDeviceCockpit('${mac}')" class="px-2 py-0.5 rounded-lg bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 text-[10px] font-bold transition flex items-center space-x-1 shadow-sm" title="Abrir Cockpit 360° deste Codax">
+                    <i data-lucide="scan" class="w-2.5 h-2.5"></i>
+                    <span>Cockpit</span>
+                  </button>
+                  <button onclick="useDeviceInBuilder('${mac}')" class="px-2 py-0.5 rounded-lg bg-indigo-950 hover:bg-indigo-900 border border-indigo-500/40 text-indigo-300 text-[10px] font-bold transition flex items-center space-x-1 shadow-sm" title="Carregar MAC no Construtor">
+                    <i data-lucide="sliders" class="w-2.5 h-2.5"></i>
+                    <span>Builder</span>
+                  </button>
+                ` : ''}
+                ${isCompact ? `
+                  <button onclick="toggleLogDetail(${originalIndex})" class="p-1 rounded text-slate-400 hover:text-white transition ml-1" title="Recolher para linha">
+                    <i data-lucide="chevron-up" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- Payload com Syntax Highlighting Real -->
+            <div class="relative bg-[#020306] border border-[#131b28] rounded-xl p-3 overflow-x-auto shadow-inner">
+              <pre class="console-code-json whitespace-pre text-[11px] leading-relaxed select-text">${syntaxHighlighted}</pre>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function renderLogs() {
       updateConsoleCategoryCounts();
       renderConsoleMacChips();
 
@@ -13570,147 +13851,109 @@
         else btnClearSearch.classList.add('hidden');
       }
 
-      const filtered = allMessages.filter(msg => matchesActiveLogFilter(msg));
-
-      const statsEl = document.getElementById('console-stats-counter');
-      if (statsEl) {
-        statsEl.innerText = `${filtered.length} de ${allMessages.length} msgs`;
-      }
-
-      if (filtered.length === 0) {
-        container.innerHTML = `
-          <div class="text-center py-16 space-y-2">
-            <i data-lucide="inbox" class="w-8 h-8 text-slate-600 mx-auto"></i>
-            <p class="text-slate-400 font-semibold text-xs">Nenhuma mensagem compatível com os filtros atuais.</p>
-            <p class="text-slate-600 text-[11px]">Tente limpar a busca ou selecionar a categoria "Todos".</p>
-          </div>
-        `;
-        lucide.createIcons();
-        return;
-      }
-
-      let html = '';
       const isCompact = (window.consoleViewMode === 'compact');
       const isNewestFirst = (window.consoleSortOrder === 'newest_first');
-      const renderList = isNewestFirst ? [...filtered].reverse() : filtered;
-
-      renderList.forEach((msg) => {
-        const originalIndex = allMessages.indexOf(msg);
-        const mac = extractMacFromMessage(msg);
-        const dev = mac ? devicesList.find(d => d.mac && d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === mac) : null;
-        const devName = dev ? dev.name : null;
-        const isExpanded = window.expandedLogIndices.has(originalIndex) || !isCompact;
-        const badge = getLogCategoryBadge(msg.category);
-        const syntaxHighlighted = formatAndHighlightJson(msg.payload, msg.raw, query);
-        const byteSize = (msg.raw ? msg.raw.length : JSON.stringify(msg.payload || '').length);
-
-        if (isCompact && !isExpanded) {
-          const summary = getOneLineSummary(msg.payload, msg.raw);
-          html += `
-            <div class="console-compact-strip flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl border border-[#131b28] bg-[#060912] transition cursor-pointer font-mono text-[11px] select-none group" onclick="toggleLogDetail(${originalIndex})">
-              <div class="flex items-center space-x-2 truncate min-w-0">
-                <span class="text-slate-500 text-[10px] shrink-0 font-bold">${msg.timestamp}</span>
-                ${badge}
-                ${mac ? `
-                  <span class="px-1.5 py-0.2 rounded bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-[10px] shrink-0 truncate max-w-[140px]" title="${formatMac(mac)}${devName ? ' - ' + devName : ''}">
-                    ${escapeHtml(devName || formatMac(mac))}
-                  </span>
-                ` : ''}
-                <span class="text-indigo-300 font-semibold truncate shrink-0 max-w-[240px]" title="${msg.topic}">${highlightSearchTerms(escapeHtml(msg.topic), query)}</span>
-                <span class="text-slate-400 truncate text-[11px] font-normal opacity-90">${highlightSearchTerms(escapeHtml(summary), query)}</span>
-              </div>
-              <div class="flex items-center space-x-1.5 shrink-0 opacity-70 group-hover:opacity-100" onclick="event.stopPropagation()">
-                <button onclick="copyLogPayload(${originalIndex})" class="px-2 py-0.5 rounded bg-[#0d121e] hover:bg-slate-700 border border-[#172235] text-slate-300 hover:text-white text-[10px] transition" title="Copiar Payload JSON">Copiar</button>
-                ${mac ? `
-                  <button onclick="openDeviceCockpit('${mac}')" class="px-2 py-0.5 rounded bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 text-[10px] transition" title="Inspecionar no Cockpit 360°">Cockpit</button>
-                ` : ''}
-                <button onclick="toggleLogDetail(${originalIndex})" class="p-1 rounded text-slate-400 hover:text-white transition" title="Expandir JSON detalhado">
-                  <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
-                </button>
-              </div>
-            </div>
-          `;
-        } else {
-          html += `
-            <div class="p-3.5 rounded-2xl border ${isCompact ? 'border-cyan-500/40 bg-[#070b14]' : 'border-[#131b28] bg-[#070b14]'} transition space-y-2 shadow-sm font-mono text-xs">
-              
-              <!-- Header do Card -->
-              <div class="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-[#131b28] text-[11px]">
-                <div class="flex items-center space-x-2.5 flex-wrap gap-y-1">
-                  <span class="text-slate-500 font-bold">${msg.timestamp}</span>
-                  ${badge}
-                  <span class="text-indigo-400 font-semibold break-all" title="${msg.topic}">${highlightSearchTerms(escapeHtml(msg.topic), query)}</span>
-                  ${mac ? `
-                    <span class="px-2 py-0.5 rounded-md bg-cyan-950/70 border border-cyan-500/40 text-cyan-300 text-[10px] font-bold flex items-center space-x-1">
-                      <i data-lucide="cpu" class="w-2.5 h-2.5"></i>
-                      <span>${escapeHtml(devName || formatMac(mac))}</span>
-                    </span>
-                  ` : ''}
-                  <span class="text-slate-500 text-[10px]">${byteSize} B</span>
-                </div>
-
-                <div class="flex items-center space-x-1.5 shrink-0">
-                  <button onclick="copyLogPayload(${originalIndex})" class="px-2 py-0.5 rounded-lg bg-[#0d121e] hover:bg-slate-700 border border-[#172235] text-slate-300 hover:text-white text-[10px] transition flex items-center space-x-1 shadow-sm" title="Copiar Payload">
-                    <i data-lucide="copy" class="w-2.5 h-2.5"></i>
-                    <span>JSON</span>
-                  </button>
-                  <button onclick="copyLogTopic('${msg.topic}')" class="px-2 py-0.5 rounded-lg bg-[#0d121e] hover:bg-slate-700 border border-[#172235] text-slate-300 hover:text-white text-[10px] transition flex items-center space-x-1 shadow-sm" title="Copiar Tópico">
-                    <i data-lucide="tag" class="w-2.5 h-2.5"></i>
-                    <span>Tópico</span>
-                  </button>
-                  ${mac ? `
-                    <button onclick="openDeviceCockpit('${mac}')" class="px-2 py-0.5 rounded-lg bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 text-[10px] font-bold transition flex items-center space-x-1 shadow-sm" title="Abrir Cockpit 360° deste Codax">
-                      <i data-lucide="scan" class="w-2.5 h-2.5"></i>
-                      <span>Cockpit</span>
-                    </button>
-                    <button onclick="useDeviceInBuilder('${mac}')" class="px-2 py-0.5 rounded-lg bg-indigo-950 hover:bg-indigo-900 border border-indigo-500/40 text-indigo-300 text-[10px] font-bold transition flex items-center space-x-1 shadow-sm" title="Carregar MAC no Construtor">
-                      <i data-lucide="sliders" class="w-2.5 h-2.5"></i>
-                      <span>Builder</span>
-                    </button>
-                  ` : ''}
-                  ${isCompact ? `
-                    <button onclick="toggleLogDetail(${originalIndex})" class="p-1 rounded text-slate-400 hover:text-white transition ml-1" title="Recolher para linha">
-                      <i data-lucide="chevron-up" class="w-3.5 h-3.5 text-cyan-400"></i>
-                    </button>
-                  ` : ''}
-                </div>
-              </div>
-
-              <!-- Payload com Syntax Highlighting Real -->
-              <div class="relative bg-[#020306] border border-[#131b28] rounded-xl p-3 overflow-x-auto shadow-inner">
-                <pre class="console-code-json whitespace-pre text-[11px] leading-relaxed select-text">${syntaxHighlighted}</pre>
-              </div>
-
-            </div>
-          `;
-        }
-      });
-
-      container.innerHTML = html;
-      lucide.createIcons();
-
       const autoScrollEl = document.getElementById('autoscroll-toggle');
-      if (autoScrollEl && autoScrollEl.checked) {
-        if (isNewestFirst) {
-          container.scrollTop = 0; // Novas mensagens entram no topo sem precisar scrollar!
-        } else {
-          container.scrollTop = container.scrollHeight;
+      const shouldAutoScroll = autoScrollEl ? autoScrollEl.checked : true;
+
+      if (window.consoleSplitMode) {
+        // Modo Dividido (Split Screen - 2 Colunas Lado a Lado)
+        const selCol1 = document.getElementById('split-filter-col1');
+        const selCol2 = document.getElementById('split-filter-col2');
+        const cat1 = selCol1 ? selCol1.value : 'telemetria';
+        const cat2 = selCol2 ? selCol2.value : 'retorno';
+
+        const filteredCol1 = allMessages.filter(msg => matchesActiveLogFilter(msg, cat1));
+        const filteredCol2 = allMessages.filter(msg => matchesActiveLogFilter(msg, cat2));
+
+        const countCol1El = document.getElementById('split-count-col1');
+        const countCol2El = document.getElementById('split-count-col2');
+        if (countCol1El) countCol1El.innerText = `${filteredCol1.length} msgs`;
+        if (countCol2El) countCol2El.innerText = `${filteredCol2.length} msgs`;
+
+        const out1 = document.getElementById('console-output-col1');
+        const out2 = document.getElementById('console-output-col2');
+
+        const renderList1 = isNewestFirst ? [...filteredCol1].reverse() : filteredCol1;
+        const renderList2 = isNewestFirst ? [...filteredCol2].reverse() : filteredCol2;
+
+        if (out1) {
+          if (renderList1.length === 0) {
+            out1.innerHTML = '<p class="text-slate-500 italic p-6 text-center text-xs">Nenhuma mensagem neste tópico.</p>';
+          } else {
+            out1.innerHTML = renderList1.map(m => buildLogItemHtml(m, isCompact, query)).join('');
+          }
+          if (shouldAutoScroll) {
+            out1.scrollTop = isNewestFirst ? 0 : out1.scrollHeight;
+          }
+        }
+
+        if (out2) {
+          if (renderList2.length === 0) {
+            out2.innerHTML = '<p class="text-slate-500 italic p-6 text-center text-xs">Nenhuma mensagem neste tópico.</p>';
+          } else {
+            out2.innerHTML = renderList2.map(m => buildLogItemHtml(m, isCompact, query)).join('');
+          }
+          if (shouldAutoScroll) {
+            out2.scrollTop = isNewestFirst ? 0 : out2.scrollHeight;
+          }
+        }
+
+        const statsEl = document.getElementById('console-stats-counter');
+        if (statsEl) {
+          statsEl.innerText = `${allMessages.length} msgs totais (Split: ${filteredCol1.length} | ${filteredCol2.length})`;
+        }
+
+      } else {
+        // Modo Coluna Única (com suporte a multi-seleção de tópicos)
+        const container = document.getElementById('console-output');
+        if (!container) return;
+
+        const filtered = allMessages.filter(msg => matchesActiveLogFilter(msg));
+        const statsEl = document.getElementById('console-stats-counter');
+        if (statsEl) {
+          statsEl.innerText = `${filtered.length} de ${allMessages.length} msgs`;
+        }
+
+        if (filtered.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-16 space-y-2">
+              <i data-lucide="inbox" class="w-8 h-8 text-slate-600 mx-auto"></i>
+              <p class="text-slate-400 font-semibold text-xs">Nenhuma mensagem compatível com os filtros atuais.</p>
+              <p class="text-slate-600 text-[11px]">Tente limpar a busca ou selecionar a categoria "Todos".</p>
+            </div>
+          `;
+          lucide.createIcons();
+          return;
+        }
+
+        const renderList = isNewestFirst ? [...filtered].reverse() : filtered;
+        container.innerHTML = renderList.map(m => buildLogItemHtml(m, isCompact, query)).join('');
+
+        if (shouldAutoScroll) {
+          if (isNewestFirst) {
+            container.scrollTop = 0;
+          } else {
+            container.scrollTop = container.scrollHeight;
+          }
         }
       }
+
+      lucide.createIcons();
     }
 
     function appendLogLine(msg, autoScroll = true) {
-      if (window.consoleStreamFrozen) {
-        window.consoleFrozenBufferCount++;
-        const btnText = document.getElementById('btn-console-freeze-text');
-        if (btnText) btnText.innerText = `Stream Congelado (+${window.consoleFrozenBufferCount})`;
-        updateConsoleCategoryCounts();
-        return;
-      }
-
       updateConsoleCategoryCounts();
 
-      if (!matchesActiveLogFilter(msg)) return;
+      if (window.consoleSplitMode) {
+        const selCol1 = document.getElementById('split-filter-col1');
+        const selCol2 = document.getElementById('split-filter-col2');
+        const cat1 = selCol1 ? selCol1.value : 'telemetria';
+        const cat2 = selCol2 ? selCol2.value : 'retorno';
+        if (!matchesActiveLogFilter(msg, cat1) && !matchesActiveLogFilter(msg, cat2)) return;
+      } else {
+        if (!matchesActiveLogFilter(msg)) return;
+      }
 
       renderLogs();
     }
