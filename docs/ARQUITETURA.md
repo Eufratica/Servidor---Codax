@@ -1,6 +1,6 @@
 # ARQUITETURA.md - Documentação Permanente do Sistema
 
-**Última Atualização**: 2026-11-14  
+**Última Atualização**: 2026-11-15  
 **Versão Atual**: `v2.9-pro`  
 **Escopo**: Servidor de Telemetria, Orquestração ESP-MESH e Studio de Observabilidade Industrial da **Ledax Energy**.
 
@@ -67,7 +67,12 @@ flowchart TD
   2. `view-builder`: Construtor de comandos MQTT (funções ABNT NBR 14522 e JSON).
   3. `view-devices`: Gestão de dispositivos, MACs, nomes, tipos e **Exportador de Dossiê Técnico HTML Único** (relatório executivo offline para auditoria e impressão).
   4. `view-tree`: **Árvore Topológica ESP-MESH Panorâmica & Conduítes Laser Cyberpunk**:
-      - **Linhas Animadas de Fluxo de Pacotes (Conduítes Laser Z-20)**: Renderização vetorial SVG de alta definição com duto escuro industrial (`#070b13`), trilho de fibra ótica (`#141c2c`), feixe laser contínuo em CSS GPU com cores por estado de sinal (Ciano &gt; -65dBm, Esmeralda, Âmbar) e partículas de fóton plasma viajantes via `animateMotion`.
+      - **Linhas Animadas de Fluxo de Pacotes (Conduítes Laser Z-20)**: Renderização vetorial SVG de alta definição com duto escuro industrial (`#070b13`), trilho de fibra ótica (`#141c2c`), feixe laser contínuo em CSS GPU com cores por estado de sinal (Ciano &gt; -65dBm, Esmeralda, Âmbar) e partículas de fóton plasma viajantes via `animateMotion`. Enlaces offline são renderizados como conduítes tracejados em slate (`.tree-laser-beam-offline`) com supressão de partículas.
+      - **Topologia Fiel & Validação Anti-Alucinação (Truth-Telling Live Topology)**:
+        - Detecção real de presença baseada em batimento cardíaco MQTT (`last_seen_epoch`, janela de 180s) no backend FastAPI (`is_node_online()`), integrando `devices.json` com telemetria viva.
+        - Eliminação definitiva de mocks estáticos e anexações artificiais ao nó ROOT: nós só se conectam se reportarem o MAC pai correspondente.
+        - **Seletor de Modo de Exibição**: Alternador dinâmico `[ 🟢 Apenas Online ]` (padrão) e `[ 🌐 Todos ]`, persistido em `localStorage`, permitindo focar estritamente nos dispositivos ativos da bancada.
+        - Cards de dispositivos offline exibem badge `🔴 OFFLINE`, ausência de sinal e carimbo do último contato registrado.
       - **Docking Ports Industriais**: Sockets de ancoragem física iluminados nas bordas inferiores (saída pai) e superiores (entrada filho) de cada placa.
       - **Flashes de Tráfego de Dados em Tempo Real**: Conduítes disparam pulsos instantâneos de alta luminosidade (`.tree-conduit-data-burst`) sincronizados com mensagens MQTT via WebSocket.
       - **Inovações Vadims06/topolograph**:
@@ -79,6 +84,9 @@ flowchart TD
   6. `view-ota`: Gerenciador de atualizações de firmware Over-the-Air.
   7. `view-logs`: **Console de Mensagens ao Vivo & SCADA DevTools (Modern Deep Dark Obsidian)**:
       - **Modo Compacto (Wireshark / Chrome DevTools Strip)**: Apresentação de 1 linha por pacote com timestamp, badge semântico, MAC/Apelido do dispositivo, tópico com realce e resumo compacto dos campos (`{ v_a: 220.4 | status: "ok" }`). Reduz a altura visual em mais de 85% para análise de tráfego intenso.
+      - **Ordenação Temporal do Stream (`[ ⬇️ Recentes no Topo ]` vs `[ ⬆️ Antigos no Topo ]`)**:
+        - Alternador dinâmico de fluxo cronológico: no modo *Recentes no Topo* (padrão), pacotes mais novos (ex: 07:31) entram imediatamente na primeira linha superior e empurram pacotes anteriores (07:30) para baixo, ancorando o leitor no topo (`scrollTop = 0`) e eliminando o scroll manual descendente contínuo.
+        - No modo *Antigos no Topo*, restaura o fluxo cronológico convencional tipo terminal terminal CRT com auto-scroll no rodapé. Preferência salva em `localStorage` (`codax_console_sort_order`).
       - **Visualização Expandida com Syntax Highlighting Real de JSON**: Tokenizador léxico puro nativo que colore chaves (`#38bdf8`), strings (`#fde047`), números (`#34d399`), booleans (`#c084fc`) e nulls (`#fb7185`) sobre poço debossed Jet Black `#020306`.
       - **Stream Freeze / Congelamento de Rolagem (`⏸️ Pausar Stream`)**: Permite pausar a renderização da tela para inspecionar e copiar dados com calma, acumulando novas mensagens em buffer com contador de pendências `(+N)` e retomada instantânea sem perda de pacotes.
       - **Chips Dinâmicos de Filtragem por MAC**: Barra de chips gerada automaticamente com os nós ativos detectados na malha (ex: `Codax Bancada (14)`), permitindo isolar o tráfego de um dispositivo específico em 1 clique.

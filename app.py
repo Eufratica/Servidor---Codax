@@ -370,6 +370,7 @@ def register_discovered_node(mac_candidate: str, timestamp: str, layer: int = No
     app_state["nodes"][m] = {
         "mac": m,
         "last_seen": timestamp,
+        "last_seen_epoch": time.time(),
         "status": "online",
         "layer": layer if layer is not None else existing.get("layer", 1 if ("root" in str(topic).lower() or layer == 1) else 2),
         "parent_mac": parent_mac or existing.get("parent_mac"),
@@ -380,6 +381,16 @@ def register_discovered_node(mac_candidate: str, timestamp: str, layer: int = No
         "last_topic": topic or existing.get("last_topic"),
         "data": data or existing.get("data")
     }
+
+def is_node_online(node_dict: dict, threshold_seconds: int = 180) -> bool:
+    """Verifica se um nó está efetivamente online com base na última telemetria."""
+    if not node_dict or not isinstance(node_dict, dict):
+        return False
+    epoch = node_dict.get("last_seen_epoch")
+    if epoch:
+        return (time.time() - epoch) <= threshold_seconds
+    # Se não houver epoch em RAM, verifica status e se foi visto
+    return node_dict.get("status") == "online" and node_dict.get("last_seen") not in (None, "Desconhecido")
 
 def extract_macs_recursive(obj, timestamp: str, topic: str, layer: int = None, parent_mac: str = None):
     if isinstance(obj, dict):
@@ -944,64 +955,91 @@ def get_diagnostics_health():
 @app.get("/api/topology")
 def get_topology():
     devices = load_devices()
+    live_nodes = app_state.get("nodes", {})
+    all_devices_merged = {}
+
+    # 1. Carregar dispositivos cadastrados e enriquecer com telemetria viva
+    for m_raw, d in devices.items():
+        m = normalize_mac(d.get("mac", m_raw))
+        live = live_nodes.get(m, {})
+        online = is_node_online(live)
+        all_devices_merged[m] = {
+            **d,
+            "mac": m,
+            "status": "online" if online else "offline",
+            "is_online": online,
+            "last_seen": live.get("last_seen", "Desconhecido"),
+            "layer": live.get("layer", 1 if d.get("role") == "ROOT" else d.get("layer", 2)),
+            "parent_mac": normalize_mac(live.get("parent_mac") or d.get("parent_mac", "")),
+            "rssi": live.get("rssi") if live.get("rssi") is not None else d.get("rssi")
+        }
+
+    # 2. Adicionar nós que estão transmitindo ao vivo na malha mas ainda não estão em devices.json
+    for m, n in live_nodes.items():
+        if m not in all_devices_merged:
+            online = is_node_online(n)
+            all_devices_merged[m] = {
+                "mac": m,
+                "name": f"Nó Descoberto {m[-4:].upper()}",
+                "role": "ROOT" if (n.get("layer") == 1 or not n.get("parent_mac")) else "NODE",
+                "layer": n.get("layer", 1 if not n.get("parent_mac") else 2),
+                "parent_mac": normalize_mac(n.get("parent_mac", "")),
+                "status": "online" if online else "offline",
+                "is_online": online,
+                "last_seen": n.get("last_seen", "Agora"),
+                "rssi": n.get("rssi", -68),
+                "meter_serial": "",
+                "meter_type": "ESP-MESH"
+            }
+
+    # 3. Separar raízes e nós filhos
     roots_dict = {}
     nodes_dict = {}
-
-    for d in devices.values():
-        m = normalize_mac(d.get("mac", ""))
-        if d.get("role") == "ROOT" or d.get("layer") == 1:
-            roots_dict[m] = d
+    for m, dev in all_devices_merged.items():
+        is_root = (dev.get("role") == "ROOT" or dev.get("layer") == 1 or not dev.get("parent_mac"))
+        if is_root:
+            roots_dict[m] = dev
         else:
-            nodes_dict[m] = d
-
-    for m, n in app_state.get("nodes", {}).items():
-        if m not in roots_dict and m not in nodes_dict:
-            if n.get("layer") == 1 or "root" in str(n.get("last_topic", "")).lower():
-                roots_dict[m] = n
-            else:
-                nodes_dict[m] = n
+            nodes_dict[m] = dev
 
     meshes = []
     for r_mac, r_dev in roots_dict.items():
         is_bancada = (r_mac == "704bca491ca0")
         is_lab = (r_mac == "4417934f49a4")
+        r_online = r_dev.get("is_online", False)
         
         mesh_id = "00:00:00:00:44:08" if is_bancada else ("00:00:00:00:54:07" if is_lab else r_dev.get("mesh_id", "00:00:00:00:00:00"))
         ssid = "LEDAXIO_DEV" if is_bancada else ("LAB_LEDAX_IOT" if is_lab else r_dev.get("router_ssid", "LEDAX_MESH"))
         ip = "192.168.137.148" if is_bancada else ("192.168.1.150" if is_lab else r_dev.get("ip", "192.168.1.1"))
-        mesh_name = "Malha de Bancada (Dev)" if is_bancada else ("Malha Laboratório (Prod)" if is_lab else f"Malha ROOT {r_mac}")
+        
+        base_name = "Malha de Bancada (Dev)" if is_bancada else ("Malha Laboratório (Prod)" if is_lab else f"Malha ROOT {r_mac[-4:].upper()}")
+        mesh_name = base_name if r_online else f"{base_name} (Offline)"
 
         children = []
         for n_mac, n_dev in nodes_dict.items():
             p_mac = normalize_mac(n_dev.get("parent_mac", ""))
-            if is_bancada:
-                if p_mac == r_mac:
-                    children.append({
-                        "layer": n_dev.get("layer", 2),
-                        "id": n_dev.get("name", f"NODE {n_mac[-4:].upper()}"),
-                        "mac_addr": n_mac,
-                        "parent_mac": r_mac,
-                        "rssi": n_dev.get("rssi", -68),
-                        "meter_serial": n_dev.get("meter_serial", ""),
-                        "meter_type": n_dev.get("meter_type", ""),
-                        "nodes": []
-                    })
-            else:
-                if p_mac == r_mac or (not p_mac and not is_bancada):
-                    children.append({
-                        "layer": n_dev.get("layer", 2),
-                        "id": n_dev.get("name", f"NODE {n_mac[-4:].upper()}"),
-                        "mac_addr": n_mac,
-                        "parent_mac": r_mac,
-                        "rssi": n_dev.get("rssi", -68),
-                        "meter_serial": n_dev.get("meter_serial", ""),
-                        "meter_type": n_dev.get("meter_type", ""),
-                        "nodes": []
-                    })
+            # VINCULAÇÃO REAL E FIEL: Só conecta o filho à raiz se o parent_mac reportado for realmente ela!
+            if p_mac == r_mac:
+                children.append({
+                    "layer": n_dev.get("layer", 2),
+                    "id": n_dev.get("name", f"NODE {n_mac[-4:].upper()}"),
+                    "mac_addr": n_mac,
+                    "parent_mac": r_mac,
+                    "rssi": n_dev.get("rssi", -68),
+                    "meter_serial": n_dev.get("meter_serial", ""),
+                    "meter_type": n_dev.get("meter_type", ""),
+                    "status": n_dev.get("status", "offline"),
+                    "is_online": n_dev.get("is_online", False),
+                    "last_seen": n_dev.get("last_seen", "Desconhecido"),
+                    "nodes": []
+                })
+
+        mesh_has_active = r_online or any(c.get("is_online") for c in children)
 
         meshes.append({
             "mesh_id": mesh_id,
             "name": mesh_name,
+            "is_online": mesh_has_active,
             "root": {
                 "layer": 1,
                 "id": r_dev.get("name", f"ROOT {r_mac[-4:].upper()}"),
@@ -1010,9 +1048,15 @@ def get_topology():
                 "ip": ip,
                 "mesh_id": mesh_id,
                 "rssi": r_dev.get("rssi", -22 if is_bancada else -42),
+                "status": r_dev.get("status", "offline"),
+                "is_online": r_online,
+                "last_seen": r_dev.get("last_seen", "Desconhecido"),
                 "nodes": children
             }
         })
+
+    # Priorizar malhas com dispositivos ONLINE no topo da lista
+    meshes.sort(key=lambda m: (0 if m.get("is_online") else 1, m.get("name", "")))
 
     first_mesh_data = meshes[0]["root"] if meshes else None
 
@@ -1091,9 +1135,11 @@ def get_registered_devices():
         elif rssi is None and rssi_history:
             rssi = rssi_history[-1]
 
+        online = is_node_online(live)
         merged = {
             **dev,
-            "status": live.get("status", "online" if live else "offline"),
+            "status": "online" if online else "offline",
+            "is_online": online,
             "last_seen": live.get("last_seen", "Desconhecido"),
             "layer": live.get("layer", 1 if dev.get("role") == "ROOT" else 2),
             "parent_mac": live.get("parent_mac"),

@@ -234,6 +234,12 @@
       stroke-dasharray: 45 155;
       animation: treeLaserPulse 1.25s linear infinite;
     }
+    .tree-laser-beam-offline {
+      stroke: #334155 !important;
+      stroke-width: 1.5 !important;
+      stroke-dasharray: 4 4 !important;
+      opacity: 0.45 !important;
+    }
 
     /* ================= [INOVAÇÃO] CONSOLE SCADA DEVTOOLS & SYNTAX HIGHLIGHT ================= */
     .console-code-json {
@@ -1875,6 +1881,17 @@
                   </button>
                 </div>
 
+                <!-- Filtro de Malha Viva: Somente Online vs Todos -->
+                <div class="flex items-center bg-[#020306] border border-[#131b28] p-1 rounded-xl shadow-inner mr-1">
+                  <button id="btn-tree-filter-online" onclick="setTreeFilterMode('online_only')" class="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition bg-emerald-600 text-white shadow-sm" title="Exibe estritamente os Codax que estão fisicamente online e transmitindo telemetria na malha">
+                    <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                    <span>🟢 Apenas Online</span>
+                  </button>
+                  <button id="btn-tree-filter-all" onclick="setTreeFilterMode('all')" class="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white" title="Exibe todas as placas cadastradas, indicando com precisão quais estão offline">
+                    <span>🌐 Todos</span>
+                  </button>
+                </div>
+
                 <button id="tree-btn-query-focused" onclick="queryTopologyForFocused()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-3.5 py-2 rounded-xl flex items-center space-x-1.5 transition shadow-sm" title="Solicitar topologia diretamente para a placa em foco">
                   <i data-lucide="crosshair" class="w-3.5 h-3.5"></i>
                   <span id="tree-btn-query-focused-label">Topologia do Nó</span>
@@ -2118,7 +2135,7 @@
               </div>
 
               <!-- Modos de Visualização & Congelar Stream -->
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center space-x-2 flex-wrap gap-y-1.5">
                 <!-- Toggle Compacto vs Expandido -->
                 <div class="bg-[#020306] border border-[#131b28] p-0.5 rounded-xl flex items-center">
                   <button id="btn-console-mode-compact" onclick="setConsoleViewMode('compact')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1" title="Visualização compacta de 1 linha por pacote (estilo Wireshark/Logcat)">
@@ -2128,6 +2145,18 @@
                   <button id="btn-console-mode-expanded" onclick="setConsoleViewMode('expanded')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium transition text-slate-400 hover:text-white flex items-center space-x-1" title="Visualização expandida com JSON formatado e colorido">
                     <i data-lucide="code" class="w-3 h-3"></i>
                     <span>Expandido</span>
+                  </button>
+                </div>
+
+                <!-- Ordenação Temporal (Recentes no Topo vs Cronológico Tradicional) -->
+                <div class="bg-[#020306] border border-[#131b28] p-0.5 rounded-xl flex items-center">
+                  <button id="btn-console-sort-newest" onclick="setConsoleSortOrder('newest_first')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1" title="Mais Recentes no Topo: 07:31 em cima, 07:30 em baixo — sem precisar scrollar">
+                    <i data-lucide="arrow-down-narrow-wide" class="w-3 h-3 text-cyan-300"></i>
+                    <span>Recentes no Topo</span>
+                  </button>
+                  <button id="btn-console-sort-oldest" onclick="setConsoleSortOrder('oldest_first')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium transition text-slate-400 hover:text-white flex items-center space-x-1" title="Mais Antigos no Topo: ordem cronológica tradicional de chegada">
+                    <i data-lucide="arrow-up-narrow-wide" class="w-3 h-3 text-slate-400"></i>
+                    <span>Antigos no Topo</span>
                   </button>
                 </div>
 
@@ -5826,6 +5855,8 @@
       await loadDiscovered();
       selectMethod('query');
       updateLivePreview();
+      updateConsoleSortButtonsUI();
+      updateTreeFilterButtonsUI();
     });
 
     // ================= WEBSOCKET =================
@@ -8138,6 +8169,27 @@
       if (savedMode === 'classic' || savedMode === 'panoramic') window.treeViewMode = savedMode;
     } catch {}
 
+    window.treeFilterMode = localStorage.getItem('codax_tree_filter_mode') || 'online_only';
+
+    function setTreeFilterMode(mode) {
+      window.treeFilterMode = mode;
+      try { localStorage.setItem('codax_tree_filter_mode', mode); } catch {}
+      updateTreeFilterButtonsUI();
+      renderAllMeshTrees(currentHighlightTreeMac);
+    }
+
+    function updateTreeFilterButtonsUI() {
+      const btnOnline = document.getElementById('btn-tree-filter-online');
+      const btnAll = document.getElementById('btn-tree-filter-all');
+      if (window.treeFilterMode === 'online_only') {
+        if (btnOnline) btnOnline.className = 'flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition bg-emerald-600 text-white shadow-sm';
+        if (btnAll) btnAll.className = 'flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white';
+      } else {
+        if (btnOnline) btnOnline.className = 'flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white';
+        if (btnAll) btnAll.className = 'flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-sm';
+      }
+    }
+
     window.treeZoomScale = 1;
     window.treePanX = 0;
     window.treePanY = 0;
@@ -8971,13 +9023,17 @@
         flowPath.setAttribute('fill', 'none');
         flowPath.setAttribute('id', `tree-conduit-${pClean}-${cClean}`);
 
-        // Buscar RSSI do nó filho para determinar a cor do conduíte
+        // Buscar RSSI e status online do nó filho para determinar o conduíte
         const dev = devicesList.find(d => d.mac && d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === cClean);
+        const devNode = allKnown.get(cClean);
+        const isChildOffline = devNode ? !devNode.is_online : (dev ? dev.status === 'offline' : false);
         const devRssi = dev ? dev.rssi : -68;
 
         let flowClass = 'tree-packet-flow-cyan';
         if (isFailed) {
           flowClass = 'tree-laser-beam-failure';
+        } else if (isChildOffline) {
+          flowClass = 'tree-laser-beam-offline';
         } else if (isShortestPath) {
           flowClass = 'tree-laser-beam-highlight';
         } else if (devRssi >= -65) {
@@ -8992,7 +9048,7 @@
 
         // 4. Sockets de Conexão (Docking Ports nos nós pai e filho)
         const pPort = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        const pColor = isFailed ? '#f43f5e' : (isShortestPath ? '#38bdf8' : '#00f0ff');
+        const pColor = isFailed ? '#f43f5e' : (isChildOffline ? '#334155' : (isShortestPath ? '#38bdf8' : '#00f0ff'));
         pPort.innerHTML = `
           <circle cx="${startX}" cy="${startY}" r="5" fill="#080c14" stroke="${pColor}" stroke-width="2"/>
           <circle cx="${startX}" cy="${startY}" r="2.2" fill="${pColor}" filter="url(#tree-glow-neon)"/>
@@ -9000,7 +9056,7 @@
         pathsGroup.appendChild(pPort);
 
         const cPort = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        const cColor = isFailed ? '#f43f5e' : (isShortestPath ? '#38bdf8' : (devRssi >= -65 ? '#00f0ff' : '#10b981'));
+        const cColor = isFailed ? '#f43f5e' : (isChildOffline ? '#334155' : (isShortestPath ? '#38bdf8' : (devRssi >= -65 ? '#00f0ff' : '#10b981')));
         cPort.innerHTML = `
           <circle cx="${endX}" cy="${endY}" r="5" fill="#080c14" stroke="${cColor}" stroke-width="2"/>
           <circle cx="${endX}" cy="${endY}" r="2.2" fill="${cColor}" filter="url(#tree-glow-neon)"/>
@@ -9019,8 +9075,8 @@
           pathsGroup.appendChild(alertGroup);
         }
 
-        // 5. Partícula Fóton Viajante (Packet Plasma Bead)
-        if (!isFailed) {
+        // 5. Partícula Fóton Viajante (Packet Plasma Bead) - Apenas se o nó estiver online e sem falha
+        if (!isFailed && !isChildOffline) {
           const packetGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 
           const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -9081,26 +9137,30 @@
       // 1. Mapear todos os dispositivos conhecidos (cadastrados + descobertos + backend)
       const allKnown = new Map();
 
-      // Dispositivos cadastrados
+      // Dispositivos cadastrados em devices.json
       devicesList.forEach(d => {
         const cleanM = (d.mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
         if (!cleanM) return;
+        const isOnline = (d.status === 'online');
         allKnown.set(cleanM, {
           mac: cleanM,
           name: d.name,
           meter_serial: d.meter_serial,
           meter_type: d.meter_type,
           role: d.role,
-          layer: d.role === 'ROOT' ? 1 : (d.layer || 2),
-          isRoot: d.role === 'ROOT',
+          layer: (d.role === 'ROOT' || d.layer === 1) ? 1 : (d.layer || 2),
+          isRoot: (d.role === 'ROOT' || d.layer === 1),
           parent_mac: d.parent_mac,
           rssi: d.rssi,
           rssi_history: d.rssi_history,
-          notes: d.notes
+          notes: d.notes,
+          status: d.status || 'offline',
+          is_online: isOnline,
+          last_seen: d.last_seen || 'Desconhecido'
         });
       });
 
-      // Dispositivos descobertos na rede MQTT
+      // Dispositivos descobertos na rede MQTT em tempo real
       discoveredList.forEach(d => {
         const cleanM = (d.mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
         if (!cleanM) return;
@@ -9110,10 +9170,13 @@
           mac: cleanM,
           name: existing.name || d.name,
           layer: d.layer || existing.layer || 2,
-          isRoot: (d.layer === 1) || (existing.role === 'ROOT'),
+          isRoot: (d.layer === 1) || (existing.role === 'ROOT') || !d.parent_mac,
           parent_mac: d.parent_mac || existing.parent_mac,
           rssi: d.rssi || existing.rssi,
-          rssi_history: d.rssi_history || existing.rssi_history
+          rssi_history: d.rssi_history || existing.rssi_history,
+          status: 'online',
+          is_online: true,
+          last_seen: d.last_seen || 'Agora'
         });
       });
 
@@ -9124,6 +9187,7 @@
           const rMac = (mesh.root.mac_addr || mesh.root.mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
           if (!rMac) return;
           const ex = allKnown.get(rMac) || {};
+          const rOnline = mesh.root.is_online !== undefined ? !!mesh.root.is_online : (mesh.root.status === 'online' || ex.is_online);
           allKnown.set(rMac, {
             ...ex,
             mac: rMac,
@@ -9134,7 +9198,10 @@
             router_ssid: mesh.root.router_ssid,
             ip: mesh.root.ip,
             mesh_id: mesh.mesh_id || mesh.root.mesh_id,
-            rssi: mesh.root.rssi || ex.rssi
+            rssi: mesh.root.rssi || ex.rssi,
+            status: rOnline ? 'online' : (ex.status || 'offline'),
+            is_online: !!rOnline,
+            last_seen: mesh.root.last_seen || ex.last_seen
           });
 
           if (mesh.root.nodes && Array.isArray(mesh.root.nodes)) {
@@ -9142,6 +9209,7 @@
               const cMac = (ch.mac_addr || ch.mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
               if (!cMac) return;
               const chEx = allKnown.get(cMac) || {};
+              const cOnline = ch.is_online !== undefined ? !!ch.is_online : (ch.status === 'online' || chEx.is_online);
               allKnown.set(cMac, {
                 ...chEx,
                 mac: cMac,
@@ -9149,7 +9217,10 @@
                 layer: ch.layer || (chEx.layer || 2),
                 parent_mac: pMac,
                 rssi: ch.rssi || chEx.rssi,
-                nodes: ch.nodes
+                nodes: ch.nodes,
+                status: cOnline ? 'online' : (chEx.status || 'offline'),
+                is_online: !!cOnline,
+                last_seen: ch.last_seen || chEx.last_seen
               });
               if (ch.nodes && Array.isArray(ch.nodes)) {
                 ch.nodes.forEach(sub => addRec(sub, cMac));
@@ -9160,64 +9231,53 @@
         });
       }
 
-      // Separar raízes e nós
+      // Separar raízes e nós filhos
       const roots = [];
       const nodes = [];
       allKnown.forEach(dev => {
-        if (dev.isRoot || dev.layer === 1) roots.push(dev);
+        const isRoot = dev.isRoot || dev.layer === 1 || !dev.parent_mac || dev.parent_mac === dev.mac;
+        if (isRoot) roots.push(dev);
         else nodes.push(dev);
       });
 
-      if (roots.length === 0 && nodes.length > 0) roots.push(nodes.shift());
+      // Ordenar raízes: raízes ONLINE vêm PRIMEIRO!
+      roots.sort((a, b) => {
+        const aOn = a.is_online ? 1 : 0;
+        const bOn = b.is_online ? 1 : 0;
+        if (aOn !== bOn) return bOn - aOn;
+        return (a.name || a.mac).localeCompare(b.name || b.mac);
+      });
 
-      // Garantir que as duas malhas (Bancada 44:08 e Laboratório 54:07) existam na visualização
-      const hasBancada = roots.some(r => r.mac === '704bca491ca0');
-      if (!hasBancada) {
-        roots.unshift({
-          mac: '704bca491ca0',
-          name: 'Codax Bancada (70:4B:CA:49:1C:A0)',
-          role: 'ROOT',
-          layer: 1,
-          isRoot: true,
-          rssi: -22,
-          router_ssid: 'LEDAXIO_DEV',
-          ip: '192.168.137.148',
-          mesh_id: '00:00:00:00:44:08'
-        });
-      }
-      const hasLab = roots.some(r => r.mac === '4417934f49a4');
-      if (!hasLab) {
-        roots.push({
-          mac: '4417934f49a4',
-          name: 'ROOT Laboratório (Principal)',
-          role: 'ROOT',
-          layer: 1,
-          isRoot: true,
-          rssi: -42,
-          router_ssid: 'LAB_LEDAX_IOT',
-          ip: '192.168.1.150',
-          mesh_id: '00:00:00:00:54:07'
-        });
+      // Aplicar filtro de modo (Apenas Online vs Todos)
+      let activeRoots = roots;
+      let activeNodes = nodes;
+
+      if (window.treeFilterMode === 'online_only') {
+        activeNodes = nodes.filter(n => n.is_online);
+        activeRoots = roots.filter(r => r.is_online || activeNodes.some(n => (n.parent_mac || '').toLowerCase().replace(/[^a-f0-9]/g, '') === r.mac));
       }
 
       window.currentTreeConnections = [];
 
       // Barra de Resumo Superior com Métricas IoT estilo Crouton & Topolograph
       const totalFailed = (window.simulatedFailedNodes ? window.simulatedFailedNodes.size : 0);
+      const onlineNodesCount = activeNodes.filter(n => n.is_online).length;
+      const onlineRootsCount = activeRoots.filter(r => r.is_online).length;
+
       let html = `
         <div class="w-full flex flex-col xl:flex-row items-center justify-between gap-3 px-5 py-3 mb-8 rounded-2xl bg-[#080c14] border border-[#131b28] text-xs shadow-xl max-w-6xl">
           <div class="flex items-center space-x-3.5 flex-wrap gap-y-2">
             <span class="flex items-center space-x-1.5 text-slate-200 font-extrabold">
-              <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee]"></span>
-              <span>Malhas: <strong class="text-cyan-300 font-mono text-sm">${roots.length}</strong></span>
+              <span class="w-2.5 h-2.5 rounded-full ${onlineRootsCount > 0 ? 'bg-cyan-400 shadow-[0_0_10px_#22d3ee]' : 'bg-slate-600'}"></span>
+              <span>Malhas: <strong class="text-cyan-300 font-mono text-sm">${activeRoots.length}</strong></span>
             </span>
             <span class="flex items-center space-x-1.5 text-slate-300 font-bold">
-              <span class="w-2 h-2 rounded-full bg-indigo-500 shadow-[0_0_8px_#6366f1]"></span>
-              <span>L1 ROOTs: <strong class="text-indigo-300 font-mono">${roots.length}</strong></span>
+              <span class="w-2 h-2 rounded-full ${onlineRootsCount > 0 ? 'bg-indigo-500 shadow-[0_0_8px_#6366f1]' : 'bg-slate-600'}"></span>
+              <span>L1 ROOTs: <strong class="text-indigo-300 font-mono">${onlineRootsCount} online / ${activeRoots.length}</strong></span>
             </span>
             <span class="flex items-center space-x-1.5 text-slate-300 font-bold">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
-              <span>NODEs: <strong class="text-emerald-300 font-mono">${nodes.length}</strong></span>
+              <span class="w-2 h-2 rounded-full ${onlineNodesCount > 0 ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-slate-600'}"></span>
+              <span>NODEs: <strong class="text-emerald-300 font-mono">${onlineNodesCount} online / ${activeNodes.length}</strong></span>
             </span>
             <div class="h-4 w-px bg-slate-800 hidden sm:block"></div>
             <span class="flex items-center space-x-1.5 text-slate-300 font-bold" title="Crouton: Vazão média de pacotes MQTT na malha">
@@ -9260,51 +9320,49 @@
             </button>
           </div>
         </div>
+      `;
 
-        ${isPanoramic ? `
-          <!-- LINHA PANORÂMICA: DISTRIBUIÇÃO DAS MALHAS LADO A LADO ESTILO GOOGLE MAPS / N8N -->
-          <div id="tree-mesh-panoramic-row" class="flex flex-row items-start justify-center gap-16 md:gap-24 flex-nowrap w-max pb-20">
-        ` : `
-          <!-- COLUNA VERTICAL: DISTRIBUIÇÃO CLÁSSICA DAS MALHAS EMPILHADAS -->
-          <div id="tree-mesh-vertical-col" class="flex flex-col items-center py-2 space-y-16 w-full max-w-5xl">
-        `}
+      if (activeRoots.length === 0) {
+        html += `
+          <div class="p-16 text-center rounded-3xl bg-[#080c14] border border-[#131b28] text-slate-400 space-y-3 max-w-xl mx-auto shadow-2xl">
+            <i data-lucide="wifi-off" class="w-12 h-12 text-slate-600 mx-auto"></i>
+            <div class="text-sm font-bold text-slate-200">Nenhum Codax Online Detectado</div>
+            <p class="text-xs text-slate-500">Nenhuma placa está transmitindo na malha no momento. Verifique a alimentação do seu ESP32 ou alterne o filtro acima para <strong>"Todos os Nós"</strong> para visualizar os nós cadastrados.</p>
+            <button onclick="setTreeFilterMode('all')" class="mt-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition shadow-sm">
+              Mostrar Todos os Nós Cadastrados
+            </button>
+          </div>
+        `;
+        content.innerHTML = html;
+        lucide.createIcons();
+        return;
+      }
+
+      html += isPanoramic ? `
+        <!-- LINHA PANORÂMICA: DISTRIBUIÇÃO DAS MALHAS LADO A LADO ESTILO GOOGLE MAPS / N8N -->
+        <div id="tree-mesh-panoramic-row" class="flex flex-row items-start justify-center gap-16 md:gap-24 flex-nowrap w-max pb-20">
+      ` : `
+        <!-- COLUNA VERTICAL: DISTRIBUIÇÃO CLÁSSICA DAS MALHAS EMPILHADAS -->
+        <div id="tree-mesh-vertical-col" class="flex flex-col items-center py-2 space-y-16 w-full max-w-5xl">
       `;
 
       // Renderizar CADA MALHA com sua respectiva árvore
-      roots.forEach((rootDev) => {
+      activeRoots.forEach((rootDev) => {
         const rootCleanM = rootDev.mac;
         const isBancada = (rootCleanM === '704bca491ca0');
         const isLab = (rootCleanM === '4417934f49a4');
+        const isRootOnline = !!rootDev.is_online;
 
-        // Identificar nós desta malha
-        let myDirectChildren = [];
-        if (isBancada) {
-          myDirectChildren = nodes.filter(n => {
-            const p = (n.parent_mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
-            return p === rootCleanM || p === '704bca491ca0' || n.mac.startsWith('704bca') || n.mac === '3083986350b0';
-          });
-        } else if (isLab) {
-          myDirectChildren = nodes.filter(n => {
-            const p = (n.parent_mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
-            return p === rootCleanM || (!p && !n.mac.startsWith('704bca') && n.mac !== '3083986350b0');
-          });
-          if (myDirectChildren.length === 0) {
-            myDirectChildren = [
-              { mac: '44179358768c', name: 'Nó L2 Lab (44:17:93:58:76:8C)', layer: 2, parent_mac: '4417934f49a4', rssi: -65 },
-              { mac: '441793516dcc', name: 'Nó L2 Lab 02 (44:17:93:51:6D:CC)', layer: 2, parent_mac: '4417934f49a4', rssi: -72 }
-            ];
-          }
-        } else {
-          myDirectChildren = nodes.filter(n => {
-            const p = (n.parent_mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
-            return p === rootCleanM;
-          });
-        }
+        // Identificar nós desta malha com vinculação REAL e fiel
+        const myDirectChildren = activeNodes.filter(n => {
+          const p = (n.parent_mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
+          return p === rootCleanM;
+        });
 
         // Para cada filho direto (L2), buscar nós que têm parent_mac = filho (L3)
         const hierarchicalChildren = myDirectChildren.map(c => {
           const cMac = c.mac;
-          const subChildren = nodes.filter(n => {
+          const subChildren = activeNodes.filter(n => {
             const p = (n.parent_mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
             return p === cMac;
           });
@@ -9315,13 +9373,19 @@
             layer: c.layer || 2,
             parent_mac: rootDev.mac,
             rssi: c.rssi,
+            is_online: c.is_online,
+            status: c.status,
+            last_seen: c.last_seen,
             nodes: (c.nodes && c.nodes.length > 0) ? c.nodes : subChildren.map(s => ({
               ...s,
               mac_addr: s.mac,
               id: s.name || formatMac(s.mac),
               layer: 3,
               parent_mac: c.mac,
-              rssi: s.rssi
+              rssi: s.rssi,
+              is_online: s.is_online,
+              status: s.status,
+              last_seen: s.last_seen
             }))
           };
         });
@@ -9337,19 +9401,24 @@
         });
 
         const meshIdStr = isBancada ? '00:00:00:00:44:08' : (isLab ? '00:00:00:00:54:07' : (rootDev.mesh_id || '00:00:00:00:00:00'));
-        const meshTitle = isBancada 
-          ? '🛡️ Malha de Bancada (Mesh 00:00:00:00:44:08)' 
-          : (isLab ? '🏢 Malha Laboratório (Mesh 00:00:00:00:54:07)' : `🌐 Malha Mesh ${formatMac(rootCleanM)}`);
+        const meshBaseName = isBancada 
+          ? 'Malha de Bancada (Mesh 00:00:00:00:44:08)' 
+          : (isLab ? 'Malha Laboratório (Mesh 00:00:00:00:54:07)' : `Malha Mesh ${formatMac(rootCleanM)}`);
         const ssidStr = isBancada ? 'LEDAXIO_DEV' : (isLab ? 'LAB_LEDAX_IOT' : (rootDev.router_ssid || 'LEDAX_IOT'));
         const ipStr = isBancada ? '192.168.137.148' : (isLab ? '192.168.1.150' : (rootDev.ip || '192.168.1.1'));
 
         html += `
-          <div class="flex flex-col items-center ${isPanoramic ? 'shrink-0 min-w-[380px]' : 'w-full'} p-6 md:p-8 rounded-3xl border border-[#131b28] bg-[#060912] shadow-2xl relative z-0">
-            <div class="mb-8 px-5 py-2 rounded-full text-xs font-extrabold uppercase tracking-wider ${isBancada ? 'bg-purple-950/80 border border-purple-500/50 text-purple-200' : 'bg-indigo-950/80 border border-indigo-500/50 text-indigo-200'} flex items-center space-x-3 shadow-lg">
-              <i data-lucide="git-merge" class="w-4 h-4 text-emerald-400"></i>
-              <span>${meshTitle}</span>
+          <div class="flex flex-col items-center ${isPanoramic ? 'shrink-0 min-w-[380px]' : 'w-full'} p-6 md:p-8 rounded-3xl border ${isRootOnline ? 'border-[#131b28]' : 'border-slate-800/60'} bg-[#060912] shadow-2xl relative z-0">
+            <div class="mb-8 px-5 py-2 rounded-full text-xs font-extrabold uppercase tracking-wider ${isRootOnline ? (isBancada ? 'bg-purple-950/80 border border-purple-500/50 text-purple-200' : 'bg-indigo-950/80 border border-indigo-500/50 text-indigo-200') : 'bg-slate-900 border border-slate-800 text-slate-400'} flex items-center space-x-3 shadow-lg">
+              <i data-lucide="${isRootOnline ? 'git-merge' : 'wifi-off'}" class="w-4 h-4 ${isRootOnline ? 'text-emerald-400' : 'text-slate-500'}"></i>
+              <span>${meshBaseName}</span>
+              ${isRootOnline ? `
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950 border border-emerald-500 text-emerald-300 font-bold">ONLINE</span>
+              ` : `
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-950/80 border border-rose-800/50 text-rose-300 font-bold">DESCONECTADA</span>
+              `}
               <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-slate-300">SSID: ${ssidStr}</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-slate-300">L1 ROOT + ${hierarchicalChildren.length} Nós Filhos</span>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-slate-300">L1 ROOT + ${hierarchicalChildren.length} Filhos</span>
             </div>
             
             ${buildNodeCard({
@@ -9359,13 +9428,16 @@
               router_ssid: ssidStr,
               ip: ipStr,
               mesh_id: meshIdStr,
-              rssi: rootDev.rssi || (isBancada ? -22 : -42)
+              rssi: rootDev.rssi || (isBancada ? -22 : -42),
+              is_online: rootDev.is_online,
+              status: rootDev.status,
+              last_seen: rootDev.last_seen
             }, true)}
 
             ${hierarchicalChildren.length > 0 ? renderBranches(hierarchicalChildren, rootCleanM) : `
               <div class="mt-10 text-xs text-slate-400 italic flex items-center space-x-2 bg-slate-900/80 px-5 py-3 rounded-2xl border border-slate-800 shadow-sm">
-                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
-                <span>${isBancada ? 'Nó ROOT em Bancada — Malha autônoma sem nós filhos associados no momento (Mesh ID 44:08)' : 'Nó ROOT aguardando conexão de nós filhos'}</span>
+                <i data-lucide="${isRootOnline ? 'shield-check' : 'alert-circle'}" class="w-4 h-4 ${isRootOnline ? 'text-emerald-400' : 'text-slate-500'}"></i>
+                <span>${isRootOnline ? 'Nó ROOT ativo — sem nós filhos associados no momento' : 'Nó ROOT offline — aguardando comunicação da bancada'}</span>
                 <button onclick="sendQuickCommand('query', 'topology', null, '${rootCleanM}', true)" class="ml-2 px-3 py-1 rounded-xl bg-indigo-600/40 hover:bg-indigo-600 text-indigo-200 hover:text-white font-bold text-[10px] transition flex items-center space-x-1">
                   <i data-lucide="radio" class="w-3 h-3"></i>
                   <span>Sondar Filhos</span>
@@ -9448,6 +9520,7 @@
       const layer = node.layer || (isRoot ? 1 : 2);
       const rssi = isRoot ? (node.router_rssi || node.rssi) : (node.parent_rssi || node.rssi);
       const cleanMac = mac.toLowerCase().replace(/[^a-f0-9]/g, '');
+      const isOnline = (node.is_online !== undefined ? !!node.is_online : (node.status === 'online'));
       const isHighlighted = (currentHighlightTreeMac && cleanMac === currentHighlightTreeMac);
       const isFailed = (window.simulatedFailedNodes && window.simulatedFailedNodes.has(cleanMac));
 
@@ -9456,8 +9529,8 @@
       const isShortestPath = shortestPath.includes(cleanMac);
 
       let border = isRoot 
-        ? 'border-indigo-500 bg-[#080c14] shadow-indigo-500/20 shadow-lg' 
-        : 'border-[#131b28] bg-[#080c14]';
+        ? (isOnline ? 'border-indigo-500 bg-[#080c14] shadow-indigo-500/20 shadow-lg' : 'border-slate-800 bg-[#070912]/80 opacity-65 hover:opacity-100') 
+        : (isOnline ? 'border-[#131b28] bg-[#080c14]' : 'border-slate-800/80 bg-[#070912]/80 opacity-65 hover:opacity-100');
 
       if (isFailed) {
         border = 'border-rose-500 bg-[#140508] ring-2 ring-rose-500/80 shadow-rose-950/80 shadow-xl';
@@ -9474,9 +9547,11 @@
       const rtt = window.deviceRttMap[cleanMac];
       let sparkHistory = (dev && dev.rssi_history && dev.rssi_history.length > 0) ? dev.rssi_history : window.deviceRssiMap[cleanMac];
       if (!sparkHistory || sparkHistory.length === 0) {
-        const baseRssi = rssi || (isRoot ? -42 : -68);
+        const baseRssi = (rssi !== undefined ? rssi : (isRoot ? -42 : -68));
         sparkHistory = [baseRssi - 2, baseRssi + 1, baseRssi - 1, baseRssi];
       }
+
+      const roleText = isRoot ? '👑 ROOT (L1)' : `NODE (L${layer})`;
 
       return `
         <div id="tree-node-${cleanMac}" class="border ${border} rounded-2xl p-4 w-64 text-left select-none hover:border-indigo-400 transition cursor-pointer relative group shadow-lg z-30" style="z-index: 30;" onclick="if(!window.treeHasMoved) selectTreeNode('${cleanMac}')">
@@ -9500,26 +9575,40 @@
           ` : ''}
 
           <div class="flex items-center justify-between mb-2">
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded uppercase ${isRoot ? 'bg-indigo-600 text-white' : (isFailed ? 'bg-rose-950 text-rose-300 border border-rose-600/50' : 'bg-slate-800 text-slate-300')}">
-              ${isRoot ? '👑 ROOT (L1)' : `NODE (L${layer})`}
-            </span>
+            ${isOnline ? `
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded uppercase ${isRoot ? 'bg-indigo-600 text-white' : (isFailed ? 'bg-rose-950 text-rose-300 border border-rose-600/50' : 'bg-slate-800 text-emerald-300 border border-emerald-500/30')} flex items-center space-x-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span>${roleText}</span>
+              </span>
+            ` : `
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded uppercase bg-rose-950/70 border border-rose-800/40 text-rose-300 flex items-center space-x-1" title="Placa sem sinal MQTT recente">
+                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                <span>OFFLINE (${roleText})</span>
+              </span>
+            `}
             <div class="flex items-center space-x-1">
-              ${rtt ? `<span class="bg-indigo-950/80 border border-indigo-500/40 text-cyan-300 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold">${rtt} ms</span>` : ''}
-              ${getRssiBadge(rssi)}
+              ${isOnline ? `
+                ${rtt ? `<span class="bg-indigo-950/80 border border-indigo-500/40 text-cyan-300 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold">${rtt} ms</span>` : ''}
+                ${getRssiBadge(rssi)}
+              ` : `
+                <span class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-slate-500 text-[10px] font-mono">Sem Sinal</span>
+              `}
             </div>
           </div>
-          ${devName ? `<div class="font-bold text-xs text-cyan-300 truncate mb-0.5">${escapeHtml(devName)}</div>` : ''}
-          <div class="font-bold text-sm text-slate-100 mono truncate mb-1" title="${mac}">${formatMac(mac)}</div>
+          ${devName ? `<div class="font-bold text-xs ${isOnline ? 'text-cyan-300' : 'text-slate-400'} truncate mb-0.5">${escapeHtml(devName)}</div>` : ''}
+          <div class="font-bold text-sm ${isOnline ? 'text-slate-100' : 'text-slate-400'} mono truncate mb-1" title="${mac}">${formatMac(mac)}</div>
           <div class="text-[11px] text-slate-400 space-y-0.5">
+            ${!isOnline ? `<div class="text-rose-400/90 font-mono text-[10px] font-semibold">🔴 Desconectado (Sem telemetria)</div>` : ''}
             ${meterSerial ? `<div>Serial: <span class="mono text-slate-200 font-semibold">${escapeHtml(meterSerial)}</span></div>` : ''}
             ${meshLabel ? `<div>Rede: <span class="mono text-amber-300 font-semibold">${escapeHtml(meshLabel)}</span></div>` : ''}
             ${isRoot && node.router_ssid ? `<div>SSID: <span class="text-slate-300 font-semibold">${node.router_ssid}</span></div>` : ''}
             ${isRoot && node.ip ? `<div>IP: <span class="text-emerald-400 font-mono">${node.ip}</span></div>` : ''}
             ${!isRoot && node.parent_mac ? `<div>Parent: <span class="mono text-slate-300">${formatMac(node.parent_mac)}</span></div>` : ''}
+            <div class="text-[10px] text-slate-500 font-mono">Visto: ${escapeHtml(node.last_seen || dev?.last_seen || 'Desconhecido')}</div>
           </div>
           <div class="mt-2 pt-1.5 border-t border-[#131b28] flex items-center justify-between">
             <span class="text-[9px] text-slate-500">Sinal:</span>
-            ${generateRssiSparklineSvg(sparkHistory, 64, 18, `tree-${cleanMac}`)}
+            ${isOnline ? generateRssiSparklineSvg(sparkHistory, 64, 18, `tree-${cleanMac}`) : '<span class="text-[10px] text-slate-600 italic">Histórico inativo</span>'}
           </div>
           <div class="mt-2 pt-2 border-t border-[#131b28] flex items-center justify-between gap-1 flex-wrap text-[10px]">
             <div class="flex items-center space-x-1">
@@ -13122,10 +13211,39 @@
 
     // ================= [INOVAÇÃO] CONSOLE AO VIVO SCADA DEVTOOLS =================
     window.consoleViewMode = 'compact'; // 'compact' ou 'expanded'
+    window.consoleSortOrder = localStorage.getItem('codax_console_sort_order') || 'newest_first';
     window.consoleStreamFrozen = false;
     window.consoleFrozenBufferCount = 0;
     window.activeConsoleMacFilter = null;
     window.expandedLogIndices = new Set();
+
+    function setConsoleSortOrder(order) {
+      window.consoleSortOrder = order;
+      try { localStorage.setItem('codax_console_sort_order', order); } catch(e) {}
+      updateConsoleSortButtonsUI();
+      renderLogs();
+      if (order === 'newest_first') {
+        showGlassToast('⬇️ Mais recentes no topo (07:31 acima, 07:30 em baixo)');
+      } else {
+        showGlassToast('⬆️ Mais antigos no topo (ordem cronológica tradicional)');
+      }
+    }
+
+    function updateConsoleSortButtonsUI() {
+      const btnNewest = document.getElementById('btn-console-sort-newest');
+      const btnOldest = document.getElementById('btn-console-sort-oldest');
+      const isNewest = (window.consoleSortOrder === 'newest_first');
+      if (btnNewest) {
+        btnNewest.className = isNewest 
+          ? 'px-2.5 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1' 
+          : 'px-2.5 py-1 rounded-lg text-[11px] font-medium transition text-slate-400 hover:text-white flex items-center space-x-1';
+      }
+      if (btnOldest) {
+        btnOldest.className = !isNewest 
+          ? 'px-2.5 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1' 
+          : 'px-2.5 py-1 rounded-lg text-[11px] font-medium transition text-slate-400 hover:text-white flex items-center space-x-1';
+      }
+    }
 
     function setLogCategory(cat) {
       currentCategory = cat;
@@ -13473,8 +13591,10 @@
 
       let html = '';
       const isCompact = (window.consoleViewMode === 'compact');
+      const isNewestFirst = (window.consoleSortOrder === 'newest_first');
+      const renderList = isNewestFirst ? [...filtered].reverse() : filtered;
 
-      filtered.forEach((msg) => {
+      renderList.forEach((msg) => {
         const originalIndex = allMessages.indexOf(msg);
         const mac = extractMacFromMessage(msg);
         const dev = mac ? devicesList.find(d => d.mac && d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === mac) : null;
@@ -13571,7 +13691,11 @@
 
       const autoScrollEl = document.getElementById('autoscroll-toggle');
       if (autoScrollEl && autoScrollEl.checked) {
-        container.scrollTop = container.scrollHeight;
+        if (isNewestFirst) {
+          container.scrollTop = 0; // Novas mensagens entram no topo sem precisar scrollar!
+        } else {
+          container.scrollTop = container.scrollHeight;
+        }
       }
     }
 
