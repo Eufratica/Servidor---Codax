@@ -1,5 +1,15 @@
 [
   {
+    "id": "gh-512420721",
+    "category": "app",
+    "badge": "🌐 Repositório ESP-MESH (★ 44)",
+    "title": "Referência Open-Source: Jaimi5/LoRaChat",
+    "source": "https://github.com/Jaimi5/LoRaChat",
+    "summary": "A LoRa Chat long-distance communication using LoRa technology and ESP32 LoRa boards. You can connect to your devices via phone using a Bluet — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'Jaimi5/LoRaChat' (A LoRa Chat long-distance communication using LoRa technology and ESP32 LoRa boards. You can connect to your devices via phone using a Bluetooth Serial Terminal. We are using LoRaMesher to build a Mesh network.) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "07:56:40"
+  },
+  {
     "id": "inn-proc-43d6bf00",
     "category": "app",
     "badge": "🔐 Segurança & Resiliência",
