@@ -681,6 +681,14 @@
     #app-sidebar.sidebar-collapsed .sidebar-nav-btn > span {
       margin-right: 0 !important;
     }
+    #app-sidebar.sidebar-collapsed #sidebar-brand-header {
+      flex-direction: column !important;
+      justify-content: center !important;
+      align-items: center !important;
+      gap: 0.6rem !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
 
     /* Otimização Responsiva Mobile (< 768px): Colapso automático fluido para telas pequenas */
     @media (max-width: 768px) {
@@ -1010,23 +1018,34 @@
       
       <div class="p-3 sm:p-4 flex flex-col space-y-4">
         
-        <!-- Logo & Marca da Plataforma + Botão de Encolher Sidebar -->
-        <div class="flex items-center justify-between pb-3 border-b border-slate-800/80">
+        <!-- Logo & Marca da Plataforma + Botão de Encolher Sidebar (Estilo Cockpit SCADA) -->
+        <div id="sidebar-brand-header" class="flex items-center justify-between pb-3.5 border-b border-[#131b28] transition-all">
           <div class="flex items-center space-x-2.5 min-w-0">
-            <div class="bg-indigo-600 p-2 rounded-xl text-white shadow-lg shadow-indigo-600/30 flex items-center justify-center shrink-0">
-              <i data-lucide="radio" class="w-5 h-5"></i>
+            <!-- Emblema de Hardware Carbono com Borda Ciano & Ping de Malha Ativa -->
+            <div class="relative p-2 rounded-xl bg-gradient-to-br from-[#0c1322] via-[#070b13] to-[#03060a] border border-cyan-500/40 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.18)] flex items-center justify-center shrink-0">
+              <i data-lucide="cpu" class="w-4 h-4 text-cyan-400"></i>
+              <span class="absolute -top-1 -right-1 flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
             </div>
+
+            <!-- Tipografia Industrial de Alta Precisão -->
             <div class="sidebar-text-content min-w-0">
               <div class="flex items-center space-x-1.5">
-                <span class="font-extrabold text-sm sm:text-base tracking-wide text-white truncate">CODAX HUB</span>
-                <span class="text-[9px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 px-1.5 py-0.2 rounded font-extrabold">2.9 PRO</span>
+                <span class="font-black text-sm tracking-widest text-white uppercase font-sans">CODAX</span>
+                <span class="text-[9.5px] font-mono font-bold bg-[#040810] text-cyan-300 border border-cyan-500/30 px-1.5 py-0.2 rounded shadow-inner">2.9 PRO</span>
               </div>
-              <p class="text-[10px] text-slate-400 truncate">On-Premise ESP-MESH Hub</p>
+              <div class="flex items-center space-x-1.5 text-[10px] text-slate-400 font-mono tracking-tight mt-0.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span class="text-slate-300 font-medium">ESP-MESH SCADA</span>
+              </div>
             </div>
           </div>
 
-          <button onclick="toggleSidebarCollapse()" id="btn-sidebar-collapse" class="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 transition shrink-0" title="Recolher / Expandir menu lateral">
-            <i data-lucide="panel-left-close" class="w-4 h-4"></i>
+          <!-- Tecla Tátil Metálica de Recolhimento da Sidebar -->
+          <button onclick="toggleSidebarCollapse()" id="btn-sidebar-collapse" class="p-1.5 rounded-xl bg-[#080c14] hover:bg-[#0e1626] border border-[#172235] hover:border-cyan-500/50 text-slate-400 hover:text-cyan-300 shadow-sm transition shrink-0 group" title="Recolher / Expandir menu lateral">
+            <i data-lucide="panel-left-close" class="w-4 h-4 transition-transform group-hover:scale-110"></i>
           </button>
         </div>
 

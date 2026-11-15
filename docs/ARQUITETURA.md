@@ -138,8 +138,10 @@ flowchart TD
       - **Chave Seletora de Categorias Industriais**: Botões pílula com contagem viva (`Todas`, `Favoritas ⭐`, `IA & Automação`, `RF & ESP-MESH`, `Design System & 3D`, `Aplicações IoT`, `Cibersegurança`).
       - **Grid Responsivo de Inovações**: Cards com badges temáticos, princípios de física/engenharia, impacto direto na bancada Codax, tags e botão de cópia de prompt pronto com 1 clique.
   14. **Mini-Sidebar Retrátil Industrial & Responsividade Mobile**:
-      - Alternador instantâneo com botão recolher/expandir (`#btn-sidebar-collapse`) e ícone dinâmico (`panel-left-close` / `panel-left-open`).
-      - Modo mini-dock com largura compacta (76px em desktop, 68px em mobile) centralizando os ícones das abas e ocultando rótulos e feeds secundários.
+      - **Cabeçalho Industrial Cockpit SCADA**: Emblema de hardware em carbono escuro com gradiente multicamada (`#0c1322` a `#03060a`), borda micro-iluminada em ciano aeroespacial (`border-cyan-500/40`), brilho suave de ancoragem e ping pulsante de vida da malha (`animate-ping`).
+      - Tipografia corporativa de alta precisão com `CODAX` em kerning expandido, micro-pill `2.9 PRO` debossed escuro e indicador `ESP-MESH SCADA`.
+      - Alternador instantâneo com tecla tátil metálica (`#btn-sidebar-collapse`) e ícone dinâmico (`panel-left-close` / `panel-left-open`).
+      - Modo mini-dock com largura compacta (76px em desktop, 68px em mobile) com alinhamento vertical estrito do emblema e do botão no `#sidebar-brand-header`, centralizando os ícones das abas e ocultando rótulos e feeds secundários.
       - Persistência contínua do estado no `localStorage` (`codax_sidebar_collapsed`) e inicialização inteligente adaptada para telas móveis e tablets (< 768px e < 1024px).
   15. **Console ao Vivo - Esteira Aberta de Codax & Blindagem de Ações**:
       - Eliminação de rolagem horizontal: os dispositivos marcados na chave seletora fluem livremente em rack com quebra automática de linha (`#console-selected-chips-rack`).
