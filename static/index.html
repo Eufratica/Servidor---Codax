@@ -2235,9 +2235,37 @@
                   <button onclick="clearSearchLog()" id="btn-clear-log-search" class="absolute right-2 top-2 text-slate-500 hover:text-white hidden">✕</button>
                 </div>
 
-                <!-- Chips de MACs Detectados na Malha -->
-                <div id="console-mac-chips" class="flex items-center space-x-1 overflow-x-auto max-w-md py-0.5 scrollbar-none">
-                  <!-- Injetado dinamicamente -->
+                <!-- Chips de MACs e Chave Seletora de Dispositivos -->
+                <div class="relative flex items-center space-x-1 py-0.5">
+                  <div id="console-mac-chips" class="flex items-center space-x-1 overflow-x-auto max-w-xl py-0.5 scrollbar-none">
+                    <!-- Injetado dinamicamente: Todos, Botão Seletor e Chips Marcados -->
+                  </div>
+
+                  <!-- Dropdown Flutuante da Chave Seletora de Dispositivos -->
+                  <div id="console-mac-picker-dropdown" class="hidden absolute left-20 top-full mt-2 z-50 bg-[#070b13] border border-[#172235] rounded-2xl p-3 shadow-2xl space-y-2.5 min-w-[320px] max-w-[380px]">
+                    <div class="flex items-center justify-between pb-2 border-b border-[#131b28]">
+                      <div class="flex items-center space-x-1.5 text-xs font-bold text-white">
+                        <i data-lucide="cpu" class="w-3.5 h-3.5 text-cyan-400"></i>
+                        <span>Dispositivos para a Barra</span>
+                      </div>
+                      <button onclick="toggleConsoleMacPicker(false)" class="text-slate-500 hover:text-white text-xs p-0.5" title="Fechar">✕</button>
+                    </div>
+
+                    <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 px-0.5">
+                      <button onclick="selectAllConsoleMacs(true)" class="hover:text-cyan-400 transition flex items-center space-x-1">
+                        <i data-lucide="check-check" class="w-3 h-3 text-cyan-400"></i>
+                        <span>Marcar Todos</span>
+                      </button>
+                      <button onclick="selectAllConsoleMacs(false)" class="hover:text-rose-400 transition flex items-center space-x-1">
+                        <i data-lucide="x" class="w-3 h-3 text-rose-400"></i>
+                        <span>Desmarcar Todos</span>
+                      </button>
+                    </div>
+
+                    <div id="console-mac-picker-list" class="max-h-56 overflow-y-auto space-y-1 pr-1 font-mono text-[11px] scrollbar-thin">
+                      <!-- Itens gerados dinamicamente -->
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -13324,6 +13352,7 @@
     window.consoleSplitMode = (localStorage.getItem('codax_console_split_mode') === '1');
     window.selectedLogCategories = new Set(['all']); // Multi-seleção de tópicos (até 2 tópicos simultâneos)
     window.activeConsoleMacFilter = null;
+    window.selectedConsoleMacs = new Set(JSON.parse(localStorage.getItem('codax_selected_mac_chips') || '[]'));
     window.expandedLogIndices = new Set();
 
     function setConsoleSortOrder(order) {
@@ -13653,39 +13682,170 @@
       const container = document.getElementById('console-mac-chips');
       if (!container) return;
 
-      const macSet = new Set();
+      const macCountMap = {};
       allMessages.forEach(m => {
         const mac = extractMacFromMessage(m);
-        if (mac) macSet.add(mac);
+        if (mac) {
+          macCountMap[mac] = (macCountMap[mac] || 0) + 1;
+        }
       });
 
-      if (macSet.size === 0) {
-        container.innerHTML = '';
-        return;
-      }
+      const selectedCount = window.selectedConsoleMacs ? window.selectedConsoleMacs.size : 0;
 
       let html = `
-        <button onclick="setConsoleMacFilter(null)" class="px-2 py-0.5 rounded-lg text-[10px] font-bold transition shrink-0 ${!window.activeConsoleMacFilter ? 'bg-cyan-500 text-slate-950 shadow-sm' : 'bg-[#0d121e] border border-[#172235] text-slate-400 hover:text-white'}">
+        <!-- Botão Todos (SEMPRE VISÍVEL) -->
+        <button onclick="setConsoleMacFilter(null)" class="px-2.5 py-1 rounded-xl text-[10px] font-bold transition shrink-0 ${!window.activeConsoleMacFilter ? 'bg-cyan-500 text-slate-950 shadow-sm font-extrabold ring-1 ring-cyan-300' : 'bg-[#0d121e] border border-[#172235] text-slate-400 hover:text-white'}">
           Todos (${allMessages.length})
+        </button>
+
+        <!-- Chave Seletora de Dispositivos (Menu Dropdown com Checkboxes) -->
+        <button id="btn-toggle-mac-picker" onclick="toggleConsoleMacPicker()" class="px-2.5 py-1 rounded-xl text-[10px] font-mono font-semibold transition shrink-0 flex items-center space-x-1.5 ${selectedCount > 0 ? 'bg-indigo-950/80 border border-indigo-500/50 text-indigo-300 hover:text-white' : 'bg-[#0d121e] border border-[#172235] text-slate-400 hover:text-white'}" title="Chave Seletora: marque quais Codax deseja exibir como botões na barra">
+          <i data-lucide="sliders-horizontal" class="w-3 h-3 text-cyan-400"></i>
+          <span>Dispositivos (${selectedCount})</span>
+          <i data-lucide="chevron-down" class="w-2.5 h-2.5 opacity-70"></i>
         </button>
       `;
 
-      macSet.forEach(cleanMac => {
-        const isSelected = (window.activeConsoleMacFilter === cleanMac);
-        const dev = devicesList.find(d => d.mac && d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === cleanMac);
+      // Apenas os MACs explicitamente marcados na chave seletora aparecerão como botões clicáveis na barra!
+      if (window.selectedConsoleMacs && window.selectedConsoleMacs.size > 0) {
+        window.selectedConsoleMacs.forEach(cleanMac => {
+          const isSelected = (window.activeConsoleMacFilter === cleanMac);
+          const dev = (devicesList || []).find(d => d.mac && d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === cleanMac);
+          const label = dev && dev.name ? dev.name : formatMac(cleanMac);
+          const count = macCountMap[cleanMac] || 0;
+
+          html += `
+            <button onclick="setConsoleMacFilter('${cleanMac}')" class="px-2.5 py-1 rounded-xl text-[10px] font-mono font-semibold transition shrink-0 flex items-center space-x-1.5 ${isSelected ? 'bg-cyan-600 text-white shadow-sm ring-1 ring-cyan-400' : 'bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white hover:border-cyan-500/40'}">
+              <span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-cyan-400'}"></span>
+              <span class="truncate max-w-[130px]">${escapeHtml(label)}</span>
+              <span class="text-[9px] opacity-75">(${count})</span>
+            </button>
+          `;
+        });
+      }
+
+      container.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function toggleConsoleMacPicker(forceState) {
+      const dropdown = document.getElementById('console-mac-picker-dropdown');
+      if (!dropdown) return;
+      const isCurrentlyHidden = dropdown.classList.contains('hidden');
+      const show = (forceState !== undefined) ? forceState : isCurrentlyHidden;
+      if (show) {
+        renderConsoleMacPickerList();
+        dropdown.classList.remove('hidden');
+      } else {
+        dropdown.classList.add('hidden');
+      }
+      lucide.createIcons();
+    }
+
+    function renderConsoleMacPickerList() {
+      const listEl = document.getElementById('console-mac-picker-list');
+      if (!listEl) return;
+
+      const macCountMap = {};
+      allMessages.forEach(m => {
+        const mac = extractMacFromMessage(m);
+        if (mac) {
+          macCountMap[mac] = (macCountMap[mac] || 0) + 1;
+        }
+      });
+
+      const allKnownMacs = new Set(Object.keys(macCountMap));
+      (devicesList || []).forEach(d => {
+        if (d.mac) {
+          const clean = d.mac.toLowerCase().replace(/[^a-f0-9]/g, '');
+          if (clean) allKnownMacs.add(clean);
+        }
+      });
+
+      if (allKnownMacs.size === 0) {
+        listEl.innerHTML = '<p class="text-slate-500 italic p-3 text-center text-xs">Nenhum Codax detectado ainda.</p>';
+        return;
+      }
+
+      const sortedMacs = Array.from(allKnownMacs).sort((a, b) => {
+        const countA = macCountMap[a] || 0;
+        const countB = macCountMap[b] || 0;
+        return countB - countA;
+      });
+
+      let html = '';
+      sortedMacs.forEach(cleanMac => {
+        const isChecked = window.selectedConsoleMacs && window.selectedConsoleMacs.has(cleanMac);
+        const dev = (devicesList || []).find(d => d.mac && d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === cleanMac);
         const label = dev && dev.name ? dev.name : formatMac(cleanMac);
-        const count = allMessages.filter(m => extractMacFromMessage(m) === cleanMac).length;
+        const count = macCountMap[cleanMac] || 0;
+        const isOnline = dev ? (dev.status === 'online') : (count > 0);
 
         html += `
-          <button onclick="setConsoleMacFilter('${cleanMac}')" class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-semibold transition shrink-0 flex items-center space-x-1 ${isSelected ? 'bg-cyan-600 text-white shadow-sm ring-1 ring-cyan-400' : 'bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white hover:border-cyan-500/40'}">
-            <span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-cyan-400'}"></span>
-            <span class="truncate max-w-[130px]">${escapeHtml(label)}</span>
-            <span class="text-[9px] opacity-75">(${count})</span>
-          </button>
+          <label class="flex items-center justify-between p-2 rounded-xl bg-[#020306] hover:bg-[#0d121e] border ${isChecked ? 'border-cyan-500/50 bg-[#040f17]' : 'border-[#131b28] hover:border-slate-700'} cursor-pointer transition select-none group">
+            <div class="flex items-center space-x-2.5 truncate min-w-0">
+              <input type="checkbox" onchange="toggleMacChipSelection('${cleanMac}')" ${isChecked ? 'checked' : ''} class="rounded bg-[#080c14] border-[#172235] text-cyan-500 focus:ring-0 w-3.5 h-3.5 cursor-pointer shrink-0">
+              <span class="w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-400 shadow-sm shadow-emerald-500/50' : 'bg-slate-600'} shrink-0"></span>
+              <span class="font-semibold text-slate-200 group-hover:text-white truncate max-w-[180px] text-xs">${escapeHtml(label)}</span>
+            </div>
+            <span class="text-[10px] font-mono ${count > 0 ? 'text-cyan-400 font-bold' : 'text-slate-500'} shrink-0 ml-2">(${count})</span>
+          </label>
         `;
       });
 
-      container.innerHTML = html;
+      listEl.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function toggleMacChipSelection(cleanMac) {
+      if (!window.selectedConsoleMacs) {
+        window.selectedConsoleMacs = new Set();
+      }
+      if (window.selectedConsoleMacs.has(cleanMac)) {
+        window.selectedConsoleMacs.delete(cleanMac);
+        if (window.activeConsoleMacFilter === cleanMac) {
+          window.activeConsoleMacFilter = null;
+        }
+      } else {
+        window.selectedConsoleMacs.add(cleanMac);
+      }
+      try {
+        localStorage.setItem('codax_selected_mac_chips', JSON.stringify(Array.from(window.selectedConsoleMacs)));
+      } catch(e) {}
+      renderConsoleMacChips();
+      renderConsoleMacPickerList();
+      renderLogs();
+    }
+
+    function selectAllConsoleMacs(selectAll) {
+      if (!window.selectedConsoleMacs) {
+        window.selectedConsoleMacs = new Set();
+      }
+      if (selectAll) {
+        const macCountMap = {};
+        allMessages.forEach(m => {
+          const mac = extractMacFromMessage(m);
+          if (mac) macCountMap[mac] = true;
+        });
+        (devicesList || []).forEach(d => {
+          if (d.mac) {
+            const clean = d.mac.toLowerCase().replace(/[^a-f0-9]/g, '');
+            if (clean) macCountMap[clean] = true;
+          }
+        });
+        window.selectedConsoleMacs = new Set(Object.keys(macCountMap));
+        showGlassToast('Todos os dispositivos marcados para a barra');
+      } else {
+        window.selectedConsoleMacs.clear();
+        window.activeConsoleMacFilter = null;
+        showGlassToast('Todos os botões de dispositivos ocultados da barra');
+      }
+      try {
+        localStorage.setItem('codax_selected_mac_chips', JSON.stringify(Array.from(window.selectedConsoleMacs)));
+      } catch(e) {}
+      renderConsoleMacChips();
+      renderConsoleMacPickerList();
+      renderLogs();
     }
 
     function updateConsoleCategoryCounts() {
@@ -13998,6 +14158,14 @@
       if (cpMqttDrop && !cpMqttDrop.classList.contains('hidden')) {
         if (!cpMqttDrop.contains(e.target) && (!cpMqttBtn || !cpMqttBtn.contains(e.target))) {
           cpMqttDrop.classList.add('hidden');
+        }
+      }
+
+      const macPickerDrop = document.getElementById('console-mac-picker-dropdown');
+      const btnMacPicker = document.getElementById('btn-toggle-mac-picker');
+      if (macPickerDrop && !macPickerDrop.classList.contains('hidden')) {
+        if (!macPickerDrop.contains(e.target) && (!btnMacPicker || !btnMacPicker.contains(e.target))) {
+          macPickerDrop.classList.add('hidden');
         }
       }
     });

@@ -94,7 +94,11 @@ flowchart TD
       - **Multi-Seleção Bimodal de Tópicos (Até 2 Tópicos Simultâneos)**:
         - Na barra de categorias com ícones vetoriais monocromáticos Lucide (`activity`, `git-fork`, `radio`, `terminal`, `alert-triangle`, `layers`), o operador pode selecionar 2 tópicos ao mesmo tempo para fluírem juntos na mesma lista com badge indicador ativo.
         - Stream 100% contínuo sem interrupção de pacotes (eliminação do botão de pausa para conformidade com telemetria viva).
-      - **Chips Dinâmicos de Filtragem por MAC**: Barra de chips gerada automaticamente com os nós ativos detectados na malha (ex: `Codax Bancada (14)`), permitindo isolar o tráfego de um dispositivo específico em 1 clique.
+      - **Chave Seletora de Dispositivos & Chips de Filtragem por MAC**:
+        - O botão `Todos (N)` permanece sempre fixo e visível na barra de atalhos.
+        - Chave seletora com dropdown suspenso (`[ 🎛️ Dispositivos (K) ▾ ]`) listando todas as placas detectadas e cadastradas com status online/offline, contagem viva de mensagens e checkboxes `[✓]`.
+        - Apenas os dispositivos explicitamente marcados pelo operador são promovidos a botões clicáveis na barra rápida, evitando sobrecarga visual.
+        - Seleção salva de forma persistente em `localStorage` (`codax_selected_mac_chips`), com atalhos rápidos `[ Marcar Todos ]` e `[ Desmarcar Todos ]`.
       - **Contadores de Categorias em Tempo Real**: Pílulas de filtro com contagem viva (`Todos`, `Retornos`, `Telemetria`, `Topologia`, `Conexão`, `Comandos`, `Erros`).
       - **Busca com Realce `<mark>`**: Filtro instantâneo com destaque em amarelo dos termos encontrados nos tópicos e payloads, acompanhado de botão de limpeza rápida `✕`.
       - **Ações Rápidas & Exportação**: Botão para download direto do histórico filtrado em arquivo `.json` com timestamp, cópia rápida para clipboard de payload ou tópico, e atalhos diretos `Cockpit` e `Builder`.
