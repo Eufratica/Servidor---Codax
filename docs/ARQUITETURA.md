@@ -75,9 +75,16 @@ flowchart TD
         - **Simulador de Falha de Enlace / Nó**: Botão em cada card para simular queda de nó, transformando o conduíte em feixe vermelho tracejado piscante de alerta (`#f43f5e`) e alertando sobre rotas isoladas.
       - **Métricas IoT edfungus/Crouton & Freeboard**: HUD superior com Vazão da Malha em tempo real (PPS), LQI Médio de Rádio (%), contagem de malhas ativas e enlaces.
       - **Visão Matriz de Adjacência N x N em 4K** (heatmap de enlaces RF) e **Histórico de Mudanças de Topologia em Linha do Tempo**.
-  5. `view-terminal`: Terminal serial e histórico de mensagens.
-  6. `view-pubsub`: Publicador e assinante de tópicos MQTT em tempo real.
-  7. `view-ota`: Gerenciador de atualizações de firmware Over-the-Air.
+  5. `view-dictionary`: Dicionário de comandos, parâmetros e registradores Modbus/NBR 14522.
+  6. `view-ota`: Gerenciador de atualizações de firmware Over-the-Air.
+  7. `view-logs`: **Console de Mensagens ao Vivo & SCADA DevTools (Modern Deep Dark Obsidian)**:
+      - **Modo Compacto (Wireshark / Chrome DevTools Strip)**: Apresentação de 1 linha por pacote com timestamp, badge semântico, MAC/Apelido do dispositivo, tópico com realce e resumo compacto dos campos (`{ v_a: 220.4 | status: "ok" }`). Reduz a altura visual em mais de 85% para análise de tráfego intenso.
+      - **Visualização Expandida com Syntax Highlighting Real de JSON**: Tokenizador léxico puro nativo que colore chaves (`#38bdf8`), strings (`#fde047`), números (`#34d399`), booleans (`#c084fc`) e nulls (`#fb7185`) sobre poço debossed Jet Black `#020306`.
+      - **Stream Freeze / Congelamento de Rolagem (`⏸️ Pausar Stream`)**: Permite pausar a renderização da tela para inspecionar e copiar dados com calma, acumulando novas mensagens em buffer com contador de pendências `(+N)` e retomada instantânea sem perda de pacotes.
+      - **Chips Dinâmicos de Filtragem por MAC**: Barra de chips gerada automaticamente com os nós ativos detectados na malha (ex: `Codax Bancada (14)`), permitindo isolar o tráfego de um dispositivo específico em 1 clique.
+      - **Contadores de Categorias em Tempo Real**: Pílulas de filtro com contagem viva (`Todos`, `Retornos`, `Telemetria`, `Topologia`, `Conexão`, `Comandos`, `Erros`).
+      - **Busca com Realce `<mark>`**: Filtro instantâneo com destaque em amarelo dos termos encontrados nos tópicos e payloads, acompanhado de botão de limpeza rápida `✕`.
+      - **Ações Rápidas & Exportação**: Botão para download direto do histórico filtrado em arquivo `.json` com timestamp, cópia rápida para clipboard de payload ou tópico, e atalhos diretos `Cockpit` e `Builder`.
   8. `view-timestream`: **Estúdio Visual Amazon Timestream & UNLOAD S3**:
       - 5 Sub-Abas operacionais: `Séries & Curvas Elétricas`, `Catálogo das 7 Tabelas`, `Construtor UNLOAD S3`, `Console SQL & Queries`, e `Qualidade de Energia (PQI)`.
       - Gráficos vetoriais de alta resolução: Tensões Trifásicas (Va, Vb, Vc) com faixas normativas ANEEL (201V a 231V), Corrente (A) & Demanda Ativa (kW), Totalizador pt-BR contínuo e RSSI MESH.

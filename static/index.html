@@ -235,6 +235,23 @@
       animation: treeLaserPulse 1.25s linear infinite;
     }
 
+    /* ================= [INOVAÇÃO] CONSOLE SCADA DEVTOOLS & SYNTAX HIGHLIGHT ================= */
+    .console-code-json {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      tab-size: 2;
+      line-height: 1.5;
+    }
+    .console-token-key { color: #38bdf8 !important; font-weight: 600; }
+    .console-token-str { color: #fde047 !important; }
+    .console-token-num { color: #34d399 !important; font-weight: 700; }
+    .console-token-bool { color: #c084fc !important; font-weight: 700; }
+    .console-token-null { color: #fb7185 !important; font-style: italic; }
+    .console-token-punc { color: #64748b !important; }
+    .console-compact-strip:hover {
+      background-color: #0d1527 !important;
+      border-color: #0284c7 !important;
+    }
+
     /* Ticker Tape da Bolsa de Valores (B3 / NASDAQ Style Marquee) */
     @keyframes tickerTapeScroll {
       0% {
@@ -2083,33 +2100,94 @@
         </section>
 
         <!-- ================= ABA 6: CONSOLE DE MENSAGENS AO VIVO ================= -->
-        <section id="view-logs" class="tab-content hidden space-y-4">
+        <section id="view-logs" class="tab-content hidden space-y-3">
           
-          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <!-- Painel de Controles SCADA do Console -->
+          <div class="bg-[#080c14] border border-[#131b28] rounded-2xl p-3.5 space-y-3 text-xs shadow-lg">
             
-            <div class="flex items-center space-x-1.5 flex-wrap">
-              <button onclick="setLogCategory('all')" id="btn-cat-all" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-medium">Todos</button>
-              <button onclick="setLogCategory('msg')" id="btn-cat-msg" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">💬 MSG</button>
-              <button onclick="setLogCategory('retorno')" id="btn-cat-retorno" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">✅ Retorno</button>
-              <button onclick="setLogCategory('telemetria')" id="btn-cat-telemetria" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">📊 Telemetria</button>
-              <button onclick="setLogCategory('topologia')" id="btn-cat-topologia" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">🌳 Topologia</button>
-              <button onclick="setLogCategory('conexao')" id="btn-cat-conexao" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">📡 Conexão</button>
-              <button onclick="setLogCategory('erro')" id="btn-cat-erro" class="cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white">❌ Erros</button>
+            <!-- Linha 1: Categorias e Contadores em Tempo Real -->
+            <div class="flex flex-wrap items-center justify-between gap-2.5">
+              <div class="flex items-center space-x-1.5 flex-wrap gap-y-1.5" id="console-category-buttons">
+                <button onclick="setLogCategory('all')" id="btn-cat-all" class="cat-filter-btn px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold transition shadow-sm">Todos <span id="count-cat-all" class="ml-1 text-[10px] opacity-80">(0)</span></button>
+                <button onclick="setLogCategory('retorno')" id="btn-cat-retorno" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-emerald-400 hover:text-white transition">✅ Retornos <span id="count-cat-retorno" class="ml-1 text-[10px] opacity-80">(0)</span></button>
+                <button onclick="setLogCategory('telemetria')" id="btn-cat-telemetria" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-cyan-400 hover:text-white transition">⚡ Telemetria <span id="count-cat-telemetria" class="ml-1 text-[10px] opacity-80">(0)</span></button>
+                <button onclick="setLogCategory('topologia')" id="btn-cat-topologia" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-purple-400 hover:text-white transition">🌳 Topologia <span id="count-cat-topologia" class="ml-1 text-[10px] opacity-80">(0)</span></button>
+                <button onclick="setLogCategory('conexao')" id="btn-cat-conexao" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-blue-400 hover:text-white transition">📡 Conexão <span id="count-cat-conexao" class="ml-1 text-[10px] opacity-80">(0)</span></button>
+                <button onclick="setLogCategory('msg')" id="btn-cat-msg" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-indigo-300 hover:text-white transition">💬 Comandos <span id="count-cat-msg" class="ml-1 text-[10px] opacity-80">(0)</span></button>
+                <button onclick="setLogCategory('erro')" id="btn-cat-erro" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-rose-400 hover:text-white transition">❌ Erros <span id="count-cat-erro" class="ml-1 text-[10px] opacity-80">(0)</span></button>
+              </div>
+
+              <!-- Modos de Visualização & Congelar Stream -->
+              <div class="flex items-center space-x-2">
+                <!-- Toggle Compacto vs Expandido -->
+                <div class="bg-[#020306] border border-[#131b28] p-0.5 rounded-xl flex items-center">
+                  <button id="btn-console-mode-compact" onclick="setConsoleViewMode('compact')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1" title="Visualização compacta de 1 linha por pacote (estilo Wireshark/Logcat)">
+                    <i data-lucide="align-justify" class="w-3 h-3"></i>
+                    <span>Compacto</span>
+                  </button>
+                  <button id="btn-console-mode-expanded" onclick="setConsoleViewMode('expanded')" class="px-2.5 py-1 rounded-lg text-[11px] font-medium transition text-slate-400 hover:text-white flex items-center space-x-1" title="Visualização expandida com JSON formatado e colorido">
+                    <i data-lucide="code" class="w-3 h-3"></i>
+                    <span>Expandido</span>
+                  </button>
+                </div>
+
+                <!-- Botão Congelar Stream -->
+                <button id="btn-console-freeze" onclick="toggleConsoleFreeze()" class="px-3 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] hover:border-amber-500/50 text-slate-300 hover:text-white text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm" title="Congela a rolagem e visualização para inspecionar pacotes sem interferência">
+                  <i data-lucide="pause" class="w-3.5 h-3.5 text-amber-400"></i>
+                  <span id="btn-console-freeze-text">Pausar</span>
+                </button>
+              </div>
             </div>
 
-            <div class="flex items-center space-x-2">
-              <input type="text" id="log-search" oninput="renderLogs()" placeholder="Filtrar por MAC ou texto..." class="bg-slate-950 border border-slate-700/80 rounded-lg px-3 py-1.5 text-slate-200 focus:outline-none focus:border-indigo-500 w-48">
-              <button onclick="clearConsole()" class="bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg text-slate-300 transition font-semibold" title="Limpar mensagens">Limpar</button>
-              <label class="flex items-center space-x-1.5 text-slate-400 cursor-pointer">
-                <input type="checkbox" id="autoscroll-toggle" checked class="rounded bg-slate-950 border-slate-700 text-indigo-600">
-                <span>Auto-scroll</span>
-              </label>
+            <!-- Linha 2: Busca com Highlight, Chips de Dispositivos e Ações -->
+            <div class="flex flex-wrap items-center justify-between gap-2.5 pt-2 border-t border-[#131b28]">
+              
+              <!-- Busca & Chips -->
+              <div class="flex items-center space-x-2 flex-wrap gap-y-1.5">
+                <div class="relative">
+                  <i data-lucide="search" class="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2.5 pointer-events-none"></i>
+                  <input type="text" id="log-search" oninput="renderLogs()" placeholder="Buscar por MAC, comando ou valor..." class="bg-[#020306] border border-[#131b28] focus:border-cyan-500 rounded-xl pl-8 pr-7 py-1.5 text-slate-200 focus:outline-none w-56 text-xs font-mono transition placeholder:text-slate-600">
+                  <button onclick="clearSearchLog()" id="btn-clear-log-search" class="absolute right-2 top-2 text-slate-500 hover:text-white hidden">✕</button>
+                </div>
+
+                <!-- Chips de MACs Detectados na Malha -->
+                <div id="console-mac-chips" class="flex items-center space-x-1 overflow-x-auto max-w-md py-0.5 scrollbar-none">
+                  <!-- Injetado dinamicamente -->
+                </div>
+              </div>
+
+              <!-- Ações da Direita -->
+              <div class="flex items-center space-x-2">
+                <span id="console-stats-counter" class="text-[11px] font-mono text-slate-400 mr-1 hidden sm:inline">0 msgs</span>
+
+                <button onclick="exportConsoleLogsJson()" class="px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] hover:border-cyan-500/40 text-slate-300 hover:text-white text-xs font-medium transition flex items-center space-x-1" title="Baixar histórico filtrado em JSON">
+                  <i data-lucide="download" class="w-3.5 h-3.5 text-cyan-400"></i>
+                  <span>Exportar</span>
+                </button>
+
+                <button onclick="copyAllFilteredLogs()" class="px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] hover:border-slate-600 text-slate-300 hover:text-white text-xs font-medium transition flex items-center space-x-1" title="Copiar mensagens filtradas">
+                  <i data-lucide="copy" class="w-3.5 h-3.5 text-slate-400"></i>
+                  <span>Copiar Tudo</span>
+                </button>
+
+                <button onclick="clearConsole()" class="px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] hover:border-rose-500/40 text-slate-300 hover:text-rose-400 text-xs font-medium transition flex items-center space-x-1" title="Limpar mensagens">
+                  <i data-lucide="trash-2" class="w-3.5 h-3.5 text-rose-400"></i>
+                  <span>Limpar</span>
+                </button>
+
+                <label class="flex items-center space-x-1.5 text-slate-400 cursor-pointer ml-1 text-xs select-none">
+                  <input type="checkbox" id="autoscroll-toggle" checked class="rounded bg-[#020306] border-[#172235] text-indigo-600 focus:ring-0">
+                  <span>Auto-scroll</span>
+                </label>
+              </div>
+
             </div>
 
           </div>
 
-          <div id="console-output" class="bg-slate-950 border border-slate-800 rounded-2xl p-5 h-[calc(100vh-220px)] overflow-y-auto space-y-2 mono text-xs">
-            <p class="text-slate-500 italic">Aguardando mensagens do Broker MQTT...</p>
+          <!-- Janela do Terminal de Mensagens (Preto Jet Debossed Sólido) -->
+          <div id="console-output" class="bg-[#020306] border border-[#131b28] rounded-2xl p-3 sm:p-4 h-[calc(100vh-235px)] min-h-[460px] overflow-y-auto space-y-1.5 mono text-xs shadow-inner select-text">
+            <p class="text-slate-500 italic p-4 text-center">Aguardando mensagens do Broker MQTT...</p>
           </div>
 
         </section>
@@ -13042,20 +13120,292 @@
       }
     }
 
-    // ================= CONSOLE AO VIVO =================
+    // ================= [INOVAÇÃO] CONSOLE AO VIVO SCADA DEVTOOLS =================
+    window.consoleViewMode = 'compact'; // 'compact' ou 'expanded'
+    window.consoleStreamFrozen = false;
+    window.consoleFrozenBufferCount = 0;
+    window.activeConsoleMacFilter = null;
+    window.expandedLogIndices = new Set();
+
     function setLogCategory(cat) {
       currentCategory = cat;
       document.querySelectorAll('.cat-filter-btn').forEach(b => {
-        b.className = 'cat-filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white';
+        b.className = 'cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-slate-400 hover:text-white transition text-xs';
       });
-      document.getElementById(`btn-cat-${cat}`).className = 'cat-filter-btn px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-medium';
+      const activeBtn = document.getElementById(`btn-cat-${cat}`);
+      if (activeBtn) {
+        activeBtn.className = 'cat-filter-btn px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold transition shadow-sm text-xs';
+      }
+      renderLogs();
+    }
+
+    function setConsoleViewMode(mode) {
+      window.consoleViewMode = mode;
+      const btnCompact = document.getElementById('btn-console-mode-compact');
+      const btnExpanded = document.getElementById('btn-console-mode-expanded');
+      if (mode === 'compact') {
+        if (btnCompact) btnCompact.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1';
+        if (btnExpanded) btnExpanded.className = 'px-2.5 py-1 rounded-lg text-[11px] font-medium transition text-slate-400 hover:text-white flex items-center space-x-1';
+      } else {
+        if (btnCompact) btnCompact.className = 'px-2.5 py-1 rounded-lg text-[11px] font-medium transition text-slate-400 hover:text-white flex items-center space-x-1';
+        if (btnExpanded) btnExpanded.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold transition bg-indigo-600 text-white shadow-sm flex items-center space-x-1';
+      }
+      renderLogs();
+    }
+
+    function toggleConsoleFreeze() {
+      window.consoleStreamFrozen = !window.consoleStreamFrozen;
+      const btn = document.getElementById('btn-console-freeze');
+      const text = document.getElementById('btn-console-freeze-text');
+      if (window.consoleStreamFrozen) {
+        window.consoleFrozenBufferCount = 0;
+        if (btn) btn.className = 'px-3 py-1.5 rounded-xl bg-amber-950/80 border border-amber-500 text-amber-300 text-xs font-bold transition flex items-center space-x-1.5 shadow-md animate-pulse';
+        if (text) text.innerText = 'Stream Congelado';
+        showGlassToast('⏸️ Console pausado! Novas mensagens ficam em buffer sem rolar a tela.', 'info');
+      } else {
+        window.consoleFrozenBufferCount = 0;
+        if (btn) btn.className = 'px-3 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] hover:border-amber-500/50 text-slate-300 hover:text-white text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm';
+        if (text) text.innerText = 'Pausar';
+        renderLogs();
+        showGlassToast('▶️ Stream retomado. Console atualizado!', 'success');
+      }
+      lucide.createIcons();
+    }
+
+    function setConsoleMacFilter(mac) {
+      if (window.activeConsoleMacFilter === mac) {
+        window.activeConsoleMacFilter = null;
+      } else {
+        window.activeConsoleMacFilter = mac;
+      }
+      renderConsoleMacChips();
+      renderLogs();
+    }
+
+    function clearSearchLog() {
+      const el = document.getElementById('log-search');
+      if (el) el.value = '';
+      const btnClear = document.getElementById('btn-clear-log-search');
+      if (btnClear) btnClear.classList.add('hidden');
       renderLogs();
     }
 
     function clearConsole() {
       allMessages = [];
+      window.expandedLogIndices.clear();
       renderLogs();
       fetch('/api/messages/clear', { method: 'POST' });
+      showGlassToast('🧹 Histórico do console limpo com sucesso.');
+    }
+
+    function toggleLogDetail(index) {
+      if (window.expandedLogIndices.has(index)) {
+        window.expandedLogIndices.delete(index);
+      } else {
+        window.expandedLogIndices.add(index);
+      }
+      renderLogs();
+    }
+
+    function copyLogPayload(index) {
+      const msg = allMessages[index];
+      if (!msg) return;
+      let text = '';
+      if (typeof msg.payload === 'object' && msg.payload !== null) {
+        text = JSON.stringify(msg.payload, null, 2);
+      } else {
+        text = msg.raw || String(msg.payload || '');
+      }
+      navigator.clipboard.writeText(text).then(() => {
+        showGlassToast('📋 Payload copiado para a área de transferência!');
+      });
+    }
+
+    function copyLogTopic(topic) {
+      if (!topic) return;
+      navigator.clipboard.writeText(topic).then(() => {
+        showGlassToast(`📋 Tópico copiado!`);
+      });
+    }
+
+    function copyAllFilteredLogs() {
+      const filtered = allMessages.filter(msg => matchesActiveLogFilter(msg));
+      if (filtered.length === 0) {
+        showGlassToast('Nenhuma mensagem para copiar.', 'warning');
+        return;
+      }
+      const text = JSON.stringify(filtered, null, 2);
+      navigator.clipboard.writeText(text).then(() => {
+        showGlassToast(`📋 ${filtered.length} mensagens copiadas em formato JSON!`);
+      });
+    }
+
+    function exportConsoleLogsJson() {
+      const filtered = allMessages.filter(msg => matchesActiveLogFilter(msg));
+      if (filtered.length === 0) {
+        showGlassToast('Nenhuma mensagem para exportar.', 'warning');
+        return;
+      }
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(filtered, null, 2));
+      const dlAnchor = document.createElement('a');
+      const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      dlAnchor.setAttribute("href", dataStr);
+      dlAnchor.setAttribute("download", `codax-logs-${ts}.json`);
+      document.body.appendChild(dlAnchor);
+      dlAnchor.click();
+      dlAnchor.remove();
+      showGlassToast(`📥 Arquivo codax-logs-${ts}.json baixado com sucesso!`);
+    }
+
+    function highlightSearchTerms(htmlStr, query) {
+      if (!query || query.length < 2) return htmlStr;
+      const cleanQ = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`(${cleanQ})`, 'gi');
+      return htmlStr.replace(regex, '<mark class="bg-amber-400/40 text-amber-200 px-0.5 rounded font-bold">$1</mark>');
+    }
+
+    function formatAndHighlightJson(payload, rawStr, query = '') {
+      let isJson = false;
+      let formatted = '';
+
+      if (typeof payload === 'object' && payload !== null) {
+        try {
+          formatted = JSON.stringify(payload, null, 2);
+          isJson = true;
+        } catch (e) {
+          formatted = String(rawStr || payload);
+        }
+      } else {
+        const rawTrim = String(rawStr || '').trim();
+        if ((rawTrim.startsWith('{') && rawTrim.endsWith('}')) || (rawTrim.startsWith('[') && rawTrim.endsWith(']'))) {
+          try {
+            const parsed = JSON.parse(rawTrim);
+            formatted = JSON.stringify(parsed, null, 2);
+            isJson = true;
+          } catch (e) {
+            formatted = rawTrim;
+          }
+        } else {
+          formatted = rawTrim;
+        }
+      }
+
+      if (!isJson) {
+        const escaped = escapeHtml(formatted);
+        return highlightSearchTerms(escaped, query);
+      }
+
+      let safeStr = escapeHtml(formatted);
+      let colored = safeStr.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        let cls = 'console-token-num';
+        if (/^"/.test(match)) {
+          if (/:$/.test(match)) {
+            cls = 'console-token-key';
+          } else {
+            cls = 'console-token-str';
+          }
+        } else if (/true|false/.test(match)) {
+          cls = 'console-token-bool';
+        } else if (/null/.test(match)) {
+          cls = 'console-token-null';
+        }
+        return `<span class="${cls}">${match}</span>`;
+      });
+
+      return highlightSearchTerms(colored, query);
+    }
+
+    function getOneLineSummary(payload, rawStr) {
+      if (typeof payload === 'object' && payload !== null) {
+        const keys = Object.keys(payload);
+        if (keys.length === 0) return '{}';
+        const previewParts = [];
+        for (const k of keys.slice(0, 5)) {
+          const val = payload[k];
+          let valStr = '';
+          if (val === null) valStr = 'null';
+          else if (typeof val === 'object') valStr = '{...}';
+          else valStr = String(val);
+          if (valStr.length > 20) valStr = valStr.substring(0, 18) + '...';
+          previewParts.push(`${k}: ${valStr}`);
+        }
+        return `{ ${previewParts.join(' | ')} }`;
+      }
+      const str = String(rawStr || '').trim().replace(/\s+/g, ' ');
+      return str.length > 95 ? str.substring(0, 92) + '...' : str;
+    }
+
+    function getLogCategoryBadge(category) {
+      switch (category) {
+        case 'retorno':
+          return '<span class="text-emerald-400 bg-emerald-950/90 border border-emerald-500/50 px-2 py-0.5 rounded-md font-extrabold text-[10px] tracking-wide shrink-0">RETORNO</span>';
+        case 'telemetria':
+          return '<span class="text-cyan-300 bg-cyan-950/90 border border-cyan-500/50 px-2 py-0.5 rounded-md font-extrabold text-[10px] tracking-wide shrink-0">TELEMETRIA</span>';
+        case 'topologia':
+          return '<span class="text-purple-300 bg-purple-950/90 border border-purple-500/50 px-2 py-0.5 rounded-md font-extrabold text-[10px] tracking-wide shrink-0">TOPOLOGIA</span>';
+        case 'conexao':
+          return '<span class="text-blue-300 bg-blue-950/90 border border-blue-500/50 px-2 py-0.5 rounded-md font-extrabold text-[10px] tracking-wide shrink-0">CONEXÃO</span>';
+        case 'erro':
+          return '<span class="text-rose-300 bg-rose-950/90 border border-rose-500/50 px-2 py-0.5 rounded-md font-extrabold text-[10px] tracking-wide shrink-0">ERRO</span>';
+        default:
+          return '<span class="text-indigo-300 bg-indigo-950/90 border border-indigo-500/50 px-2 py-0.5 rounded-md font-extrabold text-[10px] tracking-wide shrink-0">COMANDO</span>';
+      }
+    }
+
+    function renderConsoleMacChips() {
+      const container = document.getElementById('console-mac-chips');
+      if (!container) return;
+
+      const macSet = new Set();
+      allMessages.forEach(m => {
+        const mac = extractMacFromMessage(m);
+        if (mac) macSet.add(mac);
+      });
+
+      if (macSet.size === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      let html = `
+        <button onclick="setConsoleMacFilter(null)" class="px-2 py-0.5 rounded-lg text-[10px] font-bold transition shrink-0 ${!window.activeConsoleMacFilter ? 'bg-cyan-500 text-slate-950 shadow-sm' : 'bg-[#0d121e] border border-[#172235] text-slate-400 hover:text-white'}">
+          Todos (${allMessages.length})
+        </button>
+      `;
+
+      macSet.forEach(cleanMac => {
+        const isSelected = (window.activeConsoleMacFilter === cleanMac);
+        const dev = devicesList.find(d => d.mac && d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === cleanMac);
+        const label = dev && dev.name ? dev.name : formatMac(cleanMac);
+        const count = allMessages.filter(m => extractMacFromMessage(m) === cleanMac).length;
+
+        html += `
+          <button onclick="setConsoleMacFilter('${cleanMac}')" class="px-2 py-0.5 rounded-lg text-[10px] font-mono font-semibold transition shrink-0 flex items-center space-x-1 ${isSelected ? 'bg-cyan-600 text-white shadow-sm ring-1 ring-cyan-400' : 'bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white hover:border-cyan-500/40'}">
+            <span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-white' : 'bg-cyan-400'}"></span>
+            <span class="truncate max-w-[130px]">${escapeHtml(label)}</span>
+            <span class="text-[9px] opacity-75">(${count})</span>
+          </button>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function updateConsoleCategoryCounts() {
+      const counts = { all: allMessages.length, retorno: 0, telemetria: 0, topologia: 0, conexao: 0, msg: 0, erro: 0 };
+      allMessages.forEach(m => {
+        if (m.category === 'retorno') counts.retorno++;
+        else if (m.category === 'telemetria') counts.telemetria++;
+        else if (m.category === 'topologia') counts.topologia++;
+        else if (m.category === 'conexao') counts.conexao++;
+        else if (m.category === 'erro') counts.erro++;
+        else counts.msg++;
+      });
+
+      for (const [k, v] of Object.entries(counts)) {
+        const el = document.getElementById(`count-cat-${k}`);
+        if (el) el.innerText = `(${v})`;
+      }
     }
 
     function isMsgCategory(cat) {
@@ -13070,10 +13420,18 @@
           return false;
         }
       }
+      if (window.activeConsoleMacFilter) {
+        const cleanMac = window.activeConsoleMacFilter.toLowerCase().replace(/[^a-f0-9]/g, '');
+        const msgMac = extractMacFromMessage(msg);
+        if (msgMac !== cleanMac) {
+          const str = (msg.topic + ' ' + (typeof msg.payload === 'object' ? JSON.stringify(msg.payload) : msg.raw)).toLowerCase();
+          if (!str.includes(cleanMac)) return false;
+        }
+      }
       const searchEl = document.getElementById('log-search');
       const query = searchEl ? searchEl.value.toLowerCase().trim() : '';
       if (query) {
-        const str = (msg.topic + ' ' + msg.raw).toLowerCase();
+        const str = (msg.topic + ' ' + (typeof msg.payload === 'object' ? JSON.stringify(msg.payload) : msg.raw)).toLowerCase();
         return str.includes(query);
       }
       return true;
@@ -13081,56 +13439,156 @@
 
     function renderLogs() {
       const container = document.getElementById('console-output');
-      container.innerHTML = '';
+      if (!container) return;
+
+      updateConsoleCategoryCounts();
+      renderConsoleMacChips();
+
+      const searchEl = document.getElementById('log-search');
+      const query = searchEl ? searchEl.value.toLowerCase().trim() : '';
+      const btnClearSearch = document.getElementById('btn-clear-log-search');
+      if (btnClearSearch) {
+        if (query) btnClearSearch.classList.remove('hidden');
+        else btnClearSearch.classList.add('hidden');
+      }
 
       const filtered = allMessages.filter(msg => matchesActiveLogFilter(msg));
 
+      const statsEl = document.getElementById('console-stats-counter');
+      if (statsEl) {
+        statsEl.innerText = `${filtered.length} de ${allMessages.length} msgs`;
+      }
+
       if (filtered.length === 0) {
-        container.innerHTML = '<p class="text-slate-500 italic">Nenhuma mensagem compatível com o filtro atual.</p>';
+        container.innerHTML = `
+          <div class="text-center py-16 space-y-2">
+            <i data-lucide="inbox" class="w-8 h-8 text-slate-600 mx-auto"></i>
+            <p class="text-slate-400 font-semibold text-xs">Nenhuma mensagem compatível com os filtros atuais.</p>
+            <p class="text-slate-600 text-[11px]">Tente limpar a busca ou selecionar a categoria "Todos".</p>
+          </div>
+        `;
+        lucide.createIcons();
         return;
       }
 
-      filtered.forEach(msg => {
-        appendLogLine(msg, false);
+      let html = '';
+      const isCompact = (window.consoleViewMode === 'compact');
+
+      filtered.forEach((msg) => {
+        const originalIndex = allMessages.indexOf(msg);
+        const mac = extractMacFromMessage(msg);
+        const dev = mac ? devicesList.find(d => d.mac && d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === mac) : null;
+        const devName = dev ? dev.name : null;
+        const isExpanded = window.expandedLogIndices.has(originalIndex) || !isCompact;
+        const badge = getLogCategoryBadge(msg.category);
+        const syntaxHighlighted = formatAndHighlightJson(msg.payload, msg.raw, query);
+        const byteSize = (msg.raw ? msg.raw.length : JSON.stringify(msg.payload || '').length);
+
+        if (isCompact && !isExpanded) {
+          const summary = getOneLineSummary(msg.payload, msg.raw);
+          html += `
+            <div class="console-compact-strip flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl border border-[#131b28] bg-[#060912] transition cursor-pointer font-mono text-[11px] select-none group" onclick="toggleLogDetail(${originalIndex})">
+              <div class="flex items-center space-x-2 truncate min-w-0">
+                <span class="text-slate-500 text-[10px] shrink-0 font-bold">${msg.timestamp}</span>
+                ${badge}
+                ${mac ? `
+                  <span class="px-1.5 py-0.2 rounded bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 text-[10px] shrink-0 truncate max-w-[140px]" title="${formatMac(mac)}${devName ? ' - ' + devName : ''}">
+                    ${escapeHtml(devName || formatMac(mac))}
+                  </span>
+                ` : ''}
+                <span class="text-indigo-300 font-semibold truncate shrink-0 max-w-[240px]" title="${msg.topic}">${highlightSearchTerms(escapeHtml(msg.topic), query)}</span>
+                <span class="text-slate-400 truncate text-[11px] font-normal opacity-90">${highlightSearchTerms(escapeHtml(summary), query)}</span>
+              </div>
+              <div class="flex items-center space-x-1.5 shrink-0 opacity-70 group-hover:opacity-100" onclick="event.stopPropagation()">
+                <button onclick="copyLogPayload(${originalIndex})" class="px-2 py-0.5 rounded bg-[#0d121e] hover:bg-slate-700 border border-[#172235] text-slate-300 hover:text-white text-[10px] transition" title="Copiar Payload JSON">Copiar</button>
+                ${mac ? `
+                  <button onclick="openDeviceCockpit('${mac}')" class="px-2 py-0.5 rounded bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 text-[10px] transition" title="Inspecionar no Cockpit 360°">Cockpit</button>
+                ` : ''}
+                <button onclick="toggleLogDetail(${originalIndex})" class="p-1 rounded text-slate-400 hover:text-white transition" title="Expandir JSON detalhado">
+                  <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+          `;
+        } else {
+          html += `
+            <div class="p-3.5 rounded-2xl border ${isCompact ? 'border-cyan-500/40 bg-[#070b14]' : 'border-[#131b28] bg-[#070b14]'} transition space-y-2 shadow-sm font-mono text-xs">
+              
+              <!-- Header do Card -->
+              <div class="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-[#131b28] text-[11px]">
+                <div class="flex items-center space-x-2.5 flex-wrap gap-y-1">
+                  <span class="text-slate-500 font-bold">${msg.timestamp}</span>
+                  ${badge}
+                  <span class="text-indigo-400 font-semibold break-all" title="${msg.topic}">${highlightSearchTerms(escapeHtml(msg.topic), query)}</span>
+                  ${mac ? `
+                    <span class="px-2 py-0.5 rounded-md bg-cyan-950/70 border border-cyan-500/40 text-cyan-300 text-[10px] font-bold flex items-center space-x-1">
+                      <i data-lucide="cpu" class="w-2.5 h-2.5"></i>
+                      <span>${escapeHtml(devName || formatMac(mac))}</span>
+                    </span>
+                  ` : ''}
+                  <span class="text-slate-500 text-[10px]">${byteSize} B</span>
+                </div>
+
+                <div class="flex items-center space-x-1.5 shrink-0">
+                  <button onclick="copyLogPayload(${originalIndex})" class="px-2 py-0.5 rounded-lg bg-[#0d121e] hover:bg-slate-700 border border-[#172235] text-slate-300 hover:text-white text-[10px] transition flex items-center space-x-1 shadow-sm" title="Copiar Payload">
+                    <i data-lucide="copy" class="w-2.5 h-2.5"></i>
+                    <span>JSON</span>
+                  </button>
+                  <button onclick="copyLogTopic('${msg.topic}')" class="px-2 py-0.5 rounded-lg bg-[#0d121e] hover:bg-slate-700 border border-[#172235] text-slate-300 hover:text-white text-[10px] transition flex items-center space-x-1 shadow-sm" title="Copiar Tópico">
+                    <i data-lucide="tag" class="w-2.5 h-2.5"></i>
+                    <span>Tópico</span>
+                  </button>
+                  ${mac ? `
+                    <button onclick="openDeviceCockpit('${mac}')" class="px-2 py-0.5 rounded-lg bg-cyan-950 hover:bg-cyan-900 border border-cyan-500/40 text-cyan-300 text-[10px] font-bold transition flex items-center space-x-1 shadow-sm" title="Abrir Cockpit 360° deste Codax">
+                      <i data-lucide="scan" class="w-2.5 h-2.5"></i>
+                      <span>Cockpit</span>
+                    </button>
+                    <button onclick="useDeviceInBuilder('${mac}')" class="px-2 py-0.5 rounded-lg bg-indigo-950 hover:bg-indigo-900 border border-indigo-500/40 text-indigo-300 text-[10px] font-bold transition flex items-center space-x-1 shadow-sm" title="Carregar MAC no Construtor">
+                      <i data-lucide="sliders" class="w-2.5 h-2.5"></i>
+                      <span>Builder</span>
+                    </button>
+                  ` : ''}
+                  ${isCompact ? `
+                    <button onclick="toggleLogDetail(${originalIndex})" class="p-1 rounded text-slate-400 hover:text-white transition ml-1" title="Recolher para linha">
+                      <i data-lucide="chevron-up" class="w-3.5 h-3.5 text-cyan-400"></i>
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+
+              <!-- Payload com Syntax Highlighting Real -->
+              <div class="relative bg-[#020306] border border-[#131b28] rounded-xl p-3 overflow-x-auto shadow-inner">
+                <pre class="console-code-json whitespace-pre text-[11px] leading-relaxed select-text">${syntaxHighlighted}</pre>
+              </div>
+
+            </div>
+          `;
+        }
       });
 
-      if (document.getElementById('autoscroll-toggle').checked) {
+      container.innerHTML = html;
+      lucide.createIcons();
+
+      const autoScrollEl = document.getElementById('autoscroll-toggle');
+      if (autoScrollEl && autoScrollEl.checked) {
         container.scrollTop = container.scrollHeight;
       }
     }
 
     function appendLogLine(msg, autoScroll = true) {
-      const container = document.getElementById('console-output');
-
-      let badge = '<span class="text-indigo-300 bg-indigo-950/80 border border-indigo-500/30 px-2 py-0.5 rounded font-bold">MSG</span>';
-      if (msg.category === 'retorno') badge = '<span class="text-emerald-300 bg-emerald-950/80 border border-emerald-500/30 px-2 py-0.5 rounded font-bold">RETORNO</span>';
-      else if (msg.category === 'telemetria') badge = '<span class="text-sky-300 bg-sky-950/80 border border-sky-500/30 px-2 py-0.5 rounded font-bold">TEL</span>';
-      else if (msg.category === 'topologia') badge = '<span class="text-purple-300 bg-purple-950/80 border border-purple-500/30 px-2 py-0.5 rounded font-bold">TOPO</span>';
-      else if (msg.category === 'conexao') badge = '<span class="text-blue-300 bg-blue-950/80 border border-blue-500/30 px-2 py-0.5 rounded font-bold">CONN</span>';
-      else if (msg.category === 'erro') badge = '<span class="text-rose-300 bg-rose-950/80 border border-rose-500/30 px-2 py-0.5 rounded font-bold">ERRO</span>';
-
-      const line = document.createElement('div');
-      line.className = 'border-b border-slate-900 pb-2.5 hover:bg-slate-900/60 p-2 rounded-lg transition';
-      
-      let formattedPayload = msg.raw;
-      if (typeof msg.payload === 'object') {
-        formattedPayload = JSON.stringify(msg.payload, null, 2);
+      if (window.consoleStreamFrozen) {
+        window.consoleFrozenBufferCount++;
+        const btnText = document.getElementById('btn-console-freeze-text');
+        if (btnText) btnText.innerText = `Stream Congelado (+${window.consoleFrozenBufferCount})`;
+        updateConsoleCategoryCounts();
+        return;
       }
 
-      line.innerHTML = `
-        <div class="flex items-center space-x-2.5 text-[11px] text-slate-400 mb-1">
-          <span class="text-slate-500 font-mono">${msg.timestamp}</span>
-          ${badge}
-          <span class="text-indigo-400 font-semibold font-mono">${msg.topic}</span>
-        </div>
-        <pre class="text-slate-200 overflow-x-auto whitespace-pre-wrap font-mono">${escapeHtml(formattedPayload)}</pre>
-      `;
+      updateConsoleCategoryCounts();
 
-      container.appendChild(line);
+      if (!matchesActiveLogFilter(msg)) return;
 
-      if (autoScroll && document.getElementById('autoscroll-toggle').checked) {
-        container.scrollTop = container.scrollHeight;
-      }
+      renderLogs();
     }
 
     function escapeHtml(text) {
