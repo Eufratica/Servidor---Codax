@@ -1,5 +1,485 @@
 [
   {
+    "id": "inn-proc-7585ea28",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Otimizador RF de Beaconing Anti-Desvio de Fase",
+    "source": "Observabilidade Industrial de Alto Desempenho",
+    "summary": "Sincroniza os pulsos de sincronismo das placas para manter a malha coesa sem atrasos temporais. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Otimizador RF de Beaconing Anti-Desvio de Fase': Sincroniza os pulsos de sincronismo das placas para manter a malha coesa sem atrasos temporais. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:59:07"
+  },
+  {
+    "id": "inn-proc-3dae6ef3",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Mapeador P2P de Roteamento Multi-Hop Ponderado por Jitter",
+    "source": "Design System Sci-Fi & Glassmorphism",
+    "summary": "Recalcula a melhor árvore de nós priorizando enlaces com menor desvio padrão de latência. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Mapeador P2P de Roteamento Multi-Hop Ponderado por Jitter': Recalcula a melhor árvore de nós priorizando enlaces com menor desvio padrão de latência. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:57:52"
+  },
+  {
+    "id": "gh-526081371",
+    "category": "web",
+    "badge": "🌐 Ecossistema ESPHome (★ 14659)",
+    "title": "Referência Open-Source: AlexxIT/go2rtc",
+    "source": "https://github.com/AlexxIT/go2rtc",
+    "summary": "Ultimate camera streaming application — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'AlexxIT/go2rtc' (Ultimate camera streaming application) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "09:56:37"
+  },
+  {
+    "id": "inn-proc-5c328c73",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Inspetor Ciberpunk de Histórico de Mudanças de Topologia em Linha do Tempo",
+    "source": "Engenharia ESP-IDF 5.x & Protocolo MESH",
+    "summary": "Cria uma régua cronológica interativa mostrando exatamente quando cada placa subiu ou desceu de camada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Inspetor Ciberpunk de Histórico de Mudanças de Topologia em Linha do Tempo': Cria uma régua cronológica interativa mostrando exatamente quando cada placa subiu ou desceu de camada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:55:22"
+  },
+  {
+    "id": "inn-proc-cb36772b",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Guardião Criptográfico de Rotação Periódica de Chaves de Enlace Mesh",
+    "source": "Padrão Industrial de Telemetria IEC",
+    "summary": "Atualiza as chaves simétricas de criptografia da rede mesh sem necessidade de reiniciar os medidores. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Guardião Criptográfico de Rotação Periódica de Chaves de Enlace Mesh': Atualiza as chaves simétricas de criptografia da rede mesh sem necessidade de reiniciar os medidores. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:54:06"
+  },
+  {
+    "id": "inn-proc-7a0c9124",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Detector Preditivo de Vazamento Lento de Memória Heap",
+    "source": "Padrão Industrial de Telemetria IEC",
+    "summary": "Mede a taxa de declive de RAM nas placas ao longo de dias e emite alerta preditivo antes de qualquer reboot. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Detector Preditivo de Vazamento Lento de Memória Heap': Mede a taxa de declive de RAM nas placas ao longo de dias e emite alerta preditivo antes de qualquer reboot. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:52:51"
+  },
+  {
+    "id": "inn-proc-390be26b",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Sentinela de Integridade contra Tempestades de Mensagens Broadcast",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Limita dinamicamente comandos enviados para 'ffffffffffff' para impedir saturação acidental da bancada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Sentinela de Integridade contra Tempestades de Mensagens Broadcast': Limita dinamicamente comandos enviados para 'ffffffffffff' para impedir saturação acidental da bancada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:51:36"
+  },
+  {
+    "id": "inn-proc-21439b97",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Balanceador Inteligente de Roteamento Multi-Hop Ponderado por Jitter",
+    "source": "Pesquisa de Resiliência de Redes Sem Fio",
+    "summary": "Recalcula a melhor árvore de nós priorizando enlaces com menor desvio padrão de latência. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Balanceador Inteligente de Roteamento Multi-Hop Ponderado por Jitter': Recalcula a melhor árvore de nós priorizando enlaces com menor desvio padrão de latência. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:50:20"
+  },
+  {
+    "id": "inn-proc-56eed30b",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Guardião Criptográfico de Detecção de Modificação Não-Autorizada de Flash NVS",
+    "source": "Design System Sci-Fi & Glassmorphism",
+    "summary": "Verifica o CRC32 das configurações salvas no ESP32 para alertar contra adulteração de parâmetros. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Guardião Criptográfico de Detecção de Modificação Não-Autorizada de Flash NVS': Verifica o CRC32 das configurações salvas no ESP32 para alertar contra adulteração de parâmetros. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:49:05"
+  },
+  {
+    "id": "gh-433264875",
+    "category": "web",
+    "badge": "🌐 Ecossistema ESPHome (★ 15141)",
+    "title": "Referência Open-Source: tteck/Proxmox",
+    "source": "https://github.com/tteck/Proxmox",
+    "summary": "Proxmox VE Helper-Scripts — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'tteck/Proxmox' (Proxmox VE Helper-Scripts) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "09:47:49"
+  },
+  {
+    "id": "inn-proc-4f9a7de6",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Sincronizador Heurístico de Coexistência Wi-Fi e Bluetooth BLE",
+    "source": "Observabilidade Industrial de Alto Desempenho",
+    "summary": "Gerencia o tempo compartilhado da antena 2.4GHz para permitir comissionamento BLE simultâneo à malha mesh. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Sincronizador Heurístico de Coexistência Wi-Fi e Bluetooth BLE': Gerencia o tempo compartilhado da antena 2.4GHz para permitir comissionamento BLE simultâneo à malha mesh. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:46:34"
+  },
+  {
+    "id": "gh-1238753265",
+    "category": "app",
+    "badge": "🌐 Engenharia FreeRTOS (★ 0)",
+    "title": "Referência Open-Source: Blue-Mochi/TracingCar_Base-on-freertos",
+    "source": "https://github.com/Blue-Mochi/TracingCar_Base-on-freertos",
+    "summary": "第一个freertos项目 — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'Blue-Mochi/TracingCar_Base-on-freertos' (第一个freertos项目) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "09:45:17"
+  },
+  {
+    "id": "inn-proc-4f258b44",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Sentinela de Integridade contra Tempestades de Mensagens Broadcast",
+    "source": "Pesquisa de Resiliência de Redes Sem Fio",
+    "summary": "Limita dinamicamente comandos enviados para 'ffffffffffff' para impedir saturação acidental da bancada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Sentinela de Integridade contra Tempestades de Mensagens Broadcast': Limita dinamicamente comandos enviados para 'ffffffffffff' para impedir saturação acidental da bancada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:44:02"
+  },
+  {
+    "id": "inn-proc-de1fb291",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Balanceador Inteligente de Janela de Contenção CSMA/CA",
+    "source": "Engenharia ESP-IDF 5.x & Protocolo MESH",
+    "summary": "Ajusta o backoff aleatório das transmissões Wi-Fi no rádio para evitar colisões entre medidores próximos na bancada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Balanceador Inteligente de Janela de Contenção CSMA/CA': Ajusta o backoff aleatório das transmissões Wi-Fi no rádio para evitar colisões entre medidores próximos na bancada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:42:46"
+  },
+  {
+    "id": "inn-proc-af25cc5b",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Detector Preditivo de Oscilação Térmica da CPU sob Alta Carga",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Cruza a temperatura da CPU do ESP32 com o throughput MQTT para evitar throttling térmico. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Detector Preditivo de Oscilação Térmica da CPU sob Alta Carga': Cruza a temperatura da CPU do ESP32 com o throughput MQTT para evitar throttling térmico. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:41:31"
+  },
+  {
+    "id": "inn-proc-111f55cf",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Micro-Osciloscópio Glassmorphism de Enlaces de Rádio com Gravidade Baseada em RSSI",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Micro-Osciloscópio Glassmorphism de Enlaces de Rádio com Gravidade Baseada em RSSI': Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:40:16"
+  },
+  {
+    "id": "inn-proc-0bc54e05",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Escudo Ativo de Isolamento Lógico de Placas Não-Homologadas",
+    "source": "Observabilidade Industrial de Alto Desempenho",
+    "summary": "Move automaticamente nós com firmware desconhecido para uma VLAN/malha de quarentena. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Escudo Ativo de Isolamento Lógico de Placas Não-Homologadas': Move automaticamente nós com firmware desconhecido para uma VLAN/malha de quarentena. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:39:01"
+  },
+  {
+    "id": "inn-proc-9c67fc82",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Escudo Ativo contra Tempestades de Mensagens Broadcast",
+    "source": "Padrão Industrial de Telemetria IEC",
+    "summary": "Limita dinamicamente comandos enviados para 'ffffffffffff' para impedir saturação acidental da bancada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Escudo Ativo contra Tempestades de Mensagens Broadcast': Limita dinamicamente comandos enviados para 'ffffffffffff' para impedir saturação acidental da bancada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:37:44"
+  },
+  {
+    "id": "inn-proc-2b1e87e5",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Auditor Autônomo de Inversão de Prioridade em Tasks FreeRTOS",
+    "source": "Pesquisa de Resiliência de Redes Sem Fio",
+    "summary": "Verifica se tarefas críticas de envio MQTT estão sendo bloqueadas por rotinas demoradas de medição. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Auditor Autônomo de Inversão de Prioridade em Tasks FreeRTOS': Verifica se tarefas críticas de envio MQTT estão sendo bloqueadas por rotinas demoradas de medição. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:36:27"
+  },
+  {
+    "id": "inn-proc-fbc6a23e",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Widget Sci-Fi HUD de Estados de Sono (Light Sleep vs Active) das Placas",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Mostra o ciclo de atividade dos medidores com barra de pulsação luminosa estilo batimento cardíaco. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Widget Sci-Fi HUD de Estados de Sono (Light Sleep vs Active) das Placas': Mostra o ciclo de atividade dos medidores com barra de pulsação luminosa estilo batimento cardíaco. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:35:12"
+  },
+  {
+    "id": "inn-proc-26a3818d",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Inspetor Ciberpunk de Enlaces de Rádio com Gravidade Baseada em RSSI",
+    "source": "Engenharia ESP-IDF 5.x & Protocolo MESH",
+    "summary": "Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Inspetor Ciberpunk de Enlaces de Rádio com Gravidade Baseada em RSSI': Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:33:55"
+  },
+  {
+    "id": "inn-proc-3cd76e88",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Matriz Interativa de Relação Sinal-Ruído (SNR) e Densidade de Tráfego",
+    "source": "Pesquisa de Resiliência de Redes Sem Fio",
+    "summary": "Desenha uma grade luminosa de dispersão mostrando quais nós têm o sinal mais limpo na bancada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Matriz Interativa de Relação Sinal-Ruído (SNR) e Densidade de Tráfego': Desenha uma grade luminosa de dispersão mostrando quais nós têm o sinal mais limpo na bancada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:32:40"
+  },
+  {
+    "id": "inn-proc-b43e796e",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Painel Holográfico de Histórico de Mudanças de Topologia em Linha do Tempo",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Cria uma régua cronológica interativa mostrando exatamente quando cada placa subiu ou desceu de camada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Painel Holográfico de Histórico de Mudanças de Topologia em Linha do Tempo': Cria uma régua cronológica interativa mostrando exatamente quando cada placa subiu ou desceu de camada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:31:25"
+  },
+  {
+    "id": "inn-proc-40a322c4",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Sincronizador Heurístico de Janela de Contenção CSMA/CA",
+    "source": "Pesquisa de Resiliência de Redes Sem Fio",
+    "summary": "Ajusta o backoff aleatório das transmissões Wi-Fi no rádio para evitar colisões entre medidores próximos na bancada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Sincronizador Heurístico de Janela de Contenção CSMA/CA': Ajusta o backoff aleatório das transmissões Wi-Fi no rádio para evitar colisões entre medidores próximos na bancada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:30:10"
+  },
+  {
+    "id": "gh-425346070",
+    "category": "app",
+    "badge": "🌐 Engenharia FreeRTOS (★ 1)",
+    "title": "Referência Open-Source: dridimaher/blink-led-with-freeRTOS-using-Tracealyzer",
+    "source": "https://github.com/dridimaher/blink-led-with-freeRTOS-using-Tracealyzer",
+    "summary": "My example uses #FreeRTOS implementation  and an RTOS tracing tool with an #STM32, with four  tasks toggling LED’s for different time . — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'dridimaher/blink-led-with-freeRTOS-using-Tracealyzer' (My example uses #FreeRTOS implementation  and an RTOS tracing tool with an #STM32, with four  tasks toggling LED’s for different time .) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "09:28:53"
+  },
+  {
+    "id": "inn-proc-551aa577",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Algoritmo Adaptativo de Failover em Anel com Dupla Rota L1",
+    "source": "Padrão Industrial de Telemetria IEC",
+    "summary": "Mantém caminhos alternativos pré-calculados para cada nó filho se reconectar em menos de 100ms se o pai cair. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Algoritmo Adaptativo de Failover em Anel com Dupla Rota L1': Mantém caminhos alternativos pré-calculados para cada nó filho se reconectar em menos de 100ms se o pai cair. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:27:37"
+  },
+  {
+    "id": "inn-proc-68adb8ac",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Sentinela de Integridade de Assinatura Digital Ed25519 em Comandos Críticos",
+    "source": "Engenharia ESP-IDF 5.x & Protocolo MESH",
+    "summary": "Valida uma assinatura criptográfica nos métodos perigosos (ex: mupgrade, mwifi_restart) antes da execução. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Sentinela de Integridade de Assinatura Digital Ed25519 em Comandos Críticos': Valida uma assinatura criptográfica nos métodos perigosos (ex: mupgrade, mwifi_restart) antes da execução. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:26:22"
+  },
+  {
+    "id": "inn-proc-702727c8",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Detector Preditivo de Desgaste da Flash SPI por Ciclos NVS",
+    "source": "Padrão Industrial de Telemetria IEC",
+    "summary": "Rastreia a quantidade de gravações nas partições do ESP32 para prever a vida útil da memória não-volátil. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Detector Preditivo de Desgaste da Flash SPI por Ciclos NVS': Rastreia a quantidade de gravações nas partições do ESP32 para prever a vida útil da memória não-volátil. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:25:07"
+  },
+  {
+    "id": "gh-433052296",
+    "category": "design",
+    "badge": "🌐 Visual Sci-Fi (★ 62)",
+    "title": "Referência Open-Source: justarandomguyintheinternet/CP77_nativeSettings",
+    "source": "https://github.com/justarandomguyintheinternet/CP77_nativeSettings",
+    "summary": "A small mod for Cyberpunk 2077 that allows other mods to easily add settings menus using only native UI — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'justarandomguyintheinternet/CP77_nativeSettings' (A small mod for Cyberpunk 2077 that allows other mods to easily add settings menus using only native UI) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "09:23:51"
+  },
+  {
+    "id": "gh-854347601",
+    "category": "web",
+    "badge": "🌐 Ecossistema ESPHome (★ 22344)",
+    "title": "Referência Open-Source: XiaoMi/ha_xiaomi_home",
+    "source": "https://github.com/XiaoMi/ha_xiaomi_home",
+    "summary": "Xiaomi Home Integration for Home Assistant — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'XiaoMi/ha_xiaomi_home' (Xiaomi Home Integration for Home Assistant) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "09:22:33"
+  },
+  {
+    "id": "inn-proc-b70323ef",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Validador Cripto de Assinatura Digital Ed25519 em Comandos Críticos",
+    "source": "Pesquisa de Resiliência de Redes Sem Fio",
+    "summary": "Valida uma assinatura criptográfica nos métodos perigosos (ex: mupgrade, mwifi_restart) antes da execução. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Validador Cripto de Assinatura Digital Ed25519 em Comandos Críticos': Valida uma assinatura criptográfica nos métodos perigosos (ex: mupgrade, mwifi_restart) antes da execução. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:21:18"
+  },
+  {
+    "id": "inn-proc-f0e1ab6e",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Micro-Osciloscópio Glassmorphism de Fluxo de Pacotes por Segundo (PPS) em Tempo Real",
+    "source": "Pesquisa de Resiliência de Redes Sem Fio",
+    "summary": "Adiciona um velocímetro neon no topo do painel indicando a cadência instantânea de mensagens MQTT. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Micro-Osciloscópio Glassmorphism de Fluxo de Pacotes por Segundo (PPS) em Tempo Real': Adiciona um velocímetro neon no topo do painel indicando a cadência instantânea de mensagens MQTT. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:20:03"
+  },
+  {
+    "id": "inn-proc-489b154f",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Controlador Dinâmico de Beaconing Anti-Desvio de Fase",
+    "source": "Observabilidade Industrial de Alto Desempenho",
+    "summary": "Sincroniza os pulsos de sincronismo das placas para manter a malha coesa sem atrasos temporais. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Controlador Dinâmico de Beaconing Anti-Desvio de Fase': Sincroniza os pulsos de sincronismo das placas para manter a malha coesa sem atrasos temporais. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:18:48"
+  },
+  {
+    "id": "inn-proc-31ef4c63",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Algoritmo Adaptativo de Janela de Contenção CSMA/CA",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Ajusta o backoff aleatório das transmissões Wi-Fi no rádio para evitar colisões entre medidores próximos na bancada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Algoritmo Adaptativo de Janela de Contenção CSMA/CA': Ajusta o backoff aleatório das transmissões Wi-Fi no rádio para evitar colisões entre medidores próximos na bancada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:17:33"
+  },
+  {
+    "id": "inn-proc-de645436",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Guardião Criptográfico de Rotação Periódica de Chaves de Enlace Mesh",
+    "source": "Engenharia ESP-IDF 5.x & Protocolo MESH",
+    "summary": "Atualiza as chaves simétricas de criptografia da rede mesh sem necessidade de reiniciar os medidores. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Guardião Criptográfico de Rotação Periódica de Chaves de Enlace Mesh': Atualiza as chaves simétricas de criptografia da rede mesh sem necessidade de reiniciar os medidores. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:16:18"
+  },
+  {
+    "id": "inn-proc-def89f42",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Micro-Osciloscópio Glassmorphism de Enlaces de Rádio com Gravidade Baseada em RSSI",
+    "source": "Design System Sci-Fi & Glassmorphism",
+    "summary": "Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Micro-Osciloscópio Glassmorphism de Enlaces de Rádio com Gravidade Baseada em RSSI': Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:15:03"
+  },
+  {
+    "id": "inn-proc-9f715f61",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Auditor de Protocolo de Rotação Periódica de Chaves de Enlace Mesh",
+    "source": "Engenharia ESP-IDF 5.x & Protocolo MESH",
+    "summary": "Atualiza as chaves simétricas de criptografia da rede mesh sem necessidade de reiniciar os medidores. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Auditor de Protocolo de Rotação Periódica de Chaves de Enlace Mesh': Atualiza as chaves simétricas de criptografia da rede mesh sem necessidade de reiniciar os medidores. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:13:48"
+  },
+  {
+    "id": "inn-proc-9ec38b35",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Mapeador P2P de Roteamento Multi-Hop Ponderado por Jitter",
+    "source": "Observabilidade Industrial de Alto Desempenho",
+    "summary": "Recalcula a melhor árvore de nós priorizando enlaces com menor desvio padrão de latência. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Mapeador P2P de Roteamento Multi-Hop Ponderado por Jitter': Recalcula a melhor árvore de nós priorizando enlaces com menor desvio padrão de latência. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:12:33"
+  },
+  {
+    "id": "inn-proc-f76abcfa",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Validador Cripto de Rotação Periódica de Chaves de Enlace Mesh",
+    "source": "Padrão Industrial de Telemetria IEC",
+    "summary": "Atualiza as chaves simétricas de criptografia da rede mesh sem necessidade de reiniciar os medidores. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Validador Cripto de Rotação Periódica de Chaves de Enlace Mesh': Atualiza as chaves simétricas de criptografia da rede mesh sem necessidade de reiniciar os medidores. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:11:18"
+  },
+  {
+    "id": "inn-proc-14d5154d",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Visualizador Force-Directed de Enlaces de Rádio com Gravidade Baseada em RSSI",
+    "source": "Pesquisa de Resiliência de Redes Sem Fio",
+    "summary": "Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Visualizador Force-Directed de Enlaces de Rádio com Gravidade Baseada em RSSI': Simula forças físicas onde nós com sinal excelente orbitam próximos da ROOT em 60 FPS. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:09:59"
+  },
+  {
+    "id": "inn-proc-eaeb2c27",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Inspetor Ciberpunk de Relação Sinal-Ruído (SNR) e Densidade de Tráfego",
+    "source": "Padrão Industrial de Telemetria IEC",
+    "summary": "Desenha uma grade luminosa de dispersão mostrando quais nós têm o sinal mais limpo na bancada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Inspetor Ciberpunk de Relação Sinal-Ruído (SNR) e Densidade de Tráfego': Desenha uma grade luminosa de dispersão mostrando quais nós têm o sinal mais limpo na bancada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:08:44"
+  },
+  {
+    "id": "inn-proc-5cba49f6",
+    "category": "app",
+    "badge": "🧠 IA, Borda & SCADA",
+    "title": "Classificador Estatístico de Desgaste da Flash SPI por Ciclos NVS",
+    "source": "Arquitetura de Borda Codax Hub",
+    "summary": "Rastreia a quantidade de gravações nas partições do ESP32 para prever a vida útil da memória não-volátil. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Classificador Estatístico de Desgaste da Flash SPI por Ciclos NVS': Rastreia a quantidade de gravações nas partições do ESP32 para prever a vida útil da memória não-volátil. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:07:29"
+  },
+  {
+    "id": "inn-proc-37aeda4d",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Algoritmo Adaptativo de Potência de Transmissão TX Adaptativa",
+    "source": "Engenharia ESP-IDF 5.x & Protocolo MESH",
+    "summary": "Reduz a potência de rádio dos nós com sinal muito forte (-40 dBm) para economizar energia e mitigar auto-interferência. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Algoritmo Adaptativo de Potência de Transmissão TX Adaptativa': Reduz a potência de rádio dos nós com sinal muito forte (-40 dBm) para economizar energia e mitigar auto-interferência. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:06:13"
+  },
+  {
+    "id": "gh-750232863",
+    "category": "app",
+    "badge": "🌐 Padrão SCADA Web (★ 22)",
+    "title": "Referência Open-Source: SmartLiving-Rocks/FUXA",
+    "source": "https://github.com/SmartLiving-Rocks/FUXA",
+    "summary": "Add FUXA to your Home Assistant. It is an easy web-based Process Visualization (SCADA/HMI/Dashboard) software — Padrão de ponta que pode ser adaptado para a bancada Codax Hub.",
+    "prompt": "Analise o projeto open-source 'SmartLiving-Rocks/FUXA' (Add FUXA to your Home Assistant. It is an easy web-based Process Visualization (SCADA/HMI/Dashboard) software) e adapte suas melhores práticas para a bancada Codax Hub em estilo Glassmorphism.",
+    "timestamp": "09:04:57"
+  },
+  {
+    "id": "inn-proc-7d081cd2",
+    "category": "app",
+    "badge": "📡 Engenharia ESP-MESH",
+    "title": "Controlador Dinâmico de Beaconing Anti-Desvio de Fase",
+    "source": "Observabilidade Industrial de Alto Desempenho",
+    "summary": "Sincroniza os pulsos de sincronismo das placas para manter a malha coesa sem atrasos temporais. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Controlador Dinâmico de Beaconing Anti-Desvio de Fase': Sincroniza os pulsos de sincronismo das placas para manter a malha coesa sem atrasos temporais. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:03:34"
+  },
+  {
+    "id": "inn-proc-effd6cb7",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Escudo Ativo contra Tempestades de Mensagens Broadcast",
+    "source": "Engenharia ESP-IDF 5.x & Protocolo MESH",
+    "summary": "Limita dinamicamente comandos enviados para 'ffffffffffff' para impedir saturação acidental da bancada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Escudo Ativo contra Tempestades de Mensagens Broadcast': Limita dinamicamente comandos enviados para 'ffffffffffff' para impedir saturação acidental da bancada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:02:19"
+  },
+  {
+    "id": "inn-proc-77f8fd63",
+    "category": "app",
+    "badge": "🔐 Segurança & Resiliência",
+    "title": "Validador Cripto contra Tempestades de Mensagens Broadcast",
+    "source": "Design System Sci-Fi & Glassmorphism",
+    "summary": "Limita dinamicamente comandos enviados para 'ffffffffffff' para impedir saturação acidental da bancada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Validador Cripto contra Tempestades de Mensagens Broadcast': Limita dinamicamente comandos enviados para 'ffffffffffff' para impedir saturação acidental da bancada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "09:01:04"
+  },
+  {
+    "id": "inn-proc-16f18c84",
+    "category": "design",
+    "badge": "🎨 Visualização Sci-Fi & UX",
+    "title": "Inspetor Ciberpunk de Histórico de Mudanças de Topologia em Linha do Tempo",
+    "source": "Pesquisa de Resiliência de Redes Sem Fio",
+    "summary": "Cria uma régua cronológica interativa mostrando exatamente quando cada placa subiu ou desceu de camada. Totalmente integrado ao Codax Hub com resposta em tempo real.",
+    "prompt": "Quero implementar a inovação 'Inspetor Ciberpunk de Histórico de Mudanças de Topologia em Linha do Tempo': Cria uma régua cronológica interativa mostrando exatamente quando cada placa subiu ou desceu de camada. Integre essa funcionalidade na bancada Codax Hub com interface limpa e indicadores visuais dedicados.",
+    "timestamp": "08:59:49"
+  },
+  {
     "id": "inn-proc-7ce27152",
     "category": "app",
     "badge": "🧠 IA, Borda & SCADA",

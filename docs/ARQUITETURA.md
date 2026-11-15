@@ -131,7 +131,21 @@ flowchart TD
       - Mecanismo de contingência para forçar o modo Webserver a qualquer momento (via comando serial de NVS ou MQTT `config_state`).
       - Painel de credenciais de fábrica (`user/user` e `dev/admin`) com atalhos de consulta e reset de senha.
       - **Modo Visão Dividida (Split Screen)**: Visualização simultânea 50%/50% do Monitor Serial e do Webserver para comissionamento assistido em bancada.
-  13. **Módulos Globais de Bancada**:
+  13. `view-innovations`: **Central de Inovações & Tecnologias TRL-9 (Aba Dedicada)**:
+      - Acesso via botão de cabeçalho (`#top-btn-innovations`) preservando o menu lateral limpo.
+      - Silenciamento completo de notificações pop-up toast de novas inovações, mantendo as atualizações silenciosas no cofre `innovations_vault.json`.
+      - **Guia Didático 'Como Funciona na Bancada Codax'**: 4 pilares de engenharia (Curadoria TRL-9, Chave Seletora & Busca, Copiar Prompt Direto e Cofre Permanente).
+      - **Chave Seletora de Categorias Industriais**: Botões pílula com contagem viva (`Todas`, `Favoritas ⭐`, `IA & Automação`, `RF & ESP-MESH`, `Design System & 3D`, `Aplicações IoT`, `Cibersegurança`).
+      - **Grid Responsivo de Inovações**: Cards com badges temáticos, princípios de física/engenharia, impacto direto na bancada Codax, tags e botão de cópia de prompt pronto com 1 clique.
+  14. **Mini-Sidebar Retrátil Industrial & Responsividade Mobile**:
+      - Alternador instantâneo com botão recolher/expandir (`#btn-sidebar-collapse`) e ícone dinâmico (`panel-left-close` / `panel-left-open`).
+      - Modo mini-dock com largura compacta (76px em desktop, 68px em mobile) centralizando os ícones das abas e ocultando rótulos e feeds secundários.
+      - Persistência contínua do estado no `localStorage` (`codax_sidebar_collapsed`) e inicialização inteligente adaptada para telas móveis e tablets (< 768px e < 1024px).
+  15. **Console ao Vivo - Esteira Aberta de Codax & Blindagem de Ações**:
+      - Eliminação de rolagem horizontal: os dispositivos marcados na chave seletora fluem livremente em rack com quebra automática de linha (`#console-selected-chips-rack`).
+      - Botão `Todos (N)` e chave seletora `[ 🎛️ Dispositivos (K) ▾ ]` fixos à esquerda.
+      - Ações da direita (`Exportar`, `Copiar Tudo`, `Limpar`, `Auto-scroll`) blindadas com `shrink-0`, garantindo visibilidade permanente em qualquer resolução de tela.
+  16. **Módulos Globais de Bancada**:
       - **Caixa Preta de Telemetria com Replay Instantâneo (Time-Travel Debugger)**: Ring buffer circular em RAM com os últimos 10 minutos de telemetria da bancada e scrubbing temporal instantâneo.
       - **Inspetor Ciberpunk de Linha do Tempo de Topologia**: Modal interativo em tela cheia com régua cronológica de migrações de camada (`L1/L2/L3`), handovers e reconexões ESP-MESH.
       - **Cofre de Inovações Codax Hub**: Catálogo pesquisável com filtros por categoria, busca textual em tempo real e ficha técnica TRL-9 completa.
