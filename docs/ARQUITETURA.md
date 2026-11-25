@@ -39,6 +39,10 @@ flowchart TD
 ## 2. Subsistemas Principais
 
 ### 2.1 Backend FastAPI (`app.py`)
+- **Autodescoberta ao conectar (LOCAL e AWS)**: `build_discovery_messages()` (função pura, testada em `tests/test_discovery_messages.py`) monta só comandos `query`: `topology` para `root` e `ping` para `any` (com `for_mesh`), em `config/` e `dev/config/`. No LOCAL também envia `topology` via `any` e repete a rodada após o gatilho UDP.
+- **Janela de presença**: um Codax é considerado online até `NODE_ONLINE_THRESHOLD_SECONDS` (padrão 600 s, variável de ambiente) após a última mensagem dele. O heartbeat real (`dev/conn`) chega a cada ~210 s (NODE) e ~265 s (ROOT); a janela antiga de 180 s fazia Codax ativos "piscarem" offline.
+- **Limite conhecido do modo AWS**: a plataforma assina apenas `config/shopba/mesh` e `dev/#` (a política AWS IoT derruba a conexão em tópicos PROD restritos). Respostas de Codax compilados em PROD (`retorno/`, `topo/`, `conn/` sem `dev/`) não chegam neste modo.
+- O contador **"Na Malha"** do topo mostra Codax respondendo agora (`is_online` em `/api/discovered`); o total visto desde que o servidor iniciou fica no tooltip.
 - **Servidor REST & WebSocket**: Porta padrão `8000`.
 - **Roteador MQTT**: Subscreve tópicos de telemetria e retorno da malha (`retorno/shopba/mesh/#` e `dev/retorno/shopba/mesh/#`).
 - **Amazon Timestream LiveAnalytics**:
@@ -67,11 +71,17 @@ flowchart TD
   2. `view-builder`: Construtor de comandos MQTT (funções ABNT NBR 14522 e JSON).
   3. `view-devices`: Gestão de dispositivos, MACs, nomes, tipos e **Exportador de Dossiê Técnico HTML Único** (relatório executivo offline para auditoria e impressão).
   4. `view-tree`: **Árvore Topológica ESP-MESH Panorâmica & Conduítes Laser Cyberpunk**:
-      - **Linhas Animadas de Fluxo de Pacotes (Conduítes Laser Z-20)**: Renderização vetorial SVG de alta definição com duto escuro industrial (`#070b13`), trilho de fibra ótica (`#141c2c`), feixe laser contínuo em CSS GPU com cores por estado de sinal (Ciano &gt; -65dBm, Esmeralda, Âmbar) e partículas de fóton plasma viajantes via `animateMotion`. Enlaces offline são renderizados como conduítes tracejados em slate (`.tree-laser-beam-offline`) com supressão de partículas.
+      - **Fonte única: `query topology` (regra do sistema desde v2.9)**:
+        - A árvore é montada **exclusivamente** a partir das respostas de `query topology` (tópico `[dev/]topo/shopba/mesh/<root>`). Nenhum ROOT é inferido por "ausência de pai"; heartbeats/ping atualizam só status e sinal, nunca a posição na árvore.
+        - O site envia `query topology` (endereço `root` = `ff:00:00:01:00:00`, em PROD **e** DEV, somente leitura) ao abrir a aba e a cada 60 s enquanto ela está visível (intervalo mínimo de 8 s entre consultas automáticas). Cada resposta recebida via WebSocket recarrega `GET /api/topology`.
+        - Formato real do firmware: `{"page", "root": "<mac>(<id>)", "router_mac", "router_rssi(dB)", "total_devices", "mesh": ["|layer: N|mac: ..|id: ..|parent_id: ..|rssi: .. |", ...]}`. **`parent_id` é o id (nome) do pai**, não o MAC; `0` = roteador (o ROOT). Quando vier um MAC, pode ser o da interface SoftAP (= MAC base + 1) e a resolução tenta MAC−1/+1.
+        - Parser puro em `topology_parser.py` (`parse_topology_payload`, `build_mesh_tree`), coberto por `tests/test_topology_parser.py` (inclui o payload real da bancada). O backend guarda um snapshot por ROOT em `app_state["mesh_topologies"]`; a página 1 inicia um snapshot novo e as páginas seguintes são somadas. Snapshot com mais de 300 s é marcado como `stale`.
+        - Layout: cada Codax fica na **linha da camada reportada** (ROOT · L1 no topo, L2, L3, ...), com colunas no estilo "tidy tree" (pai centralizado sobre os filhos). Um nó cujo pai não aparece na topologia é exibido na sua camada com o selo "Pai não encontrado" e sem linha.
+      - **Fluxo animado por camada**: cada enlace tem a cor da camada do filho (ROOT índigo, L2 ciano, L3 esmeralda, L4 âmbar, L5 rosa), velocidade do pulso proporcional ao RSSI, partícula de descida (ROOT → filho) e de subida (telemetria), em cascata por camada, e um rótulo de dBm no enlace. Com `prefers-reduced-motion`, a animação é desligada.
+      - **Linhas Animadas de Fluxo de Pacotes (Conduítes Laser Z-20)**: Renderização vetorial SVG de alta definição com duto escuro industrial (`#070b13`), trilho de fibra ótica (`#141c2c`), feixe laser contínuo em CSS GPU e partículas viajantes via `animateMotion`. Enlaces offline são renderizados como conduítes tracejados em slate (`.tree-flow-offline`) com supressão de partículas.
       - **Topologia Fiel & Validação Anti-Alucinação (Truth-Telling Live Topology)**:
-        - Detecção real de presença baseada em batimento cardíaco MQTT (`last_seen_epoch`, janela de 180s) no backend FastAPI (`is_node_online()`), integrando `devices.json` com telemetria viva.
-        - Eliminação definitiva de mocks estáticos e anexações artificiais ao nó ROOT: nós só se conectam se reportarem o MAC pai correspondente.
-        - **Seletor de Modo de Exibição**: Alternador dinâmico `[ 🟢 Apenas Online ]` (padrão) e `[ 🌐 Todos ]`, persistido em `localStorage`, permitindo focar estritamente nos dispositivos ativos da bancada.
+        - Detecção real de presença baseada em batimento cardíaco MQTT (`last_seen_epoch`, janela de 180s) no backend FastAPI (`is_node_online()`).
+        - **Seletor de Modo de Exibição**: `[ 🟢 Apenas Online ]` (padrão) oculta malhas com topologia desatualizada e ROOT sem sinal; `[ 🌐 Todos ]` mostra todas e lista à parte os Codax cadastrados que não aparecem em nenhuma topologia.
         - Cards de dispositivos offline exibem badge `🔴 OFFLINE`, ausência de sinal e carimbo do último contato registrado.
       - **Docking Ports Industriais**: Sockets de ancoragem física iluminados nas bordas inferiores (saída pai) e superiores (entrada filho) de cada placa.
       - **Flashes de Tráfego de Dados em Tempo Real**: Conduítes disparam pulsos instantâneos de alta luminosidade (`.tree-conduit-data-burst`) sincronizados com mensagens MQTT via WebSocket.
@@ -173,3 +183,21 @@ flowchart TD
 - **Modais & Overlays de Foco**:
   - Caixas flutuantes em `#070b13` com oclusão profunda (`0 28px 60px -10px rgba(0, 0, 0, 0.99)`).
   - Backdrops de modal escurecidos uniformemente (`rgba(1, 2, 4, 0.93)`), eliminando o aspecto de vidro translúcido.
+
+### 4.1 Tokens de Tema (regra desde v2.9)
+- Todas as superfícies, bordas, sombras e tintas de badge leem **variáveis CSS** (`--surface-raised`, `--surface-sub`, `--surface-well`, `--border-*`, `--text-muted`, `--tint-<cor>`, `--focus-ring` …), definidas em `:root` com os valores exatos do tema Cyber.
+- Três temas, escolhidos no menu **Tema** do cabeçalho e salvos em `localStorage` (`codax_hub_theme` = `cyber` | `scada` | `light`):
+  - **Cyber escuro** (padrão): `:root`.
+  - **SCADA alto contraste**: `body.theme-scada-industrial` redefine os tokens (bordas âmbar) e mantém as regras âmbar/ciano de títulos e destaques.
+  - **Claro**: `body.theme-light` redefine os tokens e mapeia textos `slate-*` e coloridos `-200/-300/-400` para tons 700/800 (≥ 4,5:1). Texto dentro de fundo saturado (`bg-*-500/600/700`, gradientes) volta a branco.
+- Classes com hex fixo (`bg-[#080c14]` etc.) seguem os tokens nos temas SCADA e Claro; no Cyber mantêm o hex original.
+- **Regra para código novo**: preferir as classes `bg-slate-900/800/950` (já mapeadas) ou `var(--…)`; evitar hex fixo novo e cor por `style` inline. Quando a cor precisar ser inline (SVG, sparklines), escolher a variante pelo tema (`document.body.classList.contains('theme-light')`).
+
+### 4.2 Acessibilidade e IHC (WCAG 2.2 AA)
+- Texto secundário usa `--text-muted` (≥ 4,58:1 em todas as superfícies escuras); tamanho mínimo de fonte **11 px**.
+- Alvos de clique com no mínimo 24 × 24 px; foco visível por `:focus-visible` com `--focus-ring`.
+- `div` com `onclick` recebem `role="button"`, `tabindex="0"` e Enter/Espaço automaticamente (`enhanceClickableA11y`); containers com botões internos viram `role="group"`.
+- Pulsos (`animate-pulse`/`animate-ping`) só em estados âmbar/rosa/vermelho (atenção/erro) ou carregamento; indicadores saudáveis ficam estáticos.
+- `prefers-reduced-motion` desliga as animações do site inteiro; o letreiro tem botão Pausar (WCAG 2.2.2) e pausa também com mouse ou foco.
+- O letreiro mostra **somente dados reais** (topology, cadastro, broker). Segredos (senha da mesh) aparecem mascarados, com botão para revelar.
+- Regiões nomeadas: `header`, sub-barra de alvo, letreiro, `nav` (Menu principal), `main`. O primeiro título de cada aba é `h2` (a página tem `h1`).

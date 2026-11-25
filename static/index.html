@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Codax Mesh IoT & OTA Hub</title>
+  <title>Scantech • Codax Hub vUltimate</title>
   <!-- Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
@@ -157,13 +157,13 @@
     }
 
     .tree-conduit-base {
-      stroke: #070b13 !important;
+      stroke: var(--conduit-base) !important;
       stroke-width: 6px !important;
       stroke-linecap: round !important;
     }
 
     .tree-conduit-rail {
-      stroke: #141c2c !important;
+      stroke: var(--conduit-rail) !important;
       stroke-width: 3.5px !important;
       stroke-linecap: round !important;
     }
@@ -211,6 +211,81 @@
       stroke-dasharray: 8 8 !important;
       animation: treeFailureBlink 0.65s ease-in-out infinite !important;
       filter: drop-shadow(0 0 8px #f43f5e) !important;
+    }
+
+    /* ===== Árvore da Malha guiada pelo query topology: faixas de camada + fluxo por camada ===== */
+    @keyframes treeFlowDown {
+      from { stroke-dashoffset: 0; }
+      to { stroke-dashoffset: -64; }
+    }
+    .tree-flow-layer {
+      stroke: var(--flow-color, #22d3ee);
+      stroke-width: 2.4px;
+      stroke-linecap: round;
+      stroke-dasharray: 10 22;
+      animation: treeFlowDown var(--flow-speed, 1.4s) linear infinite;
+      filter: drop-shadow(0 0 4px var(--flow-glow, rgba(34, 211, 238, 0.7))) drop-shadow(0 0 9px var(--flow-glow, rgba(34, 211, 238, 0.35)));
+    }
+    .tree-flow-offline {
+      stroke: #334155;
+      stroke-width: 2px;
+      stroke-linecap: round;
+      stroke-dasharray: 4 6;
+      opacity: 0.75;
+    }
+    .tree-mesh-grid {
+      display: grid;
+      row-gap: 88px;
+      column-gap: 0;
+      position: relative;
+      align-items: start;
+    }
+    .tree-layer-band {
+      margin: -30px 0;
+      border-top: 1px dashed color-mix(in srgb, var(--band-color) 35%, transparent);
+      background: linear-gradient(90deg, color-mix(in srgb, var(--band-color) 9%, transparent) 0%, transparent 55%);
+      border-radius: 14px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .tree-layer-label {
+      align-self: center;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-right: 14px;
+      z-index: 5;
+    }
+    .tree-layer-chip {
+      align-self: flex-start;
+      font: 800 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+      letter-spacing: 0.08em;
+      color: var(--band-color);
+      border: 1px solid color-mix(in srgb, var(--band-color) 55%, transparent);
+      background: color-mix(in srgb, var(--band-color) 12%, var(--surface-well));
+      padding: 5px 8px;
+      border-radius: 8px;
+      box-shadow: 0 0 12px -4px var(--band-color);
+    }
+    .tree-layer-count {
+      font: 600 11px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--text-muted);
+    }
+    .tree-cell {
+      display: flex;
+      justify-content: center;
+      position: relative;
+      z-index: 30;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tree-flow-layer,
+      .tree-packet-flow-cyan,
+      .tree-packet-flow-emerald,
+      .tree-packet-flow-amber,
+      .tree-laser-beam-highlight {
+        animation: none !important;
+        stroke-dasharray: none !important;
+      }
     }
 
     .tree-conduit-data-burst {
@@ -342,11 +417,9 @@
     #tree-stage [class*="bg-slate-900/"],
     #tree-stage .bg-slate-950,
     #tree-stage [class*="bg-slate-950/"] {
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      background-color: #070b13 !important;
-      border: 1px solid #182234 !important;
-      box-shadow: 0 8px 20px -3px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+      background-color: var(--surface-overlay) !important;
+      border: 1px solid var(--border-raised) !important;
+      box-shadow: var(--shadow-raised) !important;
     }
 
     /* Vetorização nítida de precisão geométrica nos conduítes e sparklines */
@@ -370,149 +443,274 @@
       animation: treeLaserStream 1.9s linear infinite;
     }
 
-    /* ================= [DARK.DESIGN] MODERN DEEP DARK OBSIDIAN DESIGN SYSTEM (ZERO VIDRO / ZERO TRANSLUCIDEZ) ================= */
-    
+    /* ================= TOKENS DE TEMA (Cyber padrão · SCADA alto contraste · Claro) =================
+       Todas as superfícies, bordas e sombras abaixo leem estas variáveis.
+       Os valores de :root são exatamente os do tema Cyber anterior (nenhuma mudança visual no padrão). */
+    :root {
+      color-scheme: dark;
+      --app-bg: #030508;
+      --app-bg-image: radial-gradient(ellipse 90% 55% at 50% -15%, rgba(15, 23, 42, 0.45), transparent 70%), linear-gradient(180deg, #030508 0%, #010204 100%);
+      --app-text: #f1f5f9;
+
+      --surface-raised: #080c14;
+      --surface-sub: #0d121e;
+      --surface-well: #020306;
+      --surface-overlay: #070b13;
+      --surface-header: #04070e;
+      --surface-btn: #080c15;
+      --surface-btn-hover: #0e1422;
+      --surface-hover: #111828;
+
+      --border-raised: #131b28;
+      --border-sub: #172235;
+      --border-well: #101622;
+      --border-strong: #1c273c;
+      --border-btn: #141c2c;
+      --border-btn-hover: #223048;
+      --border-overlay: #1a2538;
+      --border-overlay-top: #2b3d5b;
+
+      --text-strong: #f1f5f9;
+      --text-muted: #8391a7; /* substitui slate-500/600 (#64748b: 3,9:1) → mínimo 4,58:1 em todas as superfícies */
+      --focus-ring: #22d3ee;
+
+      --shadow-raised: 0 4px 20px -2px rgba(0, 0, 0, 0.85), 0 2px 6px -1px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      --shadow-well: inset 0 2px 6px rgba(0, 0, 0, 0.95), inset 0 1px 1px rgba(0, 0, 0, 0.98), 0 1px 0 rgba(255, 255, 255, 0.02);
+      --shadow-input: inset 0 2px 5px rgba(0, 0, 0, 0.95), 0 1px 0 rgba(255, 255, 255, 0.02);
+      --shadow-input-focus: inset 0 2px 4px rgba(0, 0, 0, 0.85), 0 0 0 1px #06b6d4, 0 2px 6px rgba(0, 0, 0, 0.6);
+      --shadow-header: 0 4px 18px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      --shadow-btn: 0 1px 2px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      --shadow-btn-hover: 0 4px 10px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+      --shadow-btn-active: inset 0 1px 3px rgba(0, 0, 0, 0.9);
+      --shadow-overlay: 0 28px 60px -10px rgba(0, 0, 0, 0.99), 0 12px 24px -5px rgba(0, 0, 0, 0.92), inset 0 1px 0 rgba(255, 255, 255, 0.07), inset 0 -1px 0 rgba(0, 0, 0, 0.8);
+      --overlay-dim: rgba(1, 2, 4, 0.93);
+
+      --btn-card-bg: linear-gradient(180deg, #0e1422 0%, #070a13 100%);
+      --btn-card-bg-hover: linear-gradient(180deg, #141c2c 0%, #0a0f19 100%);
+      --btn-card-border: #182234;
+      --btn-card-border-top: #263652;
+      --btn-card-border-bottom: #030509;
+      --btn-card-border-hover: #263750;
+      --btn-card-border-top-hover: #3b5076;
+      --btn-card-shadow: 0 2px 6px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+      --btn-card-shadow-hover: 0 6px 14px -2px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      --btn-card-shadow-active: 0 1px 2px rgba(0, 0, 0, 0.9), inset 0 2px 4px rgba(0, 0, 0, 0.9);
+
+      --conduit-base: #070b13;
+      --conduit-rail: #141c2c;
+
+      /* Badges tintados (bg-*-950/xx): fundo · borda · texto */
+      --tint-emerald: #021a12; --tint-emerald-bd: #05402a; --tint-emerald-fg: #34d399;
+      --tint-cyan: #031a24;    --tint-cyan-bd: #07435b;    --tint-cyan-fg: #22d3ee;
+      --tint-indigo: #0a0e29;  --tint-indigo-bd: #1e2868;  --tint-indigo-fg: #a5b4fc;
+      --tint-purple: #150826;  --tint-purple-bd: #3b1766;  --tint-purple-fg: #c084fc;
+      --tint-amber: #1c1003;   --tint-amber-bd: #4d2d09;   --tint-amber-fg: #fbbf24;
+      --tint-rose: #22050c;    --tint-rose-bd: #551120;    --tint-rose-fg: #fb7185;
+      --tint-blue: #05142b;    --tint-blue-bd: #0c3169;    --tint-blue-fg: #60a5fa;
+    }
+
+    /* ---------- Tema SCADA: só redefine tokens (as regras específicas de âmbar/ciano continuam abaixo) ---------- */
+    body.theme-scada-industrial {
+      --surface-raised: #060910;
+      --surface-sub: #0a0e17;
+      --surface-well: #020306;
+      --surface-overlay: #070a10;
+      --surface-header: #05070c;
+      --surface-hover: #141008;
+      --border-raised: rgba(255, 176, 0, 0.4);
+      --border-sub: rgba(255, 176, 0, 0.28);
+      --border-well: rgba(255, 176, 0, 0.2);
+      --border-strong: rgba(255, 176, 0, 0.45);
+      --border-btn: rgba(255, 176, 0, 0.25);
+      --border-btn-hover: rgba(255, 176, 0, 0.6);
+      --border-overlay: rgba(255, 176, 0, 0.4);
+      --border-overlay-top: rgba(255, 176, 0, 0.65);
+      --text-muted: #a8a29e;
+      --focus-ring: #ffb000;
+      --conduit-rail: #1f1606;
+    }
+
+    /* ---------- Tema Claro (bancada com muita luz ambiente) ---------- */
+    body.theme-light {
+      color-scheme: light;
+      --app-bg: #eef2f7;
+      --app-bg-image: radial-gradient(ellipse 90% 55% at 50% -15%, rgba(99, 102, 241, 0.08), transparent 70%), linear-gradient(180deg, #f4f6fa 0%, #e9eef5 100%);
+      --app-text: #0f172a;
+
+      --surface-raised: #ffffff;
+      --surface-sub: #f4f6fa;
+      --surface-well: #f8fafc;
+      --surface-overlay: #ffffff;
+      --surface-header: #ffffff;
+      --surface-btn: #ffffff;
+      --surface-btn-hover: #f1f5f9;
+      --surface-hover: #e8edf4;
+
+      --border-raised: #dbe2ec;
+      --border-sub: #d5dde8;
+      --border-well: #dfe5ee;
+      --border-strong: #c3cedd;
+      --border-btn: #d5dde8;
+      --border-btn-hover: #a9b7cb;
+      --border-overlay: #d5dde8;
+      --border-overlay-top: #e6ebf2;
+
+      --text-strong: #0f172a;
+      --text-muted: #556378;
+      --focus-ring: #4f46e5;
+
+      --shadow-raised: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 14px -4px rgba(15, 23, 42, 0.10);
+      --shadow-well: inset 0 1px 2px rgba(15, 23, 42, 0.06);
+      --shadow-input: inset 0 1px 2px rgba(15, 23, 42, 0.06);
+      --shadow-input-focus: 0 0 0 3px rgba(79, 70, 229, 0.25);
+      --shadow-header: 0 1px 0 #dbe2ec, 0 4px 12px -6px rgba(15, 23, 42, 0.12);
+      --shadow-btn: 0 1px 1px rgba(15, 23, 42, 0.05);
+      --shadow-btn-hover: 0 3px 8px -2px rgba(15, 23, 42, 0.15);
+      --shadow-btn-active: inset 0 1px 2px rgba(15, 23, 42, 0.12);
+      --shadow-overlay: 0 24px 48px -12px rgba(15, 23, 42, 0.28), 0 8px 16px -8px rgba(15, 23, 42, 0.16);
+      --overlay-dim: rgba(15, 23, 42, 0.45);
+
+      --btn-card-bg: linear-gradient(180deg, #ffffff 0%, #f7f9fc 100%);
+      --btn-card-bg-hover: linear-gradient(180deg, #ffffff 0%, #eef2f8 100%);
+      --btn-card-border: #d5dde8;
+      --btn-card-border-top: #e3e9f1;
+      --btn-card-border-bottom: #c3cedd;
+      --btn-card-border-hover: #a9b7cb;
+      --btn-card-border-top-hover: #c3cedd;
+      --btn-card-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+      --btn-card-shadow-hover: 0 6px 16px -6px rgba(15, 23, 42, 0.22);
+      --btn-card-shadow-active: inset 0 1px 3px rgba(15, 23, 42, 0.15);
+
+      --conduit-base: #e2e8f0;
+      --conduit-rail: #cbd5e1;
+
+      --tint-emerald: #ecfdf5; --tint-emerald-bd: #a7f3d0; --tint-emerald-fg: #047857;
+      --tint-cyan: #ecfeff;    --tint-cyan-bd: #a5f3fc;    --tint-cyan-fg: #0e7490;
+      --tint-indigo: #eef2ff;  --tint-indigo-bd: #c7d2fe;  --tint-indigo-fg: #4338ca;
+      --tint-purple: #faf5ff;  --tint-purple-bd: #e9d5ff;  --tint-purple-fg: #7e22ce;
+      --tint-amber: #fffbeb;   --tint-amber-bd: #fde68a;   --tint-amber-fg: #92400e;
+      --tint-rose: #fff1f2;    --tint-rose-bd: #fecdd3;    --tint-rose-fg: #be123c;
+      --tint-blue: #eff6ff;    --tint-blue-bd: #bfdbfe;    --tint-blue-fg: #1d4ed8;
+    }
+
+    /* ================= [DARK.DESIGN] MODERN DEEP DARK OBSIDIAN DESIGN SYSTEM (ZERO VIDRO / ZERO TRANSLUCIDEZ) — agora via tokens ================= */
+
     /* 0. Erradicação Universal Estrita de Qualquer Efeito de Vidro ou Desfoque */
     *, *::before, *::after {
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
     }
 
-    /* 1. Canvas / Fundo Geral da Aplicação (Deep Dark Obsidian Grounding) */
+    /* 1. Canvas / Fundo Geral da Aplicação */
     body {
-      background-color: #030508 !important;
-      background-image: 
-        radial-gradient(ellipse 90% 55% at 50% -15%, rgba(15, 23, 42, 0.45), transparent 70%),
-        linear-gradient(180deg, #030508 0%, #010204 100%) !important;
-      color: #f1f5f9 !important;
+      background-color: var(--app-bg) !important;
+      background-image: var(--app-bg-image) !important;
+      color: var(--app-text) !important;
       background-attachment: fixed !important;
     }
 
-    /* 2. Painéis Principais & Cards Elevados (Deep Matte Carbon Sólido 100% Opaco) */
+    /* 2. Painéis Principais & Cards Elevados */
     .bg-slate-900,
     [class*="bg-slate-900/"] {
-      background-color: #080c14 !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      border-color: #131b28 !important;
-      box-shadow: 
-        0 4px 20px -2px rgba(0, 0, 0, 0.85),
-        0 2px 6px -1px rgba(0, 0, 0, 0.75),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+      background-color: var(--surface-raised) !important;
+      border-color: var(--border-raised) !important;
+      box-shadow: var(--shadow-raised) !important;
     }
 
-    /* 3. Sub-containers, Cabeçalhos e Superfícies Intermediárias Sólidas */
+    /* 3. Sub-containers, Cabeçalhos e Superfícies Intermediárias */
     .bg-slate-800,
     [class*="bg-slate-800/"] {
-      background-color: #0d121e !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      border-color: #172235 !important;
+      background-color: var(--surface-sub) !important;
+      border-color: var(--border-sub) !important;
     }
 
-    /* 4. Poços Rebaixados, Terminais CRT, Tabelas e Displays (Preto Jet Absoluto Debossed) */
+    /* 4. Poços Rebaixados, Terminais, Tabelas e Displays */
     .bg-slate-950,
     [class*="bg-slate-950/"] {
-      background-color: #020306 !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      border-color: #101622 !important;
-      box-shadow: 
-        inset 0 2px 6px rgba(0, 0, 0, 0.95),
-        inset 0 1px 1px rgba(0, 0, 0, 0.98),
-        0 1px 0 rgba(255, 255, 255, 0.02) !important;
+      background-color: var(--surface-well) !important;
+      border-color: var(--border-well) !important;
+      box-shadow: var(--shadow-well) !important;
     }
 
-    /* 5. Erradicação de Transparência em Badges de Status do Tailwind (100% Sólidos & Vibrantes) */
-    [class*="bg-emerald-950/"] { background-color: #021a12 !important; border-color: #05402a !important; color: #34d399 !important; }
-    [class*="bg-cyan-950/"]    { background-color: #031a24 !important; border-color: #07435b !important; color: #22d3ee !important; }
-    [class*="bg-indigo-950/"]  { background-color: #0a0e29 !important; border-color: #1e2868 !important; color: #a5b4fc !important; }
-    [class*="bg-purple-950/"]  { background-color: #150826 !important; border-color: #3b1766 !important; color: #c084fc !important; }
-    [class*="bg-amber-950/"]   { background-color: #1c1003 !important; border-color: #4d2d09 !important; color: #fbbf24 !important; }
-    [class*="bg-rose-950/"]    { background-color: #22050c !important; border-color: #551120 !important; color: #fb7185 !important; }
-    [class*="bg-blue-950/"]    { background-color: #05142b !important; border-color: #0c3169 !important; color: #60a5fa !important; }
-    [class*="bg-slate-700/"]   { background-color: #111828 !important; border-color: #1c273c !important; }
+    /* 5. Badges de Status (100% sólidos) */
+    [class*="bg-emerald-950/"] { background-color: var(--tint-emerald) !important; border-color: var(--tint-emerald-bd) !important; color: var(--tint-emerald-fg) !important; }
+    [class*="bg-cyan-950/"]    { background-color: var(--tint-cyan) !important;    border-color: var(--tint-cyan-bd) !important;    color: var(--tint-cyan-fg) !important; }
+    [class*="bg-indigo-950/"]  { background-color: var(--tint-indigo) !important;  border-color: var(--tint-indigo-bd) !important;  color: var(--tint-indigo-fg) !important; }
+    [class*="bg-purple-950/"]  { background-color: var(--tint-purple) !important;  border-color: var(--tint-purple-bd) !important;  color: var(--tint-purple-fg) !important; }
+    [class*="bg-amber-950/"]   { background-color: var(--tint-amber) !important;   border-color: var(--tint-amber-bd) !important;   color: var(--tint-amber-fg) !important; }
+    [class*="bg-rose-950/"]    { background-color: var(--tint-rose) !important;    border-color: var(--tint-rose-bd) !important;    color: var(--tint-rose-fg) !important; }
+    [class*="bg-blue-950/"]    { background-color: var(--tint-blue) !important;    border-color: var(--tint-blue-bd) !important;    color: var(--tint-blue-fg) !important; }
+    [class*="bg-slate-700/"]   { background-color: var(--surface-hover) !important; border-color: var(--border-strong) !important; }
 
-    /* 6. Micro-Bordas Cirúrgicas Modernas de 1px (Hairline Definition) */
+    /* 6. Micro-Bordas de 1px */
     .border-slate-800,
     [class*="border-slate-800/"] {
-      border-color: #131b28 !important;
+      border-color: var(--border-raised) !important;
     }
     .border-slate-700,
     [class*="border-slate-700/"] {
-      border-color: #1c273c !important;
+      border-color: var(--border-strong) !important;
     }
 
-    /* 7. Barra Superior de Comando e Bancada (Modern Dark Shelf) */
+    /* 7. Barra Superior */
     header.bg-slate-900 {
-      background-color: #04070e !important;
-      border-bottom: 1px solid #131b28 !important;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+      background-color: var(--surface-header) !important;
+      border-bottom: 1px solid var(--border-raised) !important;
+      box-shadow: var(--shadow-header) !important;
     }
     header button,
     .top-action-btn {
-      background-color: #080c15 !important;
-      border: 1px solid #141c2c !important;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+      background-color: var(--surface-btn) !important;
+      border: 1px solid var(--border-btn) !important;
+      box-shadow: var(--shadow-btn) !important;
       transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
     header button:hover,
     .top-action-btn:hover {
-      background-color: #0e1422 !important;
-      border-color: #223048 !important;
+      background-color: var(--surface-btn-hover) !important;
+      border-color: var(--border-btn-hover) !important;
       transform: translateY(-1px);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+      box-shadow: var(--shadow-btn-hover) !important;
     }
     header button:active,
     .top-action-btn:active {
       transform: translateY(1px);
-      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.9) !important;
+      box-shadow: var(--shadow-btn-active) !important;
     }
 
-    /* 8. Botões Táteis Modernos (Tactile Dark Micro-Press Buttons) */
+    /* 8. Botões Táteis */
     .btn-card {
-      background: linear-gradient(180deg, #0e1422 0%, #070a13 100%) !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      border: 1px solid #182234 !important;
-      border-top: 1px solid #263652 !important;
-      border-bottom: 2px solid #030509 !important;
-      box-shadow: 
-        0 2px 6px rgba(0, 0, 0, 0.65),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.5) !important;
+      background: var(--btn-card-bg) !important;
+      border: 1px solid var(--btn-card-border) !important;
+      border-top: 1px solid var(--btn-card-border-top) !important;
+      border-bottom: 2px solid var(--btn-card-border-bottom) !important;
+      box-shadow: var(--btn-card-shadow) !important;
       transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
     .btn-card:hover {
-      background: linear-gradient(180deg, #141c2c 0%, #0a0f19 100%) !important;
-      border-color: #263750 !important;
-      border-top-color: #3b5076 !important;
+      background: var(--btn-card-bg-hover) !important;
+      border-color: var(--btn-card-border-hover) !important;
+      border-top-color: var(--btn-card-border-top-hover) !important;
       transform: translateY(-1px);
-      box-shadow: 
-        0 6px 14px -2px rgba(0, 0, 0, 0.8),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+      box-shadow: var(--btn-card-shadow-hover) !important;
     }
     .btn-card:active {
       transform: translateY(1px) !important;
       border-bottom-width: 1px !important;
-      box-shadow: 
-        0 1px 2px rgba(0, 0, 0, 0.9),
-        inset 0 2px 4px rgba(0, 0, 0, 0.9) !important;
+      box-shadow: var(--btn-card-shadow-active) !important;
     }
 
-    /* 9. Inputs, Seletores e Textareas em Cavidade Usinada Jet-Black */
+    /* 9. Inputs, Seletores e Textareas */
     input[type="text"],
     input[type="number"],
     input[type="search"],
     input[type="password"],
     select,
     textarea {
-      background-color: #020306 !important;
-      border: 1px solid #131b28 !important;
-      box-shadow: 
-        inset 0 2px 5px rgba(0, 0, 0, 0.95),
-        0 1px 0 rgba(255, 255, 255, 0.02) !important;
-      color: #f1f5f9 !important;
+      background-color: var(--surface-well) !important;
+      border: 1px solid var(--border-raised) !important;
+      box-shadow: var(--shadow-input) !important;
+      color: var(--text-strong) !important;
     }
     input[type="text"]:focus,
     input[type="number"]:focus,
@@ -520,15 +718,12 @@
     input[type="password"]:focus,
     select:focus,
     textarea:focus {
-      border-color: #06b6d4 !important;
-      box-shadow: 
-        inset 0 2px 4px rgba(0, 0, 0, 0.85),
-        0 0 0 1px #06b6d4,
-        0 2px 6px rgba(0, 0, 0, 0.6) !important;
+      border-color: var(--focus-ring) !important;
+      box-shadow: var(--shadow-input-focus) !important;
       outline: none !important;
     }
 
-    /* 10. Modais, Popovers, Gavetas Laterais e Caixas Flutuantes (Solid Dark Theater) */
+    /* 10. Modais, Popovers, Gavetas e Caixas Flutuantes */
     #function-autocomplete-dropdown,
     #recipients-dropdown-popover,
     .dropdown-glass-menu,
@@ -542,27 +737,37 @@
     #innovation-drawer-panel,
     #cockpit-drawer-panel,
     .glass-toast-card {
-      background-color: #070b13 !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
-      border: 1px solid #1a2538 !important;
-      border-top: 1px solid #2b3d5b !important;
-      box-shadow: 
-        0 28px 60px -10px rgba(0, 0, 0, 0.99),
-        0 12px 24px -5px rgba(0, 0, 0, 0.92),
-        inset 0 1px 0 rgba(255, 255, 255, 0.07),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.8) !important;
+      background-color: var(--surface-overlay) !important;
+      border: 1px solid var(--border-overlay) !important;
+      border-top: 1px solid var(--border-overlay-top) !important;
+      box-shadow: var(--shadow-overlay) !important;
     }
 
-    /* 11. Overlays de Fundo de Modais (Solid Dark Dimming sem Efeito Vidro) */
+    /* 11. Overlays de Fundo de Modais */
     #modal-ota,
     #modal-return-inspector,
     #modal-glass-confirm,
     #device-cockpit-drawer > div:first-child,
     #modal-topology-timeline > div:first-child {
-      background-color: rgba(1, 2, 4, 0.93) !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
+      background-color: var(--overlay-dim) !important;
+    }
+
+    /* 12. Superfícies com hex fixo (bg-[#...]) passam a seguir o tema nos temas SCADA e Claro.
+           No tema Cyber continuam exatamente com o hex original. */
+    :is(body.theme-light, body.theme-scada-industrial) :is(.bg-\[\#020306\], .bg-\[\#03060b\], .bg-\[\#040810\], .bg-\[\#020b08\], .bg-\[\#040f17\]) {
+      background-color: var(--surface-well) !important;
+    }
+    :is(body.theme-light, body.theme-scada-industrial) :is(.bg-\[\#060912\], .bg-\[\#070912\], .bg-\[\#070a12\], .bg-\[\#070b13\], .bg-\[\#070b14\], .bg-\[\#080c14\], .bg-\[\#0b1120\], .bg-\[\#0e1626\], .bg-\[\#0f172a\]) {
+      background-color: var(--surface-raised) !important;
+    }
+    :is(body.theme-light, body.theme-scada-industrial) :is(.bg-\[\#0d121e\], .bg-\[\#131b28\]) {
+      background-color: var(--surface-sub) !important;
+    }
+    :is(body.theme-light, body.theme-scada-industrial) .bg-\[\#140508\] {
+      background-color: var(--tint-rose) !important;
+    }
+    :is(body.theme-light, body.theme-scada-industrial) :is(.border-\[\#131b28\], .border-\[\#172235\], .border-\[\#1e293b\], .border-\[\#334155\], .border-slate-900, [class*="border-slate-900/"]) {
+      border-color: var(--border-raised) !important;
     }
 
     body.ui-inspector-active,
@@ -601,10 +806,203 @@
 
     #main-scroll-view {
       background-color: transparent !important;
-      backdrop-filter: none !important;
-      -webkit-backdrop-filter: none !important;
       box-shadow: none !important;
     }
+
+    /* ================= ACESSIBILIDADE & IHC (WCAG 2.2 AA) ================= */
+
+    /* Texto secundário com contraste mínimo de 4,5:1 (antes slate-500/600 ≈ 3,9:1 / 2,6:1) */
+    .text-slate-500, .text-slate-600 { color: var(--text-muted) !important; }
+
+    /* Escala tipográfica mínima de 11 px (43% do texto estava em 8–10 px) */
+    .text-\[8px\], .text-\[8\.5px\], .text-\[9px\], .text-\[9\.5px\], .text-\[10px\], .text-\[10\.5px\] {
+      font-size: 11px !important;
+      line-height: 1.35;
+    }
+
+    /* Botões preenchidos: verde/ciano 600 com texto branco ficavam em 3,7:1 → tons 700 (≥ 5,3:1) */
+    .bg-emerald-600 { background-color: #047857 !important; }
+    .bg-cyan-600 { background-color: #0e7490 !important; }
+    .bg-teal-600 { background-color: #0f766e !important; }
+    .bg-purple-600 { background-color: #7e22ce !important; }
+
+    /* Item ativo do menu lateral: rótulos e contadores legíveis sobre o índigo */
+    .sidebar-nav-btn.bg-indigo-600 .sidebar-label,
+    .sidebar-nav-btn.bg-indigo-600 .sidebar-text-content {
+      opacity: 1 !important;
+      color: #ffffff !important;
+    }
+
+    /* Alvo mínimo de clique/toque (WCAG 2.5.8: 24 × 24 px) */
+    button, [role="button"], select, a[href] { min-height: 24px; }
+    button, [role="button"] { min-width: 24px; }
+
+    /* Indicador de foco visível e consistente para teclado */
+    :where(button, a[href], [role="button"], [role="menuitemradio"], [role="menuitem"], [tabindex]:not([tabindex="-1"])):focus-visible {
+      outline: 2px solid var(--focus-ring) !important;
+      outline-offset: 2px !important;
+    }
+
+    /* Pulsos só em estado de atenção/erro (âmbar, rosa, vermelho, laranja) ou carregamento.
+       Indicadores "saudável/ao vivo" ficam estáticos: o pulso volta a significar "olhe aqui". */
+    .animate-pulse:not([class*="amber"]):not([class*="rose"]):not([class*="red-"]):not([class*="orange"]):not([class*="bg-slate-"]),
+    .animate-ping:not([class*="amber"]):not([class*="rose"]):not([class*="red-"]):not([class*="orange"]) {
+      animation: none !important;
+    }
+    .animate-ping:not([class*="amber"]):not([class*="rose"]):not([class*="red-"]):not([class*="orange"]) {
+      opacity: 0 !important;
+    }
+
+    /* Transição suave entre abas */
+    @keyframes tabFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: none; }
+    }
+    .tab-content:not(.hidden) {
+      animation: tabFadeIn 0.16s ease-out;
+    }
+
+    /* Respeita "reduzir movimento" do sistema operacional em todo o site */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* Selos do menu lateral não quebram linha com a escala tipográfica maior */
+    .sidebar-label { white-space: nowrap; }
+    .sidebar-nav-btn { gap: 8px; }
+    .sidebar-nav-btn > span:first-child { flex-shrink: 1 !important; min-width: 0; }
+    .sidebar-nav-btn > span:first-child .sidebar-label { overflow: hidden; text-overflow: ellipsis; }
+    .sidebar-nav-btn > span:last-child { flex-shrink: 0; }
+
+    /* Texto apenas para leitores de tela */
+    .sr-only-a11y {
+      position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important;
+      overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important;
+    }
+
+    /* Menus suspensos do cabeçalho (Tema / Ferramentas) */
+    .header-menu {
+      position: absolute; right: 0; top: calc(100% + 8px); z-index: 90;
+      min-width: 15rem; padding: 6px; border-radius: 14px;
+    }
+    header .header-menu button {
+      display: flex !important; width: 100%; align-items: center; gap: 10px;
+      padding: 8px 10px !important; border-radius: 10px;
+      background: transparent !important; border: 1px solid transparent !important;
+      box-shadow: none !important; transform: none !important; text-align: left;
+      color: var(--text-strong);
+    }
+    header .header-menu button:hover,
+    header .header-menu button:focus-visible {
+      background: var(--surface-hover) !important;
+      border-color: var(--border-strong) !important;
+    }
+    header .header-menu [aria-checked="true"] {
+      background: var(--surface-sub) !important;
+      border-color: var(--focus-ring) !important;
+    }
+    .header-menu-desc { display: block; font-size: 11px; color: var(--text-muted); font-weight: 500; }
+
+    /* Letreiro pausado (botão, foco do teclado ou mouse) */
+    #mesh-stock-ticker.ticker-paused .ticker-strip,
+    .ticker-viewport:focus-within .ticker-strip {
+      animation-play-state: paused !important;
+    }
+
+    /* ================= TEMA CLARO: mapeamento de texto, tintas e realces ================= */
+    body.theme-light .text-slate-100, body.theme-light .text-slate-200 { color: #0f172a !important; }
+    body.theme-light .text-slate-300 { color: #1e293b !important; }
+    body.theme-light .text-slate-400 { color: #334155 !important; }
+    body.theme-light .text-white { color: #0f172a !important; }
+    body.theme-light [class*="hover:text-white"]:hover:not(:is([class*="hover:bg-indigo-500"], [class*="hover:bg-indigo-600"], [class*="hover:bg-emerald-500"], [class*="hover:bg-emerald-600"], [class*="hover:bg-cyan-500"], [class*="hover:bg-cyan-600"], [class*="hover:bg-rose-500"], [class*="hover:bg-rose-600"], [class*="hover:bg-purple-500"], [class*="hover:bg-purple-600"], [class*="hover:bg-blue-500"], [class*="hover:bg-blue-600"], [class*="hover:bg-teal-500"], [class*="hover:bg-teal-600"], [class*="hover:bg-sky-500"], [class*="hover:bg-sky-600"], [class*="hover:bg-violet-500"], [class*="hover:bg-violet-600"], [class*="hover:bg-red-500"], [class*="hover:bg-red-600"], [class*="hover:bg-green-500"], [class*="hover:bg-green-600"], [class*="hover:bg-fuchsia-500"], [class*="hover:bg-fuchsia-600"], [class*="hover:bg-pink-500"], [class*="hover:bg-pink-600"])) { color: #0f172a !important; }
+    body.theme-light :is([class*="text-emerald-"], [class*="text-green-"], [class*="text-lime-"]) { color: #047857 !important; }
+    body.theme-light :is([class*="text-cyan-"], [class*="text-teal-"], [class*="text-sky-"]) { color: #0e7490 !important; }
+    body.theme-light :is([class*="text-indigo-"], [class*="text-violet-"]) { color: #4338ca !important; }
+    body.theme-light :is([class*="text-amber-"], [class*="text-yellow-"], [class*="text-orange-"]) { color: #92400e !important; }
+    body.theme-light :is([class*="text-rose-"], [class*="text-red-"], [class*="text-pink-"]) { color: #be123c !important; }
+    body.theme-light :is([class*="text-purple-"], [class*="text-fuchsia-"]) { color: #7e22ce !important; }
+    body.theme-light :is([class*="text-blue-"]) { color: #1d4ed8 !important; }
+    /* Dentro de fundos saturados (botões preenchidos, gradientes) o texto volta a ser branco */
+    body.theme-light :is(.bg-indigo-500, .bg-indigo-600, .bg-indigo-700, .bg-emerald-500, .bg-emerald-600, .bg-emerald-700, .bg-cyan-500, .bg-cyan-600, .bg-cyan-700, .bg-rose-500, .bg-rose-600, .bg-rose-700, .bg-purple-500, .bg-purple-600, .bg-purple-700, .bg-blue-500, .bg-blue-600, .bg-blue-700, .bg-teal-500, .bg-teal-600, .bg-teal-700, .bg-sky-500, .bg-sky-600, .bg-sky-700, .bg-violet-500, .bg-violet-600, .bg-violet-700, .bg-red-500, .bg-red-600, .bg-red-700, .bg-green-500, .bg-green-600, .bg-green-700, .bg-fuchsia-500, .bg-fuchsia-600, .bg-fuchsia-700, .bg-pink-500, .bg-pink-600, .bg-pink-700, .from-indigo-500, .from-indigo-600, .from-emerald-500, .from-emerald-600, .from-cyan-500, .from-cyan-600, .from-rose-500, .from-rose-600, .from-purple-500, .from-purple-600, .from-blue-500, .from-blue-600, .from-teal-500, .from-teal-600, .from-sky-500, .from-sky-600, .from-violet-500, .from-violet-600, .from-red-500, .from-red-600, .from-green-500, .from-green-600, .from-fuchsia-500, .from-fuchsia-600, .from-pink-500, .from-pink-600, .from-amber-600):is([class*="text-"]):not([class*="text-slate-9"]):not(.text-black),
+    body.theme-light :is(.bg-indigo-500, .bg-indigo-600, .bg-indigo-700, .bg-emerald-500, .bg-emerald-600, .bg-emerald-700, .bg-cyan-500, .bg-cyan-600, .bg-cyan-700, .bg-rose-500, .bg-rose-600, .bg-rose-700, .bg-purple-500, .bg-purple-600, .bg-purple-700, .bg-blue-500, .bg-blue-600, .bg-blue-700, .bg-teal-500, .bg-teal-600, .bg-teal-700, .bg-sky-500, .bg-sky-600, .bg-sky-700, .bg-violet-500, .bg-violet-600, .bg-violet-700, .bg-red-500, .bg-red-600, .bg-red-700, .bg-green-500, .bg-green-600, .bg-green-700, .bg-fuchsia-500, .bg-fuchsia-600, .bg-fuchsia-700, .bg-pink-500, .bg-pink-600, .bg-pink-700, .from-indigo-500, .from-indigo-600, .from-emerald-500, .from-emerald-600, .from-cyan-500, .from-cyan-600, .from-rose-500, .from-rose-600, .from-purple-500, .from-purple-600, .from-blue-500, .from-blue-600, .from-teal-500, .from-teal-600, .from-sky-500, .from-sky-600, .from-violet-500, .from-violet-600, .from-red-500, .from-red-600, .from-green-500, .from-green-600, .from-fuchsia-500, .from-fuchsia-600, .from-pink-500, .from-pink-600, .from-amber-600) :is([class*="text-"]):not([class*="text-slate-9"]):not(.text-black):not([class*="bg-"]) { color: #ffffff !important; }
+    /* Texto branco sobre fundos tintados (badges bg-*-950) assume a cor do tom */
+    body.theme-light :is(.bg-emerald-950, [class*="bg-emerald-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-emerald-fg) !important; }
+    body.theme-light :is(.bg-green-950, [class*="bg-green-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-emerald-fg) !important; }
+    body.theme-light :is(.bg-cyan-950, [class*="bg-cyan-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-cyan-fg) !important; }
+    body.theme-light :is(.bg-sky-950, [class*="bg-sky-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-cyan-fg) !important; }
+    body.theme-light :is(.bg-teal-950, [class*="bg-teal-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-cyan-fg) !important; }
+    body.theme-light :is(.bg-indigo-950, [class*="bg-indigo-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-indigo-fg) !important; }
+    body.theme-light :is(.bg-violet-950, [class*="bg-violet-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-indigo-fg) !important; }
+    body.theme-light :is(.bg-purple-950, [class*="bg-purple-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-purple-fg) !important; }
+    body.theme-light :is(.bg-fuchsia-950, [class*="bg-fuchsia-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-purple-fg) !important; }
+    body.theme-light :is(.bg-amber-950, [class*="bg-amber-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-amber-fg) !important; }
+    body.theme-light :is(.bg-yellow-950, [class*="bg-yellow-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-amber-fg) !important; }
+    body.theme-light :is(.bg-orange-950, [class*="bg-orange-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-amber-fg) !important; }
+    body.theme-light :is(.bg-rose-950, [class*="bg-rose-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-rose-fg) !important; }
+    body.theme-light :is(.bg-red-950, [class*="bg-red-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-rose-fg) !important; }
+    body.theme-light :is(.bg-pink-950, [class*="bg-pink-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-rose-fg) !important; }
+    body.theme-light :is(.bg-blue-950, [class*="bg-blue-950/"]):is(.text-white, [class*="text-"]) { color: var(--tint-blue-fg) !important; }
+
+    /* Fundos tintados sem barra de opacidade (bg-emerald-950 etc.) e hovers escuros */
+    body.theme-light .bg-emerald-950 { background-color: var(--tint-emerald) !important; border-color: var(--tint-emerald-bd) !important; }
+    body.theme-light .bg-cyan-950    { background-color: var(--tint-cyan) !important;    border-color: var(--tint-cyan-bd) !important; }
+    body.theme-light .bg-indigo-950  { background-color: var(--tint-indigo) !important;  border-color: var(--tint-indigo-bd) !important; }
+    body.theme-light .bg-purple-950  { background-color: var(--tint-purple) !important;  border-color: var(--tint-purple-bd) !important; }
+    body.theme-light .bg-amber-950   { background-color: var(--tint-amber) !important;   border-color: var(--tint-amber-bd) !important; }
+    body.theme-light .bg-rose-950    { background-color: var(--tint-rose) !important;    border-color: var(--tint-rose-bd) !important; }
+    body.theme-light .bg-blue-950    { background-color: var(--tint-blue) !important;    border-color: var(--tint-blue-bd) !important; }
+    body.theme-light :is(.bg-green-950, [class*="bg-green-950/"]) { background-color: var(--tint-emerald) !important; border-color: var(--tint-emerald-bd) !important; }
+    body.theme-light :is(.bg-sky-950, [class*="bg-sky-950/"]) { background-color: var(--tint-cyan) !important; border-color: var(--tint-cyan-bd) !important; }
+    body.theme-light :is(.bg-teal-950, [class*="bg-teal-950/"]) { background-color: var(--tint-cyan) !important; border-color: var(--tint-cyan-bd) !important; }
+    body.theme-light :is(.bg-violet-950, [class*="bg-violet-950/"]) { background-color: var(--tint-indigo) !important; border-color: var(--tint-indigo-bd) !important; }
+    body.theme-light :is(.bg-fuchsia-950, [class*="bg-fuchsia-950/"]) { background-color: var(--tint-purple) !important; border-color: var(--tint-purple-bd) !important; }
+    body.theme-light :is(.bg-yellow-950, [class*="bg-yellow-950/"]) { background-color: var(--tint-amber) !important; border-color: var(--tint-amber-bd) !important; }
+    body.theme-light :is(.bg-orange-950, [class*="bg-orange-950/"]) { background-color: var(--tint-amber) !important; border-color: var(--tint-amber-bd) !important; }
+    body.theme-light :is(.bg-red-950, [class*="bg-red-950/"]) { background-color: var(--tint-rose) !important; border-color: var(--tint-rose-bd) !important; }
+    body.theme-light :is(.bg-pink-950, [class*="bg-pink-950/"]) { background-color: var(--tint-rose) !important; border-color: var(--tint-rose-bd) !important; }
+    /* Fundos translúcidos de cor (bg-cyan-600/20 etc.) viram tintas sólidas legíveis */
+    body.theme-light :is(.bg-indigo-400\/5, .bg-indigo-400\/10, .bg-indigo-400\/15, .bg-indigo-400\/20, .bg-indigo-400\/25, .bg-indigo-400\/30, .bg-indigo-400\/40, .bg-indigo-500\/5, .bg-indigo-500\/10, .bg-indigo-500\/15, .bg-indigo-500\/20, .bg-indigo-500\/25, .bg-indigo-500\/30, .bg-indigo-500\/40, .bg-indigo-600\/5, .bg-indigo-600\/10, .bg-indigo-600\/15, .bg-indigo-600\/20, .bg-indigo-600\/25, .bg-indigo-600\/30, .bg-indigo-600\/40) { background-color: var(--tint-indigo) !important; }
+    body.theme-light :is(.bg-emerald-400\/5, .bg-emerald-400\/10, .bg-emerald-400\/15, .bg-emerald-400\/20, .bg-emerald-400\/25, .bg-emerald-400\/30, .bg-emerald-400\/40, .bg-emerald-500\/5, .bg-emerald-500\/10, .bg-emerald-500\/15, .bg-emerald-500\/20, .bg-emerald-500\/25, .bg-emerald-500\/30, .bg-emerald-500\/40, .bg-emerald-600\/5, .bg-emerald-600\/10, .bg-emerald-600\/15, .bg-emerald-600\/20, .bg-emerald-600\/25, .bg-emerald-600\/30, .bg-emerald-600\/40) { background-color: var(--tint-emerald) !important; }
+    body.theme-light :is(.bg-cyan-400\/5, .bg-cyan-400\/10, .bg-cyan-400\/15, .bg-cyan-400\/20, .bg-cyan-400\/25, .bg-cyan-400\/30, .bg-cyan-400\/40, .bg-cyan-500\/5, .bg-cyan-500\/10, .bg-cyan-500\/15, .bg-cyan-500\/20, .bg-cyan-500\/25, .bg-cyan-500\/30, .bg-cyan-500\/40, .bg-cyan-600\/5, .bg-cyan-600\/10, .bg-cyan-600\/15, .bg-cyan-600\/20, .bg-cyan-600\/25, .bg-cyan-600\/30, .bg-cyan-600\/40) { background-color: var(--tint-cyan) !important; }
+    body.theme-light :is(.bg-rose-400\/5, .bg-rose-400\/10, .bg-rose-400\/15, .bg-rose-400\/20, .bg-rose-400\/25, .bg-rose-400\/30, .bg-rose-400\/40, .bg-rose-500\/5, .bg-rose-500\/10, .bg-rose-500\/15, .bg-rose-500\/20, .bg-rose-500\/25, .bg-rose-500\/30, .bg-rose-500\/40, .bg-rose-600\/5, .bg-rose-600\/10, .bg-rose-600\/15, .bg-rose-600\/20, .bg-rose-600\/25, .bg-rose-600\/30, .bg-rose-600\/40) { background-color: var(--tint-rose) !important; }
+    body.theme-light :is(.bg-purple-400\/5, .bg-purple-400\/10, .bg-purple-400\/15, .bg-purple-400\/20, .bg-purple-400\/25, .bg-purple-400\/30, .bg-purple-400\/40, .bg-purple-500\/5, .bg-purple-500\/10, .bg-purple-500\/15, .bg-purple-500\/20, .bg-purple-500\/25, .bg-purple-500\/30, .bg-purple-500\/40, .bg-purple-600\/5, .bg-purple-600\/10, .bg-purple-600\/15, .bg-purple-600\/20, .bg-purple-600\/25, .bg-purple-600\/30, .bg-purple-600\/40) { background-color: var(--tint-purple) !important; }
+    body.theme-light :is(.bg-blue-400\/5, .bg-blue-400\/10, .bg-blue-400\/15, .bg-blue-400\/20, .bg-blue-400\/25, .bg-blue-400\/30, .bg-blue-400\/40, .bg-blue-500\/5, .bg-blue-500\/10, .bg-blue-500\/15, .bg-blue-500\/20, .bg-blue-500\/25, .bg-blue-500\/30, .bg-blue-500\/40, .bg-blue-600\/5, .bg-blue-600\/10, .bg-blue-600\/15, .bg-blue-600\/20, .bg-blue-600\/25, .bg-blue-600\/30, .bg-blue-600\/40) { background-color: var(--tint-blue) !important; }
+    body.theme-light :is(.bg-teal-400\/5, .bg-teal-400\/10, .bg-teal-400\/15, .bg-teal-400\/20, .bg-teal-400\/25, .bg-teal-400\/30, .bg-teal-400\/40, .bg-teal-500\/5, .bg-teal-500\/10, .bg-teal-500\/15, .bg-teal-500\/20, .bg-teal-500\/25, .bg-teal-500\/30, .bg-teal-500\/40, .bg-teal-600\/5, .bg-teal-600\/10, .bg-teal-600\/15, .bg-teal-600\/20, .bg-teal-600\/25, .bg-teal-600\/30, .bg-teal-600\/40) { background-color: var(--tint-cyan) !important; }
+    body.theme-light :is(.bg-sky-400\/5, .bg-sky-400\/10, .bg-sky-400\/15, .bg-sky-400\/20, .bg-sky-400\/25, .bg-sky-400\/30, .bg-sky-400\/40, .bg-sky-500\/5, .bg-sky-500\/10, .bg-sky-500\/15, .bg-sky-500\/20, .bg-sky-500\/25, .bg-sky-500\/30, .bg-sky-500\/40, .bg-sky-600\/5, .bg-sky-600\/10, .bg-sky-600\/15, .bg-sky-600\/20, .bg-sky-600\/25, .bg-sky-600\/30, .bg-sky-600\/40) { background-color: var(--tint-cyan) !important; }
+    body.theme-light :is(.bg-violet-400\/5, .bg-violet-400\/10, .bg-violet-400\/15, .bg-violet-400\/20, .bg-violet-400\/25, .bg-violet-400\/30, .bg-violet-400\/40, .bg-violet-500\/5, .bg-violet-500\/10, .bg-violet-500\/15, .bg-violet-500\/20, .bg-violet-500\/25, .bg-violet-500\/30, .bg-violet-500\/40, .bg-violet-600\/5, .bg-violet-600\/10, .bg-violet-600\/15, .bg-violet-600\/20, .bg-violet-600\/25, .bg-violet-600\/30, .bg-violet-600\/40) { background-color: var(--tint-indigo) !important; }
+    body.theme-light :is(.bg-red-400\/5, .bg-red-400\/10, .bg-red-400\/15, .bg-red-400\/20, .bg-red-400\/25, .bg-red-400\/30, .bg-red-400\/40, .bg-red-500\/5, .bg-red-500\/10, .bg-red-500\/15, .bg-red-500\/20, .bg-red-500\/25, .bg-red-500\/30, .bg-red-500\/40, .bg-red-600\/5, .bg-red-600\/10, .bg-red-600\/15, .bg-red-600\/20, .bg-red-600\/25, .bg-red-600\/30, .bg-red-600\/40) { background-color: var(--tint-rose) !important; }
+    body.theme-light :is(.bg-green-400\/5, .bg-green-400\/10, .bg-green-400\/15, .bg-green-400\/20, .bg-green-400\/25, .bg-green-400\/30, .bg-green-400\/40, .bg-green-500\/5, .bg-green-500\/10, .bg-green-500\/15, .bg-green-500\/20, .bg-green-500\/25, .bg-green-500\/30, .bg-green-500\/40, .bg-green-600\/5, .bg-green-600\/10, .bg-green-600\/15, .bg-green-600\/20, .bg-green-600\/25, .bg-green-600\/30, .bg-green-600\/40) { background-color: var(--tint-emerald) !important; }
+    body.theme-light :is(.bg-fuchsia-400\/5, .bg-fuchsia-400\/10, .bg-fuchsia-400\/15, .bg-fuchsia-400\/20, .bg-fuchsia-400\/25, .bg-fuchsia-400\/30, .bg-fuchsia-400\/40, .bg-fuchsia-500\/5, .bg-fuchsia-500\/10, .bg-fuchsia-500\/15, .bg-fuchsia-500\/20, .bg-fuchsia-500\/25, .bg-fuchsia-500\/30, .bg-fuchsia-500\/40, .bg-fuchsia-600\/5, .bg-fuchsia-600\/10, .bg-fuchsia-600\/15, .bg-fuchsia-600\/20, .bg-fuchsia-600\/25, .bg-fuchsia-600\/30, .bg-fuchsia-600\/40) { background-color: var(--tint-purple) !important; }
+    body.theme-light :is(.bg-pink-400\/5, .bg-pink-400\/10, .bg-pink-400\/15, .bg-pink-400\/20, .bg-pink-400\/25, .bg-pink-400\/30, .bg-pink-400\/40, .bg-pink-500\/5, .bg-pink-500\/10, .bg-pink-500\/15, .bg-pink-500\/20, .bg-pink-500\/25, .bg-pink-500\/30, .bg-pink-500\/40, .bg-pink-600\/5, .bg-pink-600\/10, .bg-pink-600\/15, .bg-pink-600\/20, .bg-pink-600\/25, .bg-pink-600\/30, .bg-pink-600\/40) { background-color: var(--tint-rose) !important; }
+    body.theme-light :is(.bg-amber-400\/5, .bg-amber-400\/10, .bg-amber-400\/15, .bg-amber-400\/20, .bg-amber-400\/25, .bg-amber-400\/30, .bg-amber-400\/40, .bg-amber-500\/5, .bg-amber-500\/10, .bg-amber-500\/15, .bg-amber-500\/20, .bg-amber-500\/25, .bg-amber-500\/30, .bg-amber-500\/40, .bg-amber-600\/5, .bg-amber-600\/10, .bg-amber-600\/15, .bg-amber-600\/20, .bg-amber-600\/25, .bg-amber-600\/30, .bg-amber-600\/40) { background-color: var(--tint-amber) !important; }
+    body.theme-light .bg-slate-700 { background-color: #e2e8f0 !important; }
+    body.theme-light :is([class*="hover:bg-slate-"], [class*="hover:bg-"][class*="-950"], [class*="hover:bg-"][class*="-900"]):hover {
+      background-color: var(--surface-hover) !important;
+    }
+    body.theme-light :is([class*="from-"][class*="-950"], [class*="to-slate-9"], [class*="via-slate-9"]) {
+      background-image: none !important;
+      background-color: var(--surface-sub) !important;
+    }
+    body.theme-light :is(.shadow-xl, .shadow-2xl, .shadow-lg) {
+      --tw-shadow-color: rgba(15, 23, 42, 0.12);
+    }
+    body.theme-light kbd { background: #f1f5f9 !important; color: #334155 !important; border-color: #cbd5e1 !important; }
+    body.theme-light .ticker-pill { border-right-color: #dbe2ec; }
+    body.theme-light #tree-canvas-grid { background-image: radial-gradient(rgba(71, 85, 105, 0.18) 1.5px, transparent 1.5px) !important; }
+
+    /* Realce de sintaxe do console legível em fundo claro */
+    body.theme-light .console-token-key { color: #0369a1 !important; }
+    body.theme-light .console-token-str { color: #a16207 !important; }
+    body.theme-light .console-token-num { color: #047857 !important; }
+    body.theme-light .console-token-bool { color: #7e22ce !important; }
+    body.theme-light .console-token-null { color: #be123c !important; }
+    body.theme-light .console-token-punc { color: #556378 !important; }
+    body.theme-light .console-compact-strip:hover { background-color: #eef4ff !important; border-color: #0284c7 !important; }
 
     /* ================= [INOVAÇÃO] TEMA INDUSTRIAL SCADA DE ALTO CONTRASTE (ÂMBAR FOSFORESCENTE & CIANO) ================= */
     body.theme-scada-industrial {
@@ -771,7 +1169,8 @@
       <!-- Broker MQTT Status (AWS IoT Core / Local) -->
       <button onclick="toggleBrokerMode()" title="Clique para alternar entre AWS IoT Core (8883 TLS) e Broker Local (1883)" class="flex items-center space-x-1.5 bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-indigo-500/50 px-2 py-0.5 rounded-lg text-xs shadow-sm transition">
         <span id="top-dot-broker" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span id="top-label-broker" class="font-semibold text-emerald-400 text-[10.5px]">☁️ AWS IoT (8883)</span>
+        <i data-lucide="server" class="w-3.5 h-3.5 text-slate-400" aria-hidden="true"></i>
+        <span id="top-label-broker" class="font-semibold text-emerald-400 text-[10.5px]">AWS IoT (8883)</span>
       </button>
 
       <!-- [INOVAÇÃO] Botão de Abertura do Command Palette (Ctrl + K) -->
@@ -794,21 +1193,29 @@
         <span id="top-innovations-badge" class="text-[9px] font-mono font-extrabold bg-purple-600 text-white px-1.5 py-0.2 rounded-full shadow-sm">3</span>
       </button>
 
+      <!-- Ferramentas avançadas agrupadas num menu (reduz a barra de 13 para 9 itens — Lei de Hick) -->
+      <div class="relative" data-header-menu>
+        <button type="button" id="top-btn-tools-menu" onclick="toggleHeaderMenu('tools-menu', event)" aria-haspopup="menu" aria-expanded="false" aria-controls="tools-menu" title="Ferramentas avançadas da bancada" class="flex items-center space-x-1.5 bg-slate-950/80 border border-slate-800 text-slate-300 px-2 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
+          <i data-lucide="wrench" class="w-3.5 h-3.5 text-cyan-400"></i>
+          <span class="text-[11px] hidden sm:inline">Ferramentas</span>
+          <i data-lucide="chevron-down" class="w-3 h-3 text-slate-400"></i>
+        </button>
+        <div id="tools-menu" role="menu" aria-label="Ferramentas avançadas" class="header-menu dropdown-glass-menu hidden">
       <!-- [INOVAÇÃO] Time-Travel Debugger (Caixa Preta de Telemetria com Replay Instantâneo) -->
-      <button onclick="toggleBlackboxDock()" id="top-btn-blackbox" title="Caixa Preta de Telemetria (Replay Instantâneo dos Últimos 10 Minutos de Bancada)" class="flex items-center space-x-1.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-cyan-500/60 text-slate-300 hover:text-cyan-300 px-2 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
+      <button role="menuitem" onclick="closeHeaderMenus(); toggleBlackboxDock()" id="top-btn-blackbox" title="Caixa Preta de Telemetria (Replay Instantâneo dos Últimos 10 Minutos de Bancada)" class="flex items-center space-x-1.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-cyan-500/60 text-slate-300 hover:text-cyan-300 px-2 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
         <span id="blackbox-status-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
         <span class="text-[11px]">Caixa Preta</span>
         <span id="blackbox-mode-pill" class="text-[9px] font-mono font-bold bg-cyan-950 text-cyan-300 px-1 py-0.2 rounded border border-cyan-500/30">AO VIVO</span>
       </button>
 
       <!-- [INOVAÇÃO] Gêmeo Digital Holográfico 3D da Placa (WebGPU / Three.js) -->
-      <button onclick="openDigitalTwinFromTop()" id="top-btn-twin" title="Abrir Gêmeo Digital Holográfico 3D da Placa ESP32 (LEDs em tempo real e mapa térmico)" class="flex items-center space-x-1.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-cyan-500/60 text-slate-300 hover:text-cyan-300 px-2.5 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
+      <button role="menuitem" onclick="closeHeaderMenus(); openDigitalTwinFromTop()" id="top-btn-twin" title="Abrir Gêmeo Digital Holográfico 3D da Placa ESP32 (LEDs em tempo real e mapa térmico)" class="flex items-center space-x-1.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-cyan-500/60 text-slate-300 hover:text-cyan-300 px-2.5 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
         <i data-lucide="box" class="w-3.5 h-3.5 text-cyan-400"></i>
         <span class="text-[11px]">Gêmeo 3D</span>
       </button>
 
       <!-- [INOVAÇÃO] Radar Wi-Fi CSI & Tomografia Passiva de RF (Detecção sem Câmeras por OFDM 64) -->
-      <button onclick="toggleRadarCsiModal()" id="top-btn-radar-csi" title="Radar Wi-Fi CSI & Tomografia Passiva de RF (Detecção de Movimento sem Câmeras por Dispersão de Sinal nas 64 Subportadoras OFDM do ESP32)" class="flex items-center space-x-1.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/60 text-slate-300 hover:text-emerald-300 px-2.5 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
+      <button role="menuitem" onclick="closeHeaderMenus(); toggleRadarCsiModal()" id="top-btn-radar-csi" title="Radar Wi-Fi CSI & Tomografia Passiva de RF (Detecção de Movimento sem Câmeras por Dispersão de Sinal nas 64 Subportadoras OFDM do ESP32)" class="flex items-center space-x-1.5 bg-slate-950 hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/60 text-slate-300 hover:text-emerald-300 px-2.5 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
         <span class="relative flex h-2 w-2">
           <span id="top-csi-ping-dot" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span id="top-csi-static-dot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -819,24 +1226,43 @@
       </button>
 
       <!-- Modo Inspetor Visual para IA (F2 ou Alt+Clique) -->
-      <button onclick="toggleUiInspector()" id="top-btn-ui-inspector" title="Ativar/Desativar Modo Seleção Visual para IA (Atalho: F2 ou Alt+Clique)" class="flex items-center space-x-1 bg-slate-950/80 hover:bg-indigo-950/70 border border-slate-800 hover:border-indigo-500/60 text-slate-300 hover:text-indigo-200 px-2 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
+      <button role="menuitem" onclick="closeHeaderMenus(); toggleUiInspector()" id="top-btn-ui-inspector" title="Ativar/Desativar Modo Seleção Visual para IA (Atalho: F2 ou Alt+Clique)" class="flex items-center space-x-1 bg-slate-950/80 hover:bg-indigo-950/70 border border-slate-800 hover:border-indigo-500/60 text-slate-300 hover:text-indigo-200 px-2 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
         <i data-lucide="crosshair" class="w-3.5 h-3.5 text-indigo-400"></i>
         <span class="text-[11px]">Inspetor IA</span>
         <span class="text-[8.5px] font-mono bg-slate-800/80 text-slate-400 px-1 py-0.2 rounded">F2</span>
       </button>
+        </div>
+      </div>
 
-      <!-- [INOVAÇÃO] Alternador de Tema SCADA Dark High-Contrast (Âmbar/Ciano para Bancada) -->
-      <button onclick="toggleScadaTheme()" id="top-btn-theme-contrast" title="Alternar Tema SCADA High-Contrast (Alto Contraste Âmbar/Ciano sobre Preto para Bancada)" class="flex items-center space-x-1 bg-slate-950/80 hover:bg-amber-950/70 border border-slate-800 hover:border-amber-500/60 text-amber-400 hover:text-amber-300 px-2 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
-        <span id="theme-toggle-icon">⚡</span>
-        <span id="theme-toggle-label" class="text-[11px] hidden sm:inline">Tema SCADA</span>
-      </button>
+      <!-- Seletor de Tema: Cyber (escuro) · SCADA (alto contraste) · Claro -->
+      <div class="relative" data-header-menu>
+        <button type="button" id="top-btn-theme-contrast" onclick="toggleHeaderMenu('theme-menu', event)" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-menu" title="Tema da interface" class="flex items-center space-x-1 bg-slate-950/80 border border-slate-800 text-amber-400 px-2 py-0.5 rounded-lg text-xs font-bold shadow-sm transition">
+          <i data-lucide="palette" class="w-3.5 h-3.5"></i>
+          <span id="theme-toggle-label" class="text-[11px] hidden sm:inline">Tema</span>
+          <i data-lucide="chevron-down" class="w-3 h-3 text-slate-400"></i>
+        </button>
+        <div id="theme-menu" role="menu" aria-label="Tema da interface" class="header-menu dropdown-glass-menu hidden">
+          <button type="button" role="menuitemradio" aria-checked="true" data-theme-option="cyber" onclick="setUiTheme('cyber')">
+            <i data-lucide="moon" class="w-4 h-4 text-indigo-400 shrink-0"></i>
+            <span class="text-xs font-bold">Cyber escuro<span class="header-menu-desc">Padrão da bancada</span></span>
+          </button>
+          <button type="button" role="menuitemradio" aria-checked="false" data-theme-option="scada" onclick="setUiTheme('scada')">
+            <i data-lucide="zap" class="w-4 h-4 text-amber-400 shrink-0"></i>
+            <span class="text-xs font-bold">SCADA alto contraste<span class="header-menu-desc">Âmbar e ciano sobre preto</span></span>
+          </button>
+          <button type="button" role="menuitemradio" aria-checked="false" data-theme-option="light" onclick="setUiTheme('light')">
+            <i data-lucide="sun" class="w-4 h-4 text-amber-500 shrink-0"></i>
+            <span class="text-xs font-bold">Claro<span class="header-menu-desc">Para ambientes muito iluminados</span></span>
+          </button>
+        </div>
+      </div>
 
     </div>
 
   </header>
 
   <!-- ================= SUB-BARRA DE ALVO GLOBAL, MESH ID & COMANDOS DE BANCADA ================= -->
-  <div id="subbar-target-mesh" class="bg-slate-950/95 border-b border-slate-800/90 px-3 sm:px-5 py-1 min-h-[38px] flex items-center justify-between gap-2 shrink-0 z-35 select-none shadow-sm flex-wrap">
+  <div id="subbar-target-mesh" role="region" aria-label="Alvo dos comandos e malha ativa" class="bg-slate-950/95 border-b border-slate-800/90 px-3 sm:px-5 py-1 min-h-[38px] flex items-center justify-between gap-2 shrink-0 z-35 select-none shadow-sm flex-wrap">
     
     <!-- Alvo & Endereçamento Rápido -->
     <div class="flex items-center space-x-1.5 bg-slate-900/90 px-2.5 py-0.5 rounded-lg border border-slate-800 shadow-inner">
@@ -844,7 +1270,7 @@
         <i data-lucide="target" class="w-3.5 h-3.5 text-indigo-400"></i>
         <span class="text-[11px] font-bold text-slate-200">Alvo:</span>
       </div>
-      <input type="text" id="global-target" oninput="updateTopMeshId()" list="target-suggestions" value="root" placeholder="MAC ou alias..." class="bg-slate-950 border border-slate-700/80 rounded-md px-2 py-0.5 text-xs text-slate-100 mono w-32 focus:outline-none focus:border-indigo-500">
+      <input type="text" id="global-target" aria-label="Alvo global dos comandos (MAC ou alias)" oninput="updateTopMeshId()" list="target-suggestions" value="root" placeholder="MAC ou alias..." class="bg-slate-950 border border-slate-700/80 rounded-md px-2 py-0.5 text-xs text-slate-100 mono w-32 focus:outline-none focus:border-indigo-500">
       <datalist id="target-suggestions">
         <option value="root">ROOT (ff:00:00:01:00:00)</option>
         <option value="any">ANY (ff:ff:ff:ff:ff:ff)</option>
@@ -864,8 +1290,8 @@
         <span class="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Mesh ID:</span>
       </div>
       <div class="flex items-center space-x-1.5">
-        <span id="top-subbar-mesh-id" class="font-mono font-black text-amber-300 text-xs px-2 py-0.2 rounded bg-slate-950 border border-amber-500/40 shadow-inner">00:00:00:00:44:08</span>
-        <span id="top-subbar-mesh-tag" class="text-[9px] font-mono px-2 py-0.2 rounded-full bg-purple-950/80 border border-purple-500/50 text-purple-200 font-bold">Malha Bancada (Dev)</span>
+        <span id="top-subbar-mesh-id" class="font-mono font-black text-amber-300 text-xs px-2 py-0.2 rounded bg-slate-950 border border-amber-500/40 shadow-inner">—</span>
+        <span id="top-subbar-mesh-tag" class="text-[9px] font-mono px-2 py-0.2 rounded-full bg-slate-900 border border-slate-700 text-slate-300 font-bold">Carregando...</span>
       </div>
     </div>
 
@@ -886,127 +1312,102 @@
     </div>
   </div>
 
-  <!-- ================= FITA DA BOLSA DE VALORES AO VIVO (STOCK TICKER TAPE) ================= -->
-  <div id="mesh-stock-ticker" class="bg-slate-950 border-b border-slate-800/90 h-9 flex items-center shrink-0 z-30 select-none overflow-hidden relative">
-    
-    <!-- Badge Fixo à Esquerda: Ticker Terminal Anchor -->
-    <div class="h-full px-3.5 bg-slate-900/90 border-r border-slate-800 flex items-center space-x-2 shrink-0 z-10 shadow-md">
-      <div class="flex items-center space-x-1.5">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        <span class="font-mono text-[10px] font-black uppercase tracking-wider text-emerald-400">MKT CODAX</span>
-      </div>
-      <span class="text-[9px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-1 py-0.2 rounded font-mono font-bold">AO VIVO</span>
+  <!-- ================= LETREIRO DE STATUS DA BANCADA (SOMENTE DADOS REAIS, PAUSÁVEL — WCAG 2.2.2) ================= -->
+  <div id="mesh-stock-ticker" role="region" aria-label="Letreiro de status da bancada" class="bg-slate-950 border-b border-slate-800/90 h-8 flex items-center shrink-0 z-30 select-none overflow-hidden relative">
+
+    <div class="h-full px-3 bg-slate-900/90 border-r border-slate-800 flex items-center space-x-2 shrink-0 z-10">
+      <span class="w-2 h-2 rounded-full bg-emerald-400" aria-hidden="true"></span>
+      <span class="font-mono text-[11px] font-black uppercase tracking-wider text-emerald-400">Bancada</span>
     </div>
 
-    <!-- Viewport Rolante Contínuo (Seamless 50% Loop) -->
     <div class="ticker-viewport flex-1 h-full flex items-center">
       <div class="ticker-strip">
-        
-        <!-- Bloco de Cotações 1 -->
         <div class="inline-flex items-center">
           <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">👑 ROOT L1:</span>
-            <span class="text-emerald-400 font-bold">ONLINE</span>
-            <span class="text-emerald-400 ml-1.5">▲ -62 dBm</span>
+            <i data-lucide="crown" class="w-3.5 h-3.5 text-amber-400 mr-1.5" aria-hidden="true"></i>
+            <span class="text-slate-400 font-bold mr-1.5">ROOT:</span>
+            <span data-ticker="root" class="text-emerald-400 font-bold">aguardando topology</span>
           </div>
           <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">⚡ MEDIDORES:</span>
+            <i data-lucide="network" class="w-3.5 h-3.5 text-cyan-400 mr-1.5" aria-hidden="true"></i>
+            <span class="text-slate-400 font-bold mr-1.5">MALHA:</span>
+            <span data-ticker="mesh" class="text-cyan-300 font-bold">—</span>
+          </div>
+          <div class="ticker-pill">
+            <i data-lucide="gauge" class="w-3.5 h-3.5 text-cyan-400 mr-1.5" aria-hidden="true"></i>
+            <span class="text-slate-400 font-bold mr-1.5">MEDIDORES:</span>
             <span id="ticker-devices-stat" class="text-cyan-400 font-bold">0</span>
-            <span class="text-cyan-400 ml-1.5">▲ 100% OPERACIONAIS</span>
+            <span data-ticker="devices-online" class="text-slate-400 ml-1.5">—</span>
           </div>
           <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">📡 TÓPICO:</span>
+            <i data-lucide="hash" class="w-3.5 h-3.5 text-indigo-400 mr-1.5" aria-hidden="true"></i>
+            <span class="text-slate-400 font-bold mr-1.5">TÓPICO:</span>
             <span id="ticker-topic-stat" class="text-indigo-300 font-bold">config/shopba/mesh</span>
-            <span id="ticker-env-stat" class="text-emerald-400 ml-1.5">▲ PROD</span>
+            <span id="ticker-env-stat" data-ticker="env" class="text-emerald-400 ml-1.5">· PROD</span>
           </div>
           <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">🔐 SENHA MESH:</span>
-            <span class="text-amber-300 font-bold">QNfW7kyR1bAM</span>
-            <span class="text-slate-500 ml-1.5">▲ WPA2-PSK</span>
+            <i data-lucide="server" class="w-3.5 h-3.5 text-emerald-400 mr-1.5" aria-hidden="true"></i>
+            <span class="text-slate-400 font-bold mr-1.5">BROKER:</span>
+            <span data-ticker="broker" class="text-emerald-400 font-bold">—</span>
           </div>
           <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">📶 BROKER MQTT:</span>
-            <span class="text-emerald-400 font-bold">1883</span>
-            <span class="text-emerald-400 ml-1.5">▲ LATÊNCIA &lt;15ms</span>
-          </div>
-          <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">📦 OTA HTTP:</span>
-            <span class="text-purple-400 font-bold">:8000</span>
-            <span class="text-purple-300 ml-1.5">▲ MUPGRADE PRONTO</span>
-          </div>
-          <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">🛡️ ANTI-CRASH DEDUP:</span>
-            <span class="text-cyan-300 font-bold">ATIVA</span>
-            <span class="text-emerald-400 ml-1.5">▲ ZERO REBOOTS</span>
-          </div>
-          <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">🧠 HEAP ESP32:</span>
-            <span class="text-emerald-400 font-bold">&gt;180KB</span>
-            <span class="text-emerald-400 ml-1.5">▲ ESTÁVEL</span>
+            <i data-lucide="package" class="w-3.5 h-3.5 text-purple-400 mr-1.5" aria-hidden="true"></i>
+            <span class="text-slate-400 font-bold mr-1.5">OTA HTTP:</span>
+            <span data-ticker="ota" class="text-purple-400 font-bold">:8000</span>
           </div>
           <div id="ticker-live-alert" class="ticker-pill bg-indigo-950/40 border border-indigo-500/30 rounded px-2.5 py-0.5">
-            <span class="text-indigo-300 font-bold mr-1.5">🚨 RETORNO AO VIVO:</span>
+            <i data-lucide="bell-ring" class="w-3.5 h-3.5 text-indigo-300 mr-1.5" aria-hidden="true"></i>
+            <span class="text-indigo-300 font-bold mr-1.5">ÚLTIMO RETORNO:</span>
             <span id="ticker-live-alert-text" class="text-slate-300">Aguardando telemetria MQTT...</span>
-            <span class="text-indigo-400 ml-1.5">▲ SYNC</span>
           </div>
         </div>
 
-        <!-- Bloco de Cotações 2 (Duplicata idêntica para loop infinito perfeito sem engasgos) -->
-        <div class="inline-flex items-center">
+        <!-- Cópia idêntica só para o loop contínuo (oculta para leitores de tela) -->
+        <div class="inline-flex items-center" aria-hidden="true">
           <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">👑 ROOT L1:</span>
-            <span class="text-emerald-400 font-bold">ONLINE</span>
-            <span class="text-emerald-400 ml-1.5">▲ -62 dBm</span>
+            <i data-lucide="crown" class="w-3.5 h-3.5 text-amber-400 mr-1.5"></i>
+            <span class="text-slate-400 font-bold mr-1.5">ROOT:</span>
+            <span data-ticker="root" class="text-emerald-400 font-bold">aguardando topology</span>
           </div>
           <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">⚡ MEDIDORES:</span>
+            <i data-lucide="network" class="w-3.5 h-3.5 text-cyan-400 mr-1.5"></i>
+            <span class="text-slate-400 font-bold mr-1.5">MALHA:</span>
+            <span data-ticker="mesh" class="text-cyan-300 font-bold">—</span>
+          </div>
+          <div class="ticker-pill">
+            <i data-lucide="gauge" class="w-3.5 h-3.5 text-cyan-400 mr-1.5"></i>
+            <span class="text-slate-400 font-bold mr-1.5">MEDIDORES:</span>
             <span class="text-cyan-400 font-bold ticker-devices-copy">0</span>
-            <span class="text-cyan-400 ml-1.5">▲ 100% OPERACIONAIS</span>
+            <span data-ticker="devices-online" class="text-slate-400 ml-1.5">—</span>
           </div>
           <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">📡 TÓPICO:</span>
+            <i data-lucide="hash" class="w-3.5 h-3.5 text-indigo-400 mr-1.5"></i>
+            <span class="text-slate-400 font-bold mr-1.5">TÓPICO:</span>
             <span class="text-indigo-300 font-bold ticker-topic-copy">config/shopba/mesh</span>
-            <span class="text-emerald-400 ml-1.5">▲ PROD</span>
+            <span data-ticker="env" class="text-emerald-400 ml-1.5">· PROD</span>
           </div>
           <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">🔐 SENHA MESH:</span>
-            <span class="text-amber-300 font-bold">QNfW7kyR1bAM</span>
-            <span class="text-slate-500 ml-1.5">▲ WPA2-PSK</span>
+            <i data-lucide="server" class="w-3.5 h-3.5 text-emerald-400 mr-1.5"></i>
+            <span class="text-slate-400 font-bold mr-1.5">BROKER:</span>
+            <span data-ticker="broker" class="text-emerald-400 font-bold">—</span>
           </div>
           <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">📶 BROKER MQTT:</span>
-            <span class="text-emerald-400 font-bold">1883</span>
-            <span class="text-emerald-400 ml-1.5">▲ LATÊNCIA &lt;15ms</span>
-          </div>
-          <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">📦 OTA HTTP:</span>
-            <span class="text-purple-400 font-bold">:8000</span>
-            <span class="text-purple-300 ml-1.5">▲ MUPGRADE PRONTO</span>
-          </div>
-          <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">🛡️ ANTI-CRASH DEDUP:</span>
-            <span class="text-cyan-300 font-bold">ATIVA</span>
-            <span class="text-emerald-400 ml-1.5">▲ ZERO REBOOTS</span>
-          </div>
-          <div class="ticker-pill">
-            <span class="text-slate-400 font-bold mr-1.5">🧠 HEAP ESP32:</span>
-            <span class="text-emerald-400 font-bold">&gt;180KB</span>
-            <span class="text-emerald-400 ml-1.5">▲ ESTÁVEL</span>
+            <i data-lucide="package" class="w-3.5 h-3.5 text-purple-400 mr-1.5"></i>
+            <span class="text-slate-400 font-bold mr-1.5">OTA HTTP:</span>
+            <span data-ticker="ota" class="text-purple-400 font-bold">:8000</span>
           </div>
           <div class="ticker-pill bg-indigo-950/40 border border-indigo-500/30 rounded px-2.5 py-0.5">
-            <span class="text-indigo-300 font-bold mr-1.5">🚨 RETORNO AO VIVO:</span>
+            <i data-lucide="bell-ring" class="w-3.5 h-3.5 text-indigo-300 mr-1.5"></i>
+            <span class="text-indigo-300 font-bold mr-1.5">ÚLTIMO RETORNO:</span>
             <span class="text-slate-300 ticker-alert-copy">Aguardando telemetria MQTT...</span>
-            <span class="text-indigo-400 ml-1.5">▲ SYNC</span>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- Indicador de Pausa ao Passar o Mouse (Pequena dica sutil no canto direito) -->
-    <div class="hidden md:flex items-center px-3 bg-slate-900/80 border-l border-slate-800 h-full text-[10px] text-slate-500 shrink-0 font-mono">
-      <span>⏸️ passe o mouse p/ pausar</span>
-    </div>
+    <button type="button" id="ticker-pause-btn" onclick="toggleTickerPause()" aria-pressed="false" aria-label="Pausar letreiro" title="Pausar / retomar o letreiro" class="h-full px-3 bg-slate-900/80 border-l border-slate-800 text-slate-300 hover:text-white text-[11px] font-semibold shrink-0 flex items-center space-x-1.5">
+      <i data-lucide="pause" class="w-3.5 h-3.5"></i><span class="hidden md:inline">Pausar</span>
+    </button>
 
   </div>
 
@@ -1033,12 +1434,12 @@
             <!-- Tipografia Industrial de Alta Precisão -->
             <div class="sidebar-text-content min-w-0">
               <div class="flex items-center space-x-1.5">
-                <span class="font-black text-sm tracking-widest text-white uppercase font-sans">CODAX</span>
-                <span class="text-[9.5px] font-mono font-bold bg-[#040810] text-cyan-300 border border-cyan-500/30 px-1.5 py-0.2 rounded shadow-inner">2.9 PRO</span>
+                <span class="font-black text-sm tracking-widest text-white uppercase font-sans">SCANTECH</span>
+                <span class="text-[9.5px] font-mono font-bold bg-[#040810] text-cyan-300 border border-cyan-500/30 px-1.5 py-0.2 rounded shadow-inner">ULTIMATE</span>
               </div>
               <div class="flex items-center space-x-1.5 text-[10px] text-slate-400 font-mono tracking-tight mt-0.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                <span class="text-slate-300 font-medium">ESP-MESH SCADA</span>
+                <span class="text-slate-300 font-medium">CODAX ESP-MESH SCADA</span>
               </div>
             </div>
           </div>
@@ -1050,7 +1451,7 @@
         </div>
 
         <!-- Seção de Navegação Principal (As 7 Abas) -->
-        <nav class="space-y-1">
+        <nav class="space-y-1" aria-label="Menu principal">
           <div class="sidebar-text-content text-[10px] font-bold uppercase tracking-wider text-slate-500 px-2.5 pb-1">Menu Principal</div>
           
           <button onclick="switchTab('quick')" id="nav-btn-quick" title="Ações Rápidas de Bancada" class="sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-between bg-indigo-600 text-white shadow-md shadow-indigo-600/30">
@@ -1083,6 +1484,14 @@
               <span class="sidebar-label">Árvore da Malha</span>
             </span>
             <span class="sidebar-label text-[9px] text-emerald-400 font-mono">L1+L2</span>
+          </button>
+
+          <button onclick="switchTab('wifi-channels')" id="nav-btn-wifi-channels" title="Canal Wi-Fi & Roteador" class="sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/80">
+            <span class="flex items-center space-x-2.5 shrink-0">
+              <i data-lucide="wifi" class="w-4 h-4 text-sky-400 shrink-0"></i>
+              <span class="sidebar-label">Canal Wi-Fi & Roteador</span>
+            </span>
+            <span id="sidebar-badge-wifi" class="sidebar-label text-[9px] bg-sky-950/80 text-sky-300 border border-sky-500/30 px-1.5 py-0.2 rounded font-mono font-bold">CH</span>
           </button>
 
           <button onclick="switchTab('dictionary')" id="nav-btn-dictionary" title="Dicionário Oficial" class="sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/80">
@@ -1168,7 +1577,7 @@
               </button>
             </div>
           </div>
-          <div id="sidebar-mini-feed" class="space-y-1.5 max-h-[350px] overflow-y-auto pr-0.5">
+          <div id="sidebar-mini-feed" tabindex="0" role="region" aria-label="Últimos retornos" class="space-y-1.5 max-h-[350px] overflow-y-auto pr-0.5">
             <div class="bg-slate-950/60 border border-slate-800/80 p-3.5 rounded-xl text-[10px] text-slate-500 italic text-center">
               Aguardando respostas e telemetria das controladoras...
             </div>
@@ -1226,7 +1635,7 @@
                 </div>
                 <div>
                   <div class="flex items-center space-x-2">
-                    <h3 class="font-black text-sm text-slate-100 uppercase tracking-wider">Diagnóstico Preventivo: Memória Heap & Quedas LWT</h3>
+                    <h2 class="font-black text-sm text-slate-100 uppercase tracking-wider">Diagnóstico Preventivo: Memória Heap & Quedas LWT</h2>
                     <span id="diag-panel-status-badge" class="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/40">
                       100% Saudável
                     </span>
@@ -1270,8 +1679,8 @@
           <div class="bg-slate-900 border border-slate-800 border border-indigo-500/40 rounded-2xl p-5 shadow-xl relative overflow-hidden">
             <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
             
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-800/80">
-              <div class="flex items-center space-x-3">
+            <div class="flex flex-col items-stretch gap-4 mb-4 pb-3 border-b border-slate-800/80">
+              <div class="flex items-center space-x-3 min-w-0">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/30 to-purple-500/30 border border-indigo-500/40 flex items-center justify-center text-indigo-300">
                   <i data-lucide="zap" class="w-5 h-5 text-amber-400"></i>
                 </div>
@@ -1285,8 +1694,9 @@
               </div>
 
               <!-- Controles da Macro -->
-              <div class="flex items-center space-x-2 w-full md:w-auto">
-                <select id="macro-target-select" onchange="setTarget(this.value)" class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2 font-mono focus:border-indigo-500 outline-none">
+              <div class="flex items-center gap-2 w-full min-w-0">
+                <label for="macro-target-select" class="sr-only-a11y">Placa alvo da macro de bancada</label>
+                <select id="macro-target-select" onchange="setTarget(this.value)" class="min-w-0 flex-1 sm:flex-none sm:w-96 truncate bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-xl px-3 py-2 font-mono focus:border-indigo-500 outline-none">
                   <option value="704bca491ca0">Codax Bancada (70:4B:CA:49:1C:A0)</option>
                   <option value="4417934f49a4">ROOT Laboratório (44:17:93:4F:49:A4)</option>
                   <option value="3083986350b0">Ethernet (30:83:98:63:50:B0)</option>
@@ -1804,10 +2214,10 @@
             <!-- Cabeçalho do Cadastro -->
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
               <div>
-                <h3 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+                <h2 class="text-base font-bold text-slate-100 flex items-center space-x-2">
                   <i data-lucide="gauge" class="w-5 h-5 text-cyan-400"></i>
                   <span>Cadastro de Medidores & Placas Codax</span>
-                </h3>
+                </h2>
                 <p class="text-xs text-slate-400 mt-1">
                   Atribua apelidos, números de série e protocolos aos MACs da sua bancada. Elimine a necessidade de copiar e colar endereços.
                 </p>
@@ -1820,7 +2230,7 @@
                 </button>
                 <button onclick="exportTechnicalDossierHtml()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl flex items-center space-x-2 transition shadow-lg shadow-emerald-600/25" title="Exportar Dossiê Técnico Completo da Malha em Arquivo Único HTML (Offline / Imprimir)">
                   <i data-lucide="file-text" class="w-4 h-4"></i>
-                  <span>📄 Dossiê Técnico HTML</span>
+                  <span>Dossiê Técnico HTML</span>
                 </button>
                 <button onclick="loadDevices(); loadDiscovered();" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold px-3 py-2.5 rounded-xl flex items-center space-x-1.5 transition border border-slate-700">
                   <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
@@ -1911,11 +2321,11 @@
             
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
               <div>
-                <h3 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+                <h2 class="text-base font-bold text-slate-100 flex items-center space-x-2">
                   <i data-lucide="network" class="w-5 h-5 text-emerald-400"></i>
-                  <span>Hierarquia Visual da Malha Mesh (Camadas 1, 2 e 3)</span>
-                </h3>
-                <p class="text-xs text-slate-400 mt-1">Acompanhe a árvore de conexões em tempo real: Root, nós filhos e intensidade de sinal RSSI.</p>
+                  <span>Hierarquia da Malha ESP-MESH por Camadas</span>
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">Montada a partir do retorno de <span class="font-mono text-slate-300">query topology</span>: ROOT (L1) no topo e cada Codax na camada reportada. A consulta é enviada ao abrir a aba e repetida a cada 60 s.</p>
                 <div id="tree-active-target-badge" class="mt-2.5 flex items-center space-x-2"></div>
               </div>
 
@@ -1924,19 +2334,19 @@
                 <div class="flex items-center bg-slate-950/90 p-1 rounded-xl border border-slate-800 shadow-inner mr-1 flex-wrap gap-1">
                   <button id="btn-tree-mode-panoramic" onclick="setTreeViewMode('panoramic')" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition bg-indigo-600 text-white shadow-sm" title="Visão Panorâmica lado a lado com Pan & Zoom interativo (Google Maps & n8n)">
                     <i data-lucide="map" class="w-3.5 h-3.5 text-cyan-300"></i>
-                    <span>🗺️ Panorâmica</span>
+                    <span>Panorâmica</span>
                   </button>
                   <button id="btn-tree-mode-classic" onclick="setTreeViewMode('classic')" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800/80" title="Visão Vertical Clássica com rolagem vertical padrão da página">
                     <i data-lucide="columns" class="w-3.5 h-3.5 text-slate-400"></i>
-                    <span>📜 Clássica</span>
+                    <span>Clássica</span>
                   </button>
                   <button id="btn-tree-mode-matrix" onclick="setTreeViewMode('matrix')" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800/80" title="Visão Matriz de Adjacência de Conexões Mesh em 4K">
                     <i data-lucide="grid" class="w-3.5 h-3.5 text-cyan-400"></i>
-                    <span>⊞ Matriz 4K</span>
+                    <span>Matriz 4K</span>
                   </button>
                   <button id="btn-tree-mode-timeline" onclick="setTreeViewMode('timeline')" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white hover:bg-slate-800/80" title="Régua Cronológica e Histórico de Mudanças de Topologia em Linha do Tempo">
                     <i data-lucide="history" class="w-3.5 h-3.5 text-amber-400"></i>
-                    <span>⏱️ Linha do Tempo</span>
+                    <span>Linha do Tempo</span>
                   </button>
                 </div>
 
@@ -1944,10 +2354,10 @@
                 <div class="flex items-center bg-[#020306] border border-[#131b28] p-1 rounded-xl shadow-inner mr-1">
                   <button id="btn-tree-filter-online" onclick="setTreeFilterMode('online_only')" class="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition bg-emerald-600 text-white shadow-sm" title="Exibe estritamente os Codax que estão fisicamente online e transmitindo telemetria na malha">
                     <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
-                    <span>🟢 Apenas Online</span>
+                    <span>Apenas Online</span>
                   </button>
                   <button id="btn-tree-filter-all" onclick="setTreeFilterMode('all')" class="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition text-slate-400 hover:text-white" title="Exibe todas as placas cadastradas, indicando com precisão quais estão offline">
-                    <span>🌐 Todos</span>
+                    <span>Todos</span>
                   </button>
                 </div>
 
@@ -1957,7 +2367,7 @@
                 </button>
                 <button onclick="queryTopologyBroadcast()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl flex items-center space-x-1.5 transition shadow-sm" title="Solicitar topologia ao vivo para todas as ROOTs da malha via MQTT">
                   <i data-lucide="radio" class="w-3.5 h-3.5 text-emerald-200"></i>
-                  <span>📡 Solicitar Topologia da Malha</span>
+                  <span>Solicitar Topologia da Malha</span>
                 </button>
                 <button onclick="renderLiveNodesTree(currentHighlightTreeMac)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl flex items-center space-x-1.5 transition border border-slate-700" title="Visualizar todas as malhas ativas com camadas L1 e L2">
                   <i data-lucide="git-merge" class="w-3.5 h-3.5 text-indigo-400"></i>
@@ -2102,10 +2512,10 @@
             <!-- Cabeçalho & Barra de Pesquisa do Dicionário -->
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
               <div>
-                <h3 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+                <h2 class="text-base font-bold text-slate-100 flex items-center space-x-2">
                   <i data-lucide="book-open" class="w-5 h-5 text-amber-400"></i>
                   <span>Dicionário Oficial de Comandos & Tópicos Codax</span>
-                </h3>
+                </h2>
                 <p class="text-xs text-slate-400 mt-1">Documentação completa de cada comando (query, change, setting) e tópicos MQTT.</p>
               </div>
 
@@ -2142,10 +2552,10 @@
         <section id="view-ota" class="tab-content hidden space-y-6">
           
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm">
-            <h3 class="text-base font-bold text-slate-100 mb-1 flex items-center space-x-2">
+            <h2 class="text-base font-bold text-slate-100 mb-1 flex items-center space-x-2">
               <i data-lucide="upload-cloud" class="w-5 h-5 text-indigo-400"></i>
               <span>Upload de Novo Firmware (.bin)</span>
-            </h3>
+            </h2>
             <p class="text-xs text-slate-400 mb-4">Envie o arquivo binário compilado pelo ESP-IDF para servi-lo via HTTP local.</p>
 
             <div class="border-2 border-dashed border-slate-700/80 hover:border-indigo-500 rounded-2xl p-6 text-center transition cursor-pointer bg-slate-950/40" onclick="document.getElementById('ota-file-input').click()">
@@ -2243,37 +2653,37 @@
                 <button onclick="setLogCategory('all')" id="btn-cat-all" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-indigo-600 text-white font-bold transition shadow-sm flex items-center space-x-1.5 text-xs">
                   <i data-lucide="layers" class="w-3.5 h-3.5"></i>
                   <span>Todos</span>
-                  <span id="count-cat-all" class="ml-1 text-[10px] opacity-80 font-mono">(0)</span>
+                  <span id="count-cat-all" class="ml-1 text-[10px] font-mono">(0)</span>
                 </button>
                 <button onclick="setLogCategory('retorno')" id="btn-cat-retorno" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white transition flex items-center space-x-1.5 text-xs">
                   <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-400"></i>
                   <span>Retornos</span>
-                  <span id="count-cat-retorno" class="ml-1 text-[10px] opacity-80 font-mono text-emerald-400">(0)</span>
+                  <span id="count-cat-retorno" class="ml-1 text-[10px] font-mono text-emerald-400">(0)</span>
                 </button>
                 <button onclick="setLogCategory('telemetria')" id="btn-cat-telemetria" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white transition flex items-center space-x-1.5 text-xs">
                   <i data-lucide="activity" class="w-3.5 h-3.5 text-cyan-400"></i>
                   <span>Telemetria</span>
-                  <span id="count-cat-telemetria" class="ml-1 text-[10px] opacity-80 font-mono text-cyan-400">(0)</span>
+                  <span id="count-cat-telemetria" class="ml-1 text-[10px] font-mono text-cyan-400">(0)</span>
                 </button>
                 <button onclick="setLogCategory('topologia')" id="btn-cat-topologia" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white transition flex items-center space-x-1.5 text-xs">
                   <i data-lucide="git-fork" class="w-3.5 h-3.5 text-purple-400"></i>
                   <span>Topologia</span>
-                  <span id="count-cat-topologia" class="ml-1 text-[10px] opacity-80 font-mono text-purple-400">(0)</span>
+                  <span id="count-cat-topologia" class="ml-1 text-[10px] font-mono text-purple-400">(0)</span>
                 </button>
                 <button onclick="setLogCategory('conexao')" id="btn-cat-conexao" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white transition flex items-center space-x-1.5 text-xs">
                   <i data-lucide="radio" class="w-3.5 h-3.5 text-blue-400"></i>
                   <span>Conexão</span>
-                  <span id="count-cat-conexao" class="ml-1 text-[10px] opacity-80 font-mono text-blue-400">(0)</span>
+                  <span id="count-cat-conexao" class="ml-1 text-[10px] font-mono text-blue-400">(0)</span>
                 </button>
                 <button onclick="setLogCategory('msg')" id="btn-cat-msg" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white transition flex items-center space-x-1.5 text-xs">
                   <i data-lucide="terminal" class="w-3.5 h-3.5 text-indigo-400"></i>
                   <span>Comandos</span>
-                  <span id="count-cat-msg" class="ml-1 text-[10px] opacity-80 font-mono text-indigo-400">(0)</span>
+                  <span id="count-cat-msg" class="ml-1 text-[10px] font-mono text-indigo-300">(0)</span>
                 </button>
                 <button onclick="setLogCategory('erro')" id="btn-cat-erro" class="cat-filter-btn px-2.5 py-1.5 rounded-xl bg-[#0d121e] border border-[#172235] text-slate-300 hover:text-white transition flex items-center space-x-1.5 text-xs">
                   <i data-lucide="alert-triangle" class="w-3.5 h-3.5 text-rose-400"></i>
                   <span>Erros</span>
-                  <span id="count-cat-erro" class="ml-1 text-[10px] opacity-80 font-mono text-rose-400">(0)</span>
+                  <span id="count-cat-erro" class="ml-1 text-[10px] font-mono text-rose-400">(0)</span>
                 </button>
               </div>
 
@@ -2433,7 +2843,7 @@
                 </div>
                 <div>
                   <div class="flex items-center space-x-2 flex-wrap">
-                    <h3 class="text-base font-bold text-slate-100">Amazon Timestream Visual Studio & UNLOAD S3 Exporter</h3>
+                    <h2 class="text-base font-bold text-slate-100">Amazon Timestream Visual Studio & UNLOAD S3 Exporter</h2>
                     <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 flex items-center space-x-1">
                       <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                       <span>AWS IoT Ingestão Ativa</span>
@@ -2527,7 +2937,7 @@
                     <button onclick="setTimestreamTimeWindow('7d')" id="btn-ts-win-7d" class="ts-win-btn px-2 py-0.5 rounded text-slate-400 hover:text-white">7d</button>
                   </div>
 
-                  <select id="ts-filter-mac" onchange="renderTimestreamActiveChart()" class="bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1 text-slate-200 text-xs font-mono focus:outline-none focus:border-cyan-500">
+                  <select id="ts-filter-mac" aria-label="Filtrar gráfico por placa (MAC)" onchange="renderTimestreamActiveChart()" class="bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1 text-slate-200 text-xs font-mono focus:outline-none focus:border-cyan-500">
                     <option value="" selected>Todos os Medidores</option>
                     <option value="704bca491ca0">Codax Bancada (70:4B:CA:49:1C:A0)</option>
                     <option value="308398635050">Medidor 01 (30:83:98:63:50:50)</option>
@@ -3035,7 +3445,7 @@
                 </div>
                 <div>
                   <div class="flex items-center space-x-2.5 flex-wrap">
-                    <h3 class="text-lg font-extrabold text-white tracking-wide">Radar Sci-Fi Lab & Observabilidade de Borda</h3>
+                    <h2 class="text-lg font-extrabold text-white tracking-wide">Radar Sci-Fi Lab & Observabilidade de Borda</h2>
                     <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 flex items-center space-x-1">
                       <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                       <span>v2.9 PRO • Cockpit 360° Docked & Inovações</span>
@@ -3271,10 +3681,10 @@
                   <span class="text-slate-400 text-[10px] font-mono">Backoff Exponencial Adaptativo</span>
                 </div>
                 <div class="flex items-center space-x-3">
-                  <label class="text-[11px] text-slate-400">CWmin:</label>
+                  <label for="csma-cw-min-slider" class="text-[11px] text-slate-400">CWmin:</label>
                   <input type="range" id="csma-cw-min-slider" min="1" max="15" value="3" onchange="updateCsmaParams()" class="flex-1 accent-emerald-500">
                   <span id="csma-cw-min-val" class="text-xs font-mono font-bold text-emerald-400 w-6">3</span>
-                  <label class="text-[11px] text-slate-400 ml-2">CWmax:</label>
+                  <label for="csma-cw-max-slider" class="text-[11px] text-slate-400 ml-2">CWmax:</label>
                   <input type="range" id="csma-cw-max-slider" min="3" max="31" value="7" onchange="updateCsmaParams()" class="flex-1 accent-cyan-500">
                   <span id="csma-cw-max-val" class="text-xs font-mono font-bold text-cyan-400 w-6">7</span>
                 </div>
@@ -3745,7 +4155,7 @@
                 </div>
                 <div>
                   <div class="flex items-center space-x-2 flex-wrap">
-                    <h3 class="text-base font-bold text-slate-100">Monitor Serial USB • Espelhamento Físico UART</h3>
+                    <h2 class="text-base font-bold text-slate-100">Monitor Serial USB • Espelhamento Físico UART</h2>
                     <span id="serial-status-badge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700 flex items-center space-x-1">
                       <span id="serial-status-dot" class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
                       <span id="serial-status-text">DESCONECTADO</span>
@@ -3762,7 +4172,7 @@
               <div class="flex items-center space-x-2 flex-wrap">
                 <div class="flex items-center space-x-1.5 bg-slate-950 border border-slate-700/80 rounded-xl px-2.5 py-1 text-xs">
                   <span class="text-slate-400 text-[11px] font-medium">Baud:</span>
-                  <select id="serial-baudrate-select" class="bg-transparent text-emerald-400 font-mono font-bold focus:outline-none cursor-pointer">
+                  <select id="serial-baudrate-select" aria-label="Velocidade da porta serial (baud)" class="bg-transparent text-emerald-400 font-mono font-bold focus:outline-none cursor-pointer">
                     <option value="115200" selected class="bg-slate-900 text-slate-200">115.200 (ESP-IDF Padrão)</option>
                     <option value="74880" class="bg-slate-900 text-slate-200">74.880 (ESP32 Bootloader ROM)</option>
                     <option value="921600" class="bg-slate-900 text-slate-200">921.600 (High-Speed / Flash)</option>
@@ -3884,9 +4294,9 @@
             <div class="flex items-center space-x-1.5 text-slate-400 font-mono text-[11px] pl-1">
               <span class="text-emerald-400 font-bold">ESP32&gt;</span>
             </div>
-            <input type="text" id="serial-cmd-input" placeholder="Digite um comando para a placa (ex: help, restart, heap, status, config)..." class="flex-1 bg-slate-950 border border-slate-700/80 rounded-xl px-3 py-2 text-xs font-mono text-slate-100 focus:outline-none focus:border-emerald-500" onkeydown="if(event.key==='Enter') sendSerialLineCommand()">
+            <input type="text" id="serial-cmd-input" aria-label="Comando para a placa via serial" placeholder="Digite um comando para a placa (ex: help, restart, heap, status, config)..." class="flex-1 bg-slate-950 border border-slate-700/80 rounded-xl px-3 py-2 text-xs font-mono text-slate-100 focus:outline-none focus:border-emerald-500" onkeydown="if(event.key==='Enter') sendSerialLineCommand()">
             
-            <select id="serial-line-ending" class="bg-slate-950 border border-slate-700 text-slate-300 text-xs rounded-xl px-2.5 py-2 font-mono">
+            <select id="serial-line-ending" aria-label="Terminador de linha enviado" class="bg-slate-950 border border-slate-700 text-slate-300 text-xs rounded-xl px-2.5 py-2 font-mono">
               <option value="\r\n" selected>CRLF (\r\n)</option>
               <option value="\n">LF (\n)</option>
               <option value="\r">CR (\r)</option>
@@ -3913,7 +4323,7 @@
                 </div>
                 <div>
                   <div class="flex items-center space-x-2 flex-wrap">
-                    <h3 class="text-base font-bold text-slate-100">Webserver Local do ESP32 • Portal de Comissionamento</h3>
+                    <h2 class="text-base font-bold text-slate-100">Webserver Local do ESP32 • Portal de Comissionamento</h2>
                     <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-500/40">
                       HTTP Porta 80 • SoftAP / LAN
                     </span>
@@ -4277,6 +4687,107 @@
 
         </section>
 
+        <!-- ================= ABA 13: CANAL WI-FI & STATUS DO ROTEADOR ================= -->
+        <section id="view-wifi-channels" class="tab-content hidden space-y-6">
+
+          <!-- Cabeçalho e Ações -->
+          <div class="bg-[#080c14] border border-[#131b28] rounded-2xl p-5 sm:p-6 shadow-xl space-y-5">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-[#131b28]">
+              <div class="flex items-start sm:items-center space-x-3.5">
+                <div class="p-3 rounded-2xl bg-sky-600/20 text-sky-400 border border-sky-500/30 shrink-0">
+                  <i data-lucide="wifi" class="w-6 h-6"></i>
+                </div>
+                <div>
+                  <div class="flex items-center space-x-2.5 flex-wrap gap-y-1">
+                    <h2 class="text-base sm:text-lg font-bold text-white tracking-wide">Auditoria de Canal Wi-Fi & Internet do Roteador</h2>
+                    <span id="wifi-env-pill" class="text-[10px] font-mono bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 px-2.5 py-0.5 rounded-full font-bold uppercase">AWS • PROD</span>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
+                    Consulta <code class="text-sky-300 font-mono">query info</code> e <code class="text-sky-300 font-mono">query topology</code> nas placas Codax para revelar o <strong>Canal Wi-Fi</strong>, <strong>SSID</strong>, <strong>MAC do Roteador</strong> e validar a <strong>Internet do Roteador</strong> pela resposta ponta-a-ponta via AWS IoT Core (RTT).
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap items-center gap-2 shrink-0">
+                <button onclick="probeWifiChannels('root')" id="btn-wifi-probe-roots" class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition shadow-md shadow-sky-600/25 flex items-center space-x-1.5">
+                  <i data-lucide="radar" class="w-3.5 h-3.5"></i>
+                  <span>Consultar ROOTs & Testar Internet</span>
+                </button>
+                <button onclick="probeWifiChannels('any')" id="btn-wifi-probe-any" class="px-3 py-2 rounded-xl bg-[#0d121e] border border-[#1d2b42] hover:border-sky-500/50 text-slate-200 hover:text-white text-xs font-semibold transition flex items-center space-x-1.5">
+                  <i data-lucide="radio" class="w-3.5 h-3.5 text-sky-400"></i>
+                  <span>Consultar Todos (any)</span>
+                </button>
+                <button onclick="loadWifiChannels()" class="px-3 py-2 rounded-xl bg-[#0d121e] border border-[#172235] hover:border-slate-500 text-slate-300 hover:text-white text-xs font-semibold transition flex items-center space-x-1.5">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                  <span>Atualizar</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- KPIs -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+              <div class="bg-[#03060b] border border-[#131b28] rounded-xl p-3.5">
+                <div class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Codax Monitorados</div>
+                <div id="wifi-kpi-total" class="text-2xl font-bold font-mono text-white mt-1">0</div>
+              </div>
+              <div class="bg-[#03060b] border border-[#131b28] rounded-xl p-3.5">
+                <div class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Com Canal Identificado</div>
+                <div id="wifi-kpi-with-channel" class="text-2xl font-bold font-mono text-sky-400 mt-1">0</div>
+              </div>
+              <div class="bg-[#03060b] border border-[#131b28] rounded-xl p-3.5">
+                <div class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Roteadores c/ Internet (AWS)</div>
+                <div id="wifi-kpi-routers-online" class="text-2xl font-bold font-mono text-emerald-400 mt-1">0</div>
+              </div>
+              <div class="bg-[#03060b] border border-[#131b28] rounded-xl p-3.5">
+                <div class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Canais Wi-Fi em Uso</div>
+                <div id="wifi-kpi-channels-list" class="text-sm font-bold font-mono text-amber-300 mt-2 truncate">—</div>
+              </div>
+            </div>
+
+            <!-- Filtro -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              <div class="relative flex-1 max-w-md">
+                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-500 absolute left-3 top-2.5"></i>
+                <input id="wifi-channels-search" type="text" oninput="renderWifiChannels()" placeholder="Filtrar por nome do Codax, MAC, SSID, canal ou MAC do roteador..." class="w-full bg-[#03060b] border border-[#172235] focus:border-sky-500/60 rounded-xl pl-8 pr-3 py-2 text-xs text-slate-200 placeholder-slate-500 outline-none">
+              </div>
+              <div class="flex items-center space-x-2 text-[11px] font-mono text-slate-400">
+                <label class="inline-flex items-center space-x-1.5 cursor-pointer select-none">
+                  <input id="wifi-only-roots" type="checkbox" onchange="renderWifiChannels()" class="rounded border-slate-600 bg-slate-900 text-sky-500">
+                  <span>Mostrar apenas ROOTs</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabela Principal -->
+          <div class="bg-[#080c14] border border-[#131b28] rounded-2xl shadow-xl overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-[#05080f] border-b border-[#131b28] text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                    <th class="px-4 py-3">Codax / MAC</th>
+                    <th class="px-4 py-3">Papel</th>
+                    <th class="px-4 py-3">Nome do Wi-Fi (SSID)</th>
+                    <th class="px-4 py-3">Canal</th>
+                    <th class="px-4 py-3">MAC do Roteador & RSSI</th>
+                    <th class="px-4 py-3">IP / Gateway</th>
+                    <th class="px-4 py-3">Internet do Roteador (AWS)</th>
+                    <th class="px-4 py-3 text-right">Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="wifi-channels-tbody" class="divide-y divide-[#131b28]/80 text-xs">
+                  <tr>
+                    <td colspan="8" class="px-4 py-10 text-center text-slate-500 font-mono">
+                      Clique em "Consultar ROOTs & Testar Internet" para auditar os canais Wi-Fi e a conectividade dos roteadores.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
       </div>
 
     </main>
@@ -4479,11 +4990,11 @@
           </button>
           <button onclick="switchCockpitSubTab('twin')" id="cockpit-tab-twin" class="cockpit-sub-tab px-3.5 py-2 text-xs font-medium border-b-2 border-transparent text-slate-400 hover:text-cyan-300 flex items-center space-x-2">
             <i data-lucide="box" class="w-3.5 h-3.5 text-cyan-400"></i>
-            <span>🛰️ Gêmeo Digital 3D</span>
+            <span>Gêmeo Digital 3D</span>
           </button>
           <button onclick="switchCockpitSubTab('csi')" id="cockpit-tab-csi" class="cockpit-sub-tab px-3.5 py-2 text-xs font-medium border-b-2 border-transparent text-slate-400 hover:text-emerald-300 flex items-center space-x-2">
             <i data-lucide="radio" class="w-3.5 h-3.5 text-emerald-400"></i>
-            <span>📡 Radar Wi-Fi CSI</span>
+            <span>Radar Wi-Fi CSI</span>
           </button>
         </div>
 
@@ -6125,7 +6636,7 @@
           <i data-lucide="${isErr ? 'alert-circle' : 'check-circle-2'}" class="w-4 h-4"></i>
         </div>
         <div class="flex-1 min-w-0 leading-relaxed font-medium whitespace-pre-line">${escapeHtml(text)}</div>
-        <button type="button" class="text-slate-400 hover:text-white p-0.5 shrink-0" onclick="this.parentElement.remove()">
+        <button type="button" aria-label="Fechar aviso" class="text-slate-400 hover:text-white p-0.5 shrink-0" onclick="this.parentElement.remove()">
           <i data-lucide="x" class="w-3.5 h-3.5"></i>
         </button>
       `;
@@ -6396,18 +6907,20 @@
           const payloadData = (payloadObj && payloadObj.data && typeof payloadObj.data === 'object') ? payloadObj.data : payloadObj;
 
           const hasRealTopologyNodes = payloadData && (
+            (Array.isArray(payloadData.mesh) && payloadData.mesh.length > 0) ||
             (Array.isArray(payloadData.nodes) && payloadData.nodes.length > 0) ||
             (payloadData.mac_addr && payloadData.layer) ||
             (payloadData.mesh_id && payloadData.layer)
           );
 
           if (!isOutgoingCommand && (data.message.category === 'topologia' || (data.message.topic && data.message.topic.toLowerCase().includes('topo'))) && hasRealTopologyNodes) {
-            // Incorpora topologia recebida nas malhas mantendo todas ativas
-            if (window.integrateIncomingTopology) {
-              window.integrateIncomingTopology(payloadData);
+            // O backend já consolidou o snapshot (inclusive páginas); recarrega a árvore a partir dele
+            scheduleTopologyReload();
+            const tst = window.treeTopologyState;
+            if (tst && Date.now() - tst.lastToastAt > 5000) {
+              tst.lastToastAt = Date.now();
+              showGlassToast('🌳 Topologia ESP-MESH recebida! Árvore da Malha atualizada.');
             }
-            renderAllMeshTrees(currentHighlightTreeMac);
-            showGlassToast('🌳 Topologia ESP-MESH recebida da placa via MQTT! Árvore atualizada.');
           }
         } else if (data.type === 'innovation_discovered') {
           handleIncomingInnovation(data.item);
@@ -7045,6 +7558,30 @@
     let brokerMode = 'AWS';
     let brokerHost = 'a15sonvcesw5o-ats.iot.us-west-2.amazonaws.com';
     let awsProdSubRestricted = false;
+    let disabledTabs = [];
+    const DISABLED_BTN_CLASS = 'sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-500 bg-slate-900/40 opacity-60 cursor-not-allowed';
+    const NORMAL_BTN_CLASS = 'sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/80';
+    const ACTIVE_BTN_CLASS = 'sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-between bg-indigo-600 text-white shadow-md shadow-indigo-600/30';
+
+    function applyDisabledTabsUI() {
+      disabledTabs.forEach(tabId => {
+        const btn = document.getElementById(`nav-btn-${tabId}`);
+        if (!btn) return;
+        btn.disabled = true;
+        btn.setAttribute('aria-disabled', 'true');
+        btn.removeAttribute('aria-current');
+        btn.className = DISABLED_BTN_CLASS;
+        if (!btn.dataset.origTitle) btn.dataset.origTitle = btn.getAttribute('title') || '';
+        btn.setAttribute('title', `${btn.dataset.origTitle} (Em breve)`);
+        const labels = btn.querySelectorAll('.sidebar-label');
+        if (labels.length > 1) {
+          const badge = labels[labels.length - 1];
+          if (!badge.dataset.origText) badge.dataset.origText = badge.innerText;
+          badge.innerText = 'Em breve';
+          badge.className = 'sidebar-label text-[9px] bg-slate-800/90 text-slate-400 border border-slate-600/50 px-1.5 py-0.2 rounded font-mono font-semibold uppercase tracking-wide';
+        }
+      });
+    }
 
     async function toggleBrokerMode() {
       const res = await fetch('/api/broker/toggle', { method: 'POST' });
@@ -7064,39 +7601,27 @@
       const targetVal = (document.getElementById('global-target')?.value || '').toLowerCase().trim();
       const cleanT = targetVal.replace(/[^a-f0-9]/g, '');
 
-      let foundMesh = null;
-      let meshLabel = null;
+      // Malha REAL do alvo, vinda do query topology (sem inferir pelo prefixo do MAC)
+      const meshes = Array.isArray(window.backendMeshes) ? window.backendMeshes.filter(m => m && m.root) : [];
+      const containsMac = (node, mac) => !!node && (node.mac_addr === mac || (node.nodes || []).some(c => containsMac(c, mac)));
+      let mesh = cleanT.length === 12 ? meshes.find(m => containsMac(m.root, cleanT) || (m.orphans || []).some(o => containsMac(o, cleanT))) : null;
+      if (!mesh) mesh = meshes.find(m => !m.stale) || meshes[0] || null;
 
-      if (window.devicesList && Array.isArray(window.devicesList)) {
-        const dev = window.devicesList.find(d => (d.mac && d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === cleanT) || (d.name && d.name.toLowerCase() === targetVal));
-        if (dev && dev.mesh_id) {
-          foundMesh = dev.mesh_id;
-        }
-      }
+      // mesh_id só é exibido quando foi realmente informado (cadastro ou resposta de info/mesh_id)
+      const list = Array.isArray(window.devicesList) ? window.devicesList : (typeof devicesList !== 'undefined' ? devicesList : []);
+      const devTarget = list.find(d => (d.mac && d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === cleanT) || (d.name && d.name.toLowerCase() === targetVal));
+      const devRoot = mesh ? list.find(d => d.mac && d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === mesh.mesh_root_mac) : null;
+      const meshId = (devTarget && devTarget.mesh_id) || (devRoot && devRoot.mesh_id) || null;
 
-      if (!foundMesh) {
-        if (cleanT === '4417934f49a4' || (!cleanT.startsWith('704b') && currentEnv === 'PROD' && cleanT !== '704bca491ca0')) {
-          foundMesh = '00:00:00:00:54:07';
-          meshLabel = 'Malha Laboratório (Prod)';
-        } else {
-          foundMesh = '00:00:00:00:44:08';
-          meshLabel = 'Malha Bancada (Dev)';
-        }
-      } else {
-        if (foundMesh === '00:00:00:00:44:08') meshLabel = 'Malha Bancada (Dev)';
-        else if (foundMesh === '00:00:00:00:54:07') meshLabel = 'Malha Laboratório (Prod)';
-        else meshLabel = `Malha Mesh (${foundMesh.slice(-5)})`;
-      }
-
-      meshIdEl.innerText = foundMesh;
+      meshIdEl.innerText = meshId || '—';
+      meshIdEl.title = meshId ? 'MESH ID informado pela placa' : 'MESH ID ainda não consultado (envie query mesh_id ou info)';
       if (meshTagEl) {
-        meshTagEl.innerText = meshLabel;
-        if (foundMesh === '00:00:00:00:44:08') {
-          meshTagEl.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-950/80 border border-purple-500/50 text-purple-200 font-bold';
-        } else if (foundMesh === '00:00:00:00:54:07') {
-          meshTagEl.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-500/50 text-cyan-200 font-bold';
+        if (mesh) {
+          meshTagEl.innerText = `Malha ${mesh.name || formatMac(mesh.mesh_root_mac)}${mesh.stale ? ' · desatualizada' : ''}`;
+          meshTagEl.className = `text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${mesh.root.is_online && !mesh.stale ? 'bg-emerald-950/80 border border-emerald-500/50 text-emerald-200' : 'bg-amber-950/80 border border-amber-500/50 text-amber-200'}`;
         } else {
-          meshTagEl.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-500/50 text-emerald-200 font-bold';
+          meshTagEl.innerText = 'Sem topologia';
+          meshTagEl.className = 'text-[10px] font-mono px-2 py-0.5 rounded-full font-bold bg-slate-900 border border-slate-700 text-slate-300';
         }
       }
     }
@@ -7108,6 +7633,10 @@
       if (data.broker_mode) brokerMode = data.broker_mode;
       if (data.broker_host) brokerHost = data.broker_host;
       if (data.aws_prod_sub_restricted !== undefined) awsProdSubRestricted = data.aws_prod_sub_restricted;
+      if (Array.isArray(data.disabled_tabs)) {
+        disabledTabs = data.disabled_tabs.map(t => String(t).toLowerCase());
+        applyDisabledTabsUI();
+      }
 
       const dotB = document.getElementById('top-dot-broker');
       const lblB = document.getElementById('top-label-broker');
@@ -7115,11 +7644,11 @@
         if (data.broker_connected) {
           dotB.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400';
           lblB.className = 'font-semibold text-emerald-400 text-[11px]';
-          lblB.innerText = brokerMode === 'AWS' ? '☁️ AWS IoT (8883)' : '💻 Local (1883)';
+          lblB.innerText = brokerMode === 'AWS' ? 'AWS IoT (8883)' : 'Local (1883)';
         } else {
           dotB.className = 'w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse';
           lblB.className = 'font-semibold text-amber-400 text-[11px]';
-          lblB.innerText = brokerMode === 'AWS' ? '☁️ Conectando AWS...' : '💻 Conectando 1883...';
+          lblB.innerText = brokerMode === 'AWS' ? 'Conectando AWS...' : 'Conectando 1883...';
         }
       }
       const activeTopic = data.active_topic || (currentEnv === 'PROD' ? 'config/shopba/mesh' : 'dev/config/shopba/mesh');
@@ -7135,8 +7664,10 @@
       if (tickerTopic) tickerTopic.innerText = activeTopic;
       document.querySelectorAll('.ticker-topic-copy').forEach(el => el.innerText = activeTopic);
 
-      const tickerEnv = document.getElementById('ticker-env-stat');
-      if (tickerEnv) tickerEnv.innerText = `▲ ${currentEnv}`;
+      if (typeof setTickerText === 'function') {
+        setTickerText('env', `· ${currentEnv}`);
+        updateTickerBroker(!!data.broker_connected);
+      }
 
       const builderTopic = document.getElementById('builder-target-topic');
       if (builderTopic) builderTopic.innerText = activeTopic;
@@ -7186,20 +7717,36 @@
       webserver: { title: 'Webserver Local do ESP32 & Portal de Comissionamento', icon: 'globe', desc: 'Acesso direto ao portal de configuração HTTP do microcontrolador (192.168.4.1) independente da AWS' },
       timestream: { title: 'Amazon Timestream • Séries Temporais & Métricas em Nuvem', icon: 'clock', desc: 'Consultas SQL, medições elétricas trifásicas e telemetria histórica no AWS Timestream' },
       scifi: { title: 'Radar Sci-Fi Lab & Observabilidade de Borda', icon: 'sparkles', desc: 'Osciloscópio harmônico polar, CSMA/CA adaptativo, FreeRTOS watcher e filtros de sinal' },
-      innovations: { title: 'Central de Inovações & Tecnologias TRL-9', icon: 'sparkles', desc: 'Catálogo industrial de tecnologias TRL-9, firmware, telemetria e SCADA para a bancada Codax' }
+      innovations: { title: 'Central de Inovações & Tecnologias TRL-9', icon: 'sparkles', desc: 'Catálogo industrial de tecnologias TRL-9, firmware, telemetria e SCADA para a bancada Codax' },
+      'wifi-channels': { title: 'Canal Wi-Fi & Status de Internet do Roteador', icon: 'wifi', desc: 'Auditoria de SSID, canal Wi-Fi, MAC do roteador e teste de conectividade AWS por Codax' }
     };
 
     function switchTab(tabId) {
+      if (disabledTabs.includes(String(tabId).toLowerCase())) {
+        if (typeof showGlassToast === 'function') {
+          showGlassToast('Recurso disponível em breve nesta instância.');
+        }
+        return;
+      }
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
 
       // Atualizar botões de navegação na barra lateral
       document.querySelectorAll('.sidebar-nav-btn').forEach(btn => {
-        btn.className = 'sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-800/80';
+        const btnTab = (btn.id || '').replace('nav-btn-', '').toLowerCase();
+        if (disabledTabs.includes(btnTab)) {
+          btn.className = DISABLED_BTN_CLASS;
+          btn.disabled = true;
+          btn.setAttribute('aria-disabled', 'true');
+        } else {
+          btn.className = NORMAL_BTN_CLASS;
+        }
       });
 
       const sideActive = document.getElementById(`nav-btn-${tabId}`);
+      document.querySelectorAll('.sidebar-nav-btn[aria-current]').forEach(b => b.removeAttribute('aria-current'));
+      if (sideActive) sideActive.setAttribute('aria-current', 'page');
       if (sideActive) {
-        sideActive.className = 'sidebar-nav-btn w-full px-3 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-between bg-indigo-600 text-white shadow-md shadow-indigo-600/30';
+        sideActive.className = ACTIVE_BTN_CLASS;
       }
 
       // Suporte para botões na topbar se existirem
@@ -7212,7 +7759,10 @@
       }
 
       const targetView = document.getElementById(`view-${tabId}`);
-      if (targetView) targetView.classList.remove('hidden');
+      if (targetView) {
+        targetView.classList.remove('hidden');
+        [600, 2500].forEach(ms => setTimeout(() => { if (typeof enhanceScrollRegionsA11y === 'function') enhanceScrollRegionsA11y(targetView); }, ms));
+      }
 
       const info = TAB_INFO[tabId];
       if (info) {
@@ -7237,6 +7787,9 @@
       updateTopMeshId();
       } else if (tabId === 'tree') {
         loadTopologyTree(currentHighlightTreeMac);
+        // A árvore vem do query topology: o site solicita ao abrir a aba e reconsulta periodicamente
+        requestMeshTopology({ silent: true });
+        startTreeTopologyAutoRefresh();
         setTimeout(() => {
           if (window.currentTreeConnections && window.currentTreeConnections.length > 0) {
             drawTreeSvgConnectors(window.currentTreeConnections);
@@ -7253,6 +7806,8 @@
         loadScifiMetrics();
       } else if (tabId === 'innovations') {
         renderInnovationsTab();
+      } else if (tabId === 'wifi-channels') {
+        loadWifiChannels();
       }
 
       // Destaque visual sutil para o botão de Inovações no topo
@@ -7810,7 +8365,7 @@
             <div>
               <div class="flex items-center space-x-2">
                 <h4 class="font-bold text-xs text-slate-100 uppercase tracking-wide">Arquitetura Codax Mesh & Regras</h4>
-                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono font-bold">Mesh Pass: QNfW7kyR1bAM</span>
+                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono font-bold inline-flex items-center gap-1">Mesh Pass: <span class="mesh-pass-value" data-secret="QNfW7kyR1bAM">••••••••</span><button type="button" onclick="toggleSecretReveal(this)" aria-pressed="false" aria-label="Mostrar senha da mesh" title="Mostrar / ocultar senha" class="inline-flex items-center justify-center rounded hover:bg-emerald-500/20"><i data-lucide="eye" class="w-3 h-3"></i></button></span>
               </div>
               <p class="text-xs text-slate-400 mt-0.5">Definições de ROOT, NODE, Broadcasts e regras contra crash do ESP32.</p>
             </div>
@@ -8069,7 +8624,9 @@
       const lastVal = vals[vals.length - 1];
       const lastX = width;
       const lastY = Math.round(height - ((lastVal - min) / range) * (height - 4) - 2);
-      const strokeColor = lastVal >= -60 ? '#34d399' : (lastVal >= -75 ? '#fbbf24' : '#f87171');
+      // No tema claro usa tons 700 para manter contraste ≥ 4,5:1 no rótulo de dBm
+      const lightUi = document.body.classList.contains('theme-light');
+      const strokeColor = lastVal >= -60 ? (lightUi ? '#047857' : '#34d399') : (lastVal >= -75 ? (lightUi ? '#92400e' : '#fbbf24') : (lightUi ? '#be123c' : '#f87171'));
       const gradId = `spark-grad-${uniqueId || Math.random().toString(36).substr(2, 7)}`;
       const areaPoints = [`0,${height}`, ...points, `${width},${height}`].join(' ');
 
@@ -8525,53 +9082,100 @@
       lucide.createIcons();
     }
 
+    // ================= TOPOLOGIA SOB DEMANDA: O SITE ENVIA "query topology" E MONTA A ÁRVORE COM A RESPOSTA =================
+    window.treeTopologyState = { lastRequestAt: 0, pending: false, pendingTimer: null, reloadTimer: null, autoTimer: null, lastToastAt: 0 };
+    const TREE_TOPOLOGY_AUTO_MS = 60000;   // reconsulta periódica enquanto a aba estiver aberta
+    const TREE_TOPOLOGY_MIN_GAP_MS = 8000; // evita rajadas de query na malha
+
+    function isTreeTabVisible() {
+      const v = document.getElementById('view-tree');
+      return !!v && !v.classList.contains('hidden') && !document.hidden;
+    }
+
+    async function requestMeshTopology(opts = {}) {
+      const target = opts.target || 'root'; // 'root' = ff:00:00:01:00:00 → todas as ROOTs respondem
+      const silent = !!opts.silent;
+      const st = window.treeTopologyState;
+      const now = Date.now();
+      if (silent && now - st.lastRequestAt < TREE_TOPOLOGY_MIN_GAP_MS) return;
+      st.lastRequestAt = now;
+      st.pending = true;
+      if (!Array.isArray(window.backendMeshes) || window.backendMeshes.length === 0) {
+        renderAllMeshTrees(currentHighlightTreeMac);
+      }
+      try {
+        // Consulta somente-leitura enviada em PROD e DEV (mesmo critério da autodescoberta do backend),
+        // pois as placas de bancada respondem em dev/topo/... e as de campo em topo/...
+        const results = await Promise.all(['PROD', 'DEV'].map(env => fetch('/api/command/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ addr: [target], method: 'query', function: 'topology', value: null, for_mesh: false, env })
+        })));
+        if (!results.some(r => r.ok)) throw new Error(`HTTP ${results.map(r => r.status).join('/')}`);
+        if (!silent) {
+          showGlassToast(`📡 query topology enviado para ${target === 'root' ? 'todas as ROOTs' : formatMac(target)}`, 'info');
+        }
+      } catch (e) {
+        console.warn('Falha ao enviar query topology:', e);
+        if (!silent) showGlassToast('❌ Não foi possível enviar o query topology ao broker.', 'warning');
+      }
+      clearTimeout(st.pendingTimer);
+      st.pendingTimer = setTimeout(() => {
+        st.pending = false;
+        if (isTreeTabVisible()) renderAllMeshTrees(currentHighlightTreeMac);
+      }, 9000);
+    }
+
+    function startTreeTopologyAutoRefresh() {
+      const st = window.treeTopologyState;
+      if (st.autoTimer) return;
+      st.autoTimer = setInterval(() => {
+        if (isTreeTabVisible()) requestMeshTopology({ silent: true });
+      }, TREE_TOPOLOGY_AUTO_MS);
+    }
+
+    // Chamado quando chega uma resposta de topologia pelo WebSocket (debounce cobre respostas paginadas)
+    function scheduleTopologyReload() {
+      const st = window.treeTopologyState;
+      clearTimeout(st.reloadTimer);
+      st.reloadTimer = setTimeout(() => loadTopologyTree(currentHighlightTreeMac), 350);
+    }
+
     function queryTopologyForFocused() {
       if (!currentHighlightTreeMac) return;
-      sendQuickCommand('query', 'topology', null, currentHighlightTreeMac, true);
-      showGlassToast(`📡 Solicitando topologia via MQTT para ${formatMac(currentHighlightTreeMac)}...`, 'info');
+      // Um NODE repassa o pedido ao seu ROOT, então a resposta vem da malha inteira
+      requestMeshTopology({ target: currentHighlightTreeMac });
     }
 
     function queryTopologyBroadcast() {
-      // Solicita para ROOT e broadcast para capturar todas as malhas ativas
-      sendQuickCommand('query', 'topology', null, 'ff0000010000', true);
-      showGlassToast('📡 Solicitando topologia para todas as ROOTs da malha via MQTT...', 'info');
+      requestMeshTopology();
     }
 
     async function loadTopologyTree(highlightMac = null) {
       if (highlightMac) currentHighlightTreeMac = highlightMac.toLowerCase().replace(/[^a-f0-9]/g, '');
-
-      // 1. Sempre renderiza imediatamente TODAS as malhas cadastradas e conhecidas
-      renderAllMeshTrees(currentHighlightTreeMac);
-
-      // 2. Busca no backend a topologia consolidada de todas as malhas
       try {
         const res = await fetch('/api/topology');
         const data = await res.json();
-        if (data && data.meshes && Array.isArray(data.meshes) && data.meshes.length > 0) {
-          window.backendMeshes = data.meshes;
-          renderAllMeshTrees(currentHighlightTreeMac);
+        window.backendMeshes = (data && Array.isArray(data.meshes)) ? data.meshes : [];
+        window.treeUnplaced = (data && Array.isArray(data.unplaced)) ? data.unplaced : [];
+        if (window.backendMeshes.length > 0) {
+          window.treeTopologyState.pending = false;
+          clearTimeout(window.treeTopologyState.pendingTimer);
         }
       } catch (e) {
         console.warn("Erro ao carregar /api/topology:", e);
       }
+      renderAllMeshTrees(currentHighlightTreeMac);
+      if (typeof updateTickerFacts === 'function') updateTickerFacts();
+      updateTopMeshId();
     }
 
     async function generateMockTree() {
       try {
-        const res = await fetch('/api/topology/mock', { method: 'POST' });
-        // Adiciona nós mock demonstrativos na malha mantendo todas as malhas ativas
-        const mockNodes = [
-          { mac: '44179358768c', name: 'Medidor Bancada 01 (Nó L2)', layer: 2, parent_mac: '4417934f49a4', rssi: -63 },
-          { mac: '441793516dcc', name: 'Medidor Bancada 02 (Nó L3)', layer: 3, parent_mac: '44179358768c', rssi: -74 },
-          { mac: '4417934f4fd8', name: 'Nó L2 Extra (Laboratório)', layer: 2, parent_mac: '4417934f49a4', rssi: -58 }
-        ];
-        mockNodes.forEach(mn => {
-          if (!discoveredList.some(d => d.mac === mn.mac)) {
-            discoveredList.push(mn);
-          }
-        });
-        renderAllMeshTrees(currentHighlightTreeMac);
-        showGlassToast('✨ Malhas Multi-Camadas (L1, L2 e L3) Atualizadas com Sucesso!', 'info');
+        // O backend injeta uma topologia de exemplo (L1→L4) no mesmo formato do firmware
+        await fetch('/api/topology/mock', { method: 'POST' });
+        await loadTopologyTree(currentHighlightTreeMac);
+        showGlassToast('✨ Topologia simulada (ROOT + camadas L2, L3 e L4) carregada!', 'info');
       } catch (e) {
         console.error("Erro ao gerar mock:", e);
       }
@@ -8934,7 +9538,7 @@
   <div class="container">
     <div class="header">
       <div>
-        <div class="brand">LEDAX ENERGY • CODAX HUB 2.9 PRO</div>
+        <div class="brand">LEDAX ENERGY • SCANTECH CODAX HUB vULTIMATE</div>
         <p style="font-size: 13px; color: #94a3b8; margin-top: 4px;">Dossiê Técnico Executivo de Malha Inteligente ESP-MESH</p>
       </div>
       <div style="text-align: right;">
@@ -9438,32 +10042,50 @@
         flowPath.setAttribute('fill', 'none');
         flowPath.setAttribute('id', `tree-conduit-${pClean}-${cClean}`);
 
-        // Buscar RSSI e status online do nó filho para determinar o conduíte
-        const dev = devicesList.find(d => d.mac && d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === cClean);
-        const devNode = allKnown.get(cClean);
-        const isChildOffline = devNode ? !devNode.is_online : (dev ? dev.status === 'offline' : false);
-        const devRssi = dev ? dev.rssi : -68;
+        // Dados do enlace vindos do topology (índice montado em renderAllMeshTrees)
+        const nodeIndex = window.treeNodeIndex || new Map();
+        const childInfo = nodeIndex.get(cClean) || {};
+        const parentInfo = nodeIndex.get(pClean) || {};
+        const isChildOffline = childInfo.is_online === false;
+        const devRssi = (typeof childInfo.rssi === 'number') ? childInfo.rssi : -70;
+        const childLayer = Number(childInfo.layer) || 2;
+        const parentLayer = Number(parentInfo.layer) || Math.max(1, childLayer - 1);
+        const layerSt = treeLayerStyle(childLayer);
+        // Enlace forte = pulso mais rápido
+        const flowSpeed = devRssi >= -60 ? 0.9 : (devRssi >= -70 ? 1.3 : (devRssi >= -80 ? 1.8 : 2.6));
 
-        let flowClass = 'tree-packet-flow-cyan';
+        let flowClass = 'tree-flow-layer';
         if (isFailed) {
           flowClass = 'tree-laser-beam-failure';
         } else if (isChildOffline) {
-          flowClass = 'tree-laser-beam-offline';
+          flowClass = 'tree-flow-offline';
         } else if (isShortestPath) {
           flowClass = 'tree-laser-beam-highlight';
-        } else if (devRssi >= -65) {
-          flowClass = 'tree-packet-flow-cyan';
-        } else if (devRssi >= -79) {
-          flowClass = 'tree-packet-flow-emerald';
-        } else {
-          flowClass = 'tree-packet-flow-amber';
         }
         flowPath.setAttribute('class', flowClass);
+        flowPath.style.setProperty('--flow-color', layerSt.color);
+        flowPath.style.setProperty('--flow-glow', layerSt.glow);
+        flowPath.style.setProperty('--flow-speed', `${flowSpeed}s`);
+        // Cascata: pulsos de camadas mais profundas começam depois (ROOT → L2 → L3 ...)
+        flowPath.style.animationDelay = `${((childLayer - 2) * 0.35).toFixed(2)}s`;
         pathsGroup.appendChild(flowPath);
+
+        // RSSI do enlace no meio do segmento que desce até o filho
+        if (!isFailed && typeof childInfo.rssi === 'number') {
+          const lblX = endX;
+          const lblY = Math.round(dx < 6 ? (startY + endY) / 2 : (startY + dy * 0.5 + endY) / 2);
+          const q = devRssi >= -65 ? '#34d399' : (devRssi >= -75 ? '#fbbf24' : '#fb7185');
+          const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          lbl.innerHTML = `
+            <rect x="${lblX + 7}" y="${lblY - 8}" width="50" height="16" rx="8" fill="#070b13" stroke="${isChildOffline ? '#334155' : q}" stroke-width="1"/>
+            <text x="${lblX + 32}" y="${lblY + 3.5}" text-anchor="middle" fill="${isChildOffline ? '#64748b' : q}" font-size="9" font-weight="700" font-family="ui-monospace, monospace">${devRssi} dBm</text>
+          `;
+          pathsGroup.appendChild(lbl);
+        }
 
         // 4. Sockets de Conexão (Docking Ports nos nós pai e filho)
         const pPort = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        const pColor = isFailed ? '#f43f5e' : (isChildOffline ? '#334155' : (isShortestPath ? '#38bdf8' : '#00f0ff'));
+        const pColor = isFailed ? '#f43f5e' : (isChildOffline ? '#334155' : (isShortestPath ? '#38bdf8' : treeLayerStyle(parentLayer).color));
         pPort.innerHTML = `
           <circle cx="${startX}" cy="${startY}" r="5" fill="#080c14" stroke="${pColor}" stroke-width="2"/>
           <circle cx="${startX}" cy="${startY}" r="2.2" fill="${pColor}" filter="url(#tree-glow-neon)"/>
@@ -9471,7 +10093,7 @@
         pathsGroup.appendChild(pPort);
 
         const cPort = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        const cColor = isFailed ? '#f43f5e' : (isChildOffline ? '#334155' : (isShortestPath ? '#38bdf8' : (devRssi >= -65 ? '#00f0ff' : '#10b981')));
+        const cColor = isFailed ? '#f43f5e' : (isChildOffline ? '#334155' : (isShortestPath ? '#38bdf8' : layerSt.color));
         cPort.innerHTML = `
           <circle cx="${endX}" cy="${endY}" r="5" fill="#080c14" stroke="${cColor}" stroke-width="2"/>
           <circle cx="${endX}" cy="${endY}" r="2.2" fill="${cColor}" filter="url(#tree-glow-neon)"/>
@@ -9490,33 +10112,45 @@
           pathsGroup.appendChild(alertGroup);
         }
 
-        // 5. Partícula Fóton Viajante (Packet Plasma Bead) - Apenas se o nó estiver online e sem falha
-        if (!isFailed && !isChildOffline) {
-          const packetGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        // 5. Pacotes viajantes: descida (comando ROOT → filho, cor da camada) e subida (telemetria filho → ROOT)
+        const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!isFailed && !isChildOffline && !reduceMotion) {
+          const cascadeBegin = Math.max(0, (childLayer - 2) * 0.45);
+          const makePacket = (radius, fill, durS, beginS, reverse) => {
+            const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            const halo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            halo.setAttribute('r', String(radius));
+            halo.setAttribute('fill', fill);
+            halo.setAttribute('filter', 'url(#tree-glow-neon)');
+            g.appendChild(halo);
+            const core = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            core.setAttribute('r', String(Math.max(1.2, radius * 0.45)));
+            core.setAttribute('fill', '#ffffff');
+            g.appendChild(core);
+            const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+            anim.setAttribute('dur', `${durS.toFixed(2)}s`);
+            anim.setAttribute('begin', `${beginS.toFixed(2)}s`);
+            anim.setAttribute('repeatCount', 'indefinite');
+            anim.setAttribute('path', pathD);
+            if (reverse) {
+              anim.setAttribute('keyPoints', '1;0');
+              anim.setAttribute('keyTimes', '0;1');
+              anim.setAttribute('calcMode', 'linear');
+            }
+            g.appendChild(anim);
+            // Esconde o pacote até a animação começar (evita "bolinha parada" na origem)
+            g.setAttribute('opacity', '0');
+            const show = document.createElementNS('http://www.w3.org/2000/svg', 'set');
+            show.setAttribute('attributeName', 'opacity');
+            show.setAttribute('to', '1');
+            show.setAttribute('begin', `${beginS.toFixed(2)}s`);
+            g.appendChild(show);
+            return g;
+          };
 
-          const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          circle.setAttribute('cx', '0');
-          circle.setAttribute('cy', '0');
-          circle.setAttribute('r', isShortestPath ? '5' : '4');
-          circle.setAttribute('fill', isShortestPath ? '#38bdf8' : (devRssi >= -65 ? '#00f0ff' : '#34d399'));
-          circle.setAttribute('filter', 'url(#tree-glow-neon)');
-          packetGroup.appendChild(circle);
-
-          const core = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          core.setAttribute('cx', '0');
-          core.setAttribute('cy', '0');
-          core.setAttribute('r', isShortestPath ? '2.2' : '1.8');
-          core.setAttribute('fill', '#ffffff');
-          packetGroup.appendChild(core);
-
-          const anim = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
-          const dur = isShortestPath ? '0.9s' : `${(1.5 + (index % 3) * 0.25).toFixed(2)}s`;
-          anim.setAttribute('dur', dur);
-          anim.setAttribute('repeatCount', 'indefinite');
-          anim.setAttribute('path', pathD);
-          packetGroup.appendChild(anim);
-
-          particlesGroup.appendChild(packetGroup);
+          const downDur = isShortestPath ? 0.9 : flowSpeed * 1.6;
+          particlesGroup.appendChild(makePacket(isShortestPath ? 5 : 4, isShortestPath ? '#38bdf8' : layerSt.color, downDur, cascadeBegin, false));
+          particlesGroup.appendChild(makePacket(2.6, '#e2e8f0', flowSpeed * 2.2, cascadeBegin + downDur / 2, true));
         }
       });
     }
@@ -9528,7 +10162,130 @@
       }
     });
 
-    // ================= RENDERIZADOR PRINCIPAL: ÁRVORE DA MALHA COM SUPORTE A MODOS =================
+    // ================= RENDERIZADOR PRINCIPAL: ÁRVORE DA MALHA (FONTE ÚNICA: RESPOSTA DO QUERY TOPOLOGY) =================
+    // Cada Codax é posicionado na linha da CAMADA reportada no topology (L1 = ROOT no topo, L2, L3, ...).
+    // Colunas = folhas da subárvore (layout "tidy tree" em CSS Grid), então cada pai fica centralizado sobre seus filhos.
+    const TREE_LAYER_PALETTE = {
+      1: { color: '#818cf8', glow: 'rgba(129, 140, 248, 0.75)' },
+      2: { color: '#22d3ee', glow: 'rgba(34, 211, 238, 0.75)' },
+      3: { color: '#34d399', glow: 'rgba(52, 211, 153, 0.75)' },
+      4: { color: '#fbbf24', glow: 'rgba(251, 191, 36, 0.75)' },
+      5: { color: '#f472b6', glow: 'rgba(244, 114, 182, 0.75)' }
+    };
+    function treeLayerStyle(layer) {
+      return TREE_LAYER_PALETTE[layer] || { color: '#a78bfa', glow: 'rgba(167, 139, 250, 0.75)' };
+    }
+    const TREE_SLOT_W = 296;
+    window.treeNodeIndex = new Map();
+    window.treeUnplaced = [];
+
+    function layoutMeshGrid(rootNode, orphans) {
+      const cells = [];
+      const seen = new Set();
+      let cursor = 0;
+      const place = (node, fallbackLayer, isOrphan) => {
+        const mac = node.mac_addr;
+        if (!mac || seen.has(mac)) return;
+        seen.add(mac);
+        const layer = Number(node.layer) || fallbackLayer;
+        const kids = Array.isArray(node.nodes) ? node.nodes : [];
+        const start = cursor;
+        if (kids.length === 0) {
+          cursor += 1;
+        } else {
+          kids.forEach(k => place(k, layer + 1, isOrphan));
+          if (cursor === start) cursor += 1;
+        }
+        cells.push({ node, layer, colStart: start, span: cursor - start, isOrphan });
+      };
+      place(rootNode, 1, false);
+      (orphans || []).forEach(o => place(o, Number(o.layer) || 2, true));
+      return { cells, cols: Math.max(1, cursor) };
+    }
+
+    function formatTopologyAge(sec) {
+      if (sec === undefined || sec === null) return '';
+      if (sec < 60) return `há ${sec}s`;
+      if (sec < 3600) return `há ${Math.floor(sec / 60)} min`;
+      return `há ${Math.floor(sec / 3600)} h`;
+    }
+
+    function renderMeshTopologyCard(mesh, isPanoramic) {
+      const root = mesh.root;
+      const rootMac = root.mac_addr;
+      const { cells, cols } = layoutMeshGrid(root, mesh.orphans);
+      const maxLayer = Math.max(1, ...cells.map(c => c.layer));
+      const countByLayer = {};
+      cells.forEach(c => { countByLayer[c.layer] = (countByLayer[c.layer] || 0) + 1; });
+
+      cells.forEach(c => window.treeNodeIndex.set(c.node.mac_addr, { ...c.node, layer: c.layer, isOrphan: c.isOrphan }));
+      const addConn = (node) => {
+        (node.nodes || []).forEach(ch => {
+          window.currentTreeConnections.push({ parent: node.mac_addr, child: ch.mac_addr });
+          addConn(ch);
+        });
+      };
+      addConn(root);
+      (mesh.orphans || []).forEach(addConn);
+
+      const isRootOnline = !!root.is_online;
+      const stale = !!mesh.stale;
+      const incomplete = mesh.complete === false;
+      const orphanCount = (mesh.orphans || []).length;
+
+      let grid = `<div class="tree-mesh-grid" style="grid-template-columns: 128px repeat(${cols}, ${TREE_SLOT_W}px); grid-template-rows: repeat(${maxLayer}, auto);">`;
+      for (let L = 1; L <= maxLayer; L++) {
+        const st = treeLayerStyle(L);
+        const n = countByLayer[L] || 0;
+        grid += `<div class="tree-layer-band" style="grid-column: 1 / -1; grid-row: ${L}; --band-color: ${st.color};"></div>`;
+        grid += `
+          <div class="tree-layer-label" style="grid-column: 1; grid-row: ${L}; --band-color: ${st.color};">
+            <span class="tree-layer-chip">${L === 1 ? 'ROOT · L1' : `CAMADA L${L}`}</span>
+            <span class="tree-layer-count">${L === 1 ? 'topo da malha' : (n === 1 ? '1 Codax' : `${n} Codax`)}</span>
+          </div>`;
+      }
+      cells.forEach(c => {
+        const isRoot = (c.node.mac_addr === rootMac && !c.isOrphan);
+        grid += `<div class="tree-cell" style="grid-column: ${c.colStart + 2} / span ${c.span}; grid-row: ${c.layer};">${buildNodeCard({ ...c.node, layer: c.layer, is_orphan: c.isOrphan }, isRoot)}</div>`;
+      });
+      grid += '</div>';
+
+      const routerTxt = root.router_mac
+        ? `Roteador ${formatMac(root.router_mac)}${root.router_rssi !== undefined && root.router_rssi !== null ? ` · ${root.router_rssi} dBm` : ''}`
+        : 'Roteador não informado';
+
+      return `
+        <div class="flex flex-col items-start ${isPanoramic ? 'shrink-0' : 'w-full overflow-x-auto'} p-6 md:p-8 rounded-3xl border ${isRootOnline ? 'border-[#131b28]' : 'border-slate-800/60'} bg-[#060912] shadow-2xl relative z-0">
+          <div class="mb-8 flex items-center gap-2 flex-wrap">
+            <span class="px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider ${isRootOnline ? 'bg-indigo-950/80 border border-indigo-500/50 text-indigo-200' : 'bg-slate-900 border border-slate-800 text-slate-400'} flex items-center space-x-2 shadow-lg">
+              <i data-lucide="${isRootOnline ? 'git-merge' : 'wifi-off'}" class="w-4 h-4 ${isRootOnline ? 'text-emerald-400' : 'text-slate-500'}"></i>
+              <span>Malha ${escapeHtml(mesh.name || formatMac(rootMac))}</span>
+            </span>
+            ${isRootOnline
+              ? `<span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950 border border-emerald-500 text-emerald-300 font-bold">ONLINE</span>`
+              : `<span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-950/80 border border-rose-800/50 text-rose-300 font-bold">ROOT SEM SINAL</span>`}
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-slate-300">ROOT ${formatMac(rootMac)}</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-slate-300">${routerTxt}</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-slate-300">${mesh.received_devices}${mesh.total_devices ? `/${mesh.total_devices}` : ''} Codax · ${maxLayer} camada${maxLayer > 1 ? 's' : ''}</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full border ${stale ? 'bg-amber-950/70 border-amber-600/60 text-amber-300' : 'bg-slate-900 border-slate-700 text-slate-400'}" title="Horário da última resposta de query topology desta ROOT">
+              topology ${escapeHtml(mesh.timestamp || '')} ${formatTopologyAge(mesh.age_seconds)}${stale ? ' · desatualizada' : ''}
+            </span>
+            ${incomplete ? `<span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-950/70 border border-amber-600/60 text-amber-300" title="O firmware pagina a topologia; nem todas as páginas chegaram">páginas pendentes</span>` : ''}
+            <button onclick="requestMeshTopology({ target: '${rootMac}' })" class="ml-1 px-3 py-1 rounded-xl bg-indigo-600/40 hover:bg-indigo-600 text-indigo-200 hover:text-white font-bold text-[10px] transition flex items-center space-x-1" title="Enviar query topology para esta ROOT">
+              <i data-lucide="radio" class="w-3 h-3"></i>
+              <span>Sondar</span>
+            </button>
+          </div>
+          ${grid}
+          ${orphanCount > 0 ? `
+            <div class="mt-8 text-[11px] text-amber-200 flex items-center space-x-2 bg-amber-950/40 px-4 py-2 rounded-xl border border-amber-700/50">
+              <i data-lucide="unlink" class="w-3.5 h-3.5 text-amber-400"></i>
+              <span>${orphanCount} Codax com <strong>pai não encontrado</strong> nesta topologia: exibidos na camada informada, sem conexão.</span>
+            </div>` : ''}
+        </div>
+      `;
+    }
+
     function renderAllMeshTrees(highlightMac = null) {
       if (window.treeViewMode === 'matrix') {
         renderMeshAdjacencyMatrix();
@@ -9546,165 +10303,61 @@
       initTreePanZoom();
 
       const isPanoramic = (window.treeViewMode !== 'classic');
-
       if (highlightMac) currentHighlightTreeMac = highlightMac.toLowerCase().replace(/[^a-f0-9]/g, '');
 
-      // 1. Mapear todos os dispositivos conhecidos (cadastrados + descobertos + backend)
-      const allKnown = new Map();
-
-      // Dispositivos cadastrados em devices.json
-      devicesList.forEach(d => {
-        const cleanM = (d.mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
-        if (!cleanM) return;
-        const isOnline = (d.status === 'online');
-        allKnown.set(cleanM, {
-          mac: cleanM,
-          name: d.name,
-          meter_serial: d.meter_serial,
-          meter_type: d.meter_type,
-          role: d.role,
-          layer: (d.role === 'ROOT' || d.layer === 1) ? 1 : (d.layer || 2),
-          isRoot: (d.role === 'ROOT' || d.layer === 1),
-          parent_mac: d.parent_mac,
-          rssi: d.rssi,
-          rssi_history: d.rssi_history,
-          notes: d.notes,
-          status: d.status || 'offline',
-          is_online: isOnline,
-          last_seen: d.last_seen || 'Desconhecido'
-        });
-      });
-
-      // Dispositivos descobertos na rede MQTT em tempo real
-      discoveredList.forEach(d => {
-        const cleanM = (d.mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
-        if (!cleanM) return;
-        const existing = allKnown.get(cleanM) || {};
-        allKnown.set(cleanM, {
-          ...existing,
-          mac: cleanM,
-          name: existing.name || d.name,
-          layer: d.layer || existing.layer || 2,
-          isRoot: (d.layer === 1) || (existing.role === 'ROOT') || !d.parent_mac,
-          parent_mac: d.parent_mac || existing.parent_mac,
-          rssi: d.rssi || existing.rssi,
-          rssi_history: d.rssi_history || existing.rssi_history,
-          status: 'online',
-          is_online: true,
-          last_seen: d.last_seen || 'Agora'
-        });
-      });
-
-      // Mesclar dados vindos do backend (/api/topology) se disponíveis
-      if (window.backendMeshes && Array.isArray(window.backendMeshes)) {
-        window.backendMeshes.forEach(mesh => {
-          if (!mesh || !mesh.root) return;
-          const rMac = (mesh.root.mac_addr || mesh.root.mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
-          if (!rMac) return;
-          const ex = allKnown.get(rMac) || {};
-          const rOnline = mesh.root.is_online !== undefined ? !!mesh.root.is_online : (mesh.root.status === 'online' || ex.is_online);
-          allKnown.set(rMac, {
-            ...ex,
-            mac: rMac,
-            name: ex.name || mesh.root.id,
-            role: 'ROOT',
-            isRoot: true,
-            layer: 1,
-            router_ssid: mesh.root.router_ssid,
-            ip: mesh.root.ip,
-            mesh_id: mesh.mesh_id || mesh.root.mesh_id,
-            rssi: mesh.root.rssi || ex.rssi,
-            status: rOnline ? 'online' : (ex.status || 'offline'),
-            is_online: !!rOnline,
-            last_seen: mesh.root.last_seen || ex.last_seen
-          });
-
-          if (mesh.root.nodes && Array.isArray(mesh.root.nodes)) {
-            const addRec = (ch, pMac) => {
-              const cMac = (ch.mac_addr || ch.mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
-              if (!cMac) return;
-              const chEx = allKnown.get(cMac) || {};
-              const cOnline = ch.is_online !== undefined ? !!ch.is_online : (ch.status === 'online' || chEx.is_online);
-              allKnown.set(cMac, {
-                ...chEx,
-                mac: cMac,
-                name: chEx.name || ch.id,
-                layer: ch.layer || (chEx.layer || 2),
-                parent_mac: pMac,
-                rssi: ch.rssi || chEx.rssi,
-                nodes: ch.nodes,
-                status: cOnline ? 'online' : (chEx.status || 'offline'),
-                is_online: !!cOnline,
-                last_seen: ch.last_seen || chEx.last_seen
-              });
-              if (ch.nodes && Array.isArray(ch.nodes)) {
-                ch.nodes.forEach(sub => addRec(sub, cMac));
-              }
-            };
-            mesh.root.nodes.forEach(c => addRec(c, rMac));
-          }
-        });
-      }
-
-      // Separar raízes e nós filhos
-      const roots = [];
-      const nodes = [];
-      allKnown.forEach(dev => {
-        const isRoot = dev.isRoot || dev.layer === 1 || !dev.parent_mac || dev.parent_mac === dev.mac;
-        if (isRoot) roots.push(dev);
-        else nodes.push(dev);
-      });
-
-      // Ordenar raízes: raízes ONLINE vêm PRIMEIRO!
-      roots.sort((a, b) => {
-        const aOn = a.is_online ? 1 : 0;
-        const bOn = b.is_online ? 1 : 0;
-        if (aOn !== bOn) return bOn - aOn;
-        return (a.name || a.mac).localeCompare(b.name || b.mac);
-      });
-
-      // Aplicar filtro de modo (Apenas Online vs Todos)
-      let activeRoots = roots;
-      let activeNodes = nodes;
-
-      if (window.treeFilterMode === 'online_only') {
-        activeNodes = nodes.filter(n => n.is_online);
-        activeRoots = roots.filter(r => r.is_online || activeNodes.some(n => (n.parent_mac || '').toLowerCase().replace(/[^a-f0-9]/g, '') === r.mac));
-      }
-
       window.currentTreeConnections = [];
+      window.treeNodeIndex = new Map();
 
-      // Barra de Resumo Superior com Métricas IoT estilo Crouton & Topolograph
+      const allMeshes = Array.isArray(window.backendMeshes) ? window.backendMeshes.filter(m => m && m.root && m.root.mac_addr) : [];
+      const meshes = (window.treeFilterMode === 'online_only')
+        ? allMeshes.filter(m => m.is_online || !m.stale)
+        : allMeshes;
+      const hiddenByFilter = allMeshes.length - meshes.length;
+
+      // Renderiza os cards das malhas primeiro (popula treeNodeIndex e conexões)
+      let meshesHtml = '';
+      meshes.forEach(m => { meshesHtml += renderMeshTopologyCard(m, isPanoramic); });
+
+      let totalNodes = 0, onlineNodes = 0, maxLayer = 0;
+      window.treeNodeIndex.forEach(n => {
+        totalNodes++;
+        if (n.is_online) onlineNodes++;
+        maxLayer = Math.max(maxLayer, Number(n.layer) || 1);
+      });
+      const onlineRoots = meshes.filter(m => m.root.is_online).length;
       const totalFailed = (window.simulatedFailedNodes ? window.simulatedFailedNodes.size : 0);
-      const onlineNodesCount = activeNodes.filter(n => n.is_online).length;
-      const onlineRootsCount = activeRoots.filter(r => r.is_online).length;
+      const tState = window.treeTopologyState || {};
+
+      let legend = '';
+      for (let L = 1; L <= Math.max(maxLayer, 1); L++) {
+        legend += `<span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-sm" style="background:${treeLayerStyle(L).color}; box-shadow: 0 0 6px ${treeLayerStyle(L).glow};"></span><span>${L === 1 ? 'ROOT' : `L${L}`}</span></span>`;
+      }
 
       let html = `
         <div class="w-full flex flex-col xl:flex-row items-center justify-between gap-3 px-5 py-3 mb-8 rounded-2xl bg-[#080c14] border border-[#131b28] text-xs shadow-xl max-w-6xl">
           <div class="flex items-center space-x-3.5 flex-wrap gap-y-2">
             <span class="flex items-center space-x-1.5 text-slate-200 font-extrabold">
-              <span class="w-2.5 h-2.5 rounded-full ${onlineRootsCount > 0 ? 'bg-cyan-400 shadow-[0_0_10px_#22d3ee]' : 'bg-slate-600'}"></span>
-              <span>Malhas: <strong class="text-cyan-300 font-mono text-sm">${activeRoots.length}</strong></span>
+              <span class="w-2.5 h-2.5 rounded-full ${onlineRoots > 0 ? 'bg-cyan-400 shadow-[0_0_10px_#22d3ee]' : 'bg-slate-600'}"></span>
+              <span>Malhas: <strong class="text-cyan-300 font-mono text-sm">${meshes.length}</strong></span>
             </span>
             <span class="flex items-center space-x-1.5 text-slate-300 font-bold">
-              <span class="w-2 h-2 rounded-full ${onlineRootsCount > 0 ? 'bg-indigo-500 shadow-[0_0_8px_#6366f1]' : 'bg-slate-600'}"></span>
-              <span>L1 ROOTs: <strong class="text-indigo-300 font-mono">${onlineRootsCount} online / ${activeRoots.length}</strong></span>
+              <span>ROOTs online: <strong class="text-indigo-300 font-mono">${onlineRoots}/${meshes.length}</strong></span>
             </span>
             <span class="flex items-center space-x-1.5 text-slate-300 font-bold">
-              <span class="w-2 h-2 rounded-full ${onlineNodesCount > 0 ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-slate-600'}"></span>
-              <span>NODEs: <strong class="text-emerald-300 font-mono">${onlineNodesCount} online / ${activeNodes.length}</strong></span>
+              <span>Codax: <strong class="text-emerald-300 font-mono">${onlineNodes} online / ${totalNodes}</strong></span>
+            </span>
+            <span class="flex items-center space-x-1.5 text-slate-300 font-bold" title="Qualidade média dos enlaces de rádio informados no topology">
+              <i data-lucide="radio-tower" class="w-3.5 h-3.5 text-emerald-400"></i>
+              <span>LQI Médio: <strong class="text-emerald-300 font-mono">${calculateAvgLqi(window.treeNodeIndex)}%</strong></span>
             </span>
             <div class="h-4 w-px bg-slate-800 hidden sm:block"></div>
-            <span class="flex items-center space-x-1.5 text-slate-300 font-bold" title="Crouton: Vazão média de pacotes MQTT na malha">
-              <i data-lucide="activity" class="w-3.5 h-3.5 text-cyan-400"></i>
-              <span>Vazão: <strong class="text-cyan-300 font-mono">${(window.meshPacketRate || 14.2).toFixed(1)} PPS</strong></span>
-            </span>
-            <span class="flex items-center space-x-1.5 text-slate-300 font-bold" title="Crouton: Qualidade média dos enlaces de rádio">
-              <i data-lucide="radio-tower" class="w-3.5 h-3.5 text-emerald-400"></i>
-              <span>LQI Médio: <strong class="text-emerald-300 font-mono">${calculateAvgLqi(allKnown)}%</strong></span>
-            </span>
+            <span class="flex items-center space-x-2.5 text-[10px] text-slate-400 font-mono font-bold">${legend}</span>
+            ${tState.pending ? `
+              <span class="flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-indigo-950/60 border border-indigo-500/40 text-indigo-200 text-[11px]">
+                <i data-lucide="loader" class="w-3 h-3 animate-spin"></i><span>Aguardando topology...</span>
+              </span>` : ''}
             ${totalFailed > 0 ? `
-              <div class="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-rose-950/90 border border-rose-500 text-rose-300 font-bold animate-pulse" title="Topolograph: Simulação de falha de enlaces ativa">
+              <div class="flex items-center space-x-2 px-2.5 py-1 rounded-xl bg-rose-950/90 border border-rose-500 text-rose-300 font-bold animate-pulse" title="Simulação de falha de enlaces ativa">
                 <i data-lucide="alert-octagon" class="w-3.5 h-3.5 text-rose-400"></i>
                 <span>${totalFailed} Falha(s) Simulada(s)</span>
                 <button onclick="resetAllFailureSimulations()" class="ml-1 text-[10px] underline hover:text-white" title="Restaurar todos os nós">Resetar</button>
@@ -9725,11 +10378,11 @@
                 <span>Enquadrar Tudo</span>
               </button>
             ` : ''}
-            <button onclick="queryTopologyBroadcast()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white border border-emerald-400/40 text-xs font-bold transition flex items-center space-x-1.5 shadow-md">
+            <button onclick="requestMeshTopology()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white border border-emerald-400/40 text-xs font-bold transition flex items-center space-x-1.5 shadow-md">
               <i data-lucide="radio" class="w-3.5 h-3.5 text-emerald-200"></i>
               <span>Sondar Malhas</span>
             </button>
-            <button onclick="renderAllMeshTrees(currentHighlightTreeMac)" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs font-semibold transition flex items-center space-x-1">
+            <button onclick="loadTopologyTree(currentHighlightTreeMac)" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 text-xs font-semibold transition flex items-center space-x-1">
               <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-slate-400"></i>
               <span>Atualizar</span>
             </button>
@@ -9737,133 +10390,54 @@
         </div>
       `;
 
-      if (activeRoots.length === 0) {
+      if (meshes.length === 0) {
         html += `
           <div class="p-16 text-center rounded-3xl bg-[#080c14] border border-[#131b28] text-slate-400 space-y-3 max-w-xl mx-auto shadow-2xl">
-            <i data-lucide="wifi-off" class="w-12 h-12 text-slate-600 mx-auto"></i>
-            <div class="text-sm font-bold text-slate-200">Nenhum Codax Online Detectado</div>
-            <p class="text-xs text-slate-500">Nenhuma placa está transmitindo na malha no momento. Verifique a alimentação do seu ESP32 ou alterne o filtro acima para <strong>"Todos os Nós"</strong> para visualizar os nós cadastrados.</p>
-            <button onclick="setTreeFilterMode('all')" class="mt-2 px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition shadow-sm">
-              Mostrar Todos os Nós Cadastrados
-            </button>
+            <i data-lucide="${tState.pending ? 'loader' : 'git-branch'}" class="w-12 h-12 text-slate-600 mx-auto ${tState.pending ? 'animate-spin' : ''}"></i>
+            <div class="text-sm font-bold text-slate-200">${tState.pending ? 'Solicitando topologia às ROOTs...' : 'Nenhuma topologia recebida'}</div>
+            <p class="text-xs text-slate-500">${tState.pending
+              ? 'O comando <span class="font-mono text-slate-300">query topology</span> foi enviado. A árvore é montada assim que a ROOT responder no tópico <span class="font-mono text-slate-300">topo/shopba/mesh</span>.'
+              : 'Nenhuma ROOT respondeu ao <span class="font-mono text-slate-300">query topology</span>. Verifique a alimentação da ROOT e a conexão com o broker.'}</p>
+            ${hiddenByFilter > 0 ? `<p class="text-xs text-amber-300">${hiddenByFilter} malha(s) com topologia desatualizada oculta(s) pelo filtro "Apenas Online".</p>` : ''}
+            <div class="flex items-center justify-center gap-2 pt-1">
+              <button onclick="requestMeshTopology()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs transition shadow-sm">Sondar Malhas Agora</button>
+              ${hiddenByFilter > 0 ? `<button onclick="setTreeFilterMode('all')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs transition">Mostrar Todas</button>` : ''}
+            </div>
           </div>
         `;
         content.innerHTML = html;
         lucide.createIcons();
+        drawTreeSvgConnectors([]);
         return;
       }
 
       html += isPanoramic ? `
-        <!-- LINHA PANORÂMICA: DISTRIBUIÇÃO DAS MALHAS LADO A LADO ESTILO GOOGLE MAPS / N8N -->
         <div id="tree-mesh-panoramic-row" class="flex flex-row items-start justify-center gap-16 md:gap-24 flex-nowrap w-max pb-20">
       ` : `
-        <!-- COLUNA VERTICAL: DISTRIBUIÇÃO CLÁSSICA DAS MALHAS EMPILHADAS -->
-        <div id="tree-mesh-vertical-col" class="flex flex-col items-center py-2 space-y-16 w-full max-w-5xl">
+        <div id="tree-mesh-vertical-col" class="flex flex-col items-center py-2 space-y-16 w-full max-w-full">
       `;
+      html += meshesHtml;
+      html += '</div>';
 
-      // Renderizar CADA MALHA com sua respectiva árvore
-      activeRoots.forEach((rootDev) => {
-        const rootCleanM = rootDev.mac;
-        const isBancada = (rootCleanM === '704bca491ca0');
-        const isLab = (rootCleanM === '4417934f49a4');
-        const isRootOnline = !!rootDev.is_online;
-
-        // Identificar nós desta malha com vinculação REAL e fiel
-        const myDirectChildren = activeNodes.filter(n => {
-          const p = (n.parent_mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
-          return p === rootCleanM;
-        });
-
-        // Para cada filho direto (L2), buscar nós que têm parent_mac = filho (L3)
-        const hierarchicalChildren = myDirectChildren.map(c => {
-          const cMac = c.mac;
-          const subChildren = activeNodes.filter(n => {
-            const p = (n.parent_mac || '').toLowerCase().replace(/[^a-f0-9]/g, '');
-            return p === cMac;
-          });
-          return {
-            ...c,
-            mac_addr: c.mac,
-            id: c.name || formatMac(c.mac),
-            layer: c.layer || 2,
-            parent_mac: rootDev.mac,
-            rssi: c.rssi,
-            is_online: c.is_online,
-            status: c.status,
-            last_seen: c.last_seen,
-            nodes: (c.nodes && c.nodes.length > 0) ? c.nodes : subChildren.map(s => ({
-              ...s,
-              mac_addr: s.mac,
-              id: s.name || formatMac(s.mac),
-              layer: 3,
-              parent_mac: c.mac,
-              rssi: s.rssi,
-              is_online: s.is_online,
-              status: s.status,
-              last_seen: s.last_seen
-            }))
-          };
-        });
-
-        // Registrar conexões no SVG para desenhar os conduítes contínuos
-        hierarchicalChildren.forEach(c => {
-          window.currentTreeConnections.push({ parent: rootCleanM, child: c.mac_addr });
-          if (c.nodes && c.nodes.length > 0) {
-            c.nodes.forEach(sub => {
-              window.currentTreeConnections.push({ parent: c.mac_addr, child: sub.mac_addr });
-            });
-          }
-        });
-
-        const meshIdStr = isBancada ? '00:00:00:00:44:08' : (isLab ? '00:00:00:00:54:07' : (rootDev.mesh_id || '00:00:00:00:00:00'));
-        const meshBaseName = isBancada 
-          ? 'Malha de Bancada (Mesh 00:00:00:00:44:08)' 
-          : (isLab ? 'Malha Laboratório (Mesh 00:00:00:00:54:07)' : `Malha Mesh ${formatMac(rootCleanM)}`);
-        const ssidStr = isBancada ? 'LEDAXIO_DEV' : (isLab ? 'LAB_LEDAX_IOT' : (rootDev.router_ssid || 'LEDAX_IOT'));
-        const ipStr = isBancada ? '192.168.137.148' : (isLab ? '192.168.1.150' : (rootDev.ip || '192.168.1.1'));
-
+      // Codax cadastrados que não aparecem em nenhuma topologia (somente no modo "Todos")
+      const unplaced = Array.isArray(window.treeUnplaced) ? window.treeUnplaced : [];
+      if (window.treeFilterMode === 'all' && unplaced.length > 0) {
         html += `
-          <div class="flex flex-col items-center ${isPanoramic ? 'shrink-0 min-w-[380px]' : 'w-full'} p-6 md:p-8 rounded-3xl border ${isRootOnline ? 'border-[#131b28]' : 'border-slate-800/60'} bg-[#060912] shadow-2xl relative z-0">
-            <div class="mb-8 px-5 py-2 rounded-full text-xs font-extrabold uppercase tracking-wider ${isRootOnline ? (isBancada ? 'bg-purple-950/80 border border-purple-500/50 text-purple-200' : 'bg-indigo-950/80 border border-indigo-500/50 text-indigo-200') : 'bg-slate-900 border border-slate-800 text-slate-400'} flex items-center space-x-3 shadow-lg">
-              <i data-lucide="${isRootOnline ? 'git-merge' : 'wifi-off'}" class="w-4 h-4 ${isRootOnline ? 'text-emerald-400' : 'text-slate-500'}"></i>
-              <span>${meshBaseName}</span>
-              ${isRootOnline ? `
-                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950 border border-emerald-500 text-emerald-300 font-bold">ONLINE</span>
-              ` : `
-                <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-950/80 border border-rose-800/50 text-rose-300 font-bold">DESCONECTADA</span>
-              `}
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-slate-300">SSID: ${ssidStr}</span>
-              <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-slate-300">L1 ROOT + ${hierarchicalChildren.length} Filhos</span>
+          <div class="mt-4 mb-10 max-w-6xl w-full rounded-2xl border border-dashed border-slate-700 bg-[#070a12] p-4">
+            <div class="text-[11px] font-bold text-slate-300 mb-3 flex items-center space-x-2">
+              <i data-lucide="circle-dashed" class="w-3.5 h-3.5 text-slate-500"></i>
+              <span>Cadastrados fora da topologia (${unplaced.length}) — não reportados por nenhuma ROOT</span>
             </div>
-            
-            ${buildNodeCard({
-              mac_addr: rootDev.mac,
-              id: rootDev.name || formatMac(rootDev.mac),
-              layer: 1,
-              router_ssid: ssidStr,
-              ip: ipStr,
-              mesh_id: meshIdStr,
-              rssi: rootDev.rssi || (isBancada ? -22 : -42),
-              is_online: rootDev.is_online,
-              status: rootDev.status,
-              last_seen: rootDev.last_seen
-            }, true)}
-
-            ${hierarchicalChildren.length > 0 ? renderBranches(hierarchicalChildren, rootCleanM) : `
-              <div class="mt-10 text-xs text-slate-400 italic flex items-center space-x-2 bg-slate-900/80 px-5 py-3 rounded-2xl border border-slate-800 shadow-sm">
-                <i data-lucide="${isRootOnline ? 'shield-check' : 'alert-circle'}" class="w-4 h-4 ${isRootOnline ? 'text-emerald-400' : 'text-slate-500'}"></i>
-                <span>${isRootOnline ? 'Nó ROOT ativo — sem nós filhos associados no momento' : 'Nó ROOT offline — aguardando comunicação da bancada'}</span>
-                <button onclick="sendQuickCommand('query', 'topology', null, '${rootCleanM}', true)" class="ml-2 px-3 py-1 rounded-xl bg-indigo-600/40 hover:bg-indigo-600 text-indigo-200 hover:text-white font-bold text-[10px] transition flex items-center space-x-1">
-                  <i data-lucide="radio" class="w-3 h-3"></i>
-                  <span>Sondar Filhos</span>
-                </button>
-              </div>
-            `}
+            <div class="flex flex-wrap gap-2">
+              ${unplaced.map(u => `
+                <span class="px-2.5 py-1 rounded-lg border text-[10px] font-mono ${u.is_online ? 'border-emerald-700/60 text-emerald-300 bg-emerald-950/30' : 'border-slate-800 text-slate-500 bg-slate-950'}" title="Visto: ${escapeHtml(u.last_seen || 'Desconhecido')}">
+                  ${u.name ? `${escapeHtml(u.name)} · ` : ''}${formatMac(u.mac_addr)}
+                </span>`).join('')}
+            </div>
           </div>
         `;
-      });
+      }
 
-      html += '</div>';
       content.innerHTML = html;
       lucide.createIcons();
 
@@ -9958,7 +10532,12 @@
       const dev = devicesList.find(d => d.mac && d.mac.toLowerCase().replace(/[^a-f0-9]/g, '') === cleanMac);
       const devName = dev ? dev.name : (node.name || null);
       const meterSerial = dev && dev.meter_serial ? dev.meter_serial : (node.meter_serial || null);
-      const meshLabel = node.mesh_id || (cleanMac === '704bca491ca0' ? 'Mesh 44:08' : (cleanMac.startsWith('4417') ? 'Mesh 54:07' : null));
+      const meshLabel = node.mesh_id || null;
+      const layerSt = treeLayerStyle(isRoot ? 1 : layer);
+      // id reportado no topology (ex.: "Teste"); só exibe quando não for o próprio MAC
+      const topoId = (node.id && String(node.id).toLowerCase().replace(/[^a-f0-9]/g, '') !== cleanMac) ? String(node.id) : null;
+      const parentInfo = (!isRoot && node.parent_mac && window.treeNodeIndex) ? window.treeNodeIndex.get(String(node.parent_mac).toLowerCase().replace(/[^a-f0-9]/g, '')) : null;
+      const parentLabel = parentInfo && parentInfo.id && String(parentInfo.id).toLowerCase().replace(/[^a-f0-9]/g, '') !== String(node.parent_mac).toLowerCase().replace(/[^a-f0-9]/g, '') ? ` (${escapeHtml(String(parentInfo.id))})` : '';
       const rtt = window.deviceRttMap[cleanMac];
       let sparkHistory = (dev && dev.rssi_history && dev.rssi_history.length > 0) ? dev.rssi_history : window.deviceRssiMap[cleanMac];
       if (!sparkHistory || sparkHistory.length === 0) {
@@ -9969,7 +10548,13 @@
       const roleText = isRoot ? '👑 ROOT (L1)' : `NODE (L${layer})`;
 
       return `
-        <div id="tree-node-${cleanMac}" class="border ${border} rounded-2xl p-4 w-64 text-left select-none hover:border-indigo-400 transition cursor-pointer relative group shadow-lg z-30" style="z-index: 30;" onclick="if(!window.treeHasMoved) selectTreeNode('${cleanMac}')">
+        <div id="tree-node-${cleanMac}" class="border ${border} rounded-2xl p-4 w-64 text-left select-none hover:border-indigo-400 transition cursor-pointer relative group shadow-lg z-30" style="z-index: 30; box-shadow: inset 0 3px 0 ${isOnline ? layerSt.color : '#334155'}, 0 12px 28px -10px rgba(0,0,0,0.9);" onclick="if(!window.treeHasMoved) selectTreeNode('${cleanMac}')">
+          ${node.is_orphan ? `
+            <div class="absolute -top-2.5 left-3 bg-amber-500 text-slate-950 font-black text-[8px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm flex items-center space-x-1" title="parent_id reportado: ${escapeHtml(String(node.parent_ref || '?'))}">
+              <i data-lucide="unlink" class="w-2.5 h-2.5"></i>
+              <span>Pai não encontrado: ${escapeHtml(String(node.parent_ref || '?'))}</span>
+            </div>
+          ` : ''}
           ${isHighlighted ? `
             <div class="absolute -top-2.5 -right-2 bg-cyan-400 text-slate-950 font-black text-[9px] px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-md flex items-center space-x-1 animate-bounce">
               <i data-lucide="crosshair" class="w-2.5 h-2.5"></i>
@@ -10015,10 +10600,12 @@
           <div class="text-[11px] text-slate-400 space-y-0.5">
             ${!isOnline ? `<div class="text-rose-400/90 font-mono text-[10px] font-semibold">🔴 Desconectado (Sem telemetria)</div>` : ''}
             ${meterSerial ? `<div>Serial: <span class="mono text-slate-200 font-semibold">${escapeHtml(meterSerial)}</span></div>` : ''}
+            ${topoId ? `<div>ID mesh: <span class="mono font-semibold" style="color:${layerSt.color}">${escapeHtml(topoId)}</span></div>` : ''}
             ${meshLabel ? `<div>Rede: <span class="mono text-amber-300 font-semibold">${escapeHtml(meshLabel)}</span></div>` : ''}
-            ${isRoot && node.router_ssid ? `<div>SSID: <span class="text-slate-300 font-semibold">${node.router_ssid}</span></div>` : ''}
-            ${isRoot && node.ip ? `<div>IP: <span class="text-emerald-400 font-mono">${node.ip}</span></div>` : ''}
-            ${!isRoot && node.parent_mac ? `<div>Parent: <span class="mono text-slate-300">${formatMac(node.parent_mac)}</span></div>` : ''}
+            ${isRoot && node.router_ssid ? `<div>SSID: <span class="text-slate-300 font-semibold">${escapeHtml(String(node.router_ssid))}</span></div>` : ''}
+            ${isRoot && node.router_mac ? `<div>Roteador: <span class="mono text-slate-300">${formatMac(node.router_mac)}</span></div>` : ''}
+            ${isRoot && node.ip ? `<div>IP: <span class="text-emerald-400 font-mono">${escapeHtml(String(node.ip))}</span></div>` : ''}
+            ${!isRoot && node.parent_mac ? `<div>Pai: <span class="mono text-slate-300">${formatMac(node.parent_mac)}</span>${parentLabel}</div>` : ''}
             <div class="text-[10px] text-slate-500 font-mono">Visto: ${escapeHtml(node.last_seen || dev?.last_seen || 'Desconhecido')}</div>
           </div>
           <div class="mt-2 pt-1.5 border-t border-[#131b28] flex items-center justify-between">
@@ -10954,6 +11541,7 @@
           const tickerDevStat = document.getElementById('ticker-devices-stat');
           if (tickerDevStat) tickerDevStat.innerText = devicesList.length;
           document.querySelectorAll('.ticker-devices-copy').forEach(el => el.innerText = devicesList.length);
+          if (typeof updateTickerFacts === 'function') updateTickerFacts();
 
           const topBadgeDev = document.getElementById('top-badge-devices');
           if (topBadgeDev) topBadgeDev.innerText = devicesList.length;
@@ -10995,8 +11583,14 @@
           renderDiscoveredCards();
           const discCount = document.getElementById('metric-discovered-count');
           if (discCount) discCount.innerText = discoveredList.length;
+          // "Na Malha" = Codax respondendo agora (janela de heartbeat do backend); o total visto fica no tooltip
           const topCountDisc = document.getElementById('top-count-discovered');
-          if (topCountDisc) topCountDisc.innerText = discoveredList.length;
+          if (topCountDisc) {
+            const onlineNow = discoveredList.filter(d => d.is_online).length;
+            topCountDisc.innerText = onlineNow;
+            const btn = topCountDisc.closest('button');
+            if (btn) btn.title = `${onlineNow} Codax respondendo agora · ${discoveredList.length} vistos desde que o servidor iniciou. Clique para ver a árvore.`;
+          }
           const sideCountDisc = document.getElementById('sidebar-count-discovered');
           if (sideCountDisc) sideCountDisc.innerText = discoveredList.length;
         }
@@ -11081,8 +11675,11 @@
                   window.deviceRssiMap[cleanM] = sparkHistory;
                 }
 
-                const tempVal = window.deviceTempMap ? window.deviceTempMap[cleanM] : (dev.role === 'ROOT' ? 48.5 : 44.8);
-                const kalmanVal = window.deviceKalmanMap ? window.deviceKalmanMap[cleanM] : (dev.rssi ? (dev.rssi * 0.95 - 3.2).toFixed(1) : '-67.2');
+                // Sem leitura real → "--" (antes exibia "undefined°C" / "undefined dBm")
+                const tempRaw = window.deviceTempMap ? window.deviceTempMap[cleanM] : undefined;
+                const kalmanRaw = window.deviceKalmanMap ? window.deviceKalmanMap[cleanM] : undefined;
+                const tempVal = (tempRaw !== undefined && tempRaw !== null && tempRaw !== '') ? tempRaw : '--';
+                const kalmanVal = (kalmanRaw !== undefined && kalmanRaw !== null && kalmanRaw !== '') ? kalmanRaw : '--';
                 const isSleep = dev.role !== 'ROOT';
 
                 return `
@@ -11201,7 +11798,7 @@
             </div>
             <button onclick="viewDeviceInMeshTree('${dev.mac}')" class="w-full bg-gradient-to-r from-emerald-950/90 via-teal-950/80 to-emerald-950/90 hover:from-emerald-900 hover:to-teal-900 border border-emerald-500/50 hover:border-emerald-300 text-emerald-200 hover:text-white font-bold text-xs py-2 rounded-xl transition flex items-center justify-center space-x-2 shadow-sm" title="Ir direto para a Árvore da Malha e visualizar este Codax">
               <i data-lucide="network" class="w-4 h-4 text-emerald-400"></i>
-              <span>🌳 Ver na Árvore da Malha</span>
+              <span>Ver na Árvore da Malha</span>
             </button>
             <div class="grid grid-cols-4 gap-1.5 text-[11px]">
               <button onclick="sendQuickCommand('query', 'ping', null, '${dev.mac}', true)" class="bg-slate-900 hover:bg-slate-800 text-slate-300 font-semibold py-1.5 rounded-lg transition text-center" title="Ping">Ping</button>
@@ -16403,33 +17000,201 @@
     let scifiLastData = null;
 
     // --- Alternador de Tema Dark Industrial SCADA High-Contrast ---
-    function toggleScadaTheme() {
-      const isScada = document.body.classList.toggle('theme-scada-industrial');
-      const icon = document.getElementById('theme-toggle-icon');
+    // ================= TEMAS: Cyber (padrão) · SCADA alto contraste · Claro =================
+    const UI_THEMES = {
+      cyber: { cls: null, label: 'Cyber' },
+      scada: { cls: 'theme-scada-industrial', label: 'SCADA' },
+      light: { cls: 'theme-light', label: 'Claro' }
+    };
+
+    function setUiTheme(theme, opts = {}) {
+      if (!UI_THEMES[theme]) theme = 'cyber';
+      Object.values(UI_THEMES).forEach(t => { if (t.cls) document.body.classList.remove(t.cls); });
+      if (UI_THEMES[theme].cls) document.body.classList.add(UI_THEMES[theme].cls);
+      document.documentElement.classList.toggle('dark', theme !== 'light');
+      try { localStorage.setItem('codax_hub_theme', theme); } catch (e) {}
       const label = document.getElementById('theme-toggle-label');
-      if (isScada) {
-        if (icon) icon.innerText = '⚡';
-        if (label) label.innerText = 'SCADA High-Contrast';
-        localStorage.setItem('codax_hub_theme', 'scada');
-        showGlassToast('⚡ Modo SCADA Industrial Ativado!\nPaleta Âmbar & Ciano de alto contraste para bancada.');
-      } else {
-        if (icon) icon.innerText = '🌙';
-        if (label) label.innerText = 'Cyber Glass';
-        localStorage.setItem('codax_hub_theme', 'cyber');
-        showGlassToast('🌙 Modo Cyber Glass Ativado!');
+      if (label) label.innerText = `Tema: ${UI_THEMES[theme].label}`;
+      document.querySelectorAll('[data-theme-option]').forEach(b => b.setAttribute('aria-checked', String(b.dataset.themeOption === theme)));
+      closeHeaderMenus();
+      // A árvore usa cores calculadas no SVG: redesenha para acompanhar o tema
+      if (window.currentTreeConnections && window.currentTreeConnections.length) {
+        setTimeout(() => drawTreeSvgConnectors(window.currentTreeConnections), 30);
+      }
+      // Sparklines de RSSI usam cor inline: re-renderiza a lista de medidores se estiver visível
+      const devView = document.getElementById('view-devices');
+      if (devView && !devView.classList.contains('hidden') && typeof loadDevices === 'function') loadDevices();
+      if (!opts.silent) showGlassToast(`Tema ${UI_THEMES[theme].label} ativado`, 'info');
+    }
+
+    // Compatibilidade com atalhos antigos (Command Palette): alterna Cyber ↔ SCADA
+    function toggleScadaTheme() {
+      setUiTheme(document.body.classList.contains('theme-scada-industrial') ? 'cyber' : 'scada');
+    }
+
+    // ================= MENUS SUSPENSOS DO CABEÇALHO (teclado: Enter/Espaço abre, ↑↓ navega, Esc fecha) =================
+    function closeHeaderMenus(exceptId = null) {
+      document.querySelectorAll('.header-menu').forEach(m => {
+        if (m.id === exceptId) return;
+        m.classList.add('hidden');
+        const btn = document.querySelector(`[aria-controls="${m.id}"]`);
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    function toggleHeaderMenu(menuId, ev) {
+      if (ev) ev.stopPropagation();
+      const menu = document.getElementById(menuId);
+      if (!menu) return;
+      const willOpen = menu.classList.contains('hidden');
+      closeHeaderMenus(menuId);
+      menu.classList.toggle('hidden', !willOpen);
+      const btn = document.querySelector(`[aria-controls="${menuId}"]`);
+      if (btn) btn.setAttribute('aria-expanded', String(willOpen));
+      if (willOpen) {
+        const first = menu.querySelector('[aria-checked="true"]') || menu.querySelector('button');
+        if (first) setTimeout(() => first.focus(), 0);
       }
     }
 
-    // Inicializar tema salvo
-    document.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('codax_hub_theme');
-      if (savedTheme === 'scada') {
-        document.body.classList.add('theme-scada-industrial');
-        const icon = document.getElementById('theme-toggle-icon');
-        const label = document.getElementById('theme-toggle-label');
-        if (icon) icon.innerText = '⚡';
-        if (label) label.innerText = 'SCADA High-Contrast';
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('[data-header-menu]')) closeHeaderMenus();
+    });
+    document.addEventListener('keydown', (e) => {
+      const menu = e.target.closest && e.target.closest('.header-menu');
+      if (e.key === 'Escape' && document.querySelector('.header-menu:not(.hidden)')) {
+        const open = document.querySelector('.header-menu:not(.hidden)');
+        closeHeaderMenus();
+        const btn = open && document.querySelector(`[aria-controls="${open.id}"]`);
+        if (btn) btn.focus();
+        return;
       }
+      if (menu && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+        e.preventDefault();
+        const items = [...menu.querySelectorAll('button')];
+        const i = items.indexOf(document.activeElement);
+        const next = items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length];
+        if (next) next.focus();
+      }
+    });
+
+    // ================= LETREIRO: SOMENTE DADOS REAIS + PAUSA =================
+    function setTickerText(key, text) {
+      document.querySelectorAll(`[data-ticker="${key}"]`).forEach(el => { el.textContent = text; });
+    }
+
+    function updateTickerFacts() {
+      const meshes = Array.isArray(window.backendMeshes) ? window.backendMeshes : [];
+      const valid = meshes.filter(m => m && m.root);
+      const live = valid.filter(m => !m.stale);
+      const shown = live.length ? live : valid;
+      if (shown.length > 0) {
+        const m = shown[0];
+        const rssi = (m.root.rssi !== undefined && m.root.rssi !== null) ? ` · ${m.root.rssi} dBm` : '';
+        const age = m.stale ? ` · topology ${formatTopologyAge(m.age_seconds)}` : '';
+        setTickerText('root', `${m.name || formatMac(m.mesh_root_mac)} · ${m.root.is_online ? 'ONLINE' : 'SEM SINAL'}${rssi}${age}${shown.length > 1 ? ` (+${shown.length - 1})` : ''}`);
+        const total = shown.reduce((acc, x) => acc + (x.received_devices || 0), 0);
+        const maxL = Math.max(...shown.map(x => x.max_layer || 1));
+        setTickerText('mesh', `${total} Codax · ${maxL} camada${maxL > 1 ? 's' : ''}`);
+      } else {
+        setTickerText('root', 'aguardando topology');
+        setTickerText('mesh', '—');
+      }
+      const list = Array.isArray(window.devicesList) ? window.devicesList : (typeof devicesList !== 'undefined' ? devicesList : []);
+      const onlineCount = list.filter(d => d.status === 'online').length;
+      setTickerText('devices-online', `${onlineCount} online`);
+    }
+
+    function updateTickerBroker(connected) {
+      const label = (typeof brokerMode !== 'undefined' && brokerMode === 'LOCAL') ? 'Local :1883' : 'AWS IoT :8883';
+      setTickerText('broker', `${label} · ${connected ? 'conectado' : 'desconectado'}`);
+      if (typeof webPort !== 'undefined' && webPort) setTickerText('ota', `:${webPort}`);
+    }
+
+    // Segredos (ex.: senha da mesh) mascarados por padrão, com revelação explícita
+    function toggleSecretReveal(btn) {
+      const holder = btn && btn.parentElement && btn.parentElement.querySelector('[data-secret]');
+      if (!holder) return;
+      const show = btn.getAttribute('aria-pressed') !== 'true';
+      holder.textContent = show ? holder.dataset.secret : '••••••••';
+      btn.setAttribute('aria-pressed', String(show));
+      btn.setAttribute('aria-label', show ? 'Ocultar senha da mesh' : 'Mostrar senha da mesh');
+      btn.innerHTML = `<i data-lucide="${show ? 'eye-off' : 'eye'}" class="w-3 h-3"></i>`;
+      lucide.createIcons();
+    }
+
+    function toggleTickerPause() {
+      const t = document.getElementById('mesh-stock-ticker');
+      const btn = document.getElementById('ticker-pause-btn');
+      if (!t) return;
+      const paused = t.classList.toggle('ticker-paused');
+      if (btn) {
+        btn.setAttribute('aria-pressed', String(paused));
+        btn.setAttribute('aria-label', paused ? 'Retomar letreiro' : 'Pausar letreiro');
+        btn.innerHTML = `<i data-lucide="${paused ? 'play' : 'pause'}" class="w-3.5 h-3.5"></i><span class="hidden md:inline">${paused ? 'Retomar' : 'Pausar'}</span>`;
+        lucide.createIcons();
+      }
+      try { localStorage.setItem('codax_ticker_paused', paused ? '1' : '0'); } catch (e) {}
+    }
+
+    // ================= ACESSIBILIDADE: ELEMENTOS CLICÁVEIS ACESSÍVEIS POR TECLADO =================
+    // Linhas do console, cards e chips usam <div onclick>. Damos papel de botão, foco e Enter/Espaço.
+    function enhanceClickableA11y(root = document) {
+      root.querySelectorAll('[onclick]:not(button):not(a):not(input):not(select):not(textarea):not(label):not([role])').forEach(el => {
+        // Container com botões dentro: os botões internos já dão acesso (evita interativo aninhado)
+        if (el.querySelector('button, a[href], input, select, textarea')) { el.setAttribute('role', 'group'); return; }
+        el.setAttribute('role', 'button');
+        if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+      });
+    }
+
+    // Áreas roláveis sem nada focável dentro precisam receber foco para rolar pelo teclado (roda ao trocar de aba)
+    function enhanceScrollRegionsA11y(root = document) {
+      root.querySelectorAll('.overflow-x-auto, .overflow-y-auto, .overflow-auto').forEach(el => {
+        if (el.hasAttribute('tabindex') || el.closest('.hidden')) return;
+        const scrollable = el.scrollHeight > el.clientHeight + 2 || el.scrollWidth > el.clientWidth + 2;
+        if (scrollable && !el.querySelector('button, a[href], input, select, textarea, [tabindex]')) {
+          el.setAttribute('tabindex', '0');
+          if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', 'Área com rolagem');
+        }
+      });
+    }
+    document.addEventListener('keydown', (e) => {
+      if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.getAttribute && e.target.getAttribute('role') === 'button'
+          && !['BUTTON', 'A', 'INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.tagName)) {
+        e.preventDefault();
+        e.target.click();
+      }
+    });
+    (function initClickableObserver() {
+      let pending = null;
+      const obs = new MutationObserver(() => {
+        if (pending) return;
+        pending = setTimeout(() => { pending = null; enhanceClickableA11y(); }, 250);
+      });
+      const start = () => { enhanceClickableA11y(); obs.observe(document.body, { childList: true, subtree: true }); };
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+    })();
+
+    // Inicializar tema salvo e estado do letreiro
+    document.addEventListener('DOMContentLoaded', () => {
+      let savedTheme = 'cyber';
+      try { savedTheme = localStorage.getItem('codax_hub_theme') || 'cyber'; } catch (e) {}
+      setUiTheme(savedTheme, { silent: true });
+      let tickerPaused = false;
+      try { tickerPaused = localStorage.getItem('codax_ticker_paused') === '1'; } catch (e) {}
+      if (tickerPaused || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) toggleTickerPause();
+      // Fatos reais do letreiro e do MESH ID: pede a topologia uma vez ao abrir o site (somente leitura)
+      setTimeout(() => { if (typeof requestMeshTopology === 'function') requestMeshTopology({ silent: true }); }, 1500);
+      setInterval(() => { if (typeof updateTickerFacts === 'function') updateTickerFacts(); }, 60000);
+      fetch('/api/topology').then(r => r.json()).then(d => {
+        if (d && Array.isArray(d.meshes) && (!Array.isArray(window.backendMeshes) || window.backendMeshes.length === 0)) {
+          window.backendMeshes = d.meshes;
+          window.treeUnplaced = Array.isArray(d.unplaced) ? d.unplaced : [];
+        }
+        updateTickerFacts();
+        updateTopMeshId();
+      }).catch(() => {});
     });
 
     // --- Carregador Principal de Métricas do Radar Sci-Fi ---
@@ -18187,6 +18952,164 @@
         showGlassToast('🔄 Ordem enviada: Senhas do webserver resetadas para padrão!');
       } catch (err) {
         showGlassToast('Erro ao resetar senhas: ' + err.message);
+      }
+    }
+
+    // ================= ABA: CANAL WI-FI & STATUS DO ROTEADOR =================
+    let wifiChannelsCache = [];
+    let wifiChannelsSummary = {};
+    let wifiChannelsPollTimer = null;
+
+    async function loadWifiChannels() {
+      try {
+        const res = await fetch('/api/wifi-channels');
+        if (!res.ok) return;
+        const data = await res.json();
+        wifiChannelsCache = data.devices || [];
+        wifiChannelsSummary = data.summary || {};
+        renderWifiChannels();
+      } catch (e) {
+        console.error('Erro ao carregar auditoria Wi-Fi:', e);
+      }
+    }
+
+    function renderWifiChannels() {
+      const tbody = document.getElementById('wifi-channels-tbody');
+      if (!tbody) return;
+
+      const s = wifiChannelsSummary || {};
+      const elTotal = document.getElementById('wifi-kpi-total');
+      const elCh = document.getElementById('wifi-kpi-with-channel');
+      const elRouters = document.getElementById('wifi-kpi-routers-online');
+      const elChList = document.getElementById('wifi-kpi-channels-list');
+      const elEnv = document.getElementById('wifi-env-pill');
+      const sideBadge = document.getElementById('sidebar-badge-wifi');
+
+      if (elTotal) elTotal.innerText = s.total ?? wifiChannelsCache.length;
+      if (elCh) elCh.innerText = s.with_channel ?? 0;
+      if (elRouters) elRouters.innerText = s.routers_online_aws ?? 0;
+      if (elEnv) elEnv.innerText = `${s.broker_mode || brokerMode} • ${s.current_env || currentEnv}`;
+
+      const chEntries = Object.entries(s.channels_in_use || {}).sort((a, b) => Number(a[0]) - Number(b[0]));
+      if (elChList) {
+        elChList.innerText = chEntries.length ? chEntries.map(([ch, cnt]) => `CH ${ch} (${cnt})`).join(' · ') : '—';
+      }
+      if (sideBadge && chEntries.length) {
+        sideBadge.innerText = chEntries.length === 1 ? `CH ${chEntries[0][0]}` : `${chEntries.length} CH`;
+      }
+
+      const q = (document.getElementById('wifi-channels-search')?.value || '').trim().toLowerCase();
+      const onlyRoots = !!document.getElementById('wifi-only-roots')?.checked;
+
+      const filtered = wifiChannelsCache.filter(d => {
+        if (onlyRoots && !d.is_root) return false;
+        if (!q) return true;
+        return (
+          (d.name || '').toLowerCase().includes(q) ||
+          (d.mac || '').toLowerCase().includes(q) ||
+          (d.mac_formatted || '').toLowerCase().includes(q) ||
+          (d.router_ssid || '').toLowerCase().includes(q) ||
+          String(d.channel ?? '').includes(q) ||
+          (d.router_mac_formatted || '').toLowerCase().includes(q) ||
+          (d.router_mac || '').toLowerCase().includes(q)
+        );
+      });
+
+      if (!filtered.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" class="px-4 py-10 text-center text-slate-500 font-mono">
+              Nenhum Codax encontrado para o filtro atual. Clique em "Consultar ROOTs & Testar Internet" para varrer a malha.
+            </td>
+          </tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(d => {
+        const roleBadge = d.is_root
+          ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-950/80 text-indigo-300 border border-indigo-500/40">ROOT L1</span>`
+          : `<span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-900 text-slate-300 border border-slate-700">${d.layer ? 'Nó L' + d.layer : 'Nó'}</span>`;
+
+        const chBadge = d.channel != null
+          ? `<span class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-sky-950/80 text-sky-300 border border-sky-500/40">CH ${d.channel}</span>${d.inherited_from_root ? '<span class="ml-1 text-[9px] text-slate-500 font-mono">(via ROOT)</span>' : ''}`
+          : `<span class="text-slate-500 font-mono">—</span>`;
+
+        const ssidHtml = d.router_ssid
+          ? `<span class="font-semibold text-white">${d.router_ssid}</span>`
+          : `<span class="text-slate-500 font-mono">Não consultado</span>`;
+
+        const routerMacHtml = d.router_mac_formatted
+          ? `<div class="font-mono text-slate-200">${d.router_mac_formatted}</div>`
+          : `<div class="font-mono text-slate-500">—</div>`;
+        const rssiHtml = d.rssi != null
+          ? `<div class="text-[10px] font-mono ${d.rssi >= -60 ? 'text-emerald-400' : (d.rssi >= -75 ? 'text-amber-400' : 'text-rose-400')}">${d.rssi} dBm</div>`
+          : '';
+
+        const ipHtml = d.ip
+          ? `<div class="font-mono text-slate-300">${d.ip}</div><div class="text-[10px] font-mono text-slate-500">GW ${d.gw || '—'}</div>`
+          : `<span class="text-slate-500 font-mono">—</span>`;
+
+        let netBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-slate-900 text-slate-400 border border-slate-700">Não testado</span>`;
+        if (d.internet_status === 'ONLINE_AWS') {
+          const rtt = d.rtt_ms != null ? ` • ${d.rtt_ms}ms` : '';
+          netBadge = `<span class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-500/40"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>Internet OK (AWS${rtt})</span></span>`;
+        } else if (d.internet_status === 'AGUARDANDO') {
+          netBadge = `<span class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-amber-950/80 text-amber-300 border border-amber-500/40"><span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span><span>Consultando...</span></span>`;
+        } else if (d.internet_status === 'SEM_RESPOSTA') {
+          netBadge = `<span class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-rose-950/80 text-rose-300 border border-rose-500/40"><span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span><span>Sem resposta AWS</span></span>`;
+        } else if (d.internet_status === 'LOCAL_SEM_TESTE_AWS') {
+          netBadge = `<span class="px-2 py-0.5 rounded-full text-[10px] font-mono bg-amber-950/60 text-amber-300 border border-amber-500/30">Modo LOCAL (sem teste AWS)</span>`;
+        }
+
+        const timeSub = d.last_audit_time ? `<div class="text-[10px] font-mono text-slate-500 mt-0.5">Últ. resposta: ${d.last_audit_time}</div>` : '';
+
+        return `
+          <tr class="hover:bg-[#0c1322]/70 transition">
+            <td class="px-4 py-3">
+              <div class="font-semibold text-white">${d.name}</div>
+              <div class="text-[10px] font-mono text-slate-400">${d.mac_formatted || d.mac}</div>
+            </td>
+            <td class="px-4 py-3">${roleBadge}</td>
+            <td class="px-4 py-3">${ssidHtml}</td>
+            <td class="px-4 py-3">${chBadge}</td>
+            <td class="px-4 py-3">${routerMacHtml}${rssiHtml}</td>
+            <td class="px-4 py-3">${ipHtml}</td>
+            <td class="px-4 py-3">${netBadge}${timeSub}</td>
+            <td class="px-4 py-3 text-right">
+              <button onclick="probeWifiChannels('${d.mac}')" class="px-2.5 py-1.5 rounded-lg bg-[#0d121e] border border-[#1d2b42] hover:border-sky-500/60 text-sky-300 hover:text-white text-[11px] font-semibold transition">
+                Testar
+              </button>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    async function probeWifiChannels(target = 'root') {
+      try {
+        const res = await fetch('/api/wifi-channels/probe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target, env: currentEnv })
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          if (typeof showGlassToast === 'function') showGlassToast(`Erro ao consultar: ${err.detail || res.status}`);
+          return;
+        }
+        if (typeof showGlassToast === 'function') {
+          showGlassToast(`📡 Solicitação enviada (${target.toUpperCase()} em ${currentEnv}) — aguardando retorno do roteador...`);
+        }
+        await loadWifiChannels();
+        // Reconsulta automática curta para capturar as respostas MQTT que chegam em 1-5s
+        if (wifiChannelsPollTimer) clearTimeout(wifiChannelsPollTimer);
+        [1500, 3500, 6500].forEach(ms => {
+          wifiChannelsPollTimer = setTimeout(() => {
+            const view = document.getElementById('view-wifi-channels');
+            if (view && !view.classList.contains('hidden')) loadWifiChannels();
+          }, ms);
+        });
+      } catch (e) {
+        console.error('Erro ao disparar probe Wi-Fi:', e);
       }
     }
 

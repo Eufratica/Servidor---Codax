@@ -76,5 +76,13 @@
     "meter_type": "Outro / Genérico",
     "role": "ROOT",
     "notes": ""
+  },
+  "704bca491e2c": {
+    "mac": "704bca491e2c",
+    "name": "Placa 1E2C",
+    "meter_serial": "",
+    "meter_type": "ABNT NBR 14522",
+    "role": "NODE",
+    "notes": ""
   }
 }

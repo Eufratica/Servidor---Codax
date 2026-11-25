@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import paho.mqtt.client as mqtt
 from commands_data import CODAX_COMMANDS
+from topology_parser import parse_topology_payload, build_mesh_tree
 
 # ================= CONFIGURAÇÕES (AWS IoT Core + Local) =================
 import ssl
@@ -20,7 +21,7 @@ import random
 import math
 import time
 
-CERTS_DIR = os.path.abspath("./certs")
+CERTS_DIR = os.path.abspath(os.getenv("CERTS_DIR", "./certs"))
 AWS_ENDPOINT = os.getenv("AWS_ENDPOINT", "a15sonvcesw5o-ats.iot.us-west-2.amazonaws.com")
 AWS_PORT = int(os.getenv("AWS_PORT", 8883))
 AWS_CA_CERT = os.path.join(CERTS_DIR, "aws-root-ca.pem")
@@ -45,6 +46,30 @@ ADDR_ANY = "ffffffffffff"
 ADDR_BROADCAST = "fffffffffe"
 
 os.makedirs(FIRMWARE_DIR, exist_ok=True)
+
+# Tópicos de RESPOSTA de produção (placas compiladas com CONFIG_PROD_ENV). Exigem um certificado AWS IoT
+# cuja política permita assiná-los; se a AWS recusar, on_mqtt_disconnect volta automaticamente para só DEV.
+AWS_PROD_RESPONSE_TOPICS = [
+    "retorno/shopba/mesh/#",
+    "topo/shopba/mesh/#",
+    "conn/shopba/mesh/#",
+    "telemetria/shopba/mesh/#",
+    "err/shopba/mesh/#",
+]
+AWS_PROD_SUBSCRIBE = os.getenv("AWS_PROD_SUBSCRIBE", "1").strip().lower() not in ("0", "false", "no", "nao", "não")
+
+def aws_subscription_topics(include_prod: bool) -> List[str]:
+    """Função pura: assinaturas usadas no modo AWS (DEV sempre; PROD quando permitido)."""
+    topics = ["config/shopba/mesh", "dev/#"]
+    if include_prod:
+        topics += AWS_PROD_RESPONSE_TOPICS
+    return topics
+
+def parse_disabled_tabs(raw: str) -> List[str]:
+    """Função pura: extrai IDs de abas desabilitadas ('Em breve') a partir de string separada por vírgula."""
+    return [t.strip().lower() for t in (raw or "").split(",") if t.strip()]
+
+DISABLED_TABS = parse_disabled_tabs(os.getenv("DISABLED_TABS", ""))
 
 # Helper para obter o IP local da máquina na rede LAN (Wi-Fi / Ethernet) — ignora placa virtual WSL (172.16-31.x)
 def get_local_ip() -> str:
@@ -107,15 +132,21 @@ app_state = {
     "broker_host": BROKER_HOST,
     "broker_port": BROKER_PORT,
     "broker_connected": False,
-    "aws_prod_sub_restricted": True,
+    "aws_prod_sub_restricted": not AWS_PROD_SUBSCRIBE,
     "local_ip": LOCAL_IP,
     "web_port": WEB_PORT,
+    "disabled_tabs": DISABLED_TABS,
     "recent_messages": [],
     "nodes": {},
     "last_topology": None,
+    # Snapshots de topologia por ROOT (fonte da verdade da Árvore da Malha), preenchidos por ingest_topology()
+    "mesh_topologies": {},
+    # Auditoria de Canal Wi-Fi, SSID, MAC do Roteador e teste de Internet via AWS (por MAC)
+    "wifi_audits": {},
+    "wifi_probe_pending": {},
     "last_lwt_event": None,
     "subscribed_topics": (
-        ["config/shopba/mesh", "dev/#"]
+        aws_subscription_topics(AWS_PROD_SUBSCRIBE)
         if BROKER_MODE == "AWS"
         else ["#"]
     )
@@ -247,44 +278,71 @@ def build_payload(addrs: List[str], method: str, function: str, value: Any = Non
 
     return payload
 
+def build_discovery_messages(mode: str) -> List[tuple]:
+    """
+    Função pura: lista (tópico, payload) da varredura de Autodescoberta, somente comandos de leitura.
+    - topology para 'root' (ff:00:00:01:00:00): cada ROOT responde com a árvore completa da sua malha.
+    - ping para 'any' com for_mesh: cada Codax responde individualmente (pega quem não está em topologia).
+    - No LOCAL também envia topology via 'any' (comportamento anterior preservado).
+    """
+    msgs = []
+    for cmd_topic in (CMD_TOPIC_PROD, CMD_TOPIC_DEV):
+        if mode == "LOCAL":
+            msgs.append((cmd_topic, build_payload(["ffffffffffff"], "query", "topology", None, True)))
+        msgs.append((cmd_topic, build_payload(["root"], "query", "topology", None, False)))
+        msgs.append((cmd_topic, build_payload(["ffffffffffff"], "query", "ping", None, True)))
+    return msgs
+
 # ================= CLIENTE MQTT =================
 mqtt_loop = None
 
 def on_mqtt_connect(client, userdata, flags, rc):
     app_state["broker_connected"] = (rc == 0)
+    if rc == 0:
+        app_state["last_connect_ok_epoch"] = time.time()
     active_port = app_state.get("broker_port", BROKER_PORT)
     active_mode = app_state.get("broker_mode", BROKER_MODE)
     print(f"[MQTT] Conectado ao Broker {active_mode} na porta {active_port} (Código {rc})")
     for topic in app_state["subscribed_topics"]:
         client.subscribe(topic)
 
-    # Se conectou no Broker Local (1883), dispara varredura automática de Autodescovery (topology + ping) em PROD e DEV
-    if rc == 0 and active_mode == "LOCAL":
-        def _auto_discover_local_mesh():
+    # Ao conectar (LOCAL ou AWS), dispara a varredura de Autodescoberta (topology + ping, somente leitura) em PROD e DEV.
+    # Antes só existia no modo LOCAL: no AWS a plataforma ficava passiva até chegar um heartbeat (~4 min).
+    if rc == 0 and active_mode in ("LOCAL", "AWS"):
+        def _auto_discover_mesh(mode_at_connect: str):
             import time
-            for idx, delay in enumerate((1.0, 2.5)):
+            # LOCAL: 1ª rodada acorda as placas via UDP e a 2ª repete a varredura; AWS: uma rodada basta
+            for idx, delay in enumerate((1.0, 2.5) if mode_at_connect == "LOCAL" else (1.5,)):
                 time.sleep(delay)
-                if app_state.get("broker_mode") == "LOCAL" and app_state.get("broker_connected"):
-                    try:
-                        if idx == 0:
-                            send_lan_udp_broker_trigger("local")
-                        topo_any = json.dumps(build_payload(["ffffffffffff"], "query", "topology", None, True))
-                        topo_root = json.dumps(build_payload(["root"], "query", "topology", None, False))
-                        ping_cmd = json.dumps(build_payload(["ffffffffffff"], "query", "ping", None, True))
-                        for t in (CMD_TOPIC_PROD, CMD_TOPIC_DEV):
-                            client.publish(t, topo_any)
-                            client.publish(t, topo_root)
-                            client.publish(t, ping_cmd)
-                    except Exception:
-                        pass
+                if app_state.get("broker_mode") != mode_at_connect or not app_state.get("broker_connected"):
+                    return
+                try:
+                    if idx == 0 and mode_at_connect == "LOCAL":
+                        send_lan_udp_broker_trigger("local")
+                    for topic, payload in build_discovery_messages(mode_at_connect):
+                        client.publish(topic, json.dumps(payload))
+                except Exception as e:
+                    print(f"[AUTODESCOBERTA] Falha ao publicar varredura: {e}")
         import threading
-        threading.Thread(target=_auto_discover_local_mesh, daemon=True).start()
+        threading.Thread(target=_auto_discover_mesh, args=(active_mode,), daemon=True).start()
 
 def on_mqtt_disconnect(client, userdata, rc):
     app_state["broker_connected"] = False
     active_mode = app_state.get("broker_mode", BROKER_MODE)
-    if rc == 7 and active_mode == "AWS":
+    # Conexão aceita há poucos segundos e derrubada = assinatura recusada; nunca aceita = certificado/política/Client ID recusados
+    connected_recently = (time.time() - app_state.get("last_connect_ok_epoch", 0)) < 15
+    if rc == 7 and active_mode == "AWS" and not connected_recently:
+        print(f"[MQTT] Desconectado do Broker (Código {rc} - AWS IoT recusou a CONEXÃO: verifique se o certificado em "
+              f"{CERTS_DIR} está ATIVO, anexado a uma política com iot:Connect para este Client ID e registrado neste endpoint/região).")
+    elif rc == 7 and active_mode == "AWS":
         print(f"[MQTT] Desconectado do Broker (Código {rc} - Conexão encerrada pelo AWS IoT Core: possível tentativa de assinar tópico PROD restrito pela AWS IoT Policy).")
+        # Fallback seguro: se havia tópicos PROD assinados, a política do certificado não os permite.
+        # Volta para só DEV; o paho reconecta sozinho e on_mqtt_connect reassina a lista reduzida.
+        if any(t in app_state["subscribed_topics"] for t in AWS_PROD_RESPONSE_TOPICS):
+            app_state["aws_prod_sub_restricted"] = True
+            app_state["subscribed_topics"] = aws_subscription_topics(False)
+            print("[MQTT] Política AWS IoT recusou os tópicos PROD: assinaturas reduzidas para config/shopba/mesh + dev/#. "
+                  "Verifique se o certificado em certs/ é o novo (com permissão PROD).")
     else:
         print(f"[MQTT] Desconectado do Broker (Código {rc})")
 
@@ -382,8 +440,15 @@ def register_discovered_node(mac_candidate: str, timestamp: str, layer: int = No
         "data": data or existing.get("data")
     }
 
-def is_node_online(node_dict: dict, threshold_seconds: int = 180) -> bool:
-    """Verifica se um nó está efetivamente online com base na última telemetria."""
+# Heartbeat real do firmware (dev/conn): ~210 s nos NODEs e ~265 s na ROOT (medido na bancada em 19/11/2026).
+# A janela antiga de 180 s era menor que o intervalo e fazia Codax ativos "piscarem" offline.
+# 600 s ≈ 2,3× o maior intervalo: tolera um heartbeat perdido sem marcar o Codax como offline.
+NODE_ONLINE_THRESHOLD_SECONDS = int(os.getenv("NODE_ONLINE_THRESHOLD_SECONDS", 600))
+
+def is_node_online(node_dict: dict, threshold_seconds: int = None) -> bool:
+    """Verifica se um nó está efetivamente online com base na última mensagem recebida dele."""
+    if threshold_seconds is None:
+        threshold_seconds = NODE_ONLINE_THRESHOLD_SECONDS
     if not node_dict or not isinstance(node_dict, dict):
         return False
     epoch = node_dict.get("last_seen_epoch")
@@ -435,6 +500,192 @@ def extract_macs_recursive(obj, timestamp: str, topic: str, layer: int = None, p
             else:
                 extract_macs_recursive(item, timestamp, topic, layer=layer, parent_mac=parent_mac)
 
+TOPOLOGY_STALE_SECONDS = 300
+
+def parse_device_info_payload(payload: Any) -> Optional[Dict[str, Any]]:
+    """
+    Função pura (sem I/O): extrai dados de Wi-Fi/Roteador/Canal das respostas reais
+    de `query info` e `query network` emitidas pelo firmware ESP32 Codax.
+    """
+    if not isinstance(payload, dict):
+        return None
+    data = payload.get("data")
+    if not isinstance(data, dict):
+        return None
+
+    net_field = data.get("network")
+    sys_field = data.get("system")
+    ip_field = data.get("ip")
+    settings_field = data.get("device_settings")
+
+    if not any([net_field, sys_field, ip_field, settings_field]):
+        return None
+
+    out: Dict[str, Any] = {}
+
+    # MAC do dispositivo (prioriza self mac em system, depois addr / id)
+    raw_mac = None
+    if isinstance(sys_field, str):
+        m_self = re.search(r"self\s+mac\s*:\s*([0-9a-fA-F:]{12,17})", sys_field, re.IGNORECASE)
+        if m_self:
+            raw_mac = m_self.group(1)
+    if not raw_mac:
+        raw_mac = payload.get("addr") or data.get("id")
+    mac = normalize_mac(raw_mac) if isinstance(raw_mac, str) else ""
+    if len(mac) != 12:
+        return None
+    out["mac"] = mac
+
+    if isinstance(payload.get("root"), str):
+        rm = normalize_mac(payload["root"])
+        if len(rm) == 12:
+            out["root_mac"] = rm
+
+    # Extrair SSID, canal e mesh_id de `network` (string em query info ou dict em query network)
+    if isinstance(net_field, str):
+        m_ssid = re.search(r"router_ssid\s*:\s*([^,\r\n]+)", net_field, re.IGNORECASE)
+        if m_ssid:
+            out["router_ssid"] = m_ssid.group(1).strip()
+        m_ch = re.search(r"channel\s*:\s*(\d+)", net_field, re.IGNORECASE)
+        if m_ch:
+            out["channel"] = int(m_ch.group(1))
+        m_mid = re.search(r"mesh_id\s*:\s*([0-9a-fA-F:]{12,17})", net_field, re.IGNORECASE)
+        if m_mid:
+            out["mesh_id"] = m_mid.group(1).strip().lower()
+    elif isinstance(net_field, dict):
+        ssid = net_field.get("ssid") or net_field.get("device_obj_ssid") or net_field.get("router_ssid")
+        if isinstance(ssid, str) and ssid.strip():
+            out["router_ssid"] = ssid.strip()
+        if net_field.get("channel") is not None:
+            try:
+                out["channel"] = int(net_field["channel"])
+            except Exception:
+                pass
+
+    # Fallback de SSID em device_settings
+    if "router_ssid" not in out and isinstance(settings_field, str):
+        m_ssid = re.search(r"router_ssid\s*:\s*([^,\r\n]+)", settings_field, re.IGNORECASE)
+        if m_ssid:
+            out["router_ssid"] = m_ssid.group(1).strip()
+
+    # Extrair parent bssid, rssi, layer, is_root, parent_connected de `system`
+    if isinstance(sys_field, str):
+        m_bssid = re.search(r"parent\s+bssid\s*:\s*([0-9a-fA-F:]{12,17})", sys_field, re.IGNORECASE)
+        if m_bssid:
+            out["parent_bssid"] = normalize_mac(m_bssid.group(1))
+        m_rssi = re.search(r"parent\s+rssi\s*:\s*(-?\d+)", sys_field, re.IGNORECASE)
+        if m_rssi:
+            out["parent_rssi"] = int(m_rssi.group(1))
+        m_layer = re.search(r"layer\s*:\s*(\d+)", sys_field, re.IGNORECASE)
+        if m_layer:
+            out["layer"] = int(m_layer.group(1))
+        m_root = re.search(r"(?:i'm\s+root|root\s+status)\s*:\s*(\d+)", sys_field, re.IGNORECASE)
+        if m_root:
+            out["is_root"] = (int(m_root.group(1)) == 1)
+        m_pconn = re.search(r"parent\s+connected\s*:\s*(\d+)", sys_field, re.IGNORECASE)
+        if m_pconn:
+            out["parent_connected"] = (int(m_pconn.group(1)) == 1)
+
+    if out.get("is_root") or out.get("layer") == 1:
+        out["is_root"] = True
+        if out.get("parent_bssid"):
+            out["router_mac"] = out["parent_bssid"]
+
+    # Extrair IP e Gateway de `ip`
+    if isinstance(ip_field, str):
+        m_ip = re.search(r"ip_new\s*:\s*([0-9.]+)", ip_field, re.IGNORECASE)
+        if m_ip:
+            out["ip"] = m_ip.group(1).strip()
+        m_gw = re.search(r"gw_new\s*:\s*([0-9.]+)", ip_field, re.IGNORECASE)
+        if m_gw:
+            out["gw"] = m_gw.group(1).strip()
+
+    # Só retorna se extraiu pelo menos algum campo útil de Wi-Fi/rede
+    useful_keys = ("router_ssid", "channel", "parent_bssid", "router_mac", "ip", "gw")
+    if not any(k in out for k in useful_keys):
+        return None
+    return out
+
+def ingest_wifi_info(parsed_info: Dict[str, Any], timestamp: str, topic: str = None):
+    """Atualiza o registro de auditoria Wi-Fi/Roteador e calcula RTT se houver probe pendente."""
+    mac = parsed_info["mac"]
+    now = time.time()
+    audits = app_state.setdefault("wifi_audits", {})
+    rec = audits.get(mac, {"mac": mac})
+    for k, v in parsed_info.items():
+        if v is not None:
+            rec[k] = v
+    rec["last_audit_time"] = timestamp
+    rec["last_audit_epoch"] = now
+    if topic:
+        rec["topic"] = topic
+
+    # Medição de RTT e confirmação de Internet via AWS
+    pending = app_state.setdefault("wifi_probe_pending", {})
+    probe = pending.get(mac) or pending.get("*")
+    if probe and (now - probe.get("sent_epoch", 0)) <= 60:
+        rec["rtt_ms"] = int(round((now - probe["sent_epoch"]) * 1000))
+        if mac in pending:
+            del pending[mac]
+
+    if app_state.get("broker_mode") == "AWS":
+        rec["last_aws_ok_epoch"] = now
+        rec["last_aws_ok_time"] = timestamp
+
+    audits[mac] = rec
+
+def ingest_topology(parsed: Dict[str, Any], timestamp: str, topic: str = None):
+    """Guarda a página de topologia recebida no snapshot da sua ROOT e atualiza layer/pai dos nós."""
+    root_mac = parsed["root_mac"]
+    store = app_state["mesh_topologies"]
+    snap = store.get(root_mac)
+    page = parsed.get("page") or 1
+    # Página 1 inicia um snapshot novo (a malha pode ter mudado desde o anterior)
+    if snap is None or page == 1:
+        snap = {"pages": {}}
+        store[root_mac] = snap
+    snap.update({
+        "root_mac": root_mac,
+        "root_id": parsed.get("root_id") or snap.get("root_id"),
+        "router_mac": parsed.get("router_mac") or snap.get("router_mac"),
+        "router_rssi": parsed.get("router_rssi") if parsed.get("router_rssi") is not None else snap.get("router_rssi"),
+        "total_devices": parsed.get("total_devices") or snap.get("total_devices"),
+        "timestamp": timestamp,
+        "epoch": time.time(),
+        "topic": topic,
+    })
+    snap["pages"][page] = parsed["entries"]
+
+    # Aproveita router_mac e router_rssi da topologia na auditoria Wi-Fi do ROOT
+    if parsed.get("router_mac") or parsed.get("router_rssi") is not None:
+        ingest_wifi_info({
+            "mac": root_mac,
+            "root_mac": root_mac,
+            "is_root": True,
+            "layer": 1,
+            "router_mac": parsed.get("router_mac"),
+            "parent_rssi": parsed.get("router_rssi"),
+        }, timestamp, topic)
+
+    entries = [e for p in sorted(snap["pages"]) for e in snap["pages"][p]]
+    tree = build_mesh_tree(root_mac, entries)
+    parent_of = {child: parent for parent, child in tree["edges"]}
+    for e in entries:
+        register_discovered_node(
+            e["mac"], timestamp,
+            layer=e.get("layer"),
+            parent_mac=parent_of.get(e["mac"]),
+            rssi=e.get("rssi"),
+            topic=topic,
+        )
+        node = app_state["nodes"].get(e["mac"])
+        if node is not None:
+            # Topologia é autoritativa: zera o pai do ROOT e marca a origem do posicionamento
+            if e["mac"] == root_mac or e.get("layer") == 1:
+                node["parent_mac"] = None
+            node["topology_root"] = root_mac
+            node["topology_id"] = e.get("id")
+
 def on_mqtt_message(client, userdata, msg):
     try:
         raw_payload = msg.payload.decode("utf-8", errors="ignore")
@@ -463,7 +714,19 @@ def on_mqtt_message(client, userdata, msg):
             # 2. Descobrir MACs e árvore de nós recursivamente no JSON recebido
             if parsed_json:
                 extract_macs_recursive(parsed_json, timestamp, topic)
-                is_topology = (
+                wifi_info = parse_device_info_payload(parsed_json)
+                if wifi_info:
+                    try:
+                        ingest_wifi_info(wifi_info, timestamp, topic)
+                    except Exception as e:
+                        print(f"[WIFI_AUDIT] Falha ao consolidar info Wi-Fi: {e}")
+                topo_parsed = parse_topology_payload(parsed_json)
+                if topo_parsed:
+                    try:
+                        ingest_topology(topo_parsed, timestamp, topic)
+                    except Exception as e:
+                        print(f"[TOPOLOGIA] Falha ao consolidar snapshot: {e}")
+                is_topology = topo_parsed is not None or (
                     category == "topologia" or
                     "topo" in topic.lower() or
                     (isinstance(parsed_json, dict) and ("nodes" in parsed_json or (isinstance(parsed_json.get("data"), dict) and parsed_json.get("data", {}).get("function") == "topology")))
@@ -507,7 +770,9 @@ def on_mqtt_message(client, userdata, msg):
         print(f"[MQTT] Erro ao processar mensagem: {e}")
 
 def create_mqtt_client(mode: str):
-    cid = f"circuitID{random.randint(100000000000, 999999999999)}"
+    # Políticas AWS IoT costumam restringir iot:Connect a um Client ID (ex.: nome do Thing). MQTT_CLIENT_ID permite fixá-lo.
+    fixed_cid = os.getenv("MQTT_CLIENT_ID", "").strip()
+    cid = fixed_cid if (fixed_cid and mode == "AWS") else f"circuitID{random.randint(100000000000, 999999999999)}"
     try:
         cl = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1, client_id=cid)
     except Exception:
@@ -576,6 +841,7 @@ def get_status():
         "aws_prod_sub_restricted": app_state.get("aws_prod_sub_restricted", False),
         "local_ip": app_state["local_ip"],
         "web_port": app_state["web_port"],
+        "disabled_tabs": app_state.get("disabled_tabs", []),
         "current_env": app_state["current_env"],
         "active_topic": CMD_TOPIC_PROD if app_state["current_env"] == "PROD" else CMD_TOPIC_DEV,
         "nodes_count": len(app_state["nodes"]),
@@ -674,7 +940,7 @@ def toggle_broker_mode():
     app_state["broker_port"] = AWS_PORT if new_mode == "AWS" else LOCAL_BROKER_PORT
     app_state["broker_connected"] = False
     app_state["subscribed_topics"] = (
-        ["config/shopba/mesh", "dev/#"]
+        aws_subscription_topics(not app_state.get("aws_prod_sub_restricted", True))
         if new_mode == "AWS"
         else [
             "#",
@@ -954,170 +1220,285 @@ def get_diagnostics_health():
 
 @app.get("/api/topology")
 def get_topology():
+    """
+    Árvore da Malha montada EXCLUSIVAMENTE a partir das respostas de `query topology`
+    (snapshots em app_state["mesh_topologies"]). Nenhum ROOT é inferido por ausência de pai.
+    """
     devices = load_devices()
+    dev_by_mac = {normalize_mac(d.get("mac", k)): d for k, d in devices.items()}
     live_nodes = app_state.get("nodes", {})
-    all_devices_merged = {}
+    now = time.time()
 
-    # 1. Carregar dispositivos cadastrados e enriquecer com telemetria viva
-    for m_raw, d in devices.items():
-        m = normalize_mac(d.get("mac", m_raw))
-        live = live_nodes.get(m, {})
-        online = is_node_online(live)
-        all_devices_merged[m] = {
-            **d,
-            "mac": m,
-            "status": "online" if online else "offline",
-            "is_online": online,
-            "last_seen": live.get("last_seen", "Desconhecido"),
-            "layer": live.get("layer", 1 if d.get("role") == "ROOT" else d.get("layer", 2)),
-            "parent_mac": normalize_mac(live.get("parent_mac") or d.get("parent_mac", "")),
-            "rssi": live.get("rssi") if live.get("rssi") is not None else d.get("rssi")
-        }
-
-    # 2. Adicionar nós que estão transmitindo ao vivo na malha mas ainda não estão em devices.json
-    for m, n in live_nodes.items():
-        if m not in all_devices_merged:
-            online = is_node_online(n)
-            all_devices_merged[m] = {
-                "mac": m,
-                "name": f"Nó Descoberto {m[-4:].upper()}",
-                "role": "ROOT" if (n.get("layer") == 1 or not n.get("parent_mac")) else "NODE",
-                "layer": n.get("layer", 1 if not n.get("parent_mac") else 2),
-                "parent_mac": normalize_mac(n.get("parent_mac", "")),
-                "status": "online" if online else "offline",
-                "is_online": online,
-                "last_seen": n.get("last_seen", "Agora"),
-                "rssi": n.get("rssi", -68),
-                "meter_serial": "",
-                "meter_type": "ESP-MESH"
-            }
-
-    # 3. Separar raízes e nós filhos
-    roots_dict = {}
-    nodes_dict = {}
-    for m, dev in all_devices_merged.items():
-        is_root = (dev.get("role") == "ROOT" or dev.get("layer") == 1 or not dev.get("parent_mac"))
-        if is_root:
-            roots_dict[m] = dev
-        else:
-            nodes_dict[m] = dev
-
+    snaps = sorted(app_state["mesh_topologies"].values(), key=lambda s: s.get("epoch", 0), reverse=True)
+    claimed = set()  # um MAC pertence apenas ao snapshot mais recente em que apareceu (troca de malha)
     meshes = []
-    for r_mac, r_dev in roots_dict.items():
-        is_bancada = (r_mac == "704bca491ca0")
-        is_lab = (r_mac == "4417934f49a4")
-        r_online = r_dev.get("is_online", False)
-        
-        mesh_id = "00:00:00:00:44:08" if is_bancada else ("00:00:00:00:54:07" if is_lab else r_dev.get("mesh_id", "00:00:00:00:00:00"))
-        ssid = "LEDAXIO_DEV" if is_bancada else ("LAB_LEDAX_IOT" if is_lab else r_dev.get("router_ssid", "LEDAX_MESH"))
-        ip = "192.168.137.148" if is_bancada else ("192.168.1.150" if is_lab else r_dev.get("ip", "192.168.1.1"))
-        
-        base_name = "Malha de Bancada (Dev)" if is_bancada else ("Malha Laboratório (Prod)" if is_lab else f"Malha ROOT {r_mac[-4:].upper()}")
-        mesh_name = base_name if r_online else f"{base_name} (Offline)"
 
-        children = []
-        for n_mac, n_dev in nodes_dict.items():
-            p_mac = normalize_mac(n_dev.get("parent_mac", ""))
-            # VINCULAÇÃO REAL E FIEL: Só conecta o filho à raiz se o parent_mac reportado for realmente ela!
-            if p_mac == r_mac:
-                children.append({
-                    "layer": n_dev.get("layer", 2),
-                    "id": n_dev.get("name", f"NODE {n_mac[-4:].upper()}"),
-                    "mac_addr": n_mac,
-                    "parent_mac": r_mac,
-                    "rssi": n_dev.get("rssi", -68),
-                    "meter_serial": n_dev.get("meter_serial", ""),
-                    "meter_type": n_dev.get("meter_type", ""),
-                    "status": n_dev.get("status", "offline"),
-                    "is_online": n_dev.get("is_online", False),
-                    "last_seen": n_dev.get("last_seen", "Desconhecido"),
-                    "nodes": []
-                })
+    def decorate(node, root_mac):
+        mac = node["mac"]
+        dev = dev_by_mac.get(mac, {})
+        live = live_nodes.get(mac, {})
+        out = {
+            "mac_addr": mac,
+            "id": node.get("id") or mac,
+            "name": dev.get("name"),
+            "meter_serial": dev.get("meter_serial", ""),
+            "layer": node.get("layer"),
+            "parent_mac": node.get("parent_mac"),
+            "parent_ref": node.get("parent_ref"),
+            "rssi": node.get("rssi"),
+            "is_online": is_node_online(live),
+            "last_seen": live.get("last_seen", "Desconhecido"),
+            "mesh_root": root_mac,
+            "nodes": [decorate(c, root_mac) for c in node.get("nodes", [])],
+        }
+        return out
 
-        mesh_has_active = r_online or any(c.get("is_online") for c in children)
+    for snap in snaps:
+        root_mac = snap["root_mac"]
+        if root_mac in claimed:
+            continue  # esta ROOT apareceu como nó numa topologia mais nova: snapshot obsoleto
+        entries = [e for p in sorted(snap["pages"]) for e in snap["pages"][p] if e["mac"] not in claimed]
+        tree = build_mesh_tree(root_mac, entries)
+        claimed.update(e["mac"] for e in entries)
+        claimed.add(root_mac)
 
+        age = int(now - snap.get("epoch", now))
+        root = decorate(tree["root"], root_mac)
+        root["layer"] = 1
+        root["router_mac"] = snap.get("router_mac")
+        root["router_rssi"] = snap.get("router_rssi")
+        if root.get("rssi") is None:
+            root["rssi"] = snap.get("router_rssi")
+
+        received = len({e["mac"] for e in entries})
         meshes.append({
-            "mesh_id": mesh_id,
-            "name": mesh_name,
-            "is_online": mesh_has_active,
-            "root": {
-                "layer": 1,
-                "id": r_dev.get("name", f"ROOT {r_mac[-4:].upper()}"),
-                "mac_addr": r_mac,
-                "router_ssid": ssid,
-                "ip": ip,
-                "mesh_id": mesh_id,
-                "rssi": r_dev.get("rssi", -22 if is_bancada else -42),
-                "status": r_dev.get("status", "offline"),
-                "is_online": r_online,
-                "last_seen": r_dev.get("last_seen", "Desconhecido"),
-                "nodes": children
-            }
+            "mesh_root_mac": root_mac,
+            "name": snap.get("root_id") or root_mac,
+            "is_online": root["is_online"],
+            "timestamp": snap.get("timestamp"),
+            "age_seconds": age,
+            "stale": age > TOPOLOGY_STALE_SECONDS,
+            "total_devices": snap.get("total_devices"),
+            "received_devices": received,
+            "complete": (snap.get("total_devices") or received) <= received,
+            "max_layer": max([e.get("layer") or 1 for e in entries] or [1]),
+            "root": root,
+            "orphans": [decorate(o, root_mac) for o in tree["orphans"]],
         })
 
-    # Priorizar malhas com dispositivos ONLINE no topo da lista
-    meshes.sort(key=lambda m: (0 if m.get("is_online") else 1, m.get("name", "")))
+    meshes.sort(key=lambda m: (0 if m["is_online"] else 1, m["stale"], m["name"]))
 
-    first_mesh_data = meshes[0]["root"] if meshes else None
+    # Codax cadastrados que não aparecem em nenhuma topologia (exibidos à parte, fora da árvore)
+    unplaced = []
+    for mac, d in dev_by_mac.items():
+        if mac and mac not in claimed:
+            live = live_nodes.get(mac, {})
+            unplaced.append({
+                "mac_addr": mac,
+                "name": d.get("name"),
+                "is_online": is_node_online(live),
+                "last_seen": live.get("last_seen", "Desconhecido"),
+            })
 
     return {
         "meshes": meshes,
+        "unplaced": unplaced,
         "topology": {
-            "timestamp": "Consolidado Multi-Malha",
-            "data": first_mesh_data,
+            "timestamp": meshes[0]["timestamp"] if meshes else None,
+            "data": meshes[0]["root"] if meshes else None,
             "meshes": meshes
         },
         "nodes": app_state["nodes"]
     }
 
+class WifiProbeRequest(BaseModel):
+    target: str = "root"
+    env: Optional[str] = None
+
+def _format_mac_colon(mac: Optional[str]) -> Optional[str]:
+    if not mac:
+        return None
+    m = normalize_mac(mac)
+    if len(m) != 12:
+        return mac
+    return ":".join(m[i:i+2] for i in range(0, 12, 2))
+
+@app.get("/api/wifi-channels")
+def get_wifi_channels():
+    """Retorna auditoria de Canal Wi-Fi, SSID, MAC do Roteador e status de Internet via AWS por Codax."""
+    devices = load_devices()
+    dev_by_mac = {normalize_mac(d.get("mac", k)): d for k, d in devices.items()}
+    live_nodes = app_state.get("nodes", {})
+    audits = app_state.get("wifi_audits", {})
+    snaps = app_state.get("mesh_topologies", {})
+    pending = app_state.get("wifi_probe_pending", {})
+    broker_mode = app_state.get("broker_mode", BROKER_MODE)
+    now = time.time()
+
+    all_macs = set(dev_by_mac.keys()) | set(live_nodes.keys()) | set(audits.keys()) | set(snaps.keys())
+    rows = []
+    channels_in_use: Dict[str, int] = {}
+    routers_online_aws = set()
+
+    for mac in all_macs:
+        if len(mac) != 12:
+            continue
+        dev = dev_by_mac.get(mac, {})
+        live = live_nodes.get(mac, {})
+        audit = audits.get(mac, {})
+        root_mac = audit.get("root_mac") or live.get("topology_root") or (mac if mac in snaps else None)
+        root_audit = audits.get(root_mac, {}) if (root_mac and root_mac != mac) else {}
+        root_snap = snaps.get(root_mac, {}) if root_mac else {}
+
+        layer = audit.get("layer") or live.get("layer") or (1 if mac in snaps else None)
+        is_root = bool(audit.get("is_root") or layer == 1 or mac in snaps)
+
+        router_ssid = audit.get("router_ssid") or root_audit.get("router_ssid")
+        channel = audit.get("channel") if audit.get("channel") is not None else root_audit.get("channel")
+        router_mac = audit.get("router_mac") or root_audit.get("router_mac") or root_snap.get("router_mac")
+        inherited = bool(
+            not is_root and (
+                (audit.get("channel") is None and channel is not None) or
+                (not audit.get("router_ssid") and router_ssid) or
+                (not audit.get("router_mac") and router_mac)
+            )
+        )
+
+        rssi = audit.get("parent_rssi")
+        if rssi is None:
+            rssi = live.get("rssi")
+        if rssi is None and is_root:
+            rssi = root_snap.get("router_rssi")
+
+        # Status de Internet do Roteador (via resposta recebida pela AWS IoT Core)
+        aws_epoch = audit.get("last_aws_ok_epoch") or (live.get("last_seen_epoch") if broker_mode == "AWS" else None)
+        if not aws_epoch and root_audit.get("last_aws_ok_epoch"):
+            aws_epoch = root_audit.get("last_aws_ok_epoch")
+
+        probe_info = pending.get(mac) or pending.get("*")
+        if broker_mode != "AWS":
+            internet_status = "LOCAL_SEM_TESTE_AWS"
+        elif aws_epoch and (now - aws_epoch) <= 300:
+            internet_status = "ONLINE_AWS"
+            if router_mac:
+                routers_online_aws.add(router_mac)
+            else:
+                routers_online_aws.add(root_mac or mac)
+        elif probe_info and (now - probe_info.get("sent_epoch", 0)) <= 10:
+            internet_status = "AGUARDANDO"
+        elif probe_info and (now - probe_info.get("sent_epoch", 0)) <= 120:
+            internet_status = "SEM_RESPOSTA"
+        else:
+            internet_status = "DESCONHECIDO"
+
+        if channel is not None:
+            ch_key = str(channel)
+            channels_in_use[ch_key] = channels_in_use.get(ch_key, 0) + 1
+
+        rows.append({
+            "mac": mac,
+            "mac_formatted": _format_mac_colon(mac),
+            "name": dev.get("name") or live.get("topology_id") or f"Codax {mac[-4:].upper()}",
+            "registered": mac in dev_by_mac,
+            "is_root": is_root,
+            "layer": layer,
+            "mesh_root_mac": root_mac,
+            "router_ssid": router_ssid,
+            "channel": channel,
+            "router_mac": router_mac,
+            "router_mac_formatted": _format_mac_colon(router_mac),
+            "rssi": rssi,
+            "ip": audit.get("ip"),
+            "gw": audit.get("gw"),
+            "parent_connected": audit.get("parent_connected"),
+            "internet_status": internet_status,
+            "rtt_ms": audit.get("rtt_ms"),
+            "last_audit_time": audit.get("last_audit_time") or live.get("last_seen"),
+            "is_online": is_node_online(live),
+            "inherited_from_root": inherited,
+        })
+
+    rows.sort(key=lambda r: (
+        0 if r["internet_status"] == "ONLINE_AWS" else (1 if r["is_online"] else 2),
+        0 if r["is_root"] else 1,
+        0 if r["channel"] is not None else 1,
+        (r["name"] or "").lower()
+    ))
+
+    return {
+        "devices": rows,
+        "summary": {
+            "total": len(rows),
+            "with_channel": sum(1 for r in rows if r["channel"] is not None),
+            "routers_online_aws": len(routers_online_aws),
+            "channels_in_use": channels_in_use,
+            "broker_mode": broker_mode,
+            "current_env": app_state.get("current_env", "PROD"),
+        }
+    }
+
+@app.post("/api/wifi-channels/probe")
+def probe_wifi_channels(req: WifiProbeRequest):
+    """Dispara query info (+ query topology para root/any) para auditar canal Wi-Fi, SSID, MAC do roteador e testar internet via AWS."""
+    if not app_state.get("broker_connected"):
+        raise HTTPException(status_code=503, detail="Broker MQTT não está conectado.")
+
+    env = (req.env or app_state.get("current_env") or "PROD").upper()
+    topic = CMD_TOPIC_PROD if env == "PROD" else CMD_TOPIC_DEV
+    target_raw = (req.target or "root").strip().lower()
+    now = time.time()
+    pending = app_state.setdefault("wifi_probe_pending", {})
+    sent = []
+
+    if target_raw in ("root", "any"):
+        pending["*"] = {"sent_epoch": now, "broker_mode": app_state.get("broker_mode")}
+        p_info = build_payload([target_raw], "query", "info", None, for_mesh=(target_raw == "any"))
+        mqtt_client.publish(topic, json.dumps(p_info))
+        sent.append({"topic": topic, "function": "info", "target": target_raw})
+
+        p_topo = build_payload(["root"], "query", "topology", None, for_mesh=False)
+        mqtt_client.publish(topic, json.dumps(p_topo))
+        sent.append({"topic": topic, "function": "topology", "target": "root"})
+    else:
+        mac = resolve_mac_alias(target_raw)
+        if not mac:
+            raise HTTPException(status_code=400, detail="Alvo MAC inválido.")
+        pending[mac] = {"sent_epoch": now, "broker_mode": app_state.get("broker_mode")}
+        p_info = build_payload([mac], "query", "info", None, for_mesh=False)
+        mqtt_client.publish(topic, json.dumps(p_info))
+        sent.append({"topic": topic, "function": "info", "target": mac})
+
+    return {
+        "status": "ok",
+        "broker_mode": app_state.get("broker_mode"),
+        "env": env,
+        "sent": sent
+    }
+
 @app.post("/api/topology/mock")
 def generate_mock_topology():
-    mock_data = {
-        "layer": 1,
-        "id": "ROOT_01",
-        "mac_addr": "4417934f49a4",
-        "router_ssid": "LAB_LEDAX_IOT",
-        "router_mac_addr": "24:4b:fe:11:22:33",
-        "router_rssi": -52,
-        "channel": 6,
-        "ip": "192.168.1.150",
-        "nodes": [
-            {
-                "layer": 2,
-                "id": "NODE_02",
-                "mac_addr": "44179358768c",
-                "parent_id": "ROOT_01",
-                "parent_mac": "4417934f49a4",
-                "parent_rssi": -63,
-                "nodes": [
-                    {
-                        "layer": 3,
-                        "id": "NODE_03",
-                        "mac_addr": "441793516dcc",
-                        "parent_id": "NODE_02",
-                        "parent_mac": "44179358768c",
-                        "parent_rssi": -74,
-                        "nodes": []
-                    }
-                ]
-            },
-            {
-                "layer": 2,
-                "id": "NODE_04",
-                "mac_addr": "4417934f4fd8",
-                "parent_id": "ROOT_01",
-                "parent_mac": "4417934f49a4",
-                "parent_rssi": -58,
-                "nodes": []
-            }
-        ]
+    """Injeta uma topologia de exemplo (L1→L4) no MESMO formato emitido pelo firmware."""
+    mock_payload = {
+        "page": 1,
+        "root": "44:17:93:4f:49:a4(SIM_ROOT)",
+        "router_mac": "24:4b:fe:11:22:33",
+        "router_rssi(dB)": -48,
+        "total_devices": 7,
+        "mesh": [
+            "|layer: 1|mac: 44:17:93:4f:49:a4|id: SIM_ROOT |parent_id: 0 |rssi: -48 |",
+            "|layer: 2|mac: 44:17:93:58:76:8c|id: SIM_N2A |parent_id: SIM_ROOT |rssi: -57 |",
+            "|layer: 2|mac: 44:17:93:4f:4f:d8|id: SIM_N2B |parent_id: SIM_ROOT |rssi: -63 |",
+            "|layer: 3|mac: 44:17:93:51:6d:cc|id: SIM_N3A |parent_id: SIM_N2A |rssi: -69 |",
+            "|layer: 3|mac: 44:17:93:51:6e:10|id: SIM_N3B |parent_id: SIM_N2A |rssi: -74 |",
+            "|layer: 3|mac: 44:17:93:51:70:44|id: SIM_N3C |parent_id: SIM_N2B |rssi: -71 |",
+            "|layer: 4|mac: 44:17:93:51:72:a8|id: SIM_N4A |parent_id: SIM_N3A |rssi: -82 |",
+        ],
     }
-    app_state["last_topology"] = {
-        "timestamp": datetime.now().strftime("%H:%M:%S"),
-        "data": mock_data
-    }
-    extract_macs_recursive(mock_data, datetime.now().strftime("%H:%M:%S"), "mock_topology")
-    return mock_data
+    ts = datetime.now().strftime("%H:%M:%S")
+    parsed = parse_topology_payload(mock_payload)
+    ingest_topology(parsed, ts, "mock/topo/shopba/mesh/4417934f49a4")
+    app_state["last_topology"] = {"timestamp": ts, "data": mock_payload}
+    return mock_payload
 
 # ================= ROTAS DE MEDIDORES & DISPOSITIVOS =================
 @app.get("/api/devices")
@@ -1381,7 +1762,8 @@ def get_discovered_devices():
             "parent_mac": node.get("parent_mac"),
             "rssi": node.get("rssi"),
             "last_seen": node.get("last_seen", "Agora"),
-            "last_topic": node.get("last_topic")
+            "last_topic": node.get("last_topic"),
+            "is_online": is_node_online(node)
         })
     return discovered
 
@@ -3363,6 +3745,7 @@ async def websocket_endpoint(websocket: WebSocket):
             "broker_connected": app_state["broker_connected"],
             "local_ip": app_state["local_ip"],
             "web_port": app_state["web_port"],
+            "disabled_tabs": app_state.get("disabled_tabs", []),
             "current_env": app_state["current_env"],
             "active_topic": CMD_TOPIC_PROD if app_state["current_env"] == "PROD" else CMD_TOPIC_DEV,
             "subscriptions": app_state["subscribed_topics"]
